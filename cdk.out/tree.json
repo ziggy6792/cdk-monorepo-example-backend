@@ -1,0 +1,393 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree"
+      },
+      "PackagesStack": {
+        "id": "PackagesStack",
+        "path": "PackagesStack",
+        "children": {
+          "PackagesQueue": {
+            "id": "PackagesQueue",
+            "path": "PackagesStack/PackagesQueue",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "PackagesStack/PackagesQueue/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
+                  "aws:cdk:cloudformation:props": {
+                    "visibilityTimeout": 300
+                  }
+                }
+              },
+              "Policy": {
+                "id": "Policy",
+                "path": "PackagesStack/PackagesQueue/Policy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "PackagesStack/PackagesQueue/Policy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SQS::QueuePolicy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sqs:SendMessage",
+                              "Condition": {
+                                "ArnEquals": {
+                                  "aws:SourceArn": {
+                                    "Ref": "PackagesTopic109F6BD8"
+                                  }
+                                }
+                              },
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "sns.amazonaws.com"
+                              },
+                              "Resource": {
+                                "Fn::GetAtt": [
+                                  "PackagesQueue79A3C46F",
+                                  "Arn"
+                                ]
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "queues": [
+                          {
+                            "Ref": "PackagesQueue79A3C46F"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "PackagesStackPackagesTopic40590175": {
+                "id": "PackagesStackPackagesTopic40590175",
+                "path": "PackagesStack/PackagesQueue/PackagesStackPackagesTopic40590175",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "PackagesStack/PackagesQueue/PackagesStackPackagesTopic40590175/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SNS::Subscription",
+                      "aws:cdk:cloudformation:props": {
+                        "protocol": "sqs",
+                        "topicArn": {
+                          "Ref": "PackagesTopic109F6BD8"
+                        },
+                        "endpoint": {
+                          "Fn::GetAtt": [
+                            "PackagesQueue79A3C46F",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "PackagesTopic": {
+            "id": "PackagesTopic",
+            "path": "PackagesStack/PackagesTopic",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "PackagesStack/PackagesTopic/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SNS::Topic",
+                  "aws:cdk:cloudformation:props": {}
+                }
+              }
+            }
+          },
+          "lambda-a": {
+            "id": "lambda-a",
+            "path": "PackagesStack/lambda-a",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "PackagesStack/lambda-a/ServiceRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "PackagesStack/lambda-a/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "Code": {
+                "id": "Code",
+                "path": "PackagesStack/lambda-a/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "PackagesStack/lambda-a/Code/Stage"
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "PackagesStack/lambda-a/Code/AssetBucket"
+                  }
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "PackagesStack/lambda-a/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": {
+                        "Ref": "AssetParameters0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977S3BucketB3142974"
+                      },
+                      "s3Key": {
+                        "Fn::Join": [
+                          "",
+                          [
+                            {
+                              "Fn::Select": [
+                                0,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParameters0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977S3VersionKey285F4AE4"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Fn::Select": [
+                                1,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParameters0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977S3VersionKey285F4AE4"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        ]
+                      }
+                    },
+                    "handler": "index.handler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "lambdaaServiceRole9E3E4538",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "nodejs12.x",
+                    "functionName": "lambda-a",
+                    "memorySize": 256
+                  }
+                }
+              }
+            }
+          },
+          "AssetParameters": {
+            "id": "AssetParameters",
+            "path": "PackagesStack/AssetParameters",
+            "children": {
+              "0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977": {
+                "id": "0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977",
+                "path": "PackagesStack/AssetParameters/0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977",
+                "children": {
+                  "S3Bucket": {
+                    "id": "S3Bucket",
+                    "path": "PackagesStack/AssetParameters/0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977/S3Bucket"
+                  },
+                  "S3VersionKey": {
+                    "id": "S3VersionKey",
+                    "path": "PackagesStack/AssetParameters/0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977/S3VersionKey"
+                  },
+                  "ArtifactHash": {
+                    "id": "ArtifactHash",
+                    "path": "PackagesStack/AssetParameters/0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977/ArtifactHash"
+                  }
+                }
+              }
+            }
+          },
+          "lambda-b": {
+            "id": "lambda-b",
+            "path": "PackagesStack/lambda-b",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "PackagesStack/lambda-b/ServiceRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "PackagesStack/lambda-b/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "Code": {
+                "id": "Code",
+                "path": "PackagesStack/lambda-b/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "PackagesStack/lambda-b/Code/Stage"
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "PackagesStack/lambda-b/Code/AssetBucket"
+                  }
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "PackagesStack/lambda-b/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": {
+                        "Ref": "AssetParameters0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977S3BucketB3142974"
+                      },
+                      "s3Key": {
+                        "Fn::Join": [
+                          "",
+                          [
+                            {
+                              "Fn::Select": [
+                                0,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParameters0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977S3VersionKey285F4AE4"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Fn::Select": [
+                                1,
+                                {
+                                  "Fn::Split": [
+                                    "||",
+                                    {
+                                      "Ref": "AssetParameters0b27a9d9143ae6b51e8835cf8585cc0b55cee9b7b392dffe26c913c6e400e977S3VersionKey285F4AE4"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        ]
+                      }
+                    },
+                    "handler": "index.handler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "lambdabServiceRoleDCEB3C32",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "nodejs12.x",
+                    "functionName": "lambda-b",
+                    "memorySize": 256
+                  }
+                }
+              }
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "PackagesStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "PackagesStack/CDKMetadata/Default"
+              },
+              "Condition": {
+                "id": "Condition",
+                "path": "PackagesStack/CDKMetadata/Condition"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
