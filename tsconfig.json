@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.build.json",
+
+  "compilerOptions": {
+    "rootDir": "./",
+    "baseUrl": ".",
+    "paths": {
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "**/build",
+    "**/dist",
+    "**/node_modules",
+    "cdk.out",
+    "**/cdk.out"
+  ]
+}

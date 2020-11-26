@@ -1,34 +1,40 @@
 {
-  "name": "@danielblignaut/cdk-app",
-  "version": "0.1.0",
-  "bin": {
-    "packages": "bin/packages.js"
+  "name": "cdk-lerna-example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "danielblignaut",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/**",
+      "!packages/app/cdk.out/**"
+    ]
   },
   "scripts": {
-	"build": "tsc -p tsconfig.build.json && npx cdk synth",
-    "watch": "tsc -w -p tsconfig.build.json",
-    "test": "jest",
-    "cdk": "cdk",
-    "clean:light": "rm -rf ./dist && rm -rf tsconfig.build.tsbuildinfo",
-    "clean:full": "yarn run clean:light && rm -rf ./node_modules && rm -rf ./cdk.out"
+    "clean:light": "rm -rf ./tsconfig.build.tsbuildinfo && rm -rf ./dist",
+    "clean:full": "yarn run clean:light && rm -rf ./node_modules",
+    "test:watch": "node --expose-gc ./node_modules/.bin/jest --watch --debug --runInBand --colors",
+	"test": "node --expose-gc ./node_modules/.bin/jest --coverage --debug --runInBand --colors",
+	"start": "nodemon"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "1.70.0",
-    "@types/jest": "^26.0.10",
-    "@types/node": "10.17.27",
-    "aws-cdk": "1.70.0",
+    "@jest/reporters": "^26.4.1",
+    "@types/aws-lambda": "^8.10.59",
+    "@types/jest": "^26.0.13",
+    "@types/node": "^14.0.26",
+    "express": "^4.17.1",
     "jest": "^26.4.2",
-    "ts-jest": "^26.2.0",
-    "ts-node": "^8.1.0",
-    "typescript": "~3.9.7"
-  },
-  "dependencies": {
-    "@aws-cdk/aws-lambda": "1.70.0",
-    "@aws-cdk/aws-sns": "1.70.0",
-    "@aws-cdk/aws-sns-subscriptions": "1.70.0",
-    "@aws-cdk/aws-sqs": "1.70.0",
-    "@aws-cdk/core": "1.70.0",
-    "@danielblignaut/lambda-a": "^2.0.0",
-    "@danielblignaut/lambda-b": "^2.0.0"
+    "jest-watch-typeahead": "^0.6.1",
+    "lambda-local": "^1.7.4",
+    "lerna": "^3.20.2",
+    "nodemon": "^2.0.6",
+    "ts-jest": "^26.4.0",
+    "ts-loader": "^8.0.1",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.0.3",
+    "webpack": "^4.44.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-merge": "^5.0.9"
   }
 }
