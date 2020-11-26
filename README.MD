@@ -1,5 +1,9 @@
 # Lerna Monorepo CDK example
 
+## FIRST THINGS FIRST
+1. install lerna globally
+2. install cdk globally
+
 ## PROJECT STRUCTURE
 
 * packages/cdk-app contains normal cdk package which depends on our lambda packages
