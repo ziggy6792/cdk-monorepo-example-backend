@@ -55,8 +55,16 @@ async function getServer() {
   });
 }
 
-export function handler(event: any, ctx: any, callback: any): any {
-  getServer()
-    .then((server) => server.createHandler())
-    .then((handler) => handler(event, ctx, callback));
-}
+// export function handler(event: any, ctx: any, callback: any): any {
+//   getServer()
+//     .then((server) => server.createHandler())
+//     .then((handler) => handler(event, ctx, callback));
+// }
+
+export const handler = async (event: any): Promise<any> => {
+  try {
+    return getServer();
+  } catch (err) {
+    console.log('ERROR ', err);
+  }
+};
