@@ -46,6 +46,7 @@ export class PackagesStack extends cdk.Stack {
     const api = new apiGateway.LambdaRestApi(this, 'graphql-api', {
       handler: lambdaGqResolver,
     });
+    // api.
 
     const urlOutput = new cdk.CfnOutput(this, 'webservice-url', { description: 'webservice-url', value: api.url });
   }
