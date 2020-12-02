@@ -62,9 +62,19 @@ async function getServer() {
 // }
 
 export const handler = async (event: any): Promise<any> => {
+  console.log('EVENT');
+  console.log(JSON.stringify(event, null, 3));
   try {
     return getServer();
   } catch (err) {
     console.log('ERROR ', err);
+    return null;
   }
 };
+
+// export const handler = async (event: any): Promise<any> => {
+//   return {
+//     statusCode: 200,
+//     body: 'Hello from gq resolver',
+//   };
+// };
