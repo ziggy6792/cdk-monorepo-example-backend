@@ -1,8 +1,20 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import path from 'path';
 import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
+import schema from '../packages/lambda-gq-resolver/src/graph-ql/schema';
+// eslint-disable-next-line import/order
 import lambdaLocal = require('lambda-local');
 
 const app = express();
+
+// Setup local grapql server
+
+const apolloServer = new ApolloServer({ schema, introspection: true, playground: true });
+
+apolloServer.applyMiddleware({ app, path: '/lambda-gq-resolver/graphql' });
+
+// Setup gateway services
 
 app.use(express.text());
 

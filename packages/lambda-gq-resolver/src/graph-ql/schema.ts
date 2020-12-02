@@ -22,7 +22,7 @@ class HelloResolver {
   @Query((returns) => String)
   async hello() {
     console.log('Running hello resolver');
-    return 'Hello Worldy';
+    return 'Hello World';
   }
 }
 
