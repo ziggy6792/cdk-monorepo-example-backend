@@ -5,7 +5,7 @@
     "packages": "bin/packages.js"
   },
   "scripts": {
-	"build": "tsc -p tsconfig.build.json && npx cdk synth",
+    "build": "tsc -p tsconfig.build.json && npx cdk synth",
     "watch": "tsc -w -p tsconfig.build.json",
     "test": "jest",
     "cdk": "cdk",
@@ -29,6 +29,7 @@
     "@aws-cdk/aws-sqs": "1.70.0",
     "@aws-cdk/core": "1.70.0",
     "@danielblignaut/lambda-a": "^2.0.0",
-    "@danielblignaut/lambda-b": "^2.0.0"
+    "@danielblignaut/lambda-b": "^2.0.0",
+    "@danielblignaut/lambda-gq-resolver": "^2.0.0"
   }
 }
