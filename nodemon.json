@@ -2,5 +2,5 @@
   "watch": ["packages"],
   "ext": "ts,json",
   "ignore": ["**/*.test.ts"],
-  "exec": "lerna run build --scope @danielblignaut/common-lambda-lib & ts-node ./utils/lambda-server"
+  "exec": "ts-node ./utils/lambda-server"
 }
