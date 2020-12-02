@@ -4,18 +4,11 @@
 // /* eslint-disable import/prefer-default-export */
 
 import 'reflect-metadata';
-import { ApolloServer } from 'apollo-server-lambda';
 import { Resolver, Query, buildSchemaSync } from 'type-graphql';
 import { GraphQLSchema } from 'graphql';
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    interface Global {
-      schema: GraphQLSchema;
-    }
-  }
-}
+// eslint-disable-next-line import/no-mutable-exports
+let schema: GraphQLSchema;
 
 // declare var schema: GraphQLSchema
 @Resolver()
@@ -35,8 +28,4 @@ global.schema =
     resolvers: [HelloResolver],
   });
 
-const schema = global.schema as GraphQLSchema;
-
-const server = new ApolloServer({ schema, introspection: true, playground: true });
-
-exports.handler = server.createHandler();
+export default schema;
