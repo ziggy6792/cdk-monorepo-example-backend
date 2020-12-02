@@ -48,6 +48,7 @@ app.use('/lambda-gq-resolver', async (req, res) => {
     event: {
       headers: req.headers, // Pass on request headers
       body: req.body, // Pass on request body
+      httpMethod: req.method,
     },
   });
 
