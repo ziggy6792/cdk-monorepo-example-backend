@@ -7,6 +7,7 @@ import 'reflect-metadata';
 import AWS from 'aws-sdk';
 import { ApolloServer } from 'apollo-server-lambda';
 // import { APIGatewayProxyCallback, APIGatewayProxyEvent, Context as LambdaContext } from 'aws-lambda';
+import {} from 'type-graphql';
 import createSchema from './graph-ql/create-schema';
 import { REGION, TABLE_NAME_PREFIX } from './config/index';
 import { initMapper, initTables } from './util/mapper';

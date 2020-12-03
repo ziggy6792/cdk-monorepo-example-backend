@@ -8,7 +8,7 @@ import { Field, ID, ObjectType, Root } from 'type-graphql';
 @ObjectType()
 @table('User')
 class User {
-  @Field(() => ID)
+  @Field(() => ID, { nullable: true })
   @hashKey({ defaultProvider: () => uuidv4() })
   id: string;
 

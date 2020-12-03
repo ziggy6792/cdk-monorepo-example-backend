@@ -7,6 +7,7 @@ import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from 'type-graphq
 import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
 import { createUniqueCondition, mapper } from '../../util/mapper';
 import User from '../../domain-models/User';
+import { RegisterInput } from './register/RegisterInput';
 
 @Resolver()
 export default class RegisterResolver {
@@ -17,8 +18,10 @@ export default class RegisterResolver {
   }
 
   @Mutation(() => User)
-  async register(@Arg('firstName') firstName: string, @Arg('lastName') lastName: string, @Arg('email') email: string): Promise<User> {
+  async register(@Arg('input') input: RegisterInput): Promise<User> {
     // Create Simon
+    const { firstName, lastName, email } = input;
+
     const user = new User();
 
     user.firstName = firstName;

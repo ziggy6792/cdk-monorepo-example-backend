@@ -3,7 +3,10 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-    "composite": true
+    "composite": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": ["dom", "es6", "es2017", "esnext.asynciterable"]
   },
   "include": ["src/**/*"]
 }
