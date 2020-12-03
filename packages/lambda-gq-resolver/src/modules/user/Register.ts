@@ -25,9 +25,10 @@ export default class RegisterResolver {
     // Create Simon
     const user = new User();
 
-    user.firstName = 'Simon';
-    user.lastName = 'Verhoeven';
-    user.email = 'simonaverhoeven@gmail.com';
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.email = email;
+    user.generateId();
 
     await mapper.put(user);
 
