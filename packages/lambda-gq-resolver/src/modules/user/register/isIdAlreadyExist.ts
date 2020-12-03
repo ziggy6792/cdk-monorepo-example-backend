@@ -2,28 +2,30 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { registerDecorator, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import { mapper } from '../../../util/mapper';
 
 import User from '../../../domain-models/User';
 
 @ValidatorConstraint({ async: true })
-export class IsEmailAlreadyExistConstraint implements ValidatorConstraintInterface {
-  validate(email: string) {
-    // return User.findOne({ where: { email } }).then(user => {
-    //   if (user) return false;
-    //   return true;
-    // });
-    return false;
+export class IsIdAlreadyExistConstraint implements ValidatorConstraintInterface {
+  async validate(id: string) {
+    try {
+      await mapper.get(Object.assign(new User(), { id }));
+      return false;
+    } catch (err) {
+      return true;
+    }
   }
 }
 
-export function IsEmailAlreadyExist(validationOptions?: ValidationOptions) {
+export function IsIdAlreadyExist(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName,
       options: validationOptions,
       constraints: [],
-      validator: IsEmailAlreadyExistConstraint,
+      validator: IsIdAlreadyExistConstraint,
     });
   };
 }

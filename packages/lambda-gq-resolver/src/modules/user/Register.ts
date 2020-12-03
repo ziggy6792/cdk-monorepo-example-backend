@@ -20,14 +20,14 @@ export default class RegisterResolver {
   @Mutation(() => User)
   async register(@Arg('input') input: RegisterInput): Promise<User> {
     // Create Simon
-    const { firstName, lastName, email } = input;
+    const { id, firstName, lastName, email } = input;
 
     const user = new User();
 
+    user.id = id;
     user.firstName = firstName;
     user.lastName = lastName;
     user.email = email;
-    // user.generateId();
 
     const createdUser = await mapper.put(user, { condition: createUniqueCondition() });
 
