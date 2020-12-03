@@ -1,8 +1,9 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import { attribute, hashKey, table } from '@aws/dynamodb-data-mapper-annotations';
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType, Root } from 'type-graphql';
 
 @ObjectType()
 @table('User')
@@ -23,8 +24,13 @@ class User {
   @attribute({})
   lastName: string;
 
+  // @Field()
+  // fullName: string;
+
   @Field()
-  fullName: string;
+  fullName(@Root() parent: User): string {
+    return parent.getFullName();
+  }
 
   generateId(): string {
     this.id = this.getFullName().toLowerCase().replace(/\s/g, '-');
@@ -34,7 +40,7 @@ class User {
     return this.id;
   }
 
-  getFullName(): string {
+  private getFullName(): string {
     const { firstName, lastName } = this;
     return `${firstName}${lastName ? ` ${lastName}` : ''}`;
   }

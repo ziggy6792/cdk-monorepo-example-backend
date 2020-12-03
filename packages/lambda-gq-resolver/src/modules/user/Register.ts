@@ -8,17 +8,12 @@ import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
 import { createUniqueCondition, mapper } from '../../util/mapper';
 import User from '../../domain-models/User';
 
-@Resolver(User)
+@Resolver()
 export default class RegisterResolver {
   @Query(() => String)
   async hello(): Promise<string> {
     console.log('Running hello resolver');
     return 'Hello World';
-  }
-
-  @FieldResolver()
-  async fullName(@Root() parent: User): Promise<string> {
-    return parent.getFullName();
   }
 
   @Mutation(() => User)
@@ -29,10 +24,10 @@ export default class RegisterResolver {
     user.firstName = firstName;
     user.lastName = lastName;
     user.email = email;
-    user.generateId();
+    // user.generateId();
 
-    await mapper.put(user, { condition: createUniqueCondition() });
+    const createdUser = await mapper.put(user, { condition: createUniqueCondition() });
 
-    return user;
+    return createdUser;
   }
 }
