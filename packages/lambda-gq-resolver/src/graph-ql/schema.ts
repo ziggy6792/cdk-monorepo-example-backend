@@ -6,6 +6,7 @@
 import { GraphQLSchema } from 'graphql';
 import 'reflect-metadata';
 import { Resolver, Query, buildSchemaSync } from 'type-graphql';
+import RegisterResolver from '../modules/user/register';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -15,21 +16,11 @@ declare global {
     }
   }
 }
-@Resolver()
-class HelloResolver {
-  private recipesCollection: string[] = [];
-
-  @Query((returns) => String, { name: 'helloWorld' })
-  async hello() {
-    console.log('Running hello resolver');
-    return 'Hello World';
-  }
-}
 
 global.schema =
   global.schema ||
   buildSchemaSync({
-    resolvers: [HelloResolver],
+    resolvers: [RegisterResolver],
   });
 
 const { schema } = global;

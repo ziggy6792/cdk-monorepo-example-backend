@@ -2,35 +2,29 @@
 import { attribute, hashKey, table } from '@aws/dynamodb-data-mapper-annotations';
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
+import { Field, ID, ObjectType } from 'type-graphql';
 
+@ObjectType()
 @table('User')
 class User {
+  @Field(() => ID)
   @hashKey({ defaultProvider: () => uuidv4() })
   id: string;
 
+  @Field()
   @attribute()
   email: string;
 
-  @attribute()
-  phone: string;
-
-  @attribute()
-  telegramChatId: string;
-
-  @attribute()
-  priority: number;
-
+  @Field()
   @attribute()
   firstName: string;
 
+  @Field()
   @attribute()
   lastName: string;
 
-  @attribute()
-  isNotifyEnabled: boolean;
-
-  @attribute()
-  isBookEnabled: boolean;
+  @Field()
+  fullName: string;
 
   generateId(): string {
     this.id = this.getFullName().toLowerCase().replace(/\s/g, '-');
@@ -43,23 +37,6 @@ class User {
   getFullName(): string {
     const { firstName, lastName } = this;
     return `${firstName}${lastName ? ` ${lastName}` : ''}`;
-  }
-
-  toString(): string {
-    const fullName = this.getFullName();
-    const toStrList = [];
-    if (fullName) {
-      toStrList.push(fullName);
-    } else {
-      toStrList.push(this.id);
-    }
-    if (this.phone) {
-      toStrList.push(`(phone: ${this.phone}`);
-    }
-    if (this.telegramChatId) {
-      toStrList.push(`(telegram: ${this.telegramChatId})`);
-    }
-    return toStrList.join(' ');
   }
 }
 
