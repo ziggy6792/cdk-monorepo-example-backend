@@ -1,6 +1,7 @@
 /* eslint-disable prefer-const */
 import DynamoDB from 'aws-sdk/clients/dynamodb';
-import { DataMapper, ScanIterator } from '@aws/dynamodb-data-mapper';
+import { DataMapper } from '@aws/dynamodb-data-mapper';
+import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
 
 import User from '../domain-models/User';
 
@@ -24,14 +25,16 @@ export const initMapper = (REGION: string, TABLE_NAME_PREFIX: string): void => {
 
 export const initTables = async (): Promise<void> => {
   try {
-    const timeA = new Date().getTime();
     if (!isTablesInitialized) {
-      await mapper.ensureTableExists(User, CREATE_TABLE_ARGS);
+      // await mapper.ensureTableExists(User, { ...CREATE_TABLE_ARGS, indexOptions: { email: { projection: { readCapacityUnits: 5 } } } });
+      await mapper.ensureTableExists(User, { ...CREATE_TABLE_ARGS });
     }
-    const timeB = new Date().getTime();
     isTablesInitialized = true;
     // console.log(timeB - timeA);
   } catch (err) {
     console.log({ err });
   }
 };
+
+export const createUniqueCondition = (attributePath = 'id'): FunctionExpression =>
+  new FunctionExpression('attribute_not_exists', new AttributePath(attributePath));

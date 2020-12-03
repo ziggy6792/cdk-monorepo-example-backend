@@ -20,7 +20,7 @@ class User {
   firstName: string;
 
   @Field()
-  @attribute()
+  @attribute({})
   lastName: string;
 
   @Field()

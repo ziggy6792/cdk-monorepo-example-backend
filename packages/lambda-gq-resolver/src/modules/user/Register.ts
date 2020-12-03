@@ -4,7 +4,8 @@
 // /* eslint-disable import/prefer-default-export */
 
 import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from 'type-graphql';
-import { mapper } from '../../util/mapper';
+import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
+import { createUniqueCondition, mapper } from '../../util/mapper';
 import User from '../../domain-models/User';
 
 @Resolver(User)
@@ -30,7 +31,7 @@ export default class RegisterResolver {
     user.email = email;
     user.generateId();
 
-    await mapper.put(user);
+    await mapper.put(user, { condition: createUniqueCondition() });
 
     return user;
   }

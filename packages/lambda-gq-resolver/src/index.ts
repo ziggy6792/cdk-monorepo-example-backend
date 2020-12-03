@@ -6,14 +6,13 @@
 import 'reflect-metadata';
 import AWS from 'aws-sdk';
 import { ApolloServer } from 'apollo-server-lambda';
-import { APIGatewayProxyCallback, APIGatewayProxyEvent, Context as LambdaContext } from 'aws-lambda';
-// import serverParams from './graph-ql/server-params';
-import schema from './graph-ql/schema';
+// import { APIGatewayProxyCallback, APIGatewayProxyEvent, Context as LambdaContext } from 'aws-lambda';
+import createSchema from './graph-ql/create-schema';
 import { REGION, TABLE_NAME_PREFIX } from './config/index';
 import { initMapper, initTables } from './util/mapper';
 
 export const serverParams = {
-  schema,
+  schema: createSchema(),
   introspection: true,
   playground: true,
   context: async (): Promise<void> => {
