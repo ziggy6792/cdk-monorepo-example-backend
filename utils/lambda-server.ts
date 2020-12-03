@@ -2,7 +2,7 @@
 import path from 'path';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import schema from '../packages/lambda-gq-resolver/src/graph-ql/schema';
+import { serverParams, init as initGqServer } from '../packages/lambda-gq-resolver/src/index';
 // eslint-disable-next-line import/order
 import lambdaLocal = require('lambda-local');
 
@@ -10,7 +10,8 @@ const app = express();
 
 // Setup local grapql server
 
-const apolloServer = new ApolloServer({ schema, introspection: true, playground: true });
+const apolloServer = new ApolloServer(serverParams);
+initGqServer();
 
 apolloServer.applyMiddleware({ app, path: '/lambda-gq-resolver/graphql' });
 

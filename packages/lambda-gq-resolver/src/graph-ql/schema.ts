@@ -19,7 +19,7 @@ declare global {
 class HelloResolver {
   private recipesCollection: string[] = [];
 
-  @Query((returns) => String)
+  @Query((returns) => String, { name: 'helloWorld' })
   async hello() {
     console.log('Running hello resolver');
     return 'Hello World';
@@ -33,5 +33,15 @@ global.schema =
   });
 
 const { schema } = global;
+
+// const exported = {
+//   schema,
+//   introspection: true,
+//   playground: true,
+//   context: async () => {
+//     console.log('create');
+//     await initTables();
+//   },
+// };
 
 export default schema;
