@@ -1,0 +1,75 @@
+/* eslint-disable max-len */
+const mockGatewayEvent = (req) => {
+  return {
+    resource: '/{proxy+}',
+    path: '/graphql',
+    httpMethod: 'POST',
+    headers: req.headers,
+    multiValueHeaders: {
+      Accept: ['*/*'],
+      'Accept-Encoding': ['gzip, deflate'],
+      'Accept-Language': ['en-GB'],
+      'CloudFront-Forwarded-Proto': ['https'],
+      'CloudFront-Is-Desktop-Viewer': ['true'],
+      'CloudFront-Is-Mobile-Viewer': ['false'],
+      'CloudFront-Is-SmartTV-Viewer': ['false'],
+      'CloudFront-Is-Tablet-Viewer': ['false'],
+      'CloudFront-Viewer-Country': ['SG'],
+      'content-type': ['application/json'],
+      Host: ['p4m4l2aoq0.execute-api.ap-southeast-1.amazonaws.com'],
+      origin: ['null'],
+      'User-Agent': [
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) GraphQLPlayground/1.8.10 Chrome/61.0.3163.100 Electron/2.0.11 Safari/537.36',
+      ],
+      Via: ['2.0 f28347a3148f4f8fa1d930375689073d.cloudfront.net (CloudFront)'],
+      'X-Amz-Cf-Id': ['C6mB4NF6MVn_ICOXzakolMLfsyuRDmqWLz-Iso9w_lNKbN8IrrtJhg=='],
+      'X-Amzn-Trace-Id': ['Root=1-5fca8427-4df5ae2231e94bef38cdba28'],
+      'X-Forwarded-For': ['103.6.151.95, 70.132.3.147'],
+      'X-Forwarded-Port': ['443'],
+      'X-Forwarded-Proto': ['https'],
+    },
+    queryStringParameters: null,
+    multiValueQueryStringParameters: null,
+    pathParameters: {
+      proxy: 'graphql',
+    },
+    stageVariables: null,
+    requestContext: {
+      resourceId: '9kwukm',
+      resourcePath: '/{proxy+}',
+      httpMethod: 'POST',
+      extendedRequestId: 'XCmWNES_SQ0Fq0Q=',
+      requestTime: '04/Dec/2020:18:47:03 +0000',
+      path: '/prod/graphql',
+      accountId: '694710432912',
+      protocol: 'HTTP/1.1',
+      stage: 'prod',
+      domainPrefix: 'p4m4l2aoq0',
+      requestTimeEpoch: 1607107623687,
+      requestId: 'cd159558-cf5c-491f-8ecd-2d08250a6b57',
+      identity: {
+        cognitoIdentityPoolId: null,
+        accountId: null,
+        cognitoIdentityId: null,
+        caller: null,
+        sourceIp: '103.6.151.95',
+        principalOrgId: null,
+        accessKey: null,
+        cognitoAuthenticationType: null,
+        cognitoAuthenticationProvider: null,
+        userArn: null,
+        userAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) GraphQLPlayground/1.8.10 Chrome/61.0.3163.100 Electron/2.0.11 Safari/537.36',
+        user: null,
+      },
+      domainName: 'p4m4l2aoq0.execute-api.ap-southeast-1.amazonaws.com',
+      apiId: 'p4m4l2aoq0',
+    },
+    // body:
+    //   '{"operationName":null,"variables":{},"query":"mutation {\\n  register(input: {firstName: \\"simon\\", lastName: \\"bob\\", email: \\"bob@bob.com\\"}) {\\n    id\\n    firstName\\n    lastName\\n    email\\n    fullName\\n  }\\n}\\n"}',
+    body: 'some graphql',
+    isBase64Encoded: false,
+  };
+};
+
+export default mockGatewayEvent;

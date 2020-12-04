@@ -3,8 +3,9 @@
 // /* eslint-disable class-methods-use-this */
 // /* eslint-disable import/prefer-default-export */
 
-import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, FieldResolver, Root, Ctx } from 'type-graphql';
 import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
+import { MyContext } from '../../types/MyContext';
 import { createUniqueCondition, mapper } from '../../util/mapper';
 import User from '../../domain-models/User';
 import { RegisterInput } from './register/RegisterInput';
@@ -18,7 +19,7 @@ export default class RegisterResolver {
   }
 
   @Mutation(() => User)
-  async register(@Arg('input') input: RegisterInput): Promise<User> {
+  async register(@Arg('input') input: RegisterInput, @Ctx() ctx: MyContext): Promise<User> {
     // Create Simon
     const { id, firstName, lastName, email } = input;
 
@@ -30,6 +31,8 @@ export default class RegisterResolver {
     user.email = email;
 
     const createdUser = await mapper.put(user, { condition: createUniqueCondition() });
+
+    console.log('context', ctx);
 
     return createdUser;
   }

@@ -6,7 +6,7 @@ import { IsIdAlreadyExist } from './isIdAlreadyExist';
 @InputType()
 export class RegisterInput {
   @Field(() => ID, { nullable: true })
-  @IsIdAlreadyExist()
+  @IsIdAlreadyExist({ message: 'Id already in use' })
   id: string;
 
   @Field()
