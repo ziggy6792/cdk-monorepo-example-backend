@@ -14,7 +14,7 @@ import { REGION, TABLE_NAME_PREFIX } from './config/index';
 import { initMapper, initTables } from './util/mapper';
 import { MyContext } from './types/MyContext';
 
-export const serverParams = {
+export const createServerParams = () => ({
   schema: createSchema(),
   introspection: true,
   playground: true,
@@ -25,9 +25,9 @@ export const serverParams = {
     await initTables();
     return { event };
   },
-};
+});
 
-const server = new ApolloServer(serverParams);
+const server = new ApolloServer(createServerParams());
 
 const init = (): void => {
   AWS.config.update({ region: REGION });

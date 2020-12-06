@@ -3,7 +3,7 @@
 import path from 'path';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { serverParams } from '../packages/lambda-gq-resolver/src/index';
+import { createServerParams } from '../packages/lambda-gq-resolver/src/index';
 import mockGatewayEvent from './mock-gw-event';
 // eslint-disable-next-line import/order
 import lambdaLocal = require('lambda-local');
@@ -12,6 +12,8 @@ const app = express();
 
 // Setup local grapql server
 
+const serverParams = createServerParams();
+// Replace express request with mocked gateway request with headers copied over
 const copyFunc = serverParams.context.bind({});
 serverParams.context = (recieved) => {
   const { req } = (recieved as undefined) as { req: any };
