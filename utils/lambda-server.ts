@@ -76,5 +76,6 @@ app.use('/lambda-b', async (req, res) => {
 //     .set((result as any).headers)
 //     .end((result as any).body);
 // });
+const port = 3100;
 
-app.listen(3000, () => console.log('listening on port: 3000'));
+app.listen(port, () => console.log(`listening on port: ${port}`));
