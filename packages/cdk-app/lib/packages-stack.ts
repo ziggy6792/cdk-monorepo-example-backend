@@ -9,6 +9,7 @@ import path from 'path';
 import * as apiGateway from '@aws-cdk/aws-apigateway';
 import * as cognito from '@aws-cdk/aws-cognito';
 import { Duration } from '@aws-cdk/core';
+import { AccountRecovery } from '@aws-cdk/aws-cognito';
 
 export class PackagesStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -53,12 +54,35 @@ export class PackagesStack extends cdk.Stack {
 
     const pool = new cognito.UserPool(this, generateConstructId('user-pool'), {
       // ...
+      // selfSignUpEnabled: true,
+      // userVerification: {
+      //   emailSubject: 'Verify your email for our awesome app!',
+      //   emailBody: 'Hello {username}, Thanks for signing up to our awesome app! Your verification code is {####}',
+      //   emailStyle: cognito.VerificationEmailStyle.CODE,
+      //   smsMessage: 'Hello {username}, Thanks for signing up to our awesome app! Your verification code is {####}',
+      // },
+      // passwordPolicy: {
+      //   tempPasswordValidity: Duration.days(2),
+      //   minLength: 6,
+      //   requireDigits: false,
+      //   requireLowercase: false,
+      //   requireUppercase: false,
+      //   requireSymbols: false,
+      // },
+
+      userPoolName: generateConstructId('user-pool'),
       selfSignUpEnabled: true,
-      userVerification: {
-        emailSubject: 'Verify your email for our awesome app!',
-        emailBody: 'Hello {username}, Thanks for signing up to our awesome app! Your verification code is {####}',
-        emailStyle: cognito.VerificationEmailStyle.CODE,
-        smsMessage: 'Hello {username}, Thanks for signing up to our awesome app! Your verification code is {####}',
+      signInAliases: {
+        email: true,
+      },
+      autoVerify: {
+        email: true,
+      },
+      standardAttributes: {
+        email: {
+          required: true,
+          mutable: false,
+        },
       },
       passwordPolicy: {
         tempPasswordValidity: Duration.days(2),
@@ -68,11 +92,21 @@ export class PackagesStack extends cdk.Stack {
         requireUppercase: false,
         requireSymbols: false,
       },
+      accountRecovery: AccountRecovery.EMAIL_ONLY,
     });
 
     const client = pool.addClient('web-app-client');
 
-    const urlOutput = new cdk.CfnOutput(this, 'webservice-url', { description: 'webservice-url', value: api.url });
-    const clientId = new cdk.CfnOutput(this, 'web-app-client-id', { description: 'web-app-client-id', value: client.userPoolClientId });
+    // const urlOutput = new cdk.CfnOutput(this, 'graph-ql-endpoint', { description: 'graph-ql-endpoint', value: api.url });
+    // const userPoolId = new cdk.CfnOutput(this, 'user-pool-id', { description: 'user-pool-id', value: pool.userPoolId });
+    // const clientId = new cdk.CfnOutput(this, 'web-app-client-id', { description: 'web-app-client-id', value: client.userPoolClientId });
+    const clientConfig = new cdk.CfnOutput(this, 'client-config', {
+      description: 'client-config',
+      value: JSON.stringify({
+        API_URL: api.url,
+        USER_POOL_ID: pool.userPoolId,
+        WEB_APP_CLIENT_ID: client.userPoolClientId,
+      }),
+    });
   }
 }
