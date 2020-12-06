@@ -19,6 +19,7 @@ import createSchema from './graph-ql/create-schema';
 import { REGION, TABLE_NAME_PREFIX } from './config/index';
 import { initMapper, initTables } from './util/mapper';
 import { MyContext } from './types/MyContext';
+import verifyJwt from './util/verify-jwt';
 
 const jwk = {
   keys: [
@@ -54,17 +55,9 @@ export const createServerParams = () => ({
     const { authorization: token } = headers;
     console.log('recieved jwt', token);
 
-    let pem: string;
-    try {
-      pem = jwkToPem((jwk.keys[1] as unknown) as jwkToPem.JWK);
+    event.identity = verifyJwt(jwk, token);
 
-      const result = await jwt.verify(token, pem, { algorithms: ['RS256'] });
-
-      console.log('result', result);
-      event.identity = result;
-    } catch (err) {
-      console.log('ERROR', err);
-    }
+    console.log(event.identity);
 
     return { event };
   },
