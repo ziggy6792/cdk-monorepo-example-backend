@@ -5,44 +5,22 @@
 /* eslint-disable class-methods-use-this */
 // /* eslint-disable class-methods-use-this */
 // /* eslint-disable import/prefer-default-export */
+// import { APIGatewayProxyCallback, APIGatewayProxyEvent, Context as LambdaContext } from 'aws-lambda';
 
 import 'reflect-metadata';
 import AWS from 'aws-sdk';
 import { ApolloServer } from 'apollo-server-lambda';
-import { APIGatewayProxyCallback, APIGatewayProxyEvent, Context as LambdaContext } from 'aws-lambda';
 import {} from 'type-graphql';
 import { commonFunctionExample } from '@danielblignaut/common-lambda-lib/dist/utils';
-// import jwkToPem from 'jwk-to-pem';
-import jwt from 'jsonwebtoken';
-import jwkToPem from 'jwk-to-pem';
+
 import createSchema from './graph-ql/create-schema';
 import { REGION, TABLE_NAME_PREFIX } from './config/index';
-import { initMapper, initTables } from './util/mapper';
+import { initMapper } from './util/mapper';
 import { MyContext } from './types/MyContext';
-import verifyJwt from './util/verify-jwt';
+import verifyJwt, { IJwk } from './util/verify-jwt';
+import getJwk from './services/get-jwk';
 
-const jwk = {
-  keys: [
-    {
-      alg: 'RS256',
-      e: 'AQAB',
-      kid: 'eamLd81UUXdoC3snYyqnjvR11JYEq3uBKdtfaGRhmD0=',
-      kty: 'RSA',
-      n:
-        'kQ5jgUIq9Je0nzFDwmEGOIWhLWTMqiU1wbziSxqOURqLrFEoCGPDRSk8t4m7zlAT4zcRN9VubuuNKqVeD0Y2a_DcLCa-xiF2pfyBrsHoZE9cb3hWBn3In9WYU4xrZiBEWuBfEGKUapdeI-vwdnLqLbKra4Ssotp4t450d6tO2w_AzqozzUXRZ96KPcUpMR9iqxb-nGY74jXDA80o-2AzT01AR6eo_IzrXpU_uQbKuNSv4a72iF_5Ck-x5m2Y8TcV-HYwlBUzx3Tl9gT-yKgwl88eEwa3o2u2i4pL2PAibcgiL-m39hkBFp_j7_yNIgnQeyS7oIb2csdXPd8-z4pGlQ',
-      use: 'sig',
-    },
-    {
-      alg: 'RS256',
-      e: 'AQAB',
-      kid: 'JwH8cEb5sV/UHUayUKFMdTRAAlDv2QyeRQb19b/4m1s=',
-      kty: 'RSA',
-      n:
-        's_WtZzCNSo1xsWgWd8fR-sSvqZ5soA3F7_JShJN8qJ0ipBK7mCoApI7LUF6i5p1lMkISjlX6YVCT2vDjqSagyq2tpiDqeaoqpCpW_mqMcZoWyvEWjpXYnX4Huvb10Sz-rV9Xw4eRXTqvGYOAlLafwjNXlX3uHHFFgpHgGuB_WNvqGymvZLjgIM4SfTk_mNTIk5LtVTD-Q90xb_JPUvGLGQFvd_mevYwL-TgXQYKeon4vGLSC9xU4z_iGqE98PSZr-etHeCTHTykDFu7w_ta3EbomNNL53w0wXQs-E9reNMjaElSbKPfr85_Iiu-A7eeohK58LEuQBcY7BDIhB57rsQ',
-      use: 'sig',
-    },
-  ],
-};
+let jwk: IJwk;
 
 export const createServerParams = () => ({
   schema: createSchema(),
@@ -53,11 +31,13 @@ export const createServerParams = () => ({
     const { event } = recieved;
     const { headers } = event;
     const { authorization: token } = headers;
-    console.log('recieved jwt', token);
+    // console.log('recieved jwt', token);
+
+    jwk = jwk || (await getJwk('ap-southeast-1', 'ap-southeast-1_btGS9vGhJ'));
 
     event.identity = verifyJwt(jwk, token);
 
-    console.log(event.identity);
+    // console.log(event.identity);
 
     return { event };
   },
