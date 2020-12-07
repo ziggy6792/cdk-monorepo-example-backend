@@ -27,36 +27,38 @@ import verifyJwt, { ICognitoIdentity, IJwk } from './util/verify-jwt';
 
 let jwk: IJwk;
 
-export const createServerParams = () => ({
-  schema: createSchema(),
-  introspection: true,
-  playground: true,
-  context: async (recieved: any): Promise<MyContext> => {
-    console.log('recieved', util.inspect(recieved));
+export const createApolloServer = (): ApolloServer => {
+  return new ApolloServer({
+    schema: createSchema(),
+    introspection: true,
+    playground: true,
+    context: async (recieved: any): Promise<MyContext> => {
+      console.log('recieved', util.inspect(recieved));
 
-    const { req } = recieved;
-    const { headers } = req;
-    const jwtToken = headers.authorization;
+      const { req } = recieved;
+      const { headers } = req;
+      const jwtToken = headers.authorization;
 
-    console.log('token', jwtToken);
-    console.log('COGNITO_USER_POOL_ID', COGNITO_USER_POOL_ID);
-    console.log('REGION', REGION);
+      console.log('token', jwtToken);
+      console.log('COGNITO_USER_POOL_ID', COGNITO_USER_POOL_ID);
+      console.log('REGION', REGION);
 
-    let identity: ICognitoIdentity | null = null;
+      let identity: ICognitoIdentity | null = null;
 
-    if (jwtToken) {
-      jwk = jwk || (await getJwk(REGION, COGNITO_USER_POOL_ID));
-      identity = verifyJwt(jwk, jwtToken);
-    }
+      if (jwtToken) {
+        jwk = jwk || (await getJwk(REGION, COGNITO_USER_POOL_ID));
+        identity = verifyJwt(jwk, jwtToken);
+      }
 
-    return { req, identity };
-  },
-});
+      return { req, identity };
+    },
+  });
+};
 
 // Init
 AWS.config.update({ region: REGION });
 const app = Express();
-const apolloServer = new ApolloServer(createServerParams());
+const apolloServer = createApolloServer();
 apolloServer.applyMiddleware({ app });
 const server = serverless.createServer(app);
 commonFunctionExample();

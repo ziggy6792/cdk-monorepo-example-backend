@@ -3,7 +3,7 @@
 import path from 'path';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { createServerParams } from '../packages/lambda-gq-resolver/src/index';
+import { createApolloServer } from '../packages/lambda-gq-resolver/src/index';
 import mockGatewayEvent from './mock-gw-event';
 // eslint-disable-next-line import/order
 import lambdaLocal = require('lambda-local');
@@ -12,9 +12,7 @@ const app = express();
 
 // Setup local grapql server
 
-const serverParams = createServerParams();
-
-const apolloServer = new ApolloServer(serverParams);
+const apolloServer = createApolloServer();
 
 apolloServer.applyMiddleware({ app, path: '/lambda-gq-resolver/graphql' });
 
