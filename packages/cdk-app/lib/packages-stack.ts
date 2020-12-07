@@ -19,57 +19,7 @@ export class PackagesStack extends cdk.Stack {
       return `${id}-${constructId}`;
     };
 
-    const lambdaA = new lambda.Function(this, generateConstructId('lambda-a'), {
-      functionName: generateConstructId('lambda-a'),
-      description: generateConstructId('lambda-a'),
-      memorySize: 256,
-      runtime: lambda.Runtime.NODEJS_12_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-a'), '..')),
-    });
-
-    const lambdaB = new lambda.Function(this, generateConstructId('lambda-b'), {
-      functionName: generateConstructId('lambda-b'),
-      description: generateConstructId('lambda-b'),
-      memorySize: 256,
-      runtime: lambda.Runtime.NODEJS_12_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-b'), '..')),
-    });
-
-    const lambdaGqResolver = new lambda.Function(this, generateConstructId('lambda-gq-resolver'), {
-      functionName: generateConstructId('lambda-gq-resolver'),
-      description: generateConstructId('lambda-gq-resolver'),
-      memorySize: 256,
-      runtime: lambda.Runtime.NODEJS_12_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-gq-resolver'), '..')),
-    });
-
-    lambdaGqResolver.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
-
-    const api = new apiGateway.LambdaRestApi(this, generateConstructId('graphql-api'), {
-      handler: lambdaGqResolver,
-    });
-
     const pool = new cognito.UserPool(this, generateConstructId('user-pool'), {
-      // ...
-      // selfSignUpEnabled: true,
-      // userVerification: {
-      //   emailSubject: 'Verify your email for our awesome app!',
-      //   emailBody: 'Hello {username}, Thanks for signing up to our awesome app! Your verification code is {####}',
-      //   emailStyle: cognito.VerificationEmailStyle.CODE,
-      //   smsMessage: 'Hello {username}, Thanks for signing up to our awesome app! Your verification code is {####}',
-      // },
-      // passwordPolicy: {
-      //   tempPasswordValidity: Duration.days(2),
-      //   minLength: 6,
-      //   requireDigits: false,
-      //   requireLowercase: false,
-      //   requireUppercase: false,
-      //   requireSymbols: false,
-      // },
-
       userPoolName: generateConstructId('user-pool'),
       selfSignUpEnabled: true,
       signInAliases: {
@@ -97,16 +47,61 @@ export class PackagesStack extends cdk.Stack {
 
     const client = pool.addClient('web-app-client');
 
+    const lambdaA = new lambda.Function(this, generateConstructId('lambda-a'), {
+      functionName: generateConstructId('lambda-a'),
+      description: generateConstructId('lambda-a'),
+      memorySize: 256,
+      runtime: lambda.Runtime.NODEJS_12_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-a'), '..')),
+    });
+
+    const lambdaB = new lambda.Function(this, generateConstructId('lambda-b'), {
+      functionName: generateConstructId('lambda-b'),
+      description: generateConstructId('lambda-b'),
+      memorySize: 256,
+      runtime: lambda.Runtime.NODEJS_12_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-b'), '..')),
+    });
+
+    const lambdaGqResolverEnv = {
+      REGION: 'ap-southeast-1',
+      ENV: 'dev',
+      COGNITO_USER_POOL_ID: pool.userPoolId,
+    };
+
+    const lambdaGqResolver = new lambda.Function(this, generateConstructId('lambda-gq-resolver'), {
+      functionName: generateConstructId('lambda-gq-resolver'),
+      description: generateConstructId('lambda-gq-resolver'),
+      memorySize: 256,
+      runtime: lambda.Runtime.NODEJS_12_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-gq-resolver'), '..')),
+      environment: lambdaGqResolverEnv,
+    });
+
+    lambdaGqResolver.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
+
+    const api = new apiGateway.LambdaRestApi(this, generateConstructId('graphql-api'), {
+      handler: lambdaGqResolver,
+    });
+
     // const urlOutput = new cdk.CfnOutput(this, 'graph-ql-endpoint', { description: 'graph-ql-endpoint', value: api.url });
     // const userPoolId = new cdk.CfnOutput(this, 'user-pool-id', { description: 'user-pool-id', value: pool.userPoolId });
     // const clientId = new cdk.CfnOutput(this, 'web-app-client-id', { description: 'web-app-client-id', value: client.userPoolClientId });
     const clientConfig = new cdk.CfnOutput(this, 'client-config', {
       description: 'client-config',
       value: JSON.stringify({
-        API_URL: api.url,
+        API_URL: `${api.url}/graphql`,
         USER_POOL_ID: pool.userPoolId,
         WEB_APP_CLIENT_ID: client.userPoolClientId,
       }),
+    });
+
+    const localGqlServerEnv = new cdk.CfnOutput(this, 'local-gql-server-env', {
+      description: 'client-config',
+      value: JSON.stringify(lambdaGqResolverEnv),
     });
   }
 }
