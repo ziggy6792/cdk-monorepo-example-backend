@@ -5,5 +5,6 @@ export interface IEvent {
 }
 
 export interface MyContext {
-  event: IEvent;
+  req: any;
+  identity: ICognitoIdentity;
 }

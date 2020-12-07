@@ -13,12 +13,6 @@ const app = express();
 // Setup local grapql server
 
 const serverParams = createServerParams();
-// Replace express request with mocked gateway request with headers copied over
-const copyFunc = serverParams.context.bind({});
-serverParams.context = (recieved) => {
-  const { req } = (recieved as undefined) as { req: any };
-  return copyFunc({ event: mockGatewayEvent(req) });
-};
 
 const apolloServer = new ApolloServer(serverParams);
 

@@ -9,16 +9,21 @@
 
 import 'reflect-metadata';
 import AWS from 'aws-sdk';
-import { ApolloServer } from 'apollo-server-lambda';
+import { ApolloServer } from 'apollo-server-express';
+import * as serverless from 'aws-serverless-express';
+import Express from 'express';
 import {} from 'type-graphql';
 import { commonFunctionExample } from '@danielblignaut/common-lambda-lib/dist/utils';
 
+import * as util from 'util';
 import createSchema from './graph-ql/create-schema';
-import { REGION, TABLE_NAME_PREFIX } from './config/index';
+
 import { initMapper } from './util/mapper';
 import { MyContext } from './types/MyContext';
-import verifyJwt, { IJwk } from './util/verify-jwt';
+
 import getJwk from './services/get-jwk';
+import { COGNITO_USER_POOL_ID, REGION, TABLE_NAME_PREFIX } from './config/index';
+import verifyJwt, { ICognitoIdentity, IJwk } from './util/verify-jwt';
 
 let jwk: IJwk;
 
@@ -26,45 +31,37 @@ export const createServerParams = () => ({
   schema: createSchema(),
   introspection: true,
   playground: true,
-  context: async (recieved: { event: any }): Promise<MyContext> => {
-    // console.log('recieved bla', JSON.stringify(recieved));
-    const { event } = recieved;
-    const { headers } = event;
-    const { authorization: token } = headers;
-    // console.log('recieved jwt', token);
+  context: async (recieved: any): Promise<MyContext> => {
+    console.log('recieved', util.inspect(recieved));
 
-    jwk = jwk || (await getJwk('ap-southeast-1', 'ap-southeast-1_btGS9vGhJ'));
+    const { req } = recieved;
+    const { headers } = req;
+    const jwtToken = headers.authorization;
 
-    event.identity = verifyJwt(jwk, token);
+    console.log('token', jwtToken);
+    console.log('COGNITO_USER_POOL_ID', COGNITO_USER_POOL_ID);
+    console.log('REGION', REGION);
 
-    // console.log(event.identity);
+    let identity: ICognitoIdentity | null = null;
 
-    return { event };
+    if (jwtToken) {
+      jwk = jwk || (await getJwk(REGION, COGNITO_USER_POOL_ID));
+      identity = verifyJwt(jwk, jwtToken);
+    }
+
+    return { req, identity };
   },
 });
 
-const server = new ApolloServer(createServerParams());
+// Init
+AWS.config.update({ region: REGION });
+const app = Express();
+const apolloServer = new ApolloServer(createServerParams());
+apolloServer.applyMiddleware({ app });
+const server = serverless.createServer(app);
+commonFunctionExample();
+initMapper(REGION, TABLE_NAME_PREFIX);
 
-const init = (): void => {
-  AWS.config.update({ region: REGION });
-  commonFunctionExample();
-  initMapper(REGION, TABLE_NAME_PREFIX);
+export const handler = (event, context) => {
+  return serverless.proxy(server, event, context);
 };
-
-init();
-
-export const handler = server.createHandler();
-
-// export const handler = async (event: APIGatewayProxyEvent, context: LambdaContext, callback: APIGatewayProxyCallback) => {
-//   // return apolloServerHandler(event, context, callback);
-//   console.log('event', JSON.stringify(event));
-//   console.log('*******');
-//   console.log('context', JSON.stringify(context));
-
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify({
-//       success: commonFunctionExample(),
-//     }),
-//   };
-// };

@@ -14,7 +14,7 @@ import { RegisterInput } from './register/RegisterInput';
 export default class RegisterResolver {
   @Query(() => String)
   async hello(@Ctx() ctx: MyContext): Promise<string> {
-    console.log('identity', ctx.event.identity);
+    console.log('identity', ctx.identity);
 
     console.log('Running hello resolver');
     return 'Hello World';
@@ -22,7 +22,7 @@ export default class RegisterResolver {
 
   @Mutation(() => User)
   async register(@Arg('input') input: RegisterInput, @Ctx() ctx: MyContext): Promise<User> {
-    console.log('identity', ctx.event.identity);
+    console.log('identity', ctx.identity);
 
     const { id, firstName, lastName, email } = input;
 
