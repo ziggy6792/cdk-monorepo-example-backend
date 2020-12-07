@@ -9,7 +9,7 @@ import path from 'path';
 import * as apiGateway from '@aws-cdk/aws-apigateway';
 import * as cognito from '@aws-cdk/aws-cognito';
 import { Duration } from '@aws-cdk/core';
-import { AccountRecovery } from '@aws-cdk/aws-cognito';
+import { AccountRecovery, CfnUserPoolGroup, StringAttribute } from '@aws-cdk/aws-cognito';
 
 export class PackagesStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -34,6 +34,9 @@ export class PackagesStack extends cdk.Stack {
           mutable: false,
         },
       },
+      customAttributes: {
+        signUpAttributes: new StringAttribute({ minLen: 1, maxLen: 2048, mutable: true }),
+      },
       passwordPolicy: {
         tempPasswordValidity: Duration.days(2),
         minLength: 6,
@@ -43,6 +46,16 @@ export class PackagesStack extends cdk.Stack {
         requireSymbols: false,
       },
       accountRecovery: AccountRecovery.EMAIL_ONLY,
+    });
+
+    const adminGroup = new CfnUserPoolGroup(this, 'AdminsGroup', {
+      groupName: 'user',
+      userPoolId: pool.userPoolId,
+    });
+
+    const userGroup = new CfnUserPoolGroup(this, 'UsersGroup', {
+      groupName: 'administrator',
+      userPoolId: pool.userPoolId,
     });
 
     const client = pool.addClient('web-app-client');
