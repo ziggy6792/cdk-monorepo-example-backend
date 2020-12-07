@@ -12,7 +12,6 @@ import AWS from 'aws-sdk';
 import { ApolloServer } from 'apollo-server-express';
 import * as serverless from 'aws-serverless-express';
 import Express from 'express';
-import {} from 'type-graphql';
 import { commonFunctionExample } from '@danielblignaut/common-lambda-lib/dist/utils';
 
 import * as util from 'util';
