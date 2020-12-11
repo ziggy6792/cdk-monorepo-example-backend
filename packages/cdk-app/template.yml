@@ -1,0 +1,593 @@
+Resources:
+  CDKMonoRepouserpool22E19282:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      AutoVerifiedAttributes:
+        - email
+      EmailVerificationMessage: The verification code to your new account is {####}
+      EmailVerificationSubject: Verify your new account
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 6
+          RequireLowercase: false
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: false
+          TemporaryPasswordValidityDays: 2
+      Schema:
+        - Mutable: false
+          Name: email
+          Required: true
+        - AttributeDataType: String
+          Mutable: true
+          Name: signUpAttributes
+          StringAttributeConstraints:
+            MaxLength: "2048"
+            MinLength: "1"
+      SmsVerificationMessage: The verification code to your new account is {####}
+      UsernameAttributes:
+        - email
+      UserPoolName: CDK-MonoRepo-user-pool
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_CODE
+        EmailMessage: The verification code to your new account is {####}
+        EmailSubject: Verify your new account
+        SmsMessage: The verification code to your new account is {####}
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-user-pool/Resource
+  CDKMonoRepouserpoolwebappclient22EED26E:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId:
+        Ref: CDKMonoRepouserpool22E19282
+      AllowedOAuthFlows:
+        - implicit
+        - code
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - profile
+        - phone
+        - email
+        - openid
+        - aws.cognito.signin.user.admin
+      CallbackURLs:
+        - https://example.com
+      SupportedIdentityProviders:
+        - COGNITO
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-user-pool/web-app-client/Resource
+  AdminsGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId:
+        Ref: CDKMonoRepouserpool22E19282
+      GroupName: user
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/AdminsGroup
+  UsersGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId:
+        Ref: CDKMonoRepouserpool22E19282
+      GroupName: administrator
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/UsersGroup
+  CDKMonoRepolambdagqresolverServiceRoleEAD2F059:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/AmazonDynamoDBFullAccess
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-lambda-gq-resolver/ServiceRole/Resource
+  CDKMonoRepolambdagqresolver264C2A11:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters8606a539469ee9609ef433135deb9af6d50a9019c0945ed3a25338eb06ba679fS3BucketA8FCC058
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters8606a539469ee9609ef433135deb9af6d50a9019c0945ed3a25338eb06ba679fS3VersionKey1D37EAD2
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters8606a539469ee9609ef433135deb9af6d50a9019c0945ed3a25338eb06ba679fS3VersionKey1D37EAD2
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+          - CDKMonoRepolambdagqresolverServiceRoleEAD2F059
+          - Arn
+      Runtime: nodejs12.x
+      Description: CDK-MonoRepo-lambda-gq-resolver
+      Environment:
+        Variables:
+          REGION: ap-southeast-1
+          ENV: dev
+          COGNITO_USER_POOL_ID:
+            Ref: CDKMonoRepouserpool22E19282
+      FunctionName: CDK-MonoRepo-lambda-gq-resolver
+      MemorySize: 256
+    DependsOn:
+      - CDKMonoRepolambdagqresolverServiceRoleEAD2F059
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-lambda-gq-resolver/Resource
+      aws:asset:path: /Users/sive/Documents/Training/serverless/cdk-monorepo-example/packages/lambda-gq-resolver/dist
+      aws:asset:property: Code
+  CDKMonoRepographqlapi8B1A1B83:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Description: CDK-MonoRepo-graphql-api
+      Name: Rest-Name
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Resource
+  CDKMonoRepographqlapiCloudWatchRoleCA6B5002:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/CloudWatchRole/Resource
+  CDKMonoRepographqlapiAccount8688A138:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn:
+        Fn::GetAtt:
+          - CDKMonoRepographqlapiCloudWatchRoleCA6B5002
+          - Arn
+    DependsOn:
+      - CDKMonoRepographqlapi8B1A1B83
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Account
+  CDKMonoRepographqlapiDeployment324BE60340c60cdf5546c99f5dd60712d8380ca0:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId:
+        Ref: CDKMonoRepographqlapi8B1A1B83
+      Description: Automatically created by the RestApi construct
+    DependsOn:
+      - CDKMonoRepographqlapiproxyANY2BBC70A7
+      - CDKMonoRepographqlapiproxyOPTIONS1643B1CC
+      - CDKMonoRepographqlapiproxyPOST5D61EABC
+      - CDKMonoRepographqlapiproxyC9584AD9
+      - CDKMonoRepographqlapiANY74838E4D
+      - CDKMonoRepographqlapiOPTIONS048CB12C
+      - CDKMonoRepographqlapiPOSTDDDD86A9
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Deployment/Resource
+  CDKMonoRepographqlapiDeploymentStageprodA4B8F423:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId:
+        Ref: CDKMonoRepographqlapi8B1A1B83
+      DeploymentId:
+        Ref: CDKMonoRepographqlapiDeployment324BE60340c60cdf5546c99f5dd60712d8380ca0
+      StageName: prod
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/DeploymentStage.prod/Resource
+  CDKMonoRepographqlapiOPTIONS048CB12C:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId:
+        Fn::GetAtt:
+          - CDKMonoRepographqlapi8B1A1B83
+          - RootResourceId
+      RestApiId:
+        Ref: CDKMonoRepographqlapi8B1A1B83
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,X-Amz-Security-Token,Authorization,X-Api-Key,X-Requested-With,Accept,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Default/OPTIONS/Resource
+  CDKMonoRepographqlapiproxyC9584AD9:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - CDKMonoRepographqlapi8B1A1B83
+          - RootResourceId
+      PathPart: "{proxy+}"
+      RestApiId:
+        Ref: CDKMonoRepographqlapi8B1A1B83
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Default/{proxy+}/Resource
+  CDKMonoRepographqlapiproxyOPTIONS1643B1CC:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId:
+        Ref: CDKMonoRepographqlapiproxyC9584AD9
+      RestApiId:
+        Ref: CDKMonoRepographqlapi8B1A1B83
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,X-Amz-Security-Token,Authorization,X-Api-Key,X-Requested-With,Accept,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Default/{proxy+}/OPTIONS/Resource
+  CDKMonoRepographqlapiproxyANY2BBC70A7:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: ANY
+      ResourceId:
+        Ref: CDKMonoRepographqlapiproxyC9584AD9
+      RestApiId:
+        Ref: CDKMonoRepographqlapi8B1A1B83
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Default/{proxy+}/ANY/Resource
+  CDKMonoRepographqlapiproxyPOSTApiPermissionCDKMonoRepoCDKMonoRepographqlapi2C84F741POSTproxy73CDCC27:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepolambdagqresolver264C2A11
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepographqlapi8B1A1B83
+            - /
+            - Ref: CDKMonoRepographqlapiDeploymentStageprodA4B8F423
+            - /POST/*
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Default/{proxy+}/POST/ApiPermission.CDKMonoRepoCDKMonoRepographqlapi2C84F741.POST..{proxy+}
+  CDKMonoRepographqlapiproxyPOSTApiPermissionTestCDKMonoRepoCDKMonoRepographqlapi2C84F741POSTproxy32407776:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepolambdagqresolver264C2A11
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepographqlapi8B1A1B83
+            - /test-invoke-stage/POST/*
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Default/{proxy+}/POST/ApiPermission.Test.CDKMonoRepoCDKMonoRepographqlapi2C84F741.POST..{proxy+}
+  CDKMonoRepographqlapiproxyPOST5D61EABC:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId:
+        Ref: CDKMonoRepographqlapiproxyC9584AD9
+      RestApiId:
+        Ref: CDKMonoRepographqlapi8B1A1B83
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId:
+        Ref: APIGatewayAuthorizer
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - CDKMonoRepolambdagqresolver264C2A11
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Default/{proxy+}/POST/Resource
+  CDKMonoRepographqlapiANY74838E4D:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: ANY
+      ResourceId:
+        Fn::GetAtt:
+          - CDKMonoRepographqlapi8B1A1B83
+          - RootResourceId
+      RestApiId:
+        Ref: CDKMonoRepographqlapi8B1A1B83
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Default/ANY/Resource
+  CDKMonoRepographqlapiPOSTApiPermissionCDKMonoRepoCDKMonoRepographqlapi2C84F741POSTC93D8A0E:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepolambdagqresolver264C2A11
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepographqlapi8B1A1B83
+            - /
+            - Ref: CDKMonoRepographqlapiDeploymentStageprodA4B8F423
+            - /POST/
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Default/POST/ApiPermission.CDKMonoRepoCDKMonoRepographqlapi2C84F741.POST..
+  CDKMonoRepographqlapiPOSTApiPermissionTestCDKMonoRepoCDKMonoRepographqlapi2C84F741POST5DDB380A:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepolambdagqresolver264C2A11
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepographqlapi8B1A1B83
+            - /test-invoke-stage/POST/
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Default/POST/ApiPermission.Test.CDKMonoRepoCDKMonoRepographqlapi2C84F741.POST..
+  CDKMonoRepographqlapiPOSTDDDD86A9:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId:
+        Fn::GetAtt:
+          - CDKMonoRepographqlapi8B1A1B83
+          - RootResourceId
+      RestApiId:
+        Ref: CDKMonoRepographqlapi8B1A1B83
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId:
+        Ref: APIGatewayAuthorizer
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - CDKMonoRepolambdagqresolver264C2A11
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDK-MonoRepo-graphql-api/Default/POST/Resource
+  APIGatewayAuthorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      RestApiId:
+        Ref: CDKMonoRepographqlapi8B1A1B83
+      Type: COGNITO_USER_POOLS
+      IdentitySource: method.request.header.Authorization
+      Name: customer-authorizer
+      ProviderARNs:
+        - Fn::Join:
+            - ""
+            - - arn:aws:cognito-idp:ap-southeast-1:694710432912:userpool/
+              - Ref: CDKMonoRepouserpool22E19282
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/APIGatewayAuthorizer
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=1.75.0,@aws-cdk/assets=1.76.0,@aws-cdk/aws-apigateway=1.76.0,@aws-cdk/aws-applicationautoscaling=1.76.0,@aws-cdk/aws-autoscaling-common=1.76.0,@aws-cdk/aws-cloudwatch=1.76.0,@aws-cdk/aws-codeguruprofiler=1.76.0,@aws-cdk/aws-cognito=1.76.0,@aws-cdk/aws-ec2=1.76.0,@aws-cdk/aws-ecr=1.76.0,@aws-cdk/aws-ecr-assets=1.76.0,@aws-cdk/aws-events=1.76.0,@aws-cdk/aws-iam=1.76.0,@aws-cdk/aws-kms=1.76.0,@aws-cdk/aws-lambda=1.76.0,@aws-cdk/aws-logs=1.76.0,@aws-cdk/aws-s3=1.76.0,@aws-cdk/aws-s3-assets=1.76.0,@aws-cdk/aws-sqs=1.76.0,@aws-cdk/aws-ssm=1.76.0,@aws-cdk/cloud-assembly-schema=1.76.0,@aws-cdk/core=1.76.0,@aws-cdk/custom-resources=1.76.0,@aws-cdk/cx-api=1.76.0,@aws-cdk/region-info=1.76.0,jsii-runtime=node.js/v14.14.0
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Parameters:
+  AssetParameters8606a539469ee9609ef433135deb9af6d50a9019c0945ed3a25338eb06ba679fS3BucketA8FCC058:
+    Type: String
+    Description: S3 bucket for asset "8606a539469ee9609ef433135deb9af6d50a9019c0945ed3a25338eb06ba679f"
+  AssetParameters8606a539469ee9609ef433135deb9af6d50a9019c0945ed3a25338eb06ba679fS3VersionKey1D37EAD2:
+    Type: String
+    Description: S3 key for asset version "8606a539469ee9609ef433135deb9af6d50a9019c0945ed3a25338eb06ba679f"
+  AssetParameters8606a539469ee9609ef433135deb9af6d50a9019c0945ed3a25338eb06ba679fArtifactHash0474DF7B:
+    Type: String
+    Description: Artifact hash for asset "8606a539469ee9609ef433135deb9af6d50a9019c0945ed3a25338eb06ba679f"
+Outputs:
+  CDKMonoRepographqlapiEndpoint05E104B6:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: CDKMonoRepographqlapi8B1A1B83
+          - .execute-api.
+          - Ref: AWS::Region
+          - "."
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: CDKMonoRepographqlapiDeploymentStageprodA4B8F423
+          - /
+  clientconfig:
+    Description: client-config
+    Value:
+      Fn::Join:
+        - ""
+        - - '{"API_URL":"https://'
+          - Ref: CDKMonoRepographqlapi8B1A1B83
+          - .execute-api.
+          - Ref: AWS::Region
+          - "."
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: CDKMonoRepographqlapiDeploymentStageprodA4B8F423
+          - //graphql","USER_POOL_ID":"
+          - Ref: CDKMonoRepouserpool22E19282
+          - '","WEB_APP_CLIENT_ID":"'
+          - Ref: CDKMonoRepouserpoolwebappclient22EED26E
+          - '"}'
+  localgqlserverenv:
+    Description: client-config
+    Value:
+      Fn::Join:
+        - ""
+        - - '{"REGION":"ap-southeast-1","ENV":"dev","COGNITO_USER_POOL_ID":"'
+          - Ref: CDKMonoRepouserpool22E19282
+          - '"}'
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-2
+

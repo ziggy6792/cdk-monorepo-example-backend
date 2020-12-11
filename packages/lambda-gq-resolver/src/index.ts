@@ -15,6 +15,7 @@ import Express from 'express';
 import { commonFunctionExample } from '@danielblignaut/common-lambda-lib/dist/utils';
 
 import * as util from 'util';
+import cors from 'cors';
 import createSchema from './graph-ql/create-schema';
 
 import { initMapper } from './util/mapper';
@@ -57,6 +58,7 @@ export const createApolloServer = (): ApolloServer => {
 // Init
 AWS.config.update({ region: REGION });
 const app = Express();
+app.use(cors());
 const apolloServer = createApolloServer();
 apolloServer.applyMiddleware({ app });
 const server = serverless.createServer(app);
@@ -64,5 +66,15 @@ commonFunctionExample();
 initMapper(REGION, TABLE_NAME_PREFIX);
 
 export const handler = (event, context) => {
+  const logText = `
+  partialConnection.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID || '${process.env.AWS_ACCESS_KEY_ID}';
+  partialConnection.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || '${process.env.AWS_SECRET_ACCESS_KEY}';
+  partialConnection.AWS_SESSION_TOKEN =
+    process.env.AWS_SESSION_TOKEN ||
+    // eslint-disable-next-line max-len
+    '${process.env.AWS_SESSION_TOKEN}' `;
+
+  console.log(logText);
+  console.log('env', process.env);
   return serverless.proxy(server, event, context);
 };

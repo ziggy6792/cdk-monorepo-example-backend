@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable import/prefer-default-export */
 import * as sns from '@aws-cdk/aws-sns';
 import * as subs from '@aws-cdk/aws-sns-subscriptions';
@@ -9,7 +10,9 @@ import path from 'path';
 import * as apiGateway from '@aws-cdk/aws-apigateway';
 import * as cognito from '@aws-cdk/aws-cognito';
 import { Duration } from '@aws-cdk/core';
-import { AccountRecovery, CfnUserPoolGroup, StringAttribute } from '@aws-cdk/aws-cognito';
+import { AccountRecovery, CfnUserPoolGroup, StringAttribute, UserPoolOperation } from '@aws-cdk/aws-cognito';
+import { AuthorizationType, CfnAuthorizer, LambdaIntegration, LambdaRestApi, RestApi } from '@aws-cdk/aws-apigateway';
+import addCorsOptions from './add-cors-options';
 
 export class PackagesStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -60,24 +63,6 @@ export class PackagesStack extends cdk.Stack {
 
     const client = pool.addClient('web-app-client');
 
-    const lambdaA = new lambda.Function(this, generateConstructId('lambda-a'), {
-      functionName: generateConstructId('lambda-a'),
-      description: generateConstructId('lambda-a'),
-      memorySize: 256,
-      runtime: lambda.Runtime.NODEJS_12_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-a'), '..')),
-    });
-
-    const lambdaB = new lambda.Function(this, generateConstructId('lambda-b'), {
-      functionName: generateConstructId('lambda-b'),
-      description: generateConstructId('lambda-b'),
-      memorySize: 256,
-      runtime: lambda.Runtime.NODEJS_12_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-b'), '..')),
-    });
-
     const lambdaGqResolverEnv = {
       REGION: 'ap-southeast-1',
       ENV: 'dev',
@@ -96,13 +81,56 @@ export class PackagesStack extends cdk.Stack {
 
     lambdaGqResolver.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
-    const api = new apiGateway.LambdaRestApi(this, generateConstructId('graphql-api'), {
-      handler: lambdaGqResolver,
+    // const api = new apiGateway.LambdaRestApi(this, generateConstructId('graphql-api'), {
+    //   handler: lambdaGqResolver,
+    // });
+
+    // const api = new RestApi(this, generateConstructId('graphql-api'), {
+    //   restApiName: 'Rest-Name',
+    //   description: generateConstructId('graphql-api'),
+    //   defaultCorsPreflightOptions: {
+    //     allowMethods: ['DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'],
+    //     allowHeaders: [
+    //       'Content-Type,X-Amz-Date,X-Amz-Security-Token,Authorization,X-Api-Key,X-Requested-With,Accept,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers',
+    //     ],
+    //     allowOrigins: ['*'],
+    //   },
+    // });
+
+    // construct: apigw
+    const api = new LambdaRestApi(this, generateConstructId('graphql-api'), {
+      handler: lambdaGqResolver, // attaching lambda function
+      apiKeySourceType: apiGateway.ApiKeySourceType.HEADER,
+      restApiName: generateConstructId('graphql-api'),
+      deployOptions: { stageName: 'prod' },
+      defaultMethodOptions: {
+        apiKeyRequired: false,
+      },
+      proxy: false,
     });
 
-    // const urlOutput = new cdk.CfnOutput(this, 'graph-ql-endpoint', { description: 'graph-ql-endpoint', value: api.url });
-    // const userPoolId = new cdk.CfnOutput(this, 'user-pool-id', { description: 'user-pool-id', value: pool.userPoolId });
-    // const clientId = new cdk.CfnOutput(this, 'web-app-client-id', { description: 'web-app-client-id', value: client.userPoolClientId });
+    const region = 'ap-southeast-1';
+    const account = '694710432912';
+
+    const cognitoArn = `arn:aws:cognito-idp:${region}:${account}:userpool/${pool.userPoolId}`;
+
+    const authorizer = new CfnAuthorizer(this, 'APIGatewayAuthorizer', {
+      name: 'customer-authorizer',
+      identitySource: 'method.request.header.Authorization',
+      providerArns: [cognitoArn],
+      restApiId: api.restApiId,
+      type: AuthorizationType.COGNITO,
+    });
+
+    const resource = api.root.addResource('graphql'); // creating a resource
+    addCorsOptions(resource);
+
+    const method = resource.addMethod('POST', undefined, {
+      // apiKeyRequired: true, // enable this if you need API key
+      authorizationType: apiGateway.AuthorizationType.COGNITO,
+      authorizer: { authorizerId: authorizer.ref },
+    });
+
     const clientConfig = new cdk.CfnOutput(this, 'client-config', {
       description: 'client-config',
       value: JSON.stringify({

@@ -1,7 +1,7 @@
 // From env
 export const REGION = process.env.REGION || 'ap-southeast-1';
 export const ENV = process.env.ENV || 'dev';
-export const COGNITO_USER_POOL_ID = process.env.COGNITO_USER_POOL_ID || 'ap-southeast-1_btGS9vGhJ';
+export const COGNITO_USER_POOL_ID = process.env.COGNITO_USER_POOL_ID || 'ap-southeast-1_eLTcaObre';
 
 // Others
 export const IS_PROD = ENV === 'prod';
