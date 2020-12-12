@@ -1,19 +1,11 @@
 /* eslint-disable max-len */
 /* eslint-disable import/prefer-default-export */
-import * as sns from '@aws-cdk/aws-sns';
-import * as subs from '@aws-cdk/aws-sns-subscriptions';
-import * as sqs from '@aws-cdk/aws-sqs';
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as iam from '@aws-cdk/aws-iam';
-import path from 'path';
-import * as apiGateway from '@aws-cdk/aws-apigateway';
 import * as cognito from '@aws-cdk/aws-cognito';
-import { Duration } from '@aws-cdk/core';
-import { AccountRecovery, CfnUserPoolGroup, StringAttribute, UserPoolOperation } from '@aws-cdk/aws-cognito';
-import { AuthorizationType, CfnAuthorizer, LambdaIntegration, LambdaRestApi, RestApi } from '@aws-cdk/aws-apigateway';
+import path from 'path';
 import { MultiAuthApiGatewayLambda } from '../constructs/multi-auth-apigateway-lambda';
-import addCorsOptions from './add-cors-options';
 
 export class PackagesStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -25,13 +17,20 @@ export class PackagesStack extends cdk.Stack {
       return `${id}-${constructId}`;
     };
 
+    const lambdaGqResolverEnv = {
+      REGION,
+      ENV: 'dev',
+    };
+
     const apiConstruct = new MultiAuthApiGatewayLambda(this, generateConstructId('api'), {
       lambdaFunctionProps: {
-        code: lambda.Code.fromAsset('lambda/api-caller'),
-        functionName: generateConstructId('api-caller'),
-        description: generateConstructId('api-caller'),
-        handler: 'index.handler',
+        functionName: generateConstructId('lambda-gq-resolver'),
+        description: generateConstructId('lambda-gq-resolver'),
+        memorySize: 256,
         runtime: lambda.Runtime.NODEJS_12_X,
+        handler: 'index.handler',
+        code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-gq-resolver'), '..')),
+        environment: lambdaGqResolverEnv,
       },
       apiGatewayProps: {
         restApiName: generateConstructId('api'),
@@ -93,51 +92,23 @@ export class PackagesStack extends cdk.Stack {
     });
 
     // defaults.printWarning(construct.apiGateway.restApiId);
+    const { externalResource, internalResource, unprotectedResource } = apiConstruct;
 
-    const externalProxy = apiConstruct.externalResource.addProxy();
-    externalProxy.addMethod('GET');
-    externalProxy.addMethod('POST');
+    const resorces = [externalResource, internalResource, unprotectedResource];
 
-    const internalProxy = apiConstruct.internalResource.addProxy();
-    internalProxy.addMethod('GET');
-    internalProxy.addMethod('POST');
-
-    const unprotectedProxy = apiConstruct.unprotectedResource.addProxy();
-    unprotectedProxy.addMethod('GET');
-    unprotectedProxy.addMethod('POST');
+    resorces.forEach((resorce) => {
+      const graphqlResource = resorce.addResource('graphql');
+      graphqlResource.addMethod('GET');
+      graphqlResource.addMethod('POST');
+    });
 
     // apiCallerHandler!.role!.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
 
     apiConstruct.addAuthorizers();
 
-    const lambdaGqResolverEnv = {
-      REGION,
-      ENV: 'dev',
-    };
-
-    const lambdaGqResolver = new lambda.Function(this, generateConstructId('lambda-gq-resolver'), {
-      functionName: generateConstructId('lambda-gq-resolver'),
-      description: generateConstructId('lambda-gq-resolver'),
-      memorySize: 256,
-      runtime: lambda.Runtime.NODEJS_12_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-gq-resolver'), '..')),
-      environment: lambdaGqResolverEnv,
-    });
-
-    lambdaGqResolver.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
+    apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
     // construct: apigw
-    const api = new LambdaRestApi(this, generateConstructId('graphql-api'), {
-      handler: lambdaGqResolver, // attaching lambda function
-      apiKeySourceType: apiGateway.ApiKeySourceType.HEADER,
-      restApiName: generateConstructId('graphql-api'),
-      deployOptions: { stageName: 'prod' },
-      defaultMethodOptions: {
-        apiKeyRequired: false,
-      },
-      proxy: false,
-    });
 
     const removeTralingSlash = (url: string) => url.replace(/\/$/, '');
 
@@ -147,20 +118,10 @@ export class PackagesStack extends cdk.Stack {
       WEB_APP_CLIENT_ID: client.userPoolClientId,
     };
 
-    const clientConfigOutput = new cdk.CfnOutput(this, 'client-config', {
-      description: 'client-config',
-      value: JSON.stringify(clientConfig),
-    });
-
     const localLambdaServerConfig = {
       REGION,
       ENV: 'dev',
       COGNITO_USER_POOL_ID: apiConstruct.userPool.userPoolId,
     };
-
-    const localGqlServerEnv = new cdk.CfnOutput(this, 'local-gql-server-env', {
-      description: 'lambda-server-config',
-      value: JSON.stringify(localLambdaServerConfig),
-    });
   }
 }

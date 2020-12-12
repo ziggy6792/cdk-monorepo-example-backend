@@ -6,5 +6,5 @@ export interface IEvent {
 
 export interface MyContext {
   req: any;
-  identity: ICognitoIdentity;
+  identity: ICognitoIdentity | null;
 }

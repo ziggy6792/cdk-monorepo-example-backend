@@ -58,7 +58,7 @@ export interface MultiAuthApiGatewayLambdaProps {
 enum RESOURCE_TYPE {
   'INERNAL' = 'internal',
   'EXTERNAL' = 'external',
-  'UNPROTECTED' = 'unprotetected',
+  'UNPROTECTED' = 'unprotected',
 }
 
 export class MultiAuthApiGatewayLambda extends Construct {

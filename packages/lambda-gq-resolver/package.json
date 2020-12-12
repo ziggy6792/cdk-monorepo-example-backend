@@ -10,6 +10,7 @@
     "clean:full": "yarn run clean:light && rm -rf ./node_modules"
   },
   "dependencies": {
+    "@aws-solutions-constructs/core": "^1.75.0",
     "@aws/dynamodb-data-mapper": "^0.7.3",
     "@aws/dynamodb-data-mapper-annotations": "^0.7.3",
     "@aws/dynamodb-expressions": "^0.7.3",
