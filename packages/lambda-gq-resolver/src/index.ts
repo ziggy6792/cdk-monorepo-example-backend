@@ -49,7 +49,7 @@ export const createApolloServer = (): ApolloServer => {
       //   jwk = jwk || (await getJwk(REGION, COGNITO_USER_POOL_ID));
       //   identity = verifyJwt(jwk, jwtToken);
       // }
-      res.header('Access-Control-Allow-Origin', '*');
+      // res.header('Access-Control-Allow-Origin', '*');
 
       return { req, identity: null };
     },
