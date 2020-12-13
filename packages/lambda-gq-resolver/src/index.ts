@@ -35,7 +35,7 @@ export const createApolloServer = (): ApolloServer => {
     context: async (recieved: any): Promise<MyContext> => {
       console.log('recieved', util.inspect(recieved));
 
-      const { req } = recieved;
+      const { req, res } = recieved;
       // const { headers } = req;
       // const jwtToken = headers.authorization;
 
@@ -49,6 +49,7 @@ export const createApolloServer = (): ApolloServer => {
       //   jwk = jwk || (await getJwk(REGION, COGNITO_USER_POOL_ID));
       //   identity = verifyJwt(jwk, jwtToken);
       // }
+      res.header('Access-Control-Allow-Origin', '*');
 
       return { req, identity: null };
     },
@@ -58,9 +59,16 @@ export const createApolloServer = (): ApolloServer => {
 // Init
 AWS.config.update({ region: REGION });
 const app = Express();
-app.use(cors());
+app.use(cors({ allowedHeaders: '*', origin: '*', methods: '*' }));
 const apolloServer = createApolloServer();
 apolloServer.applyMiddleware({ app });
+
+// origin?: boolean | string | RegExp | (string | RegExp)[] | CustomOrigin;
+//         /**
+//          * @default 'GET,HEAD,PUT,PATCH,POST,DELETE'
+//          */
+//         methods?: string | string[];
+//         allowedHeaders?: string | string[];
 
 apolloServer.applyMiddleware({ app, path: '/graphql' });
 apolloServer.applyMiddleware({ app, path: '/internal/graphql' });

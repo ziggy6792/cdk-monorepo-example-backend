@@ -97,9 +97,12 @@ export class PackagesStack extends cdk.Stack {
     const resorces = [externalResource, internalResource, unprotectedResource];
 
     resorces.forEach((resorce) => {
-      const graphqlResource = resorce.addResource('graphql');
-      graphqlResource.addMethod('GET');
-      graphqlResource.addMethod('POST');
+      // const graphqlResource = resorce.addResource('graphql');
+      const proxy = resorce.addProxy();
+      proxy.addMethod('GET');
+      proxy.addMethod('POST');
+      // graphqlResource.addMethod('GET');
+      // graphqlResource.addMethod('POST');
     });
 
     // apiCallerHandler!.role!.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
@@ -123,5 +126,15 @@ export class PackagesStack extends cdk.Stack {
       ENV: 'dev',
       COGNITO_USER_POOL_ID: apiConstruct.userPool.userPoolId,
     };
+
+    const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'local-lambda-config', {
+      description: 'local-lambda-config',
+      value: JSON.stringify(localLambdaServerConfig),
+    });
+
+    const clientConfigOutput = new cdk.CfnOutput(this, 'client-config', {
+      description: 'client-config',
+      value: JSON.stringify(clientConfig),
+    });
   }
 }
