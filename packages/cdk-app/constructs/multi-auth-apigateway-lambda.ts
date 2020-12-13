@@ -18,6 +18,7 @@ import { LogGroup } from '@aws-cdk/aws-logs';
 import * as iam from '@aws-cdk/aws-iam';
 import * as defaults from '@aws-solutions-constructs/core';
 import { Construct } from '@aws-cdk/core';
+import { OAuthScope } from '@aws-cdk/aws-cognito';
 
 /**
  * @summary The properties for the MultiAuthApiGatewayLambda Construct
@@ -53,6 +54,7 @@ export interface MultiAuthApiGatewayLambdaProps {
    * @default - Default props are used
    */
   readonly cognitoUserPoolClientProps?: cognito.UserPoolClientProps | any;
+  readonly scopes?: OAuthScope[];
 }
 
 enum RESOURCE_TYPE {
@@ -73,6 +75,7 @@ export class MultiAuthApiGatewayLambda extends Construct {
   public readonly externalResource: api.Resource;
   public readonly internalResource: api.Resource;
   public readonly unprotectedResource: api.Resource;
+  private readonly scopes: OAuthScope[];
 
   /**
    * @summary Constructs a new instance of the MultiAuthApiGatewayLambda class.
@@ -104,6 +107,8 @@ export class MultiAuthApiGatewayLambda extends Construct {
     this.externalResource = this.apiGateway.root.addResource(RESOURCE_TYPE.EXTERNAL);
     this.internalResource = this.apiGateway.root.addResource(RESOURCE_TYPE.INERNAL);
     this.unprotectedResource = this.apiGateway.root.addResource(RESOURCE_TYPE.UNPROTECTED);
+
+    this.scopes = props.scopes;
   }
 
   public addAuthorizers() {
@@ -125,12 +130,19 @@ export class MultiAuthApiGatewayLambda extends Construct {
 
   private addCognitoAuthorizer(apiMethod: api.Method) {
     // Leave the authorizer NONE for HTTP OPTIONS method to support CORS, for the rest set it to COGNITO
+
     const child = apiMethod.node.findChild('Resource') as api.CfnMethod;
     if (apiMethod.httpMethod === 'OPTIONS') {
       child.addPropertyOverride('AuthorizationType', api.AuthorizationType.NONE);
     } else {
       child.addPropertyOverride('AuthorizationType', api.AuthorizationType.COGNITO);
       child.addPropertyOverride('AuthorizerId', { Ref: this.apiGatewayAuthorizer.logicalId });
+      if (this.scopes) {
+        child.addPropertyOverride(
+          'AuthorizationScopes',
+          this.scopes.map((scope) => scope.scopeName)
+        );
+      }
     }
   }
 

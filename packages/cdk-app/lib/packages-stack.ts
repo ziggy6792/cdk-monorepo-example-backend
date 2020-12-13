@@ -72,6 +72,7 @@ export class PackagesStack extends cdk.Stack {
         },
         accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
       },
+      scopes,
     });
 
     const client = apiConstruct.userPool.addClient(generateConstructId('client'), {
