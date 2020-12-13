@@ -70,10 +70,12 @@ apolloServer.applyMiddleware({ app });
 //         methods?: string | string[];
 //         allowedHeaders?: string | string[];
 
-apolloServer.applyMiddleware({ app, path: '/graphql' });
-apolloServer.applyMiddleware({ app, path: '/internal/graphql' });
-apolloServer.applyMiddleware({ app, path: '/external/graphql' });
-apolloServer.applyMiddleware({ app, path: '/unprotected/graphql' });
+// apolloServer.applyMiddleware({ app, path: '/graphql' });
+// apolloServer.applyMiddleware({ app, path: '/internal/graphql' });
+// apolloServer.applyMiddleware({ app, path: '/external/graphql' });
+// apolloServer.applyMiddleware({ app, path: '/unprotected/graphql' });
+
+apolloServer.applyMiddleware({ app, path: '*' });
 
 const server = serverless.createServer(app);
 commonFunctionExample();

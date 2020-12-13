@@ -12,6 +12,7 @@ export class PackagesStack extends cdk.Stack {
     super(scope, id, props);
 
     const REGION = 'ap-southeast-1';
+    const scopes = [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PHONE, cognito.OAuthScope.COGNITO_ADMIN];
 
     const generateConstructId = (constructId: string): string => {
       return `${id}-${constructId}`;
@@ -77,7 +78,7 @@ export class PackagesStack extends cdk.Stack {
       userPoolClientName: generateConstructId('client'),
       oAuth: {
         flows: { authorizationCodeGrant: true, implicitCodeGrant: true },
-        scopes: [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PHONE, cognito.OAuthScope.COGNITO_ADMIN],
+        scopes,
         callbackUrls: ['http://localhost:3000/'],
         logoutUrls: ['http://localhost:3000/'],
       },
@@ -97,12 +98,12 @@ export class PackagesStack extends cdk.Stack {
     const resorces = [externalResource, internalResource, unprotectedResource];
 
     resorces.forEach((resorce) => {
-      // const graphqlResource = resorce.addResource('graphql');
-      const proxy = resorce.addProxy();
-      proxy.addMethod('GET');
-      proxy.addMethod('POST');
-      // graphqlResource.addMethod('GET');
-      // graphqlResource.addMethod('POST');
+      // const proxy = resorce.addProxy();
+      // proxy.addMethod('GET');
+      // proxy.addMethod('POST');
+      const graphqlResource = resorce.addResource('graphql');
+      graphqlResource.addMethod('GET');
+      graphqlResource.addMethod('POST');
     });
 
     // apiCallerHandler!.role!.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
