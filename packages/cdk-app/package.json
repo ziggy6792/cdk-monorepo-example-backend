@@ -34,6 +34,7 @@
     "@aws-solutions-constructs/core": "^1.75.0",
     "@danielblignaut/lambda-a": "^2.0.0",
     "@danielblignaut/lambda-b": "^2.0.0",
-    "@danielblignaut/lambda-gq-resolver": "^2.0.0"
+    "@danielblignaut/lambda-gq-resolver": "^2.0.0",
+    "@danielblignaut/lambda-user-confirmed": "^2.0.0"
   }
 }

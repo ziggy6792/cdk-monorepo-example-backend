@@ -37,6 +37,23 @@ app.use('/lambda-a', async (req, res) => {
     .end((result as any).body);
 });
 
+app.use('/lambda-user-confirmed', async (req, res) => {
+  const result = await lambdaLocal.execute({
+    lambdaPath: path.join(__dirname, '../packages/lambda-user-confirmed/src/index'),
+    lambdaHandler: 'handler',
+    envfile: path.join(__dirname, '.env-lambda'),
+    event: {
+      headers: req.headers, // Pass on request headers
+      body: req.body, // Pass on request body
+    },
+  });
+
+  res
+    .status((result as any).statusCode)
+    .set((result as any).headers)
+    .end((result as any).body);
+});
+
 app.use('/lambda-b', async (req, res) => {
   const result = await lambdaLocal.execute({
     lambdaPath: path.join(__dirname, '../packages/lambda-b/src/index'),

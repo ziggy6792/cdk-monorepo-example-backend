@@ -99,17 +99,22 @@ export class PackagesStack extends cdk.Stack {
     const resorces = [externalResource, internalResource, unprotectedResource];
 
     resorces.forEach((resorce) => {
-      // const proxy = resorce.addProxy();
-      // proxy.addMethod('GET');
-      // proxy.addMethod('POST');
       const graphqlResource = resorce.addResource('graphql');
       graphqlResource.addMethod('GET');
       graphqlResource.addMethod('POST');
     });
-
-    // apiCallerHandler!.role!.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
-
     apiConstruct.addAuthorizers();
+
+    const lambdaUserConfirmed = new lambda.Function(this, generateConstructId('lambda-user-confirmed'), {
+      functionName: generateConstructId('lambda-user-confirmed'),
+      description: generateConstructId('lambda-user-confirmed'),
+      memorySize: 256,
+      runtime: lambda.Runtime.NODEJS_12_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-user-confirmed'), '..')),
+    });
+
+    lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
 
     apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
