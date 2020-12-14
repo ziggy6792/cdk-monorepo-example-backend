@@ -63,18 +63,6 @@ app.use(cors({ allowedHeaders: '*', origin: '*', methods: '*' }));
 const apolloServer = createApolloServer();
 apolloServer.applyMiddleware({ app });
 
-// origin?: boolean | string | RegExp | (string | RegExp)[] | CustomOrigin;
-//         /**
-//          * @default 'GET,HEAD,PUT,PATCH,POST,DELETE'
-//          */
-//         methods?: string | string[];
-//         allowedHeaders?: string | string[];
-
-// apolloServer.applyMiddleware({ app, path: '/graphql' });
-// apolloServer.applyMiddleware({ app, path: '/internal/graphql' });
-// apolloServer.applyMiddleware({ app, path: '/external/graphql' });
-// apolloServer.applyMiddleware({ app, path: '/unprotected/graphql' });
-
 apolloServer.applyMiddleware({ app, path: '*' });
 
 const server = serverless.createServer(app);
