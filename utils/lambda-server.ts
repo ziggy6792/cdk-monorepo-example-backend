@@ -3,7 +3,7 @@
 import path from 'path';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { createServerParams } from '../packages/lambda-gq-resolver/src/index';
+import { createApolloServer } from '../packages/lambda-gq-resolver/src/index';
 import mockGatewayEvent from './mock-gw-event';
 // eslint-disable-next-line import/order
 import lambdaLocal = require('lambda-local');
@@ -12,15 +12,7 @@ const app = express();
 
 // Setup local grapql server
 
-const serverParams = createServerParams();
-// Replace express request with mocked gateway request with headers copied over
-const copyFunc = serverParams.context.bind({});
-serverParams.context = (recieved) => {
-  const { req } = (recieved as undefined) as { req: any };
-  return copyFunc({ event: mockGatewayEvent(req) });
-};
-
-const apolloServer = new ApolloServer(serverParams);
+const apolloServer = createApolloServer();
 
 apolloServer.applyMiddleware({ app, path: '/lambda-gq-resolver/graphql' });
 
@@ -76,5 +68,6 @@ app.use('/lambda-b', async (req, res) => {
 //     .set((result as any).headers)
 //     .end((result as any).body);
 // });
+const port = 3100;
 
-app.listen(3000, () => console.log('listening on port: 3000'));
+app.listen(port, () => console.log(`listening on port: ${port}`));

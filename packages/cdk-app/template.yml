@@ -1,0 +1,1177 @@
+Resources:
+  CDKMonoRepo2apiLambdaFunctionServiceRole90EA63CB:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/AmazonDynamoDBFullAccess
+      Policies:
+        - PolicyDocument:
+            Statement:
+              - Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Effect: Allow
+                Resource:
+                  Fn::Join:
+                    - ""
+                    - - "arn:"
+                      - Ref: AWS::Partition
+                      - ":logs:"
+                      - Ref: AWS::Region
+                      - ":"
+                      - Ref: AWS::AccountId
+                      - :log-group:/aws/lambda/*
+            Version: "2012-10-17"
+          PolicyName: LambdaFunctionServiceRolePolicy
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaFunctionServiceRole/Resource
+  CDKMonoRepo2apiLambdaFunctionServiceRoleDefaultPolicyB235A360:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - xray:PutTraceSegments
+              - xray:PutTelemetryRecords
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: CDKMonoRepo2apiLambdaFunctionServiceRoleDefaultPolicyB235A360
+      Roles:
+        - Ref: CDKMonoRepo2apiLambdaFunctionServiceRole90EA63CB
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W12
+            reason: Lambda needs the following minimum required permissions to send trace data to X-Ray and access ENIs in a VPC.
+  CDKMonoRepo2apiLambdaFunction3A0E57C3:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01S3BucketBDBB3198
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01S3VersionKey9717C40C
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01S3VersionKey9717C40C
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunctionServiceRole90EA63CB
+          - Arn
+      Runtime: nodejs12.x
+      Description: CDK-MonoRepo2-lambda-gq-resolver
+      Environment:
+        Variables:
+          REGION: ap-southeast-1
+          ENV: dev
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      FunctionName: CDK-MonoRepo2-lambda-gq-resolver
+      MemorySize: 256
+      TracingConfig:
+        Mode: Active
+    DependsOn:
+      - CDKMonoRepo2apiLambdaFunctionServiceRoleDefaultPolicyB235A360
+      - CDKMonoRepo2apiLambdaFunctionServiceRole90EA63CB
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: Lambda functions has the required permission to write CloudWatch Logs. It uses custom policy instead of arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole with more tighter permissions.
+  CDKMonoRepo2apiApiAccessLogGroupB7D431BC:
+    Type: AWS::Logs::LogGroup
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/ApiAccessLogGroup/Resource
+  CDKMonoRepo2apiLambdaRestApiE70B2EB5:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Description: CDK-MonoRepo2-api
+      EndpointConfiguration:
+        Types:
+          - EDGE
+      Name: CDK-MonoRepo2-api
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Resource
+  CDKMonoRepo2apiLambdaRestApiDeploymentD9B8DD04090231af699a72cddd3db6051293a572:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      Description: Automatically created by the RestApi construct
+    DependsOn:
+      - CDKMonoRepo2apiLambdaRestApiexternalgraphqlGET7EA34506
+      - CDKMonoRepo2apiLambdaRestApiexternalgraphqlOPTIONS5024374F
+      - CDKMonoRepo2apiLambdaRestApiexternalgraphqlPOSTB59AF12B
+      - CDKMonoRepo2apiLambdaRestApiexternalgraphqlD5297803
+      - CDKMonoRepo2apiLambdaRestApiexternalOPTIONSB97516C6
+      - CDKMonoRepo2apiLambdaRestApiexternalB9AA1BE5
+      - CDKMonoRepo2apiLambdaRestApiinternalgraphqlGET30F5EF2F
+      - CDKMonoRepo2apiLambdaRestApiinternalgraphqlOPTIONS7E4C75F5
+      - CDKMonoRepo2apiLambdaRestApiinternalgraphqlPOST2491F36D
+      - CDKMonoRepo2apiLambdaRestApiinternalgraphql536788FE
+      - CDKMonoRepo2apiLambdaRestApiinternalOPTIONS141CFB5F
+      - CDKMonoRepo2apiLambdaRestApiinternalD1FED74B
+      - CDKMonoRepo2apiLambdaRestApiOPTIONS4A1DCBE6
+      - CDKMonoRepo2apiLambdaRestApiunprotectedgraphqlGETB914723B
+      - CDKMonoRepo2apiLambdaRestApiunprotectedgraphqlOPTIONS65736B04
+      - CDKMonoRepo2apiLambdaRestApiunprotectedgraphqlPOST9C88FC3D
+      - CDKMonoRepo2apiLambdaRestApiunprotectedgraphql249FA33D
+      - CDKMonoRepo2apiLambdaRestApiunprotectedOPTIONSB99498A5
+      - CDKMonoRepo2apiLambdaRestApiunprotectedE4F2B1C0
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W45
+            reason: ApiGateway has AccessLogging enabled in AWS::ApiGateway::Stage resource, but cfn_nag checkes for it in AWS::ApiGateway::Deployment resource
+  CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AccessLogSetting:
+        DestinationArn:
+          Fn::GetAtt:
+            - CDKMonoRepo2apiApiAccessLogGroupB7D431BC
+            - Arn
+        Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","user":"$context.identity.user","caller":"$context.identity.caller","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","resourcePath":"$context.resourcePath","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength"}'
+      DeploymentId:
+        Ref: CDKMonoRepo2apiLambdaRestApiDeploymentD9B8DD04090231af699a72cddd3db6051293a572
+      MethodSettings:
+        - DataTraceEnabled: true
+          HttpMethod: "*"
+          LoggingLevel: INFO
+          ResourcePath: /*
+      StageName: dev
+      TracingEnabled: true
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/DeploymentStage.dev/Resource
+  CDKMonoRepo2apiLambdaRestApiOPTIONS4A1DCBE6:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaRestApiE70B2EB5
+          - RootResourceId
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/OPTIONS/Resource
+  CDKMonoRepo2apiLambdaRestApiexternalB9AA1BE5:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaRestApiE70B2EB5
+          - RootResourceId
+      PathPart: external
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/external/Resource
+  CDKMonoRepo2apiLambdaRestApiexternalOPTIONSB97516C6:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiexternalB9AA1BE5
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/external/OPTIONS/Resource
+  CDKMonoRepo2apiLambdaRestApiexternalgraphqlD5297803:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: CDKMonoRepo2apiLambdaRestApiexternalB9AA1BE5
+      PathPart: graphql
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/external/graphql/Resource
+  CDKMonoRepo2apiLambdaRestApiexternalgraphqlOPTIONS5024374F:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiexternalgraphqlD5297803
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/external/graphql/OPTIONS/Resource
+  CDKMonoRepo2apiLambdaRestApiexternalgraphqlGETApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETexternalgraphqlF761E0DA:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /
+            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
+            - /GET/external/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/external/graphql/GET/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..external.graphql
+  CDKMonoRepo2apiLambdaRestApiexternalgraphqlGETApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETexternalgraphql05BBCAD1:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /test-invoke-stage/GET/external/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/external/graphql/GET/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..external.graphql
+  CDKMonoRepo2apiLambdaRestApiexternalgraphqlGET7EA34506:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiexternalgraphqlD5297803
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationScopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: phone
+        - scopeName: aws.cognito.signin.user.admin
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId:
+        Ref: CDKMonoRepo2apiCognitoAuthorizer4A252582
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/external/graphql/GET/Resource
+  CDKMonoRepo2apiLambdaRestApiexternalgraphqlPOSTApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTexternalgraphql9073FF26:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /
+            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
+            - /POST/external/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/external/graphql/POST/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..external.graphql
+  CDKMonoRepo2apiLambdaRestApiexternalgraphqlPOSTApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTexternalgraphql7B8B6FD6:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /test-invoke-stage/POST/external/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/external/graphql/POST/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..external.graphql
+  CDKMonoRepo2apiLambdaRestApiexternalgraphqlPOSTB59AF12B:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiexternalgraphqlD5297803
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationScopes:
+        - scopeName: openid
+        - scopeName: email
+        - scopeName: phone
+        - scopeName: aws.cognito.signin.user.admin
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId:
+        Ref: CDKMonoRepo2apiCognitoAuthorizer4A252582
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/external/graphql/POST/Resource
+  CDKMonoRepo2apiLambdaRestApiinternalD1FED74B:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaRestApiE70B2EB5
+          - RootResourceId
+      PathPart: internal
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/internal/Resource
+  CDKMonoRepo2apiLambdaRestApiinternalOPTIONS141CFB5F:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiinternalD1FED74B
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/internal/OPTIONS/Resource
+  CDKMonoRepo2apiLambdaRestApiinternalgraphql536788FE:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: CDKMonoRepo2apiLambdaRestApiinternalD1FED74B
+      PathPart: graphql
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/internal/graphql/Resource
+  CDKMonoRepo2apiLambdaRestApiinternalgraphqlOPTIONS7E4C75F5:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiinternalgraphql536788FE
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/internal/graphql/OPTIONS/Resource
+  CDKMonoRepo2apiLambdaRestApiinternalgraphqlGETApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETinternalgraphql2FEAF0AC:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /
+            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
+            - /GET/internal/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/internal/graphql/GET/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..internal.graphql
+  CDKMonoRepo2apiLambdaRestApiinternalgraphqlGETApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETinternalgraphqlDB4CDC68:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /test-invoke-stage/GET/internal/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/internal/graphql/GET/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..internal.graphql
+  CDKMonoRepo2apiLambdaRestApiinternalgraphqlGET30F5EF2F:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiinternalgraphql536788FE
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationType: AWS_IAM
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/internal/graphql/GET/Resource
+  CDKMonoRepo2apiLambdaRestApiinternalgraphqlPOSTApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTinternalgraphql21EF1FB8:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /
+            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
+            - /POST/internal/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/internal/graphql/POST/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..internal.graphql
+  CDKMonoRepo2apiLambdaRestApiinternalgraphqlPOSTApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTinternalgraphql37938B1C:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /test-invoke-stage/POST/internal/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/internal/graphql/POST/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..internal.graphql
+  CDKMonoRepo2apiLambdaRestApiinternalgraphqlPOST2491F36D:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiinternalgraphql536788FE
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationType: AWS_IAM
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/internal/graphql/POST/Resource
+  CDKMonoRepo2apiLambdaRestApiunprotectedE4F2B1C0:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaRestApiE70B2EB5
+          - RootResourceId
+      PathPart: unprotected
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/unprotected/Resource
+  CDKMonoRepo2apiLambdaRestApiunprotectedOPTIONSB99498A5:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiunprotectedE4F2B1C0
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/unprotected/OPTIONS/Resource
+  CDKMonoRepo2apiLambdaRestApiunprotectedgraphql249FA33D:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: CDKMonoRepo2apiLambdaRestApiunprotectedE4F2B1C0
+      PathPart: graphql
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/unprotected/graphql/Resource
+  CDKMonoRepo2apiLambdaRestApiunprotectedgraphqlOPTIONS65736B04:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiunprotectedgraphql249FA33D
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'*'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'*'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/unprotected/graphql/OPTIONS/Resource
+  CDKMonoRepo2apiLambdaRestApiunprotectedgraphqlGETApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETunprotectedgraphql9C8733F8:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /
+            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
+            - /GET/unprotected/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/unprotected/graphql/GET/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..unprotected.graphql
+  CDKMonoRepo2apiLambdaRestApiunprotectedgraphqlGETApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETunprotectedgraphql08AB997F:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /test-invoke-stage/GET/unprotected/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/unprotected/graphql/GET/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..unprotected.graphql
+  CDKMonoRepo2apiLambdaRestApiunprotectedgraphqlGETB914723B:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiunprotectedgraphql249FA33D
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/unprotected/graphql/GET/Resource
+  CDKMonoRepo2apiLambdaRestApiunprotectedgraphqlPOSTApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTunprotectedgraphqlA94DF509:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /
+            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
+            - /POST/unprotected/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/unprotected/graphql/POST/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..unprotected.graphql
+  CDKMonoRepo2apiLambdaRestApiunprotectedgraphqlPOSTApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTunprotectedgraphql8A8495E4:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaFunction3A0E57C3
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - /test-invoke-stage/POST/unprotected/graphql
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/unprotected/graphql/POST/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..unprotected.graphql
+  CDKMonoRepo2apiLambdaRestApiunprotectedgraphqlPOST9C88FC3D:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId:
+        Ref: CDKMonoRepo2apiLambdaRestApiunprotectedgraphql249FA33D
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/unprotected/graphql/POST/Resource
+  CDKMonoRepo2apiLambdaRestApiUsagePlanAFD14053:
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      ApiStages:
+        - ApiId:
+            Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+          Stage:
+            Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
+          Throttle: {}
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/UsagePlan/Resource
+  CDKMonoRepo2apiLambdaRestApiCloudWatchRole1E69854B:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+        Version: "2012-10-17"
+      Policies:
+        - PolicyDocument:
+            Statement:
+              - Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:DescribeLogGroups
+                  - logs:DescribeLogStreams
+                  - logs:PutLogEvents
+                  - logs:GetLogEvents
+                  - logs:FilterLogEvents
+                Effect: Allow
+                Resource:
+                  Fn::Join:
+                    - ""
+                    - - "arn:"
+                      - Ref: AWS::Partition
+                      - ":logs:"
+                      - Ref: AWS::Region
+                      - ":"
+                      - Ref: AWS::AccountId
+                      - :*
+            Version: "2012-10-17"
+          PolicyName: LambdaRestApiCloudWatchRolePolicy
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApiCloudWatchRole/Resource
+  CDKMonoRepo2apiLambdaRestApiAccountA54C6A9D:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiLambdaRestApiCloudWatchRole1E69854B
+          - Arn
+    DependsOn:
+      - CDKMonoRepo2apiLambdaRestApiE70B2EB5
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApiAccount
+  CDKMonoRepo2apiCognitoUserPoolBCEBB48D:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      AutoVerifiedAttributes:
+        - email
+      EmailVerificationMessage: The verification code to your new account is {####}
+      EmailVerificationSubject: Verify your new account
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 6
+          RequireLowercase: false
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: false
+          TemporaryPasswordValidityDays: 2
+      Schema:
+        - Mutable: false
+          Name: email
+          Required: true
+        - AttributeDataType: String
+          Mutable: true
+          Name: signUpAttributes
+          StringAttributeConstraints:
+            MaxLength: "2048"
+            MinLength: "1"
+      SmsVerificationMessage: The verification code to your new account is {####}
+      UsernameAttributes:
+        - email
+      UserPoolAddOns:
+        AdvancedSecurityMode: ENFORCED
+      UserPoolName: CDK-MonoRepo2-user-pool
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_CODE
+        EmailMessage: The verification code to your new account is {####}
+        EmailSubject: Verify your new account
+        SmsMessage: The verification code to your new account is {####}
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/CognitoUserPool/Resource
+  CDKMonoRepo2apiCognitoUserPoolCDKMonoRepo2client9C6AECED:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId:
+        Ref: CDKMonoRepo2apiCognitoUserPoolBCEBB48D
+      AllowedOAuthFlows:
+        - implicit
+        - code
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - openid
+        - email
+        - phone
+        - aws.cognito.signin.user.admin
+      CallbackURLs:
+        - http://localhost:3000/
+      ClientName: CDK-MonoRepo2-client
+      LogoutURLs:
+        - http://localhost:3000/
+      SupportedIdentityProviders:
+        - COGNITO
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/CognitoUserPool/CDK-MonoRepo2-client/Resource
+  CDKMonoRepo2apiCognitoUserPoolCognitoDomain08E841E3:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      UserPoolId:
+        Ref: CDKMonoRepo2apiCognitoUserPoolBCEBB48D
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/CognitoUserPool/CognitoDomain/Resource
+  CDKMonoRepo2apiCognitoUserPoolClient343F15E4:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId:
+        Ref: CDKMonoRepo2apiCognitoUserPoolBCEBB48D
+      AllowedOAuthFlows:
+        - implicit
+        - code
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - profile
+        - phone
+        - email
+        - openid
+        - aws.cognito.signin.user.admin
+      CallbackURLs:
+        - https://example.com
+      SupportedIdentityProviders:
+        - COGNITO
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/CognitoUserPoolClient/Resource
+  CDKMonoRepo2apiCognitoAuthorizer4A252582:
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      RestApiId:
+        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+      Type: COGNITO_USER_POOLS
+      IdentitySource: method.request.header.Authorization
+      Name: cognito-authorizer
+      ProviderARNs:
+        - Fn::GetAtt:
+            - CDKMonoRepo2apiCognitoUserPoolBCEBB48D
+            - Arn
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/CognitoAuthorizer
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=1.75.0,@aws-cdk/assets=1.75.0,@aws-cdk/aws-apigateway=1.75.0,@aws-cdk/aws-applicationautoscaling=1.75.0,@aws-cdk/aws-autoscaling-common=1.75.0,@aws-cdk/aws-certificatemanager=1.75.0,@aws-cdk/aws-cloudfront=1.75.0,@aws-cdk/aws-cloudfront-origins=1.75.0,@aws-cdk/aws-cloudwatch=1.75.0,@aws-cdk/aws-codeguruprofiler=1.75.0,@aws-cdk/aws-cognito=1.75.0,@aws-cdk/aws-dynamodb=1.75.0,@aws-cdk/aws-ec2=1.75.0,@aws-cdk/aws-elasticsearch=1.75.0,@aws-cdk/aws-events=1.75.0,@aws-cdk/aws-iam=1.75.0,@aws-cdk/aws-kinesis=1.75.0,@aws-cdk/aws-kinesisanalytics=1.75.0,@aws-cdk/aws-kms=1.75.0,@aws-cdk/aws-lambda=1.75.0,@aws-cdk/aws-lambda-event-sources=1.75.0,@aws-cdk/aws-logs=1.75.0,@aws-cdk/aws-s3=1.75.0,@aws-cdk/aws-s3-assets=1.75.0,@aws-cdk/aws-s3-notifications=1.75.0,@aws-cdk/aws-sagemaker=1.75.0,@aws-cdk/aws-sam=1.75.0,@aws-cdk/aws-secretsmanager=1.75.0,@aws-cdk/aws-sns=1.75.0,@aws-cdk/aws-sns-subscriptions=1.75.0,@aws-cdk/aws-sqs=1.75.0,@aws-cdk/aws-ssm=1.75.0,@aws-cdk/aws-stepfunctions=1.75.0,@aws-cdk/cloud-assembly-schema=1.75.0,@aws-cdk/core=1.75.0,@aws-cdk/custom-resources=1.75.0,@aws-cdk/cx-api=1.75.0,@aws-cdk/region-info=1.75.0,@aws-solutions-constructs/core=1.75.0,jsii-runtime=node.js/v14.14.0
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Outputs:
+  CDKMonoRepo2apiLambdaRestApiEndpointD9FD2954:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+          - .execute-api.
+          - Ref: AWS::Region
+          - "."
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
+          - /
+  locallambdaconfig:
+    Description: local-lambda-config
+    Value:
+      Fn::Join:
+        - ""
+        - - '{"REGION":"ap-southeast-1","ENV":"dev","COGNITO_USER_POOL_ID":"'
+          - Ref: CDKMonoRepo2apiCognitoUserPoolBCEBB48D
+          - '"}'
+  clientconfig:
+    Description: client-config
+    Value:
+      Fn::Join:
+        - ""
+        - - '{"API_URL":"https://'
+          - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+          - .execute-api.
+          - Ref: AWS::Region
+          - "."
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
+          - /external/graphql","USER_POOL_ID":"
+          - Ref: CDKMonoRepo2apiCognitoUserPoolBCEBB48D
+          - '","WEB_APP_CLIENT_ID":"'
+          - Ref: CDKMonoRepo2apiCognitoUserPoolCDKMonoRepo2client9C6AECED
+          - '"}'
+Parameters:
+  AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01S3BucketBDBB3198:
+    Type: String
+    Description: S3 bucket for asset "750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01"
+  AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01S3VersionKey9717C40C:
+    Type: String
+    Description: S3 key for asset version "750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01"
+  AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01ArtifactHash9272D7DB:
+    Type: String
+    Description: Artifact hash for asset "750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01"
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-2
+

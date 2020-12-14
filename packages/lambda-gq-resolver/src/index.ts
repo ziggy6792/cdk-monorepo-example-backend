@@ -1,54 +1,84 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable global-require */
+/* eslint-disable max-len */
 /* eslint-disable no-var */
 /* eslint-disable class-methods-use-this */
 // /* eslint-disable class-methods-use-this */
 // /* eslint-disable import/prefer-default-export */
+// import { APIGatewayProxyCallback, APIGatewayProxyEvent, Context as LambdaContext } from 'aws-lambda';
 
 import 'reflect-metadata';
 import AWS from 'aws-sdk';
-import { ApolloServer } from 'apollo-server-lambda';
-import { APIGatewayProxyCallback, APIGatewayProxyEvent, Context as LambdaContext } from 'aws-lambda';
-import {} from 'type-graphql';
+import { ApolloServer } from 'apollo-server-express';
+import * as serverless from 'aws-serverless-express';
+import Express from 'express';
 import { commonFunctionExample } from '@danielblignaut/common-lambda-lib/dist/utils';
+
+import * as util from 'util';
+import cors from 'cors';
 import createSchema from './graph-ql/create-schema';
-import { REGION, TABLE_NAME_PREFIX } from './config/index';
-import { initMapper, initTables } from './util/mapper';
+
+import { initMapper } from './util/mapper';
 import { MyContext } from './types/MyContext';
 
-export const createServerParams = () => ({
-  schema: createSchema(),
-  introspection: true,
-  playground: true,
-  context: async (recieved: { event: any }): Promise<MyContext> => {
-    // console.log('recieved', JSON.stringify(recieved));
+import getJwk from './services/get-jwk';
+import { COGNITO_USER_POOL_ID, REGION, TABLE_NAME_PREFIX } from './config/index';
+import verifyJwt, { ICognitoIdentity, IJwk } from './util/verify-jwt';
 
-    const { event } = recieved;
-    await initTables();
-    return { event };
-  },
-});
+let jwk: IJwk;
 
-const server = new ApolloServer(createServerParams());
+export const createApolloServer = (): ApolloServer => {
+  return new ApolloServer({
+    schema: createSchema(),
+    introspection: true,
+    playground: true,
+    context: async (recieved: any): Promise<MyContext> => {
+      console.log('recieved', util.inspect(recieved));
 
-const init = (): void => {
-  AWS.config.update({ region: REGION });
-  commonFunctionExample();
-  initMapper(REGION, TABLE_NAME_PREFIX);
+      const { req, res } = recieved;
+      // const { headers } = req;
+      // const jwtToken = headers.authorization;
+
+      // console.log('token', jwtToken);
+      // console.log('COGNITO_USER_POOL_ID', COGNITO_USER_POOL_ID);
+      // console.log('REGION', REGION);
+
+      // let identity: ICognitoIdentity | null = null;
+
+      // if (jwtToken) {
+      //   jwk = jwk || (await getJwk(REGION, COGNITO_USER_POOL_ID));
+      //   identity = verifyJwt(jwk, jwtToken);
+      // }
+      // res.header('Access-Control-Allow-Origin', '*');
+
+      return { req, identity: null };
+    },
+  });
 };
 
-init();
+// Init
+AWS.config.update({ region: REGION });
+const app = Express();
+app.use(cors({ allowedHeaders: '*', origin: '*', methods: '*' }));
+const apolloServer = createApolloServer();
+apolloServer.applyMiddleware({ app });
 
-export const handler = server.createHandler();
+apolloServer.applyMiddleware({ app, path: '*' });
 
-// export const handler = async (event: APIGatewayProxyEvent, context: LambdaContext, callback: APIGatewayProxyCallback) => {
-//   // return apolloServerHandler(event, context, callback);
-//   console.log('event', JSON.stringify(event));
-//   console.log('*******');
-//   console.log('context', JSON.stringify(context));
+const server = serverless.createServer(app);
+commonFunctionExample();
+initMapper(REGION, TABLE_NAME_PREFIX);
 
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify({
-//       success: commonFunctionExample(),
-//     }),
-//   };
-// };
+export const handler = (event, context) => {
+  const logText = `
+  partialConnection.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID || '${process.env.AWS_ACCESS_KEY_ID}';
+  partialConnection.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || '${process.env.AWS_SECRET_ACCESS_KEY}';
+  partialConnection.AWS_SESSION_TOKEN =
+    process.env.AWS_SESSION_TOKEN ||
+    // eslint-disable-next-line max-len
+    '${process.env.AWS_SESSION_TOKEN}' `;
+
+  console.log(logText);
+  console.log('env', process.env);
+  return serverless.proxy(server, event, context);
+};

@@ -13,14 +13,17 @@ import { RegisterInput } from './register/RegisterInput';
 @Resolver()
 export default class RegisterResolver {
   @Query(() => String)
-  async hello(): Promise<string> {
+  async hello(@Ctx() ctx: MyContext): Promise<string> {
+    console.log('identity', ctx.identity);
+
     console.log('Running hello resolver');
     return 'Hello World';
   }
 
   @Mutation(() => User)
   async register(@Arg('input') input: RegisterInput, @Ctx() ctx: MyContext): Promise<User> {
-    // Create Simon
+    console.log('identity', ctx.identity);
+
     const { id, firstName, lastName, email } = input;
 
     const user = new User();
@@ -31,8 +34,6 @@ export default class RegisterResolver {
     user.email = email;
 
     const createdUser = await mapper.put(user, { condition: createUniqueCondition() });
-
-    console.log('context', ctx);
 
     return createdUser;
   }
