@@ -10,9 +10,6 @@ import gql from 'graphql-tag';
 
 import { buildAxiosFetch } from '@lifeomic/axios-fetch';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-// const { buildAxiosFetch } = require('@lifeomic/axios-fetch');
-
 const interceptor = aws4Interceptor(
   {
     region: 'ap-southeast-1',
@@ -29,6 +26,38 @@ axios.interceptors.request.use(interceptor);
 const HELLO = gql`
   {
     hello
+  }
+`;
+
+const REGISTER = gql`
+  mutation register($input: RegisterInput!) {
+    register(input: $input) {
+      id
+    }
+  }
+`;
+
+const CREATE_EVENT = gql`
+  mutation RegisterUser($input: CreateEventInput!) {
+    createEvent(input: $input) {
+      id
+      name
+      createdAt
+      when
+      competitions {
+        items {
+          id
+          createdAt
+          updatedAt
+          name
+          description
+          category
+          eventId
+        }
+        nextToken
+      }
+      queryName
+    }
   }
 `;
 
@@ -49,7 +78,17 @@ export const handler = async (event: any): Promise<any> => {
   });
 
   try {
-    const response = await client.query({ query: HELLO });
+    // const response = await client.query({ query: HELLO });
+    const response = await client.mutate({
+      mutation: REGISTER,
+      variables: {
+        input: {
+          firstName: 'Simon',
+          lastName: 'Verhoeven',
+          email: 'ziggy067@gmail.com',
+        },
+      },
+    });
 
     console.log('response', response.data);
   } catch (err) {
