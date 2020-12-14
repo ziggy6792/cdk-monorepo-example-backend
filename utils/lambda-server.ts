@@ -20,11 +20,11 @@ apolloServer.applyMiddleware({ app, path: '/lambda-gq-resolver/graphql' });
 
 app.use(express.text());
 
-app.use('/lambda-a', async (req, res) => {
+app.use('/lambda-user-confirmed', async (req, res) => {
   const result = await lambdaLocal.execute({
-    lambdaPath: path.join(__dirname, '../packages/lambda-a/src/index'),
+    lambdaPath: path.join(__dirname, '../packages/lambda-user-confirmed/src/index'),
     lambdaHandler: 'handler',
-    envfile: path.join(__dirname, '.env-lambda'),
+    envfile: path.join(__dirname, '../packages/lambda-user-confirmed/.env-local'),
     event: {
       headers: req.headers, // Pass on request headers
       body: req.body, // Pass on request body
@@ -37,9 +37,9 @@ app.use('/lambda-a', async (req, res) => {
     .end((result as any).body);
 });
 
-app.use('/lambda-user-confirmed', async (req, res) => {
+app.use('/lambda-a', async (req, res) => {
   const result = await lambdaLocal.execute({
-    lambdaPath: path.join(__dirname, '../packages/lambda-user-confirmed/src/index'),
+    lambdaPath: path.join(__dirname, '../packages/lambda-a/src/index'),
     lambdaHandler: 'handler',
     envfile: path.join(__dirname, '.env-lambda'),
     event: {
