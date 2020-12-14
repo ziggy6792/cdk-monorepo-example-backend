@@ -10,8 +10,7 @@ import gql from 'graphql-tag';
 
 // Don't install the types for some reasone it breaks things
 import { buildAxiosFetch } from '@lifeomic/axios-fetch';
-
-import SSM from 'aws-sdk/clients/ssm';
+import loadConfig, { CONFIG } from './config';
 
 const interceptor = aws4Interceptor(
   {
@@ -41,23 +40,25 @@ const REGISTER = gql`
 `;
 
 export const handler = async (event: any): Promise<any> => {
-  const logText = `
-  GRAPHQL_API_URL = ${process.env.GRAPHQL_API_URL}
+  await loadConfig(process.env.SSM_BACKEND_CONFIG);
+
+  const envLogText = `
   AWS_ACCESS_KEY_ID = ${process.env.AWS_ACCESS_KEY_ID}
   AWS_SECRET_ACCESS_KEY = ${process.env.AWS_SECRET_ACCESS_KEY}
   AWS_SESSION_TOKEN = ${process.env.AWS_SESSION_TOKEN}
   `;
 
-  console.log('recevied', JSON.stringify(event));
-  console.log(logText);
-  const ssm = new SSM();
-  const params = await ssm.getParametersByPath({ Path: '/CDK-MonoRepo2/beconfig', Recursive: true }).promise();
+  console.log('env', envLogText);
 
-  console.log('params', params);
+  const configLogText = `
+  GRAPHQL_API_URL = ${CONFIG.GRAPHQL_API_URL}
+  `;
+
+  console.log('config', configLogText);
 
   const client = new ApolloClient({
     link: createHttpLink({
-      uri: process.env.GRAPHQL_API_URL,
+      uri: CONFIG.GRAPHQL_API_URL,
       fetch: buildAxiosFetch(axios),
     }),
     cache: new InMemoryCache(),

@@ -116,10 +116,6 @@ export class PackagesStack extends cdk.Stack {
     });
     apiConstruct.addAuthorizers();
 
-    const SSM_BECONFIG_GRAPHQL_API_URL = generateSsmParamId('/beconfig/graphql-api/url');
-
-    defaults.printWarning(SSM_BECONFIG_GRAPHQL_API_URL);
-
     const lambdaUserConfirmed = new lambda.Function(this, generateConstructId('lambda-user-confirmed'), {
       functionName: generateConstructId('lambda-user-confirmed'),
       description: generateConstructId('lambda-user-confirmed'),
@@ -128,9 +124,7 @@ export class PackagesStack extends cdk.Stack {
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-user-confirmed'), '..')),
       environment: {
-        SSM_BECONFIG: generateSsmParamId('/beconfig'),
-        SSM_BECONFIG_GRAPHQL_API_URL,
-        // SSM_BECONFIG: generateSsmParamId('/beconfig'),
+        SSM_BACKEND_CONFIG: generateSsmParamId('/beconfig'),
       },
     });
 
@@ -141,7 +135,7 @@ export class PackagesStack extends cdk.Stack {
     apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
     const internalApiUrl = new ssm.StringParameter(this, generateConstructId('internal-api-url'), {
-      parameterName: SSM_BECONFIG_GRAPHQL_API_URL,
+      parameterName: generateSsmParamId('/beconfig/GRAPHQL_API_URL'),
       stringValue: gqUrls[internalResource.path],
     });
 
