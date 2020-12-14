@@ -4,10 +4,16 @@ export interface IConfig {
   GRAPHQL_API_URL: string;
 }
 
+const DEFAULT_CONFIG: IConfig = {
+  GRAPHQL_API_URL: '',
+};
+
 // eslint-disable-next-line import/no-mutable-exports
-export let CONFIG: IConfig;
+export let CONFIG: IConfig = DEFAULT_CONFIG;
 
 const getParameterName = (paramPath: string) => paramPath.split('/').pop();
+
+let isFetched = false;
 
 const fetchConfig = async (configPath: string): Promise<IConfig> => {
   const ssm = new SSM();
@@ -23,7 +29,13 @@ const fetchConfig = async (configPath: string): Promise<IConfig> => {
 };
 
 const loadConfig = async (configPath: string): Promise<void> => {
-  CONFIG = CONFIG || (await fetchConfig(configPath));
+  if (!configPath) {
+    return;
+  }
+  if (!isFetched) {
+    CONFIG = await fetchConfig(configPath);
+    isFetched = true;
+  }
 };
 
 export default loadConfig;

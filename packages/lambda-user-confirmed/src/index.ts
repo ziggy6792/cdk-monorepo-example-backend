@@ -1,27 +1,22 @@
 /* eslint-disable import/prefer-default-export */
 import 'source-map-support/register';
 
-import gql from 'graphql-tag';
-
+import * as lambda from 'aws-lambda';
 import loadConfig, { CONFIG } from './config';
-import { apolloClient, initApolloClient } from './util/apollo-client';
+// import { initApolloClient } from './util/apollo-client';
+import { CognitoPostConfimEvent } from './types';
+import addAttributes from './handlers/add-attributes';
+import addToGroup from './handlers/add-to-group';
+import addUserToModel from './handlers/add-to-model';
 
-const HELLO = gql`
-  {
-    hello
-  }
-`;
-
-const REGISTER = gql`
-  mutation register($input: RegisterInput!) {
-    register(input: $input) {
-      id
-    }
-  }
-`;
-
-export const handler = async (event: any, context, callback): Promise<any> => {
+export const handler = async (
+  event: CognitoPostConfimEvent,
+  context: lambda.Context,
+  callback: lambda.APIGatewayProxyCallback
+): Promise<CognitoPostConfimEvent> => {
   console.log('Recieved', JSON.stringify(event));
+
+  // event.req
 
   await loadConfig(process.env.SSM_BACKEND_CONFIG);
 
@@ -34,48 +29,13 @@ export const handler = async (event: any, context, callback): Promise<any> => {
 
   console.log('env', envLogText);
 
-  initApolloClient({
-    region: process.env.AWS_REGION,
-    uri: CONFIG.GRAPHQL_API_URL,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    sessionToken: process.env.AWS_SESSION_TOKEN,
-  });
+  event = await addAttributes(event, context, callback);
 
-  // console.log('env', process.env);
+  event = await addToGroup(event, context, callback);
 
-  const configLogText = `
-  GRAPHQL_API_URL = ${CONFIG.GRAPHQL_API_URL}
-  `;
-
-  console.log('config', configLogText);
-
-  try {
-    // const response = await client.query({ query: HELLO });
-    const response = await apolloClient.mutate({
-      mutation: REGISTER,
-      variables: {
-        input: {
-          firstName: 'Simon',
-          lastName: 'Verhoeven',
-          email: 'ziggy067@gmail.com',
-        },
-      },
-    });
-
-    console.log('response', response.data);
-  } catch (err) {
-    console.log('ERROR');
-
-    console.log({ err });
-  }
+  event = await addUserToModel(event);
 
   // callback(null, event);
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      success: 'done',
-    }),
-  };
+  return event;
 };

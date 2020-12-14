@@ -22,5 +22,8 @@
     "lodash": "^4.17.20",
     "source-map-support": "^0.5.16"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "aws-sdk-mock": "^5.1.0",
+    "dotenv": "^8.2.0"
+  }
 }

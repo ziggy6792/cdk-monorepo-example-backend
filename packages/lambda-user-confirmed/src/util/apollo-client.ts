@@ -8,7 +8,6 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 
 // Don't install the types for some reasone it breaks things
 import { buildAxiosFetch } from '@lifeomic/axios-fetch';
-import { CONFIG } from '../config';
 
 export let apolloClient: ApolloClient<any> = null;
 
