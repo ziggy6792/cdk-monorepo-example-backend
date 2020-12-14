@@ -8,19 +8,23 @@ import * as api from './services/gql-api';
 AWSMock.setSDKInstance(AWS);
 
 AWSMock.mock('CognitoIdentityServiceProvider', 'adminUpdateUserAttributes', function (params, cb) {
-  console.log('Mocking adminUpdateUserAttributes recieved params', params);
+  console.log('adminUpdateUserAttributes called with', params);
   cb(null);
 });
 
 AWSMock.mock('CognitoIdentityServiceProvider', 'getGroup', function (params, cb) {
+  console.log('getGroup called with', params);
   cb(null);
 });
 
 AWSMock.mock('CognitoIdentityServiceProvider', 'createGroup', function (params, cb) {
+  console.log('createGroup called with', params);
+
   cb(null);
 });
 
 AWSMock.mock('CognitoIdentityServiceProvider', 'adminAddUserToGroup', function (params, cb) {
+  console.log('adminAddUserToGroup called with', params);
   cb(null);
 });
 
@@ -55,8 +59,32 @@ describe('test lambda-user-confirmed', () => {
 
     process.env.AWS_REGION = 'ap-southeast-1';
 
-    const res = await handler(connfirmSignupEvent, {}, mockCallback);
+    const actualResult = await handler(connfirmSignupEvent, {} as undefined, mockCallback);
 
-    expect(mockCallback).toHaveBeenCalledTimes(1);
+    const expectedResult = {
+      version: '1',
+      region: 'ap-southeast-1',
+      userPoolId: 'ap-southeast-1_5zmaTsBgU',
+      userName: '13b0d16f-74dd-4c88-b4dd-53927f8ef0de',
+      callerContext: {
+        awsSdkVersion: 'aws-sdk-unknown-unknown',
+        clientId: '3cegk98tmu5kqtl2jhg1jlcl0',
+      },
+      triggerSource: 'PostConfirmation_ConfirmSignUp',
+      request: {
+        userAttributes: {
+          sub: '13b0d16f-74dd-4c88-b4dd-53927f8ef0de',
+          'cognito:email_alias': 'ziggy067+1@gmail.com',
+          'cognito:user_status': 'CONFIRMED',
+          email_verified: 'true',
+          email: 'ziggy067+1@gmail.com',
+          given_name: 'Simon',
+          family_name: 'Verhoeven',
+        },
+      },
+      response: {},
+    };
+
+    expect(actualResult).toEqual(expectedResult);
   });
 });
