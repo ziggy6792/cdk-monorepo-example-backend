@@ -5,6 +5,8 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as iam from '@aws-cdk/aws-iam';
 import * as cognito from '@aws-cdk/aws-cognito';
 import * as api from '@aws-cdk/aws-apigateway';
+import * as ssm from '@aws-cdk/aws-ssm';
+import * as defaults from '@aws-solutions-constructs/core';
 
 import path from 'path';
 import { MultiAuthApiGatewayLambda } from '../constructs/multi-auth-apigateway-lambda';
@@ -16,8 +18,12 @@ export class PackagesStack extends cdk.Stack {
     const REGION = 'ap-southeast-1';
     const scopes = [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PHONE, cognito.OAuthScope.COGNITO_ADMIN];
 
-    const generateConstructId = (constructId: string): string => {
-      return `${id}-${constructId}`;
+    const generateConstructId = (constructId: string, sep = '-'): string => {
+      return `${id}${sep}${constructId}`;
+    };
+
+    const generateSsmParamId = (paramId: string, sep = '/'): string => {
+      return `${sep}${id}${paramId}`;
     };
 
     const lambdaGqResolverEnv = {
@@ -110,6 +116,10 @@ export class PackagesStack extends cdk.Stack {
     });
     apiConstruct.addAuthorizers();
 
+    const SSM_BECONFIG_GRAPHQL_API_URL = generateSsmParamId('/beconfig/graphql-api/url');
+
+    defaults.printWarning(SSM_BECONFIG_GRAPHQL_API_URL);
+
     const lambdaUserConfirmed = new lambda.Function(this, generateConstructId('lambda-user-confirmed'), {
       functionName: generateConstructId('lambda-user-confirmed'),
       description: generateConstructId('lambda-user-confirmed'),
@@ -118,13 +128,27 @@ export class PackagesStack extends cdk.Stack {
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-user-confirmed'), '..')),
       environment: {
-        GRAPHQL_API_URL: gqUrls[internalResource.path],
+        SSM_BECONFIG: generateSsmParamId('/beconfig'),
+        SSM_BECONFIG_GRAPHQL_API_URL,
+        // SSM_BECONFIG: generateSsmParamId('/beconfig'),
       },
     });
 
     lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
 
+    apiConstruct.userPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION, lambdaUserConfirmed);
+
     apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
+
+    const internalApiUrl = new ssm.StringParameter(this, generateConstructId('internal-api-url'), {
+      parameterName: SSM_BECONFIG_GRAPHQL_API_URL,
+      stringValue: gqUrls[internalResource.path],
+    });
+
+    // const externalApiUrl = new ssm.StringParameter(this, generateConstructId('external-api-url'), {
+    //   parameterName: generateConstructId('/beconfig/url', '/'),
+    //   stringValue: gqUrls[externalResource.path],
+    // });
 
     const clientConfig = {
       API_URL: gqUrls[externalResource.path],
@@ -137,6 +161,8 @@ export class PackagesStack extends cdk.Stack {
       ENV: 'dev',
       COGNITO_USER_POOL_ID: apiConstruct.userPool.userPoolId,
     };
+
+    // lambdaUserConfirmed.a
 
     const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'local-lambda-config', {
       description: 'local-lambda-config',

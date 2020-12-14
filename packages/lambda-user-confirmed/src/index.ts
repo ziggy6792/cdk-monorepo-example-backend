@@ -11,6 +11,8 @@ import gql from 'graphql-tag';
 // Don't install the types for some reasone it breaks things
 import { buildAxiosFetch } from '@lifeomic/axios-fetch';
 
+import SSM from 'aws-sdk/clients/ssm';
+
 const interceptor = aws4Interceptor(
   {
     region: 'ap-southeast-1',
@@ -46,7 +48,12 @@ export const handler = async (event: any): Promise<any> => {
   AWS_SESSION_TOKEN = ${process.env.AWS_SESSION_TOKEN}
   `;
 
+  console.log('recevied', JSON.stringify(event));
   console.log(logText);
+  const ssm = new SSM();
+  const params = await ssm.getParametersByPath({ Path: '/CDK-MonoRepo2/beconfig', Recursive: true }).promise();
+
+  console.log('params', params);
 
   const client = new ApolloClient({
     link: createHttpLink({

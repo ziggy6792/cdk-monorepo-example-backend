@@ -61,7 +61,7 @@ Resources:
     Properties:
       Code:
         S3Bucket:
-          Ref: AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01S3BucketBDBB3198
+          Ref: AssetParameters4474da9e688378f83ed1aa75a4cd8916903378b557b41c727b4c608c379a4b0eS3BucketB71B32D2
         S3Key:
           Fn::Join:
             - ""
@@ -69,12 +69,12 @@ Resources:
                   - 0
                   - Fn::Split:
                       - "||"
-                      - Ref: AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01S3VersionKey9717C40C
+                      - Ref: AssetParameters4474da9e688378f83ed1aa75a4cd8916903378b557b41c727b4c608c379a4b0eS3VersionKey482E877E
               - Fn::Select:
                   - 1
                   - Fn::Split:
                       - "||"
-                      - Ref: AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01S3VersionKey9717C40C
+                      - Ref: AssetParameters4474da9e688378f83ed1aa75a4cd8916903378b557b41c727b4c608c379a4b0eS3VersionKey482E877E
       Handler: index.handler
       Role:
         Fn::GetAtt:
@@ -330,10 +330,10 @@ Resources:
       RestApiId:
         Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
       AuthorizationScopes:
-        - scopeName: openid
-        - scopeName: email
-        - scopeName: phone
-        - scopeName: aws.cognito.signin.user.admin
+        - openid
+        - email
+        - phone
+        - aws.cognito.signin.user.admin
       AuthorizationType: COGNITO_USER_POOLS
       AuthorizerId:
         Ref: CDKMonoRepo2apiCognitoAuthorizer4A252582
@@ -411,10 +411,10 @@ Resources:
       RestApiId:
         Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
       AuthorizationScopes:
-        - scopeName: openid
-        - scopeName: email
-        - scopeName: phone
-        - scopeName: aws.cognito.signin.user.admin
+        - openid
+        - email
+        - phone
+        - aws.cognito.signin.user.admin
       AuthorizationType: COGNITO_USER_POOLS
       AuthorizerId:
         Ref: CDKMonoRepo2apiCognitoAuthorizer4A252582
@@ -954,6 +954,11 @@ Resources:
         - email
       EmailVerificationMessage: The verification code to your new account is {####}
       EmailVerificationSubject: Verify your new account
+      LambdaConfig:
+        PostConfirmation:
+          Fn::GetAtt:
+            - CDKMonoRepo2lambdauserconfirmed1DA50857
+            - Arn
       Policies:
         PasswordPolicy:
           MinimumLength: 6
@@ -1052,10 +1057,104 @@ Resources:
             - Arn
     Metadata:
       aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/CognitoAuthorizer
+  CDKMonoRepo2lambdauserconfirmedServiceRole61ACDF9A:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/AmazonAPIGatewayInvokeFullAccess
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-lambda-user-confirmed/ServiceRole/Resource
+  CDKMonoRepo2lambdauserconfirmed1DA50857:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters73e01edcf7c5a20e5e8b8fb32aa983662513cb9d473393f83fc7b227db9f6408S3Bucket36FBB84E
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters73e01edcf7c5a20e5e8b8fb32aa983662513cb9d473393f83fc7b227db9f6408S3VersionKeyFD9F62E3
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters73e01edcf7c5a20e5e8b8fb32aa983662513cb9d473393f83fc7b227db9f6408S3VersionKeyFD9F62E3
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+          - CDKMonoRepo2lambdauserconfirmedServiceRole61ACDF9A
+          - Arn
+      Runtime: nodejs12.x
+      Description: CDK-MonoRepo2-lambda-user-confirmed
+      Environment:
+        Variables:
+          SSM_GRAPHQL_API_URL: /CDK-MonoRepo2/beconfig/graphql/api/url
+      FunctionName: CDK-MonoRepo2-lambda-user-confirmed
+      MemorySize: 256
+    DependsOn:
+      - CDKMonoRepo2lambdauserconfirmedServiceRole61ACDF9A
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-lambda-user-confirmed/Resource
+      aws:asset:path: /Users/sive/Documents/Training/serverless/cdk-monorepo-example/packages/lambda-user-confirmed/dist
+      aws:asset:property: Code
+  CDKMonoRepo2lambdauserconfirmedPostConfirmationCognitoEEF42D29:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CDKMonoRepo2lambdauserconfirmed1DA50857
+          - Arn
+      Principal: cognito-idp.amazonaws.com
+      SourceArn:
+        Fn::GetAtt:
+          - CDKMonoRepo2apiCognitoUserPoolBCEBB48D
+          - Arn
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-lambda-user-confirmed/PostConfirmationCognito
+  CDKMonoRepo2internalapiurl1B236AF4:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Type: String
+      Value:
+        Fn::Join:
+          - ""
+          - - https://
+            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
+            - .execute-api.
+            - Ref: AWS::Region
+            - "."
+            - Ref: AWS::URLSuffix
+            - /
+            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
+            - /internal/graphql
+      Name: /CDK-MonoRepo2/beconfig/graphql/api/url
+    Metadata:
+      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-internal-api-url/Resource
   CDKMetadata:
     Type: AWS::CDK::Metadata
     Properties:
-      Modules: aws-cdk=1.75.0,@aws-cdk/assets=1.75.0,@aws-cdk/aws-apigateway=1.75.0,@aws-cdk/aws-applicationautoscaling=1.75.0,@aws-cdk/aws-autoscaling-common=1.75.0,@aws-cdk/aws-certificatemanager=1.75.0,@aws-cdk/aws-cloudfront=1.75.0,@aws-cdk/aws-cloudfront-origins=1.75.0,@aws-cdk/aws-cloudwatch=1.75.0,@aws-cdk/aws-codeguruprofiler=1.75.0,@aws-cdk/aws-cognito=1.75.0,@aws-cdk/aws-dynamodb=1.75.0,@aws-cdk/aws-ec2=1.75.0,@aws-cdk/aws-elasticsearch=1.75.0,@aws-cdk/aws-events=1.75.0,@aws-cdk/aws-iam=1.75.0,@aws-cdk/aws-kinesis=1.75.0,@aws-cdk/aws-kinesisanalytics=1.75.0,@aws-cdk/aws-kms=1.75.0,@aws-cdk/aws-lambda=1.75.0,@aws-cdk/aws-lambda-event-sources=1.75.0,@aws-cdk/aws-logs=1.75.0,@aws-cdk/aws-s3=1.75.0,@aws-cdk/aws-s3-assets=1.75.0,@aws-cdk/aws-s3-notifications=1.75.0,@aws-cdk/aws-sagemaker=1.75.0,@aws-cdk/aws-sam=1.75.0,@aws-cdk/aws-secretsmanager=1.75.0,@aws-cdk/aws-sns=1.75.0,@aws-cdk/aws-sns-subscriptions=1.75.0,@aws-cdk/aws-sqs=1.75.0,@aws-cdk/aws-ssm=1.75.0,@aws-cdk/aws-stepfunctions=1.75.0,@aws-cdk/cloud-assembly-schema=1.75.0,@aws-cdk/core=1.75.0,@aws-cdk/custom-resources=1.75.0,@aws-cdk/cx-api=1.75.0,@aws-cdk/region-info=1.75.0,@aws-solutions-constructs/core=1.75.0,jsii-runtime=node.js/v14.14.0
+      Modules: aws-cdk=1.75.0,@aws-cdk/assets=1.75.0,@aws-cdk/aws-apigateway=1.75.0,@aws-cdk/aws-applicationautoscaling=1.75.0,@aws-cdk/aws-autoscaling-common=1.75.0,@aws-cdk/aws-certificatemanager=1.75.0,@aws-cdk/aws-cloudfront=1.75.0,@aws-cdk/aws-cloudfront-origins=1.75.0,@aws-cdk/aws-cloudwatch=1.75.0,@aws-cdk/aws-codeguruprofiler=1.75.0,@aws-cdk/aws-cognito=1.75.0,@aws-cdk/aws-dynamodb=1.75.0,@aws-cdk/aws-ec2=1.75.0,@aws-cdk/aws-elasticsearch=1.75.0,@aws-cdk/aws-events=1.75.0,@aws-cdk/aws-iam=1.78.0,@aws-cdk/aws-kinesis=1.75.0,@aws-cdk/aws-kinesisanalytics=1.75.0,@aws-cdk/aws-kms=1.75.0,@aws-cdk/aws-lambda=1.75.0,@aws-cdk/aws-lambda-event-sources=1.75.0,@aws-cdk/aws-logs=1.75.0,@aws-cdk/aws-s3=1.75.0,@aws-cdk/aws-s3-assets=1.75.0,@aws-cdk/aws-s3-notifications=1.75.0,@aws-cdk/aws-sagemaker=1.75.0,@aws-cdk/aws-sam=1.75.0,@aws-cdk/aws-secretsmanager=1.75.0,@aws-cdk/aws-sns=1.75.0,@aws-cdk/aws-sns-subscriptions=1.75.0,@aws-cdk/aws-sqs=1.75.0,@aws-cdk/aws-ssm=1.78.0,@aws-cdk/aws-stepfunctions=1.75.0,@aws-cdk/cloud-assembly-schema=1.78.0,@aws-cdk/core=1.78.0,@aws-cdk/custom-resources=1.75.0,@aws-cdk/cx-api=1.78.0,@aws-cdk/region-info=1.78.0,@aws-solutions-constructs/core=1.75.0,jsii-runtime=node.js/v14.14.0
     Metadata:
       aws:cdk:path: CDK-MonoRepo2/CDKMetadata/Default
     Condition: CDKMetadataAvailable
@@ -1100,15 +1199,24 @@ Outputs:
           - Ref: CDKMonoRepo2apiCognitoUserPoolCDKMonoRepo2client9C6AECED
           - '"}'
 Parameters:
-  AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01S3BucketBDBB3198:
+  AssetParameters4474da9e688378f83ed1aa75a4cd8916903378b557b41c727b4c608c379a4b0eS3BucketB71B32D2:
     Type: String
-    Description: S3 bucket for asset "750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01"
-  AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01S3VersionKey9717C40C:
+    Description: S3 bucket for asset "4474da9e688378f83ed1aa75a4cd8916903378b557b41c727b4c608c379a4b0e"
+  AssetParameters4474da9e688378f83ed1aa75a4cd8916903378b557b41c727b4c608c379a4b0eS3VersionKey482E877E:
     Type: String
-    Description: S3 key for asset version "750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01"
-  AssetParameters750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01ArtifactHash9272D7DB:
+    Description: S3 key for asset version "4474da9e688378f83ed1aa75a4cd8916903378b557b41c727b4c608c379a4b0e"
+  AssetParameters4474da9e688378f83ed1aa75a4cd8916903378b557b41c727b4c608c379a4b0eArtifactHashAAAB7451:
     Type: String
-    Description: Artifact hash for asset "750e0da0825197274779e38872381c3f4bc195d9f7fd25310aa970feceea9d01"
+    Description: Artifact hash for asset "4474da9e688378f83ed1aa75a4cd8916903378b557b41c727b4c608c379a4b0e"
+  AssetParameters73e01edcf7c5a20e5e8b8fb32aa983662513cb9d473393f83fc7b227db9f6408S3Bucket36FBB84E:
+    Type: String
+    Description: S3 bucket for asset "73e01edcf7c5a20e5e8b8fb32aa983662513cb9d473393f83fc7b227db9f6408"
+  AssetParameters73e01edcf7c5a20e5e8b8fb32aa983662513cb9d473393f83fc7b227db9f6408S3VersionKeyFD9F62E3:
+    Type: String
+    Description: S3 key for asset version "73e01edcf7c5a20e5e8b8fb32aa983662513cb9d473393f83fc7b227db9f6408"
+  AssetParameters73e01edcf7c5a20e5e8b8fb32aa983662513cb9d473393f83fc7b227db9f6408ArtifactHash35161324:
+    Type: String
+    Description: Artifact hash for asset "73e01edcf7c5a20e5e8b8fb32aa983662513cb9d473393f83fc7b227db9f6408"
 Conditions:
   CDKMetadataAvailable:
     Fn::Or:
