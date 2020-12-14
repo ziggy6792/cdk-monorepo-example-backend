@@ -4,7 +4,6 @@ import path from 'path';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { createApolloServer } from '../packages/lambda-gq-resolver/src/index';
-import mockGatewayEvent from './mock-gw-event';
 // eslint-disable-next-line import/order
 import lambdaLocal = require('lambda-local');
 
