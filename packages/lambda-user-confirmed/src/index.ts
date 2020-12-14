@@ -8,6 +8,7 @@ import { aws4Interceptor } from 'aws4-axios';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import gql from 'graphql-tag';
 
+// Don't install the types for some reasone it breaks things
 import { buildAxiosFetch } from '@lifeomic/axios-fetch';
 
 const interceptor = aws4Interceptor(
@@ -33,30 +34,6 @@ const REGISTER = gql`
   mutation register($input: RegisterInput!) {
     register(input: $input) {
       id
-    }
-  }
-`;
-
-const CREATE_EVENT = gql`
-  mutation RegisterUser($input: CreateEventInput!) {
-    createEvent(input: $input) {
-      id
-      name
-      createdAt
-      when
-      competitions {
-        items {
-          id
-          createdAt
-          updatedAt
-          name
-          description
-          category
-          eventId
-        }
-        nextToken
-      }
-      queryName
     }
   }
 `;
