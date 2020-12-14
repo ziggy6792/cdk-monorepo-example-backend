@@ -40,6 +40,8 @@ const REGISTER = gql`
 `;
 
 export const handler = async (event: any): Promise<any> => {
+  console.log('Recieved', JSON.stringify(event));
+
   await loadConfig(process.env.SSM_BACKEND_CONFIG);
 
   const envLogText = `
