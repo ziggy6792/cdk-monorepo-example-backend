@@ -4,6 +4,8 @@ import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as iam from '@aws-cdk/aws-iam';
 import * as cognito from '@aws-cdk/aws-cognito';
+import * as api from '@aws-cdk/aws-apigateway';
+
 import path from 'path';
 import { MultiAuthApiGatewayLambda } from '../constructs/multi-auth-apigateway-lambda';
 
@@ -98,8 +100,11 @@ export class PackagesStack extends cdk.Stack {
 
     const resorces = [externalResource, internalResource, unprotectedResource];
 
+    const gqUrls: { [key: string]: string } = {};
+
     resorces.forEach((resorce) => {
       const graphqlResource = resorce.addResource('graphql');
+      gqUrls[resorce.path] = apiConstruct.apiGateway.urlForPath(graphqlResource.path);
       graphqlResource.addMethod('GET');
       graphqlResource.addMethod('POST');
     });
@@ -112,18 +117,17 @@ export class PackagesStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_12_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-user-confirmed'), '..')),
+      environment: {
+        GRAPHQL_API_URL: gqUrls[internalResource.path],
+      },
     });
 
     lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
 
     apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
-    // construct: apigw
-
-    const removeTralingSlash = (url: string) => url.replace(/\/$/, '');
-
     const clientConfig = {
-      API_URL: `${removeTralingSlash(apiConstruct.apiGateway.url)}${removeTralingSlash(apiConstruct.externalResource.path)}/graphql`,
+      API_URL: gqUrls[externalResource.path],
       USER_POOL_ID: apiConstruct.userPool.userPoolId,
       WEB_APP_CLIENT_ID: client.userPoolClientId,
     };

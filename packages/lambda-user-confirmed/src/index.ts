@@ -40,15 +40,17 @@ const REGISTER = gql`
 
 export const handler = async (event: any): Promise<any> => {
   const logText = `
+  GRAPHQL_API_URL = ${process.env.GRAPHQL_API_URL}
   AWS_ACCESS_KEY_ID = ${process.env.AWS_ACCESS_KEY_ID}
   AWS_SECRET_ACCESS_KEY = ${process.env.AWS_SECRET_ACCESS_KEY}
-  AWS_SESSION_TOKEN = ${process.env.AWS_SESSION_TOKEN}`;
+  AWS_SESSION_TOKEN = ${process.env.AWS_SESSION_TOKEN}
+  `;
 
   console.log(logText);
 
   const client = new ApolloClient({
     link: createHttpLink({
-      uri: 'https://mnakrqgp7b.execute-api.ap-southeast-1.amazonaws.com/dev/internal/graphql',
+      uri: process.env.GRAPHQL_API_URL,
       fetch: buildAxiosFetch(axios),
     }),
     cache: new InMemoryCache(),
