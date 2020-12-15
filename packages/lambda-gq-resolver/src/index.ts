@@ -36,6 +36,12 @@ export const createApolloServer = (): ApolloServer => {
       console.log('recieved', util.inspect(recieved));
 
       const { req, res } = recieved;
+
+      const event = JSON.parse(decodeURIComponent(req.headers['x-apigateway-event']));
+      const context = JSON.parse(decodeURIComponent(req.headers['x-apigateway-context']));
+
+      console.log('event', JSON.stringify(event));
+      console.log('context', JSON.stringify(context));
       // const { headers } = req;
       // const jwtToken = headers.authorization;
 
