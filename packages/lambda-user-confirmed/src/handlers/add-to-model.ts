@@ -5,7 +5,11 @@ import * as api from '../services/gql-api';
 import { initApolloClient } from '../util/apollo-client';
 import { CONFIG } from '../config';
 
-const addUserToModel = async (event: CognitoPostConfimEvent): Promise<CognitoPostConfimEvent> => {
+const addUserToModel = async (
+  event: CognitoPostConfimEvent,
+  context: lambda.Context,
+  callback: lambda.APIGatewayProxyCallback
+): Promise<CognitoPostConfimEvent> => {
   initApolloClient({
     region: process.env.AWS_REGION,
     uri: CONFIG.GRAPHQL_API_URL,
@@ -22,7 +26,11 @@ const addUserToModel = async (event: CognitoPostConfimEvent): Promise<CognitoPos
 
   console.log('User', user);
 
-  await api.registerUser(user);
+  const sucuess = await api.registerUser(user);
+
+  if (!sucuess) {
+    callback('Error calling api');
+  }
 
   return event;
 };

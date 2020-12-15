@@ -19,7 +19,6 @@ AWSMock.mock('CognitoIdentityServiceProvider', 'getGroup', function (params, cb)
 
 AWSMock.mock('CognitoIdentityServiceProvider', 'createGroup', function (params, cb) {
   console.log('createGroup called with', params);
-
   cb(null);
 });
 

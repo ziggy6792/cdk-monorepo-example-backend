@@ -33,9 +33,7 @@ export const handler = async (
 
   event = await addToGroup(event, context, callback);
 
-  event = await addUserToModel(event);
-
-  // callback(null, event);
+  event = await addUserToModel(event, context, callback);
 
   return event;
 };

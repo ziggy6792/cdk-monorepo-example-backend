@@ -26,8 +26,6 @@ export const registerUser = async (user: IUser): Promise<boolean> => {
       },
     });
     return true;
-
-    console.log('response', response.data);
   } catch (err) {
     console.log('ERROR');
 
