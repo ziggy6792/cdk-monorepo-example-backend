@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-const iamAuthorizedEvent = {
+const mockEvent = {
   resource: '/internal/graphql',
   path: '/internal/graphql',
   httpMethod: 'POST',
@@ -83,4 +83,4 @@ const iamAuthorizedEvent = {
   isBase64Encoded: false,
 };
 
-export default iamAuthorizedEvent;
+export default mockEvent;

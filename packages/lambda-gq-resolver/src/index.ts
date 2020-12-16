@@ -14,18 +14,13 @@ import * as serverless from 'aws-serverless-express';
 import Express from 'express';
 import { commonFunctionExample } from '@danielblignaut/common-lambda-lib/dist/utils';
 
-import * as util from 'util';
 import cors from 'cors';
 import createSchema from './graph-ql/create-schema';
 
 import { initMapper } from './util/mapper';
 import { MyContext } from './types/MyContext';
 
-import getJwk from './services/get-jwk';
-import { COGNITO_USER_POOL_ID, REGION, TABLE_NAME_PREFIX } from './config/index';
-import verifyJwt, { ICognitoIdentity, IJwk } from './util/verify-jwt';
-
-let jwk: IJwk;
+import { REGION, TABLE_NAME_PREFIX } from './config/index';
 
 export const createApolloServer = (): ApolloServer => {
   return new ApolloServer({
@@ -35,33 +30,13 @@ export const createApolloServer = (): ApolloServer => {
     context: async (recieved: any): Promise<MyContext> => {
       // console.log('recieved', util.inspect(recieved));
 
-      const { req, res } = recieved;
+      const { req } = recieved;
 
       const exentHeader = req.headers['x-apigateway-event'];
-      const contextHeader = req.headers['x-apigateway-context'];
 
       const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
 
-      const context = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
-
-      // console.log('event', JSON.stringify(event));
-      // console.log('context', JSON.stringify(context));
-      // const { headers } = req;
-      // const jwtToken = headers.authorization;
-
-      // console.log('token', jwtToken);
-      // console.log('COGNITO_USER_POOL_ID', COGNITO_USER_POOL_ID);
-      // console.log('REGION', REGION);
-
-      // let identity: ICognitoIdentity | null = null;
-
-      // if (jwtToken) {
-      //   jwk = jwk || (await getJwk(REGION, COGNITO_USER_POOL_ID));
-      //   identity = verifyJwt(jwk, jwtToken);
-      // }
-      // res.header('Access-Control-Allow-Origin', '*');
-
-      return { req, identity: null };
+      return { req, identity: event.requestContext?.identity };
     },
   });
 };

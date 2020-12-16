@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/prefer-default-export */
 import express from 'express';
-import iamAuthorizedEvent from './mock-event';
+import buildIamAuthorizedEvent from './build-iam-authd-event';
 import getJwk from './services/get-jwk';
 import verifyJwt, { ICognitoIdentity, IJwk } from './verify-jwt';
 
@@ -9,11 +9,10 @@ import verifyJwt, { ICognitoIdentity, IJwk } from './verify-jwt';
 
 type ExpressMiddleware = (req: express.Request, res: express.Response, next: () => void) => void;
 
-export const cognitoAutorizer = async (userPoolId: string, region = 'ap-southeast-1'): Promise<ExpressMiddleware> => {
+export const buildCognitoAutorizer = async (userPoolId: string, region = 'ap-southeast-1'): Promise<ExpressMiddleware> => {
   const jwk = await getJwk(region, userPoolId);
   return function (req, res, next): void {
     console.log('authorization', req.headers.authorization);
-    req.headers['x-apigateway-event'] = encodeURIComponent(JSON.stringify(iamAuthorizedEvent));
 
     const { headers } = req;
     const jwtToken = headers.authorization;
@@ -29,8 +28,11 @@ export const cognitoAutorizer = async (userPoolId: string, region = 'ap-southeas
 
       console.log('identity', identity);
     }
+    const event = buildIamAuthorizedEvent(identity);
+
+    req.headers['x-apigateway-event'] = encodeURIComponent(JSON.stringify(event));
 
     next();
   };
 };
-export default cognitoAutorizer;
+export default buildCognitoAutorizer;
