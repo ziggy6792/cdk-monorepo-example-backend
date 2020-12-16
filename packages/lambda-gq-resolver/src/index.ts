@@ -33,15 +33,19 @@ export const createApolloServer = (): ApolloServer => {
     introspection: true,
     playground: true,
     context: async (recieved: any): Promise<MyContext> => {
-      console.log('recieved', util.inspect(recieved));
+      // console.log('recieved', util.inspect(recieved));
 
       const { req, res } = recieved;
 
-      const event = JSON.parse(decodeURIComponent(req.headers['x-apigateway-event']));
-      const context = JSON.parse(decodeURIComponent(req.headers['x-apigateway-context']));
+      const exentHeader = req.headers['x-apigateway-event'];
+      const contextHeader = req.headers['x-apigateway-context'];
 
-      console.log('event', JSON.stringify(event));
-      console.log('context', JSON.stringify(context));
+      const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
+
+      const context = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
+
+      // console.log('event', JSON.stringify(event));
+      // console.log('context', JSON.stringify(context));
       // const { headers } = req;
       // const jwtToken = headers.authorization;
 
