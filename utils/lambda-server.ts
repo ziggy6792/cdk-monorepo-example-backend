@@ -5,20 +5,21 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { createApolloServer } from '../packages/lambda-gq-resolver/src/index';
 import cognitoAutorizer from './mock-gateway/cognito-authorizer';
+import cdkExports from './mock-gateway/cdk-exports';
 // import { cognitoAutorizer } from './mock-gateway/cognito-authorizer';
 // eslint-disable-next-line import/order
 import lambdaLocal = require('lambda-local');
 
-const app = express();
+const buildLocalServer = async () => {
+  const app = express();
 
-// Setup local grapql server
+  // Setup local grapql server
 
-const apolloServer = createApolloServer();
+  const apolloServer = createApolloServer();
 
-const localGqPath = '/lambda-gq-resolver/graphql';
+  const localGqPath = '/lambda-gq-resolver/graphql';
 
-const buidLocalServer = async () => {
-  app.use(localGqPath, await cognitoAutorizer('ap-southeast-1_5zmaTsBgU'));
+  app.use(localGqPath, await cognitoAutorizer(cdkExports.USER_POOL_ID));
   apolloServer.applyMiddleware({ app, path: localGqPath });
 
   app.use(express.text());
@@ -77,7 +78,7 @@ const buidLocalServer = async () => {
 
   app.listen(port, () => console.log(`listening on port: ${port}`));
 };
-buidLocalServer();
+buildLocalServer();
 
 // Setup gateway services
 
