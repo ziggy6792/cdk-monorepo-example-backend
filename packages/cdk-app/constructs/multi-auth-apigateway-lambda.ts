@@ -58,9 +58,9 @@ export interface MultiAuthApiGatewayLambdaProps {
 }
 
 enum RESOURCE_TYPE {
-  'INERNAL' = 'internal',
-  'EXTERNAL' = 'external',
-  'UNPROTECTED' = 'unprotected',
+  'AUTH_ROLE' = 'auth-role',
+  'AUTH_USER' = 'auth-user',
+  'AUTH_NONE' = 'auth-none',
 }
 
 export class MultiAuthApiGatewayLambda extends Construct {
@@ -72,9 +72,9 @@ export class MultiAuthApiGatewayLambda extends Construct {
   public readonly apiGatewayAuthorizer: api.CfnAuthorizer;
   public readonly lambdaFunction: lambda.Function;
 
-  public readonly externalResource: api.Resource;
-  public readonly internalResource: api.Resource;
-  public readonly unprotectedResource: api.Resource;
+  public readonly authUserResource: api.Resource;
+  public readonly authRoleResource: api.Resource;
+  public readonly authNoneResource: api.Resource;
   private readonly scopes: OAuthScope[];
 
   /**
@@ -104,22 +104,38 @@ export class MultiAuthApiGatewayLambda extends Construct {
       name: 'cognito-authorizer',
     });
 
-    this.externalResource = this.apiGateway.root.addResource(RESOURCE_TYPE.EXTERNAL);
-    this.internalResource = this.apiGateway.root.addResource(RESOURCE_TYPE.INERNAL);
-    this.unprotectedResource = this.apiGateway.root.addResource(RESOURCE_TYPE.UNPROTECTED);
+    this.authUserResource = this.apiGateway.root.addResource(RESOURCE_TYPE.AUTH_USER);
+    this.authRoleResource = this.apiGateway.root.addResource(RESOURCE_TYPE.AUTH_ROLE);
+    this.authNoneResource = this.apiGateway.root.addResource(RESOURCE_TYPE.AUTH_NONE);
 
     this.scopes = props.scopes;
   }
 
-  public addAuthorizers() {
+  // authorizedRoles are the roles that will be allowed to invoke the iam authorized methods
+  public addAuthorizers(authorizedRoles: iam.IRole[]) {
+    const authorizedRolePolicyStatements: iam.PolicyStatement[] = [];
     this.apiGateway.methods.forEach((apiMethod) => {
-      if (apiMethod.resource.path.startsWith(`/${RESOURCE_TYPE.EXTERNAL}`)) {
+      if (apiMethod.resource.path.startsWith(`/${RESOURCE_TYPE.AUTH_USER}`)) {
         this.addCognitoAuthorizer(apiMethod);
-      } else if (apiMethod.resource.path.startsWith(`/${RESOURCE_TYPE.INERNAL}`)) {
+      } else if (apiMethod.resource.path.startsWith(`/${RESOURCE_TYPE.AUTH_ROLE}`)) {
         this.addIamAuthorizer(apiMethod);
+        authorizedRolePolicyStatements.push(
+          new iam.PolicyStatement({
+            actions: ['execute-api:Invoke'],
+            effect: iam.Effect.ALLOW,
+            resources: [apiMethod.methodArn],
+          })
+        );
       } else {
         this.addNoAuthorizer(apiMethod);
       }
+    });
+    authorizedRoles.forEach((authorizedRole) => {
+      authorizedRole.attachInlinePolicy(
+        new iam.Policy(this, 'AllowInvokeApi', {
+          statements: authorizedRolePolicyStatements,
+        })
+      );
     });
   }
 
@@ -148,6 +164,7 @@ export class MultiAuthApiGatewayLambda extends Construct {
 
   private addIamAuthorizer(apiMethod: api.Method) {
     // Leave the authorizer NONE for HTTP OPTIONS method to support CORS, for the rest set it to COGNITO
+
     const child = apiMethod.node.findChild('Resource') as api.CfnMethod;
     if (apiMethod.httpMethod === 'OPTIONS') {
       child.addPropertyOverride('AuthorizationType', api.AuthorizationType.NONE);

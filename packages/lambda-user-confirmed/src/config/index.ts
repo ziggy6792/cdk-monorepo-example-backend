@@ -1,15 +1,16 @@
+/* eslint-disable camelcase */
 import SSM from 'aws-sdk/clients/ssm';
 
 export interface IConfig {
-  GRAPHQL_API_URL: string;
+  aws_graphqlEndpoint_authRole: string;
 }
 
-const DEFAULT_CONFIG: IConfig = {
-  GRAPHQL_API_URL: '',
+const default_config: IConfig = {
+  aws_graphqlEndpoint_authRole: '',
 };
 
 // eslint-disable-next-line import/no-mutable-exports
-export let CONFIG: IConfig = DEFAULT_CONFIG;
+export let config: IConfig = default_config;
 
 const getParameterName = (paramPath: string) => paramPath.split('/').pop();
 
@@ -33,7 +34,7 @@ const loadConfig = async (configPath: string): Promise<void> => {
     return;
   }
   if (!isFetched) {
-    CONFIG = await fetchConfig(configPath);
+    config = await fetchConfig(configPath);
     isFetched = true;
   }
 };

@@ -2,7 +2,7 @@
 import 'source-map-support/register';
 
 import * as lambda from 'aws-lambda';
-import loadConfig, { CONFIG } from './config';
+import loadConfig, { config } from './config';
 // import { initApolloClient } from './util/apollo-client';
 import { CognitoPostConfimEvent } from './types';
 import addAttributes from './handlers/add-attributes';

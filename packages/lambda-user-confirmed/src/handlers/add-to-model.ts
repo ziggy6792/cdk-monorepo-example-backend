@@ -3,7 +3,7 @@ import * as lambda from 'aws-lambda';
 import { CognitoPostConfimEvent } from '../types';
 import * as api from '../services/gql-api';
 import { initApolloClient } from '../util/apollo-client';
-import { CONFIG } from '../config';
+import { config } from '../config';
 
 const addUserToModel = async (
   event: CognitoPostConfimEvent,
@@ -12,7 +12,7 @@ const addUserToModel = async (
 ): Promise<CognitoPostConfimEvent> => {
   initApolloClient({
     region: process.env.AWS_REGION,
-    uri: CONFIG.GRAPHQL_API_URL,
+    uri: config.aws_graphqlEndpoint_authRole,
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     sessionToken: process.env.AWS_SESSION_TOKEN,

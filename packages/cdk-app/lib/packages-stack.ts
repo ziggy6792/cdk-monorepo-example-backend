@@ -9,6 +9,7 @@ import * as ssm from '@aws-cdk/aws-ssm';
 import * as defaults from '@aws-solutions-constructs/core';
 
 import path from 'path';
+import { Duration } from '@aws-cdk/core';
 import { MultiAuthApiGatewayLambda } from '../constructs/multi-auth-apigateway-lambda';
 
 export class PackagesStack extends cdk.Stack {
@@ -36,6 +37,7 @@ export class PackagesStack extends cdk.Stack {
         functionName: generateConstructId('lambda-gq-resolver'),
         description: generateConstructId('lambda-gq-resolver'),
         memorySize: 256,
+        timeout: Duration.seconds(30),
         runtime: lambda.Runtime.NODEJS_12_X,
         handler: 'index.handler',
         code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-gq-resolver'), '..')),
@@ -102,9 +104,9 @@ export class PackagesStack extends cdk.Stack {
     });
 
     // defaults.printWarning(construct.apiGateway.restApiId);
-    const { externalResource, internalResource, unprotectedResource } = apiConstruct;
+    const { authUserResource, authRoleResource, authNoneResource } = apiConstruct;
 
-    const resorces = [externalResource, internalResource, unprotectedResource];
+    const resorces = [authUserResource, authRoleResource, authNoneResource];
 
     const gqUrls: { [key: string]: string } = {};
 
@@ -114,12 +116,12 @@ export class PackagesStack extends cdk.Stack {
       graphqlResource.addMethod('GET');
       graphqlResource.addMethod('POST');
     });
-    apiConstruct.addAuthorizers();
 
     const lambdaUserConfirmed = new lambda.Function(this, generateConstructId('lambda-user-confirmed'), {
       functionName: generateConstructId('lambda-user-confirmed'),
       description: generateConstructId('lambda-user-confirmed'),
       memorySize: 256,
+      timeout: Duration.seconds(30),
       runtime: lambda.Runtime.NODEJS_12_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-user-confirmed'), '..')),
@@ -128,17 +130,19 @@ export class PackagesStack extends cdk.Stack {
       },
     });
 
-    lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
+    // lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
     lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
     lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonCognitoPowerUser'));
+
+    apiConstruct.addAuthorizers([lambdaUserConfirmed.role]);
 
     apiConstruct.userPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION, lambdaUserConfirmed);
 
     apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
-    const internalApiUrl = new ssm.StringParameter(this, generateConstructId('internal-api-url'), {
-      parameterName: generateSsmParamId('/beconfig/GRAPHQL_API_URL'),
-      stringValue: gqUrls[internalResource.path],
+    const authRoleApiUrl = new ssm.StringParameter(this, generateConstructId('aws_graphqlEndpoint_authRole'), {
+      parameterName: generateSsmParamId('/beconfig/aws_graphqlEndpoint_authRole'),
+      stringValue: gqUrls[authRoleResource.path],
     });
 
     // const externalApiUrl = new ssm.StringParameter(this, generateConstructId('external-api-url'), {
@@ -147,7 +151,7 @@ export class PackagesStack extends cdk.Stack {
     // });
 
     const clientConfig = {
-      API_URL: gqUrls[externalResource.path],
+      API_URL: gqUrls[authUserResource.path],
       USER_POOL_ID: apiConstruct.userPool.userPoolId,
       WEB_APP_CLIENT_ID: client.userPoolClientId,
     };

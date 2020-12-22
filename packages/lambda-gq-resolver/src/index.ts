@@ -36,6 +36,8 @@ export const createApolloServer = (): ApolloServer => {
 
       const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
 
+      console.log('Recieved event', event);
+
       return { req, identity: event.requestContext?.identity };
     },
   });
