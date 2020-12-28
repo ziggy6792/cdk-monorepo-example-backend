@@ -18,10 +18,11 @@ export class PackagesStack extends cdk.Stack {
     super(scope, id, props);
 
     const REGION = 'ap-southeast-1';
-    const scopes = [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PHONE, cognito.OAuthScope.COGNITO_ADMIN];
 
+    const scopes = [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PHONE, cognito.OAuthScope.COGNITO_ADMIN];
     const callbackUrls = ['http://localhost:3000/profile/'];
     const logoutUrls = ['http://localhost:3000/profile/'];
+    const domainPrefix = 'alpaca-dev';
 
     const generateConstructId = (constructId: string, sep = '-'): string => {
       return `${id}${sep}${constructId}`;
@@ -89,6 +90,19 @@ export class PackagesStack extends cdk.Stack {
       scopes,
     });
 
+    // Add facebook integration
+    const identityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(this, generateConstructId('IdentityProviderFacebook'), {
+      userPool: apiConstruct.userPool,
+      clientId: '401988904382290',
+      clientSecret: '56dc78be341d68d0f0e3229a6ee37723',
+      scopes: ['email', 'public_profile'],
+      attributeMapping: {
+        email: cognito.ProviderAttribute.FACEBOOK_EMAIL,
+        givenName: cognito.ProviderAttribute.FACEBOOK_FIRST_NAME,
+        familyName: cognito.ProviderAttribute.FACEBOOK_LAST_NAME,
+      },
+    });
+
     // Add App client
     const client = apiConstruct.userPool.addClient(generateConstructId('client'), {
       userPoolClientName: generateConstructId('client'),
@@ -98,9 +112,8 @@ export class PackagesStack extends cdk.Stack {
         callbackUrls,
         logoutUrls,
       },
-      // supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.AMAZON, cognito.UserPoolClientIdentityProvider.COGNITO],
+      supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.COGNITO, cognito.UserPoolClientIdentityProvider.FACEBOOK],
     });
-    const domainPrefix = 'alpaca-dev';
 
     apiConstruct.userPool.addDomain('CognitoDomain', {
       cognitoDomain: {
@@ -120,20 +133,6 @@ export class PackagesStack extends cdk.Stack {
         ],
       },
     });
-
-    // const identityPool = new cognito.CfnIdentityPool(this, generateConstructId('IdentityPool'), {
-    //   allowUnauthenticatedIdentities: false, // Don't allow unathenticated users
-    //   cognitoIdentityProviders: [
-    //     {
-    //       clientId: client.userPoolClientId,
-    //       providerName: apiConstruct.userPool.userPoolProviderName,
-    //     },
-    //   ],
-    // });
-
-    // const authenticatedRole = new CognitoAuthRole(this, generateConstructId('"CognitoAuthRole"'), {
-    //   identityPool,
-    // });
 
     // defaults.printWarning(construct.apiGateway.restApiId);
     const { authUserResource, authRoleResource, authNoneResource } = apiConstruct;
@@ -195,8 +194,8 @@ export class PackagesStack extends cdk.Stack {
       oauth: {
         domain: `${domainPrefix}.auth.ap-southeast-1.amazoncognito.com`,
         scope: scopes.map((scope) => scope.scopeName),
-        redirectSignIn: 'http://localhost:3000/profile/',
-        redirectSignOut: 'http://localhost:3000/profile/',
+        redirectSignIn: '/profile/',
+        redirectSignOut: '/profile/',
         responseType: 'code',
       },
     };
