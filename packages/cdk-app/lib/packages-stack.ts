@@ -19,10 +19,13 @@ export class PackagesStack extends cdk.Stack {
 
     const REGION = 'ap-southeast-1';
 
-    const scopes = [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PHONE, cognito.OAuthScope.COGNITO_ADMIN];
     const callbackUrls = ['http://localhost:3000/profile/'];
     const logoutUrls = ['http://localhost:3000/profile/'];
     const domainPrefix = 'alpaca-dev';
+    const facebookClientId = '401988904382290';
+    const facebookClientSecret = '56dc78be341d68d0f0e3229a6ee37723';
+
+    const scopes = [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PHONE, cognito.OAuthScope.COGNITO_ADMIN];
 
     const generateConstructId = (constructId: string, sep = '-'): string => {
       return `${id}${sep}${constructId}`;
@@ -93,8 +96,8 @@ export class PackagesStack extends cdk.Stack {
     // Add facebook integration
     const identityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(this, generateConstructId('IdentityProviderFacebook'), {
       userPool: apiConstruct.userPool,
-      clientId: '401988904382290',
-      clientSecret: '56dc78be341d68d0f0e3229a6ee37723',
+      clientId: facebookClientId,
+      clientSecret: facebookClientSecret,
       scopes: ['email', 'public_profile'],
       attributeMapping: {
         email: cognito.ProviderAttribute.FACEBOOK_EMAIL,
