@@ -56,15 +56,16 @@ const verifyJwt = (jwk: IJwk, token: string): ICognitoIdentity | null => {
     const decodedJwt = jwt.decode(token, { complete: true }) as IDecodedJWT;
     if (!decodedJwt) {
       console.log('Not a valid JWT token');
-    }
-    const { kid } = decodedJwt.header;
-    const pem = pems[kid];
-    if (!pem) {
-      console.log('Invalid token');
-    }
-    const result = jwt.verify(token, pem);
+    } else {
+      const { kid } = decodedJwt.header;
+      const pem = pems[kid];
+      if (!pem) {
+        console.log('Invalid token');
+      }
+      const result = jwt.verify(token, pem);
 
-    return result as ICognitoIdentity;
+      return result as ICognitoIdentity;
+    }
   } catch (err) {
     console.log('ERROR', err);
   }

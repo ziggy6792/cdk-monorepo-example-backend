@@ -11,6 +11,7 @@ import * as defaults from '@aws-solutions-constructs/core';
 import path from 'path';
 import { Duration } from '@aws-cdk/core';
 import { MultiAuthApiGatewayLambda } from '../constructs/multi-auth-apigateway-lambda';
+import CognitoIdentityPool from '../constructs/cognito-identity-pool';
 
 export class PackagesStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -18,6 +19,9 @@ export class PackagesStack extends cdk.Stack {
 
     const REGION = 'ap-southeast-1';
     const scopes = [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PHONE, cognito.OAuthScope.COGNITO_ADMIN];
+
+    const callbackUrls = ['http://localhost:3000/profile/'];
+    const logoutUrls = ['http://localhost:3000/profile/'];
 
     const generateConstructId = (constructId: string, sep = '-'): string => {
       return `${id}${sep}${constructId}`;
@@ -66,7 +70,7 @@ export class PackagesStack extends cdk.Stack {
         standardAttributes: {
           email: {
             required: true,
-            mutable: false,
+            mutable: true,
           },
         },
         customAttributes: {
@@ -85,23 +89,51 @@ export class PackagesStack extends cdk.Stack {
       scopes,
     });
 
+    // Add App client
     const client = apiConstruct.userPool.addClient(generateConstructId('client'), {
       userPoolClientName: generateConstructId('client'),
       oAuth: {
         flows: { authorizationCodeGrant: true, implicitCodeGrant: true },
         scopes,
-        callbackUrls: ['http://localhost:3000/'],
-        logoutUrls: ['http://localhost:3000/'],
+        callbackUrls,
+        logoutUrls,
       },
       // supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.AMAZON, cognito.UserPoolClientIdentityProvider.COGNITO],
     });
-    const domainPrefix = apiConstruct.apiGateway.restApiId;
+    const domainPrefix = 'alpaca-dev';
 
     apiConstruct.userPool.addDomain('CognitoDomain', {
       cognitoDomain: {
         domainPrefix,
       },
     });
+    // Add identiy pool
+
+    const identityPoolConstruct = new CognitoIdentityPool(this, generateConstructId('IdentityPool'), {
+      identityPoolProps: {
+        allowUnauthenticatedIdentities: true, // Allow unathenticated users
+        cognitoIdentityProviders: [
+          {
+            clientId: client.userPoolClientId,
+            providerName: apiConstruct.userPool.userPoolProviderName,
+          },
+        ],
+      },
+    });
+
+    // const identityPool = new cognito.CfnIdentityPool(this, generateConstructId('IdentityPool'), {
+    //   allowUnauthenticatedIdentities: false, // Don't allow unathenticated users
+    //   cognitoIdentityProviders: [
+    //     {
+    //       clientId: client.userPoolClientId,
+    //       providerName: apiConstruct.userPool.userPoolProviderName,
+    //     },
+    //   ],
+    // });
+
+    // const authenticatedRole = new CognitoAuthRole(this, generateConstructId('"CognitoAuthRole"'), {
+    //   identityPool,
+    // });
 
     // defaults.printWarning(construct.apiGateway.restApiId);
     const { authUserResource, authRoleResource, authNoneResource } = apiConstruct;
@@ -134,7 +166,13 @@ export class PackagesStack extends cdk.Stack {
     lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
     lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonCognitoPowerUser'));
 
-    apiConstruct.addAuthorizers([lambdaUserConfirmed.role]);
+    const rolesWithApiAccesss = {
+      UserConfirmed: lambdaUserConfirmed.role,
+      IdentityPoolAuthenticated: identityPoolConstruct.authentictedRole,
+      IdentityPoolUnauthenticated: identityPoolConstruct.unauthenticatedRole,
+    };
+
+    apiConstruct.addAuthorizers(rolesWithApiAccesss);
 
     apiConstruct.userPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION, lambdaUserConfirmed);
 
@@ -145,15 +183,22 @@ export class PackagesStack extends cdk.Stack {
       stringValue: gqUrls[authRoleResource.path],
     });
 
-    // const externalApiUrl = new ssm.StringParameter(this, generateConstructId('external-api-url'), {
-    //   parameterName: generateConstructId('/beconfig/url', '/'),
-    //   stringValue: gqUrls[externalResource.path],
-    // });
-
     const clientConfig = {
-      API_URL: gqUrls[authUserResource.path],
-      USER_POOL_ID: apiConstruct.userPool.userPoolId,
-      WEB_APP_CLIENT_ID: client.userPoolClientId,
+      aws_project_region: 'ap-southeast-1',
+      aws_cognito_identity_pool_id: identityPoolConstruct.identityPool.ref,
+      aws_cognito_region: 'ap-southeast-1',
+      aws_user_pools_id: apiConstruct.userPool.userPoolId,
+      aws_user_pools_web_client_id: client.userPoolClientId,
+      aws_graphqlEndpoint_authUser: gqUrls[authUserResource.path],
+      aws_graphqlEndpoint_authRole: gqUrls[authRoleResource.path],
+      aws_graphqlEndpoint_authNone: gqUrls[authNoneResource.path],
+      oauth: {
+        domain: `${domainPrefix}.auth.ap-southeast-1.amazoncognito.com`,
+        scope: scopes.map((scope) => scope.scopeName),
+        redirectSignIn: 'http://localhost:3000/profile/',
+        redirectSignOut: 'http://localhost:3000/profile/',
+        responseType: 'code',
+      },
     };
 
     const localLambdaServerConfig = {

@@ -112,7 +112,7 @@ export class MultiAuthApiGatewayLambda extends Construct {
   }
 
   // authorizedRoles are the roles that will be allowed to invoke the iam authorized methods
-  public addAuthorizers(authorizedRoles: iam.IRole[]) {
+  public addAuthorizers(authorizedRoles: { [key: string]: iam.IRole }) {
     const authorizedRolePolicyStatements: iam.PolicyStatement[] = [];
     this.apiGateway.methods.forEach((apiMethod) => {
       if (apiMethod.resource.path.startsWith(`/${RESOURCE_TYPE.AUTH_USER}`)) {
@@ -130,13 +130,14 @@ export class MultiAuthApiGatewayLambda extends Construct {
         this.addNoAuthorizer(apiMethod);
       }
     });
-    authorizedRoles.forEach((authorizedRole) => {
+
+    for (let [key, authorizedRole] of Object.entries(authorizedRoles)) {
       authorizedRole.attachInlinePolicy(
-        new iam.Policy(this, 'AllowInvokeApi', {
+        new iam.Policy(this, `${key}InvokeApi`, {
           statements: authorizedRolePolicyStatements,
         })
       );
-    });
+    }
   }
 
   private addNoAuthorizer(apiMethod: api.Method) {
