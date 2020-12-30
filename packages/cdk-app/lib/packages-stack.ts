@@ -197,8 +197,8 @@ export class PackagesStack extends cdk.Stack {
       oauth: {
         domain: `${domainPrefix}.auth.ap-southeast-1.amazoncognito.com`,
         scope: scopes.map((scope) => scope.scopeName),
-        redirectSignIn: '/profile/',
-        redirectSignOut: '/profile/',
+        // redirectSignIn: '/profile/',
+        // redirectSignOut: '/profile/',
         responseType: 'code',
       },
     };
