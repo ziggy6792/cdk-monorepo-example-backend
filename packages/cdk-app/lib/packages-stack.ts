@@ -10,6 +10,7 @@ import * as defaults from '@aws-solutions-constructs/core';
 
 import path from 'path';
 import { Duration } from '@aws-cdk/core';
+import * as util from '../util';
 import { MultiAuthApiGatewayLambda } from '../constructs/multi-auth-apigateway-lambda';
 import CognitoIdentityPool from '../constructs/cognito-identity-pool';
 
@@ -21,7 +22,7 @@ export class PackagesStack extends cdk.Stack {
 
     const callbackUrls = ['http://localhost:3000/profile/'];
     const logoutUrls = ['http://localhost:3000/profile/'];
-    const domainPrefix = 'alpaca-dev';
+    const domainPrefix = 'alpaca-staging';
     const facebookClientId = '401988904382290';
     const facebookClientSecret = '56dc78be341d68d0f0e3229a6ee37723';
 
@@ -37,7 +38,7 @@ export class PackagesStack extends cdk.Stack {
 
     const lambdaGqResolverEnv = {
       REGION,
-      ENV: 'dev',
+      ENV: 'staging',
     };
 
     const apiConstruct = new MultiAuthApiGatewayLambda(this, generateConstructId('api'), {
@@ -55,7 +56,7 @@ export class PackagesStack extends cdk.Stack {
         restApiName: generateConstructId('api'),
         description: generateConstructId('api'),
         proxy: false,
-        deployOptions: { stageName: 'dev' },
+        deployOptions: { stageName: 'staging' },
         defaultCorsPreflightOptions: {
           allowOrigins: ['*'],
           allowHeaders: ['*'],
@@ -205,7 +206,7 @@ export class PackagesStack extends cdk.Stack {
 
     const localLambdaServerConfig = {
       REGION,
-      ENV: 'dev',
+      ENV: 'staging',
       COGNITO_USER_POOL_ID: apiConstruct.userPool.userPoolId,
     };
 

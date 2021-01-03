@@ -17,7 +17,7 @@ import { commonFunctionExample } from '@danielblignaut/common-lambda-lib/dist/ut
 import cors from 'cors';
 import createSchema from './graph-ql/create-schema';
 
-import { initMapper } from './util/mapper';
+import { initMapper, initTables } from './util/mapper';
 import { MyContext } from './types/MyContext';
 
 import { REGION, TABLE_NAME_PREFIX } from './config/index';
@@ -29,6 +29,7 @@ export const createApolloServer = (): ApolloServer => {
     playground: true,
     context: async (recieved: any): Promise<MyContext> => {
       // console.log('recieved', util.inspect(recieved));
+      await initTables();
 
       const { req } = recieved;
 
