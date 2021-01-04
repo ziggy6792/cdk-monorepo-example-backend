@@ -14,8 +14,8 @@ import * as util from '../util';
 import { MultiAuthApiGatewayLambda } from '../constructs/multi-auth-apigateway-lambda';
 import CognitoIdentityPool from '../constructs/cognito-identity-pool';
 
-export class PackagesStack extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
+export class DeploymentStack extends cdk.Stack {
+  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const REGION = 'ap-southeast-1';
