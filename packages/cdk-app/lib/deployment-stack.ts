@@ -41,8 +41,8 @@ export class DeploymentStack extends cdk.Stack {
 
     const apiConstruct = new MultiAuthApiGatewayLambda(this, util.getConstructId('api', stage), {
       lambdaFunctionProps: {
-        functionName: util.getConstructId('lambda-gq-resolver', stage),
-        description: util.getConstructId('lambda-gq-resolver', stage),
+        functionName: util.getConstructName('gq-resolver', stage),
+        description: util.getConstructDescription('gq-resolver', stage),
         memorySize: 256,
         timeout: Duration.seconds(30),
         runtime: lambda.Runtime.NODEJS_12_X,
@@ -51,8 +51,8 @@ export class DeploymentStack extends cdk.Stack {
         environment: lambdaGqResolverEnv,
       },
       apiGatewayProps: {
-        restApiName: util.getConstructId('api', stage),
-        description: util.getConstructId('api', stage),
+        restApiName: util.getConstructName('api', stage),
+        description: util.getConstructDescription('api', stage),
         proxy: false,
         deployOptions: { stageName: 'staging' },
         defaultCorsPreflightOptions: {
@@ -62,7 +62,7 @@ export class DeploymentStack extends cdk.Stack {
         },
       },
       cognitoUserPoolProps: {
-        userPoolName: util.getConstructId('userpool', stage),
+        userPoolName: util.getConstructName('userpool', stage),
         selfSignUpEnabled: true,
         signInAliases: {
           email: true,
@@ -93,7 +93,7 @@ export class DeploymentStack extends cdk.Stack {
     });
 
     // Add facebook integration
-    const identityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(this, util.getConstructId('identity-provider-facebook', stage), {
+    const identityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(this, util.getConstructId('facebook', stage), {
       userPool: apiConstruct.userPool,
       clientId: facebookClientId,
       clientSecret: facebookClientSecret,
@@ -107,7 +107,7 @@ export class DeploymentStack extends cdk.Stack {
 
     // Add App client
     const client = apiConstruct.userPool.addClient(util.getConstructId('client', stage), {
-      userPoolClientName: util.getConstructId('client', stage),
+      userPoolClientName: util.getConstructName('client', stage),
       oAuth: {
         flows: { authorizationCodeGrant: true, implicitCodeGrant: true },
         scopes,
@@ -150,9 +150,9 @@ export class DeploymentStack extends cdk.Stack {
       graphqlResource.addMethod('POST');
     });
 
-    const lambdaUserConfirmed = new lambda.Function(this, util.getConstructId('lambda-user-confirmed', stage), {
-      functionName: util.getConstructId('lambda-user-confirmed', stage),
-      description: util.getConstructId('lambda-user-confirmed', stage),
+    const lambdaUserConfirmed = new lambda.Function(this, util.getConstructId('userconfirmed', stage), {
+      functionName: util.getConstructName('user-confirmed', stage),
+      description: util.getConstructDescription('user-confirmed', stage),
       memorySize: 256,
       timeout: Duration.seconds(30),
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -181,7 +181,7 @@ export class DeploymentStack extends cdk.Stack {
 
     apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
-    const authRoleApiUrl = new ssm.StringParameter(this, util.getConstructId('aws-graphqlendpoint-authRole'), {
+    const authRoleApiUrl = new ssm.StringParameter(this, util.getConstructId('graphqlendpoint-authrole', stage), {
       parameterName: util.getSsmParamId('beconfig/aws_graphqlEndpoint_authRole', stage),
       stringValue: gqUrls[authRoleResource.path],
     });
@@ -226,14 +226,14 @@ REACT_APP_AWS_OATH_DOMAIN = ${domainPrefix}.auth.ap-southeast-1.amazoncognito.co
 
     // lambdaUserConfirmed.a
 
-    const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'local-lambda-config', {
-      description: 'local-lambda-config',
-      value: JSON.stringify(localLambdaServerConfig),
-    });
+    // const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'local-lambda-config', {
+    //   description: 'local-lambda-config',
+    //   value: JSON.stringify(localLambdaServerConfig),
+    // });
 
-    const clientConfigOutput = new cdk.CfnOutput(this, 'frontend-config', {
-      description: 'frontend-config',
-      value: frontendConfig,
-    });
+    // const clientConfigOutput = new cdk.CfnOutput(this, 'frontend-config', {
+    //   description: 'frontend-config',
+    //   value: frontendConfig,
+    // });
   }
 }
