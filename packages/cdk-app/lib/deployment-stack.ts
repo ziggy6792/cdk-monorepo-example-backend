@@ -16,21 +16,21 @@ import CognitoIdentityPool from '../constructs/cognito-identity-pool';
 
 export interface DeploymentStackProps extends cdk.StackProps {
   readonly stageName: string;
+  readonly facebookClientId: string;
+  readonly facebookClientSecret: string;
+  readonly domainPrefix: string;
 }
 
 export class DeploymentStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: DeploymentStackProps) {
     super(scope, id, props);
 
-    const { stageName } = props;
+    const { stageName, facebookClientId, facebookClientSecret, domainPrefix } = props;
 
     const REGION = 'ap-southeast-1';
 
     const callbackUrls = ['http://localhost:3000/profile/'];
     const logoutUrls = ['http://localhost:3000/profile/'];
-    const domainPrefix = `alpaca-${stageName}`;
-    const facebookClientId = '401988904382290';
-    const facebookClientSecret = '56dc78be341d68d0f0e3229a6ee37723';
 
     const scopes = [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PHONE, cognito.OAuthScope.COGNITO_ADMIN];
 

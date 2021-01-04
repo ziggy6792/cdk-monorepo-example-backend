@@ -5,6 +5,7 @@ import * as cdk from '@aws-cdk/core';
 import * as defaults from '@aws-solutions-constructs/core';
 import * as path from 'path';
 import { DeploymentStack } from './deployment-stack';
+import { DEPLOYMENT_CONFIG } from '../config';
 
 export interface DeploymentStageProps extends cdk.StackProps {
   readonly stageName: string;
@@ -19,7 +20,12 @@ export class DeploymentStage extends Stage {
 
     const { stageName } = props;
 
-    const stack = new DeploymentStack(this, 'deployment', { stageName });
+    const stageConfig = DEPLOYMENT_CONFIG[stageName];
+
+    const stack = new DeploymentStack(this, 'deployment', {
+      stageName,
+      ...stageConfig,
+    });
 
     // defaults.printWarning(websiteFolder);
 

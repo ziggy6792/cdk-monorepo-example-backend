@@ -6,6 +6,7 @@ import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
+import { DEPLOYMENT_CONFIG } from '../config/index';
 import { DeploymentStage } from './deployment-stage';
 import { DeploymentStack } from './deployment-stack';
 import { PROJECT_NAME } from '../config';
@@ -18,8 +19,12 @@ class DummyPipelineStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const stagingDeployment = new DeploymentStack(this, `${PROJECT_NAME}-staging-deployment`, { stageName: 'staging' });
-    const prodDeployment = new DeploymentStack(this, `${PROJECT_NAME}-prod-deployment`, { stageName: 'prod' });
+    const stages = ['deployment', 'prod'];
+
+    stages.forEach((stageName) => {
+      const stagingConfig = DEPLOYMENT_CONFIG[stageName];
+      const stagingDeployment = new DeploymentStack(this, `${PROJECT_NAME}-${stageName}-deployment`, { stageName, ...stagingConfig });
+    });
   }
 }
 
