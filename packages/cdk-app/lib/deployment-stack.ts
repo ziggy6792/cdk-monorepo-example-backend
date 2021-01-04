@@ -162,11 +162,11 @@ export class DeploymentStack extends cdk.Stack {
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-user-confirmed'), '..')),
       environment: {
-        SSM_BACKEND_CONFIG: util.getSsmParamId('beconfig', stage),
+        SSM_BACKEND_CONFIG: util.getSsmParamId('lambda-conf', stage),
       },
     });
 
-    // defaults.printWarning(util.getSsmParamId('beconfig', stage));
+    // defaults.printWarning(util.getSsmParamId('lambda-conf', stage));
 
     // lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
     lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
@@ -185,11 +185,11 @@ export class DeploymentStack extends cdk.Stack {
     apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
     const authRoleApiUrl = new ssm.StringParameter(this, util.getConstructId('graphqlendpoint-authrole', stage), {
-      parameterName: util.getSsmParamId('beconfig/aws_graphqlEndpoint_authRole', stage),
+      parameterName: util.getSsmParamId('lambda-conf/aws_graphqlEndpoint_authRole', stage),
       stringValue: gqUrls[authRoleResource.path],
     });
 
-    // defaults.printWarning(util.getSsmParamId('beconfig/aws_graphqlEndpoint_authRole', stage));
+    // defaults.printWarning(util.getSsmParamId('lambda-conf/aws_graphqlEndpoint_authRole', stage));
 
     // const clientConfig = {
     //   aws_project_region: 'ap-southeast-1',
@@ -229,14 +229,19 @@ REACT_APP_AWS_OATH_DOMAIN = ${domainPrefix}.auth.ap-southeast-1.amazoncognito.co
 
     // lambdaUserConfirmed.a
 
-    const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'locallambda-config', {
-      description: 'local-lambda-config',
+    const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'locallambda-conf', {
+      description: 'local-lambda-conf',
       value: JSON.stringify(localLambdaServerConfig),
     });
 
-    const clientConfigOutput = new cdk.CfnOutput(this, 'frontend-config', {
-      description: 'frontend-config',
+    const clientConfigOutput = new cdk.CfnOutput(this, 'frontend-conf', {
+      description: 'frontend-conf',
       value: frontendConfig,
+    });
+
+    const clientConfSSM = new ssm.StringParameter(this, util.getConstructId('frontend-conf', stage), {
+      parameterName: util.getSsmParamId('frontend-conf', stage),
+      stringValue: gqUrls[authRoleResource.path],
     });
   }
 }
