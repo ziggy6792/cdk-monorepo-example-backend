@@ -229,7 +229,7 @@ REACT_APP_AWS_OATH_DOMAIN = ${domainPrefix}.auth.ap-southeast-1.amazoncognito.co
 
     // lambdaUserConfirmed.a
 
-    const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'local-lambda-config', {
+    const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'locallambda-config', {
       description: 'local-lambda-config',
       value: JSON.stringify(localLambdaServerConfig),
     });
