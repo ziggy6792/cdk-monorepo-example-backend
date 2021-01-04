@@ -163,7 +163,7 @@ export class DeploymentStack extends cdk.Stack {
       },
     });
 
-    defaults.printWarning(util.getSsmParamId('beconfig', stage));
+    // defaults.printWarning(util.getSsmParamId('beconfig', stage));
 
     // lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
     lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
@@ -181,12 +181,12 @@ export class DeploymentStack extends cdk.Stack {
 
     apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
-    const authRoleApiUrl = new ssm.StringParameter(this, util.getConstructId('aws-graphqlendpoint-authRole'), {
-      parameterName: util.getSsmParamId('beconfig/aws_graphqlEndpoint_authRole', stage),
-      stringValue: gqUrls[authRoleResource.path],
-    });
+    // const authRoleApiUrl = new ssm.StringParameter(this, util.getConstructId('aws-graphqlendpoint-authRole'), {
+    //   parameterName: util.getSsmParamId('beconfig/aws_graphqlEndpoint_authRole', stage),
+    //   stringValue: gqUrls[authRoleResource.path],
+    // });
 
-    defaults.printWarning(util.getSsmParamId('beconfig/aws_graphqlEndpoint_authRole', stage));
+    // defaults.printWarning(util.getSsmParamId('beconfig/aws_graphqlEndpoint_authRole', stage));
 
     // const clientConfig = {
     //   aws_project_region: 'ap-southeast-1',
