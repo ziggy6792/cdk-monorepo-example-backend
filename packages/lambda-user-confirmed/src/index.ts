@@ -2,7 +2,7 @@
 import 'source-map-support/register';
 
 import * as lambda from 'aws-lambda';
-import config, { loadConfig } from './config';
+import { config, loadConfig } from './config';
 // import { initApolloClient } from './util/apollo-client';
 import { CognitoPostConfimEvent } from './types';
 import addAttributes from './handlers/add-attributes';
@@ -16,8 +16,6 @@ export const handler = async (
 ): Promise<CognitoPostConfimEvent> => {
   console.log('Recieved', JSON.stringify(event));
 
-  // event.req
-
   await loadConfig(process.env.SSM_LAMBDA_CONFIG);
 
   const envLogText = `
@@ -27,7 +25,8 @@ export const handler = async (
   AWS_SESSION_TOKEN = ${process.env.AWS_SESSION_TOKEN}
   `;
 
-  console.log('config', envLogText);
+  console.log('env short', envLogText);
+  console.log('env', process.env);
   console.log('config', config);
 
   event = await addAttributes(event, context, callback);
