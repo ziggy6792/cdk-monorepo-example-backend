@@ -115,7 +115,10 @@ export class DeploymentStack extends cdk.Stack {
         logoutUrls,
       },
       supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.COGNITO, cognito.UserPoolClientIdentityProvider.FACEBOOK],
+      // supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.COGNITO],
     });
+
+    client.node.addDependency(identityProviderFacebook);
 
     apiConstruct.userPool.addDomain('CognitoDomain', {
       cognitoDomain: {
