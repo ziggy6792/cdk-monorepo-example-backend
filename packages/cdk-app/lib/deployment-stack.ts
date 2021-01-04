@@ -229,14 +229,14 @@ REACT_APP_AWS_OATH_DOMAIN = ${domainPrefix}.auth.ap-southeast-1.amazoncognito.co
 
     // lambdaUserConfirmed.a
 
-    // const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'local-lambda-config', {
-    //   description: 'local-lambda-config',
-    //   value: JSON.stringify(localLambdaServerConfig),
-    // });
+    const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'local-lambda-config', {
+      description: 'local-lambda-config',
+      value: JSON.stringify(localLambdaServerConfig),
+    });
 
-    // const clientConfigOutput = new cdk.CfnOutput(this, 'frontend-config', {
-    //   description: 'frontend-config',
-    //   value: frontendConfig,
-    // });
+    const clientConfigOutput = new cdk.CfnOutput(this, 'frontend-config', {
+      description: 'frontend-config',
+      value: frontendConfig,
+    });
   }
 }
