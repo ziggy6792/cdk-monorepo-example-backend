@@ -2,7 +2,7 @@
 import 'source-map-support/register';
 
 import * as lambda from 'aws-lambda';
-import loadConfig, { config } from './config';
+import config, { loadConfig } from './config';
 // import { initApolloClient } from './util/apollo-client';
 import { CognitoPostConfimEvent } from './types';
 import addAttributes from './handlers/add-attributes';
@@ -19,7 +19,6 @@ export const handler = async (
   // event.req
 
   await loadConfig(process.env.SSM_LAMBDA_CONFIG);
-  // await loadConfig('/cdk-monorepo-backend/prod/lambda-conf');
 
   const envLogText = `
   AWS_REGION = ${process.env.AWS_REGION}

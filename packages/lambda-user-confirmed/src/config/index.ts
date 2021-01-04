@@ -10,7 +10,7 @@ const default_config: IConfig = {
 };
 
 // eslint-disable-next-line import/no-mutable-exports
-export let config: IConfig = default_config;
+let config: IConfig = default_config;
 
 let isFetched = false;
 
@@ -21,7 +21,7 @@ const fetchConfig = async (configPath: string): Promise<IConfig> => {
   return JSON.parse(param.Parameter.Value) as IConfig;
 };
 
-const loadConfig = async (configPath: string): Promise<void> => {
+export const loadConfig = async (configPath: string): Promise<void> => {
   if (!configPath) {
     return;
   }
@@ -31,4 +31,4 @@ const loadConfig = async (configPath: string): Promise<void> => {
   }
 };
 
-export default loadConfig;
+export default config;
