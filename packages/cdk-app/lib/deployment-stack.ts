@@ -241,7 +241,7 @@ REACT_APP_AWS_OATH_DOMAIN = ${domainPrefix}.auth.ap-southeast-1.amazoncognito.co
 
     const clientConfSSM = new ssm.StringParameter(this, util.getConstructId('frontend-conf', stage), {
       parameterName: util.getSsmParamId('frontend-conf', stage),
-      stringValue: gqUrls[authRoleResource.path],
+      stringValue: frontendConfig,
     });
   }
 }
