@@ -14,7 +14,7 @@ export class DeploymentStage extends Stage {
   constructor(scope: Construct, id: string, stage?: string, props?: StageProps) {
     super(scope, id, props);
 
-    const stack = new DeploymentStack(this, 'deployment');
+    const stack = new DeploymentStack(this, 'deployment', { stage });
 
     // defaults.printWarning(websiteFolder);
 
