@@ -54,7 +54,7 @@ export class DeploymentStack extends cdk.Stack {
         restApiName: util.getConstructName('api', stage),
         description: util.getConstructDescription('api', stage),
         proxy: false,
-        deployOptions: { stageName: 'staging' },
+        deployOptions: { stageName: stage },
         defaultCorsPreflightOptions: {
           allowOrigins: ['*'],
           allowHeaders: ['*'],
@@ -223,7 +223,7 @@ REACT_APP_AWS_OATH_DOMAIN = ${domainPrefix}.auth.ap-southeast-1.amazoncognito.co
 
     const localLambdaServerConfig = {
       REGION,
-      ENV: 'staging',
+      ENV: 'dev',
       COGNITO_USER_POOL_ID: apiConstruct.userPool.userPoolId,
     };
 
