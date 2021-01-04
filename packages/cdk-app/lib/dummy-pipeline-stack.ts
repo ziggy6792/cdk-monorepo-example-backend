@@ -7,7 +7,6 @@ import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
 import { DeploymentStage } from './deployment-stage';
-import * as util from '../util';
 import { DeploymentStack } from './deployment-stack';
 import { PROJECT_NAME } from '../config';
 

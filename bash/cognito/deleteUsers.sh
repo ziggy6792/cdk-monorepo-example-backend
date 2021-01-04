@@ -19,7 +19,7 @@
 # fi
 # done
 
-read -e -p "User Pool Id:" -i "ap-southeast-1_bhS0HEQAm" COGNITO_USER_POOL_ID
+read -e -p "User Pool Id:" -i "ap-southeast-1_jSZ2DotQB" COGNITO_USER_POOL_ID
 
 aws cognito-idp list-users --user-pool-id $COGNITO_USER_POOL_ID |
   jq -r '.Users | .[] | .Username' |

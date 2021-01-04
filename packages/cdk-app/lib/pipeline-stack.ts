@@ -7,7 +7,7 @@ import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
 import { DeploymentStage } from './deployment-stage';
-import * as util from '../util';
+import * as utils from '../utils';
 
 class PipelineStack extends Stack {
   public readonly stagingUrlOutput: cdk.CfnOutput;
@@ -20,8 +20,8 @@ class PipelineStack extends Stack {
     const sourceArtifact = new codepipeline.Artifact();
     const cloudAssemblyArtifact = new codepipeline.Artifact();
 
-    const pipeline = new CdkPipeline(this, util.getConstructId('pipeline'), {
-      pipelineName: util.getConstructId('pipeline'),
+    const pipeline = new CdkPipeline(this, utils.getConstructId('pipeline'), {
+      pipelineName: utils.getConstructId('pipeline'),
       cloudAssemblyArtifact,
 
       sourceAction: new codepipelineActions.GitHubSourceAction({
@@ -50,7 +50,7 @@ class PipelineStack extends Stack {
 
     // Do this as many times as necessary with any account and region
     // Account and region may be different from the pipeline's.
-    const deployedStagingStage = new DeploymentStage(this, util.getConstructId('staging'), 'staging', {
+    const deployedStagingStage = new DeploymentStage(this, utils.getConstructId('staging'), 'staging', {
       env: {
         account: '694710432912',
         region: 'ap-southeast-1',
@@ -77,7 +77,7 @@ class PipelineStack extends Stack {
     // Do this as many times as necessary with any account and region
     // Account and region may be different from the pipeline's.
 
-    const deployedProdStage = new DeploymentStage(this, util.getConstructId('prod'), 'prod', {
+    const deployedProdStage = new DeploymentStage(this, utils.getConstructId('prod'), 'prod', {
       env: {
         account: '694710432912',
         region: 'ap-southeast-1',

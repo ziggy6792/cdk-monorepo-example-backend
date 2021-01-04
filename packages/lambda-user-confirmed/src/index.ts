@@ -3,7 +3,6 @@ import 'source-map-support/register';
 
 import * as lambda from 'aws-lambda';
 import { config, loadConfig } from './config';
-// import { initApolloClient } from './util/apollo-client';
 import { CognitoPostConfimEvent } from './types';
 import addAttributes from './handlers/add-attributes';
 import addToGroup from './handlers/add-to-group';

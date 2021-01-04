@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { apolloClient } from '../util/apollo-client';
+import { apolloClient } from '../utils/apollo-client';
 
 const REGISTER = gql`
   mutation register($input: RegisterInput!) {
