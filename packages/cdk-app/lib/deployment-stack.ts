@@ -153,6 +153,11 @@ export class DeploymentStack extends cdk.Stack {
       graphqlResource.addMethod('POST');
     });
 
+    const lambdaConfigParam = {
+      name: util.getSsmParamId('lambda-config', stage),
+      value: { aws_graphqlEndpoint_authRole: gqUrls[authRoleResource.path] },
+    };
+
     const lambdaUserConfirmed = new lambda.Function(this, util.getConstructId('userconfirmed', stage), {
       functionName: util.getConstructName('user-confirmed', stage),
       description: util.getConstructDescription('user-confirmed', stage),
@@ -162,11 +167,11 @@ export class DeploymentStack extends cdk.Stack {
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-user-confirmed'), '..')),
       environment: {
-        SSM_BACKEND_CONFIG: util.getSsmParamId('lambda-conf', stage),
+        SSM_LAMBDA_CONFIG: lambdaConfigParam.name,
       },
     });
 
-    // defaults.printWarning(util.getSsmParamId('lambda-conf', stage));
+    // defaults.printWarning(util.getSsmParamId('lambda-config', stage));
 
     // lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
     lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
@@ -184,12 +189,10 @@ export class DeploymentStack extends cdk.Stack {
 
     apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
-    const authRoleApiUrl = new ssm.StringParameter(this, util.getConstructId('graphqlendpoint-authrole', stage), {
-      parameterName: util.getSsmParamId('lambda-conf/aws_graphqlEndpoint_authRole', stage),
-      stringValue: gqUrls[authRoleResource.path],
+    const lambdaConfigSSM = new ssm.StringParameter(this, lambdaConfigParam.name, {
+      parameterName: lambdaConfigParam.name,
+      stringValue: JSON.stringify(lambdaConfigParam.value),
     });
-
-    // defaults.printWarning(util.getSsmParamId('lambda-conf/aws_graphqlEndpoint_authRole', stage));
 
     // const clientConfig = {
     //   aws_project_region: 'ap-southeast-1',
@@ -229,18 +232,18 @@ REACT_APP_AWS_OATH_DOMAIN = ${domainPrefix}.auth.ap-southeast-1.amazoncognito.co
 
     // lambdaUserConfirmed.a
 
-    const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'locallambda-conf', {
-      description: 'local-lambda-conf',
+    const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'locallambda-config', {
+      description: 'local-lambda-config',
       value: JSON.stringify(localLambdaServerConfig),
     });
 
-    const clientConfigOutput = new cdk.CfnOutput(this, 'frontend-conf', {
-      description: 'frontend-conf',
+    const clientConfigOutput = new cdk.CfnOutput(this, 'frontend-config', {
+      description: 'frontend-config',
       value: frontendConfig,
     });
 
-    const clientConfSSM = new ssm.StringParameter(this, util.getConstructId('frontend-conf', stage), {
-      parameterName: util.getSsmParamId('frontend-conf', stage),
+    const clientConfSSM = new ssm.StringParameter(this, util.getConstructId('frontend-config', stage), {
+      parameterName: util.getSsmParamId('frontend-config', stage),
       stringValue: frontendConfig,
     });
   }

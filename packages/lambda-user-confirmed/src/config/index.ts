@@ -12,21 +12,13 @@ const default_config: IConfig = {
 // eslint-disable-next-line import/no-mutable-exports
 export let config: IConfig = default_config;
 
-const getParameterName = (paramPath: string) => paramPath.split('/').pop();
-
 let isFetched = false;
 
 const fetchConfig = async (configPath: string): Promise<IConfig> => {
   const ssm = new SSM();
-  const params = await ssm.getParametersByPath({ Path: configPath, Recursive: true }).promise();
+  const param = await ssm.getParameter({ Name: configPath }).promise();
 
-  const retConfig: Partial<IConfig> = {};
-
-  console.log('params', params);
-  params.Parameters.forEach((parameter) => {
-    retConfig[getParameterName(parameter.Name)] = parameter.Value;
-  });
-  return retConfig as IConfig;
+  return JSON.parse(param.Parameter.Value) as IConfig;
 };
 
 const loadConfig = async (configPath: string): Promise<void> => {

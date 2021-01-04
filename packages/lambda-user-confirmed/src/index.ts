@@ -18,7 +18,8 @@ export const handler = async (
 
   // event.req
 
-  await loadConfig(process.env.SSM_BACKEND_CONFIG);
+  await loadConfig(process.env.SSM_LAMBDA_CONFIG);
+  // await loadConfig('/cdk-monorepo-backend/prod/lambda-conf');
 
   const envLogText = `
   AWS_REGION = ${process.env.AWS_REGION}
@@ -27,7 +28,8 @@ export const handler = async (
   AWS_SESSION_TOKEN = ${process.env.AWS_SESSION_TOKEN}
   `;
 
-  console.log('env', envLogText);
+  console.log('config', envLogText);
+  console.log('config', config);
 
   event = await addAttributes(event, context, callback);
 
