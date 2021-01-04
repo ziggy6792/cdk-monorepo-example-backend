@@ -15,20 +15,20 @@ import { MultiAuthApiGatewayLambda } from '../constructs/multi-auth-apigateway-l
 import CognitoIdentityPool from '../constructs/cognito-identity-pool';
 
 export interface DeploymentStackProps extends cdk.StackProps {
-  readonly stage: string;
+  readonly stageName: string;
 }
 
 export class DeploymentStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: DeploymentStackProps) {
     super(scope, id, props);
 
-    const { stage } = props;
+    const { stageName } = props;
 
     const REGION = 'ap-southeast-1';
 
     const callbackUrls = ['http://localhost:3000/profile/'];
     const logoutUrls = ['http://localhost:3000/profile/'];
-    const domainPrefix = `alpaca-${stage}`;
+    const domainPrefix = `alpaca-${stageName}`;
     const facebookClientId = '401988904382290';
     const facebookClientSecret = '56dc78be341d68d0f0e3229a6ee37723';
 
@@ -36,13 +36,13 @@ export class DeploymentStack extends cdk.Stack {
 
     const lambdaGqResolverEnv = {
       REGION,
-      ENV: stage,
+      ENV: stageName,
     };
 
-    const apiConstruct = new MultiAuthApiGatewayLambda(this, utils.getConstructId('api', stage), {
+    const apiConstruct = new MultiAuthApiGatewayLambda(this, utils.getConstructId('api', stageName), {
       lambdaFunctionProps: {
-        functionName: utils.getConstructName('gq-resolver', stage),
-        description: utils.getConstructDescription('gq-resolver', stage),
+        functionName: utils.getConstructName('gq-resolver', stageName),
+        description: utils.getConstructDescription('gq-resolver', stageName),
         memorySize: 256,
         timeout: Duration.seconds(30),
         runtime: lambda.Runtime.NODEJS_12_X,
@@ -51,10 +51,10 @@ export class DeploymentStack extends cdk.Stack {
         environment: lambdaGqResolverEnv,
       },
       apiGatewayProps: {
-        restApiName: utils.getConstructName('api', stage),
-        description: utils.getConstructDescription('api', stage),
+        restApiName: utils.getConstructName('api', stageName),
+        description: utils.getConstructDescription('api', stageName),
         proxy: false,
-        deployOptions: { stageName: stage },
+        deployOptions: { stageName },
         defaultCorsPreflightOptions: {
           allowOrigins: ['*'],
           allowHeaders: ['*'],
@@ -62,7 +62,7 @@ export class DeploymentStack extends cdk.Stack {
         },
       },
       cognitoUserPoolProps: {
-        userPoolName: utils.getConstructName('userpool', stage),
+        userPoolName: utils.getConstructName('userpool', stageName),
         selfSignUpEnabled: true,
         signInAliases: {
           email: true,
@@ -93,7 +93,7 @@ export class DeploymentStack extends cdk.Stack {
     });
 
     // Add facebook integration
-    const identityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(this, utils.getConstructId('facebook', stage), {
+    const identityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(this, utils.getConstructId('facebook', stageName), {
       userPool: apiConstruct.userPool,
       clientId: facebookClientId,
       clientSecret: facebookClientSecret,
@@ -106,8 +106,8 @@ export class DeploymentStack extends cdk.Stack {
     });
 
     // Add App client
-    const client = apiConstruct.userPool.addClient(utils.getConstructId('client', stage), {
-      userPoolClientName: utils.getConstructName('client', stage),
+    const client = apiConstruct.userPool.addClient(utils.getConstructId('client', stageName), {
+      userPoolClientName: utils.getConstructName('client', stageName),
       oAuth: {
         flows: { authorizationCodeGrant: true, implicitCodeGrant: true },
         scopes,
@@ -127,7 +127,7 @@ export class DeploymentStack extends cdk.Stack {
     });
     // Add identiy pool
 
-    const identityPoolConstruct = new CognitoIdentityPool(this, utils.getConstructId('identitypool', stage), {
+    const identityPoolConstruct = new CognitoIdentityPool(this, utils.getConstructId('identitypool', stageName), {
       identityPoolProps: {
         allowUnauthenticatedIdentities: true, // Allow unathenticated users
         cognitoIdentityProviders: [
@@ -154,13 +154,13 @@ export class DeploymentStack extends cdk.Stack {
     });
 
     const lambdaConfigParam = {
-      name: utils.getSsmParamId('lambda-config', stage),
+      name: utils.getSsmParamId('lambda-config', stageName),
       value: { aws_graphqlEndpoint_authRole: gqUrls[authRoleResource.path] },
     };
 
-    const lambdaUserConfirmed = new lambda.Function(this, utils.getConstructId('userconfirmed', stage), {
-      functionName: utils.getConstructName('user-confirmed', stage),
-      description: utils.getConstructDescription('user-confirmed', stage),
+    const lambdaUserConfirmed = new lambda.Function(this, utils.getConstructId('userconfirmed', stageName), {
+      functionName: utils.getConstructName('user-confirmed', stageName),
+      description: utils.getConstructDescription('user-confirmed', stageName),
       memorySize: 256,
       timeout: Duration.seconds(30),
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -240,8 +240,8 @@ REACT_APP_AWS_OATH_DOMAIN = ${domainPrefix}.auth.ap-southeast-1.amazoncognito.co
       value: frontendConfig,
     });
 
-    const clientConfSSM = new ssm.StringParameter(this, utils.getConstructId('frontend-config', stage), {
-      parameterName: utils.getSsmParamId('frontend-config', stage),
+    const clientConfSSM = new ssm.StringParameter(this, utils.getConstructId('frontend-config', stageName), {
+      parameterName: utils.getSsmParamId('frontend-config', stageName),
       stringValue: frontendConfig,
     });
   }

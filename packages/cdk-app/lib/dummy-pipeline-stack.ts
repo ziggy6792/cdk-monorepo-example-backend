@@ -18,8 +18,8 @@ class DummyPipelineStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const stagingDeployment = new DeploymentStack(this, `${PROJECT_NAME}-staging-deployment`, { stage: 'staging' });
-    const prodDeployment = new DeploymentStack(this, `${PROJECT_NAME}-prod-deployment`, { stage: 'prod' });
+    const stagingDeployment = new DeploymentStack(this, `${PROJECT_NAME}-staging-deployment`, { stageName: 'staging' });
+    const prodDeployment = new DeploymentStack(this, `${PROJECT_NAME}-prod-deployment`, { stageName: 'prod' });
   }
 }
 

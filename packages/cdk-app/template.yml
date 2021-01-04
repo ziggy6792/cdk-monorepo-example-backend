@@ -273,7 +273,7 @@ Resources:
               Configuration:
                 ProjectName:
                   Ref: cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectBC77B5E6
-                EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"e422fffb855e71630dc02cf6d2b98a0b5cad44ffb2bff1cfc8c0c57e644367ca"}]'
+                EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"a25d4d5614ffea15e0464d43ff5f7eaaff82d0f0ea516cbd0f1c30bcfbc86129"}]'
               InputArtifacts:
                 - Name: Artifact_Source_GitHub
               Name: Synth
@@ -601,7 +601,7 @@ Resources:
             "phases": {
               "pre_build": {
                 "commands": [
-                  "yarn install"
+                  "yarn install --frozen-lockfile"
                 ]
               },
               "build": {
