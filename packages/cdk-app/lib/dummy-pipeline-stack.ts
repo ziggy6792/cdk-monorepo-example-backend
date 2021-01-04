@@ -9,7 +9,7 @@ import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
 import { DeploymentStage } from './deployment-stage';
 import * as util from '../util';
 import { DeploymentStack } from './deployment-stack';
-import { PROJECT_NAME } from '../conf';
+import { PROJECT_NAME } from '../config';
 
 class DummyPipelineStack extends Stack {
   public readonly stagingUrlOutput: cdk.CfnOutput;
