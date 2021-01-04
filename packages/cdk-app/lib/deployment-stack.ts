@@ -62,7 +62,7 @@ export class DeploymentStack extends cdk.Stack {
         },
       },
       cognitoUserPoolProps: {
-        userPoolName: util.getConstructId('user-pool', stage),
+        userPoolName: util.getConstructId('userpool', stage),
         selfSignUpEnabled: true,
         signInAliases: {
           email: true,
@@ -93,7 +93,7 @@ export class DeploymentStack extends cdk.Stack {
     });
 
     // Add facebook integration
-    const identityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(this, util.getConstructId('IdentityProviderFacebook', stage), {
+    const identityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(this, util.getConstructId('identity-provider-facebook', stage), {
       userPool: apiConstruct.userPool,
       clientId: facebookClientId,
       clientSecret: facebookClientSecret,
@@ -124,7 +124,7 @@ export class DeploymentStack extends cdk.Stack {
     });
     // Add identiy pool
 
-    const identityPoolConstruct = new CognitoIdentityPool(this, util.getConstructId('IdentityPool', stage), {
+    const identityPoolConstruct = new CognitoIdentityPool(this, util.getConstructId('identitypool', stage), {
       identityPoolProps: {
         allowUnauthenticatedIdentities: true, // Allow unathenticated users
         cognitoIdentityProviders: [
