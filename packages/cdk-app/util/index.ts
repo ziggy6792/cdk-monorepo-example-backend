@@ -9,6 +9,7 @@ export const getConstructId = (constructId: string): string => {
 };
 
 export const getSsmParamId = (paramPath: string, stage?: string): string => {
-  const param = ['', conf.PROJECT_NAME, stage, paramPath];
-  return param.join(ssmSep);
+  const pathItems = ['', conf.PROJECT_NAME, stage, paramPath].filter((v) => v != null);
+
+  return pathItems.join(ssmSep);
 };

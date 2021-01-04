@@ -2,7 +2,7 @@
   "name": "@danielblignaut/cdk-app",
   "version": "0.1.0",
   "bin": {
-    "packages": "bin/packages.js"
+    "packages": "bin/backend-stack.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && npx cdk synth",

@@ -28,23 +28,15 @@ export class PackagesStack extends cdk.Stack {
 
     const scopes = [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL, cognito.OAuthScope.PHONE, cognito.OAuthScope.COGNITO_ADMIN];
 
-    const generateConstructId = (constructId: string, sep = '-'): string => {
-      return `${id}${sep}${constructId}`;
-    };
-
-    const generateSsmParamId = (paramId: string, sep = '/'): string => {
-      return `${sep}${id}${paramId}`;
-    };
-
     const lambdaGqResolverEnv = {
       REGION,
       ENV: 'staging',
     };
 
-    const apiConstruct = new MultiAuthApiGatewayLambda(this, generateConstructId('api'), {
+    const apiConstruct = new MultiAuthApiGatewayLambda(this, util.getConstructId('api'), {
       lambdaFunctionProps: {
-        functionName: generateConstructId('lambda-gq-resolver'),
-        description: generateConstructId('lambda-gq-resolver'),
+        functionName: util.getConstructId('lambda-gq-resolver'),
+        description: util.getConstructId('lambda-gq-resolver'),
         memorySize: 256,
         timeout: Duration.seconds(30),
         runtime: lambda.Runtime.NODEJS_12_X,
@@ -53,8 +45,8 @@ export class PackagesStack extends cdk.Stack {
         environment: lambdaGqResolverEnv,
       },
       apiGatewayProps: {
-        restApiName: generateConstructId('api'),
-        description: generateConstructId('api'),
+        restApiName: util.getConstructId('api'),
+        description: util.getConstructId('api'),
         proxy: false,
         deployOptions: { stageName: 'staging' },
         defaultCorsPreflightOptions: {
@@ -64,7 +56,7 @@ export class PackagesStack extends cdk.Stack {
         },
       },
       cognitoUserPoolProps: {
-        userPoolName: generateConstructId('user-pool'),
+        userPoolName: util.getConstructId('user-pool'),
         selfSignUpEnabled: true,
         signInAliases: {
           email: true,
@@ -95,7 +87,7 @@ export class PackagesStack extends cdk.Stack {
     });
 
     // Add facebook integration
-    const identityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(this, generateConstructId('IdentityProviderFacebook'), {
+    const identityProviderFacebook = new cognito.UserPoolIdentityProviderFacebook(this, util.getConstructId('IdentityProviderFacebook'), {
       userPool: apiConstruct.userPool,
       clientId: facebookClientId,
       clientSecret: facebookClientSecret,
@@ -108,8 +100,8 @@ export class PackagesStack extends cdk.Stack {
     });
 
     // Add App client
-    const client = apiConstruct.userPool.addClient(generateConstructId('client'), {
-      userPoolClientName: generateConstructId('client'),
+    const client = apiConstruct.userPool.addClient(util.getConstructId('client'), {
+      userPoolClientName: util.getConstructId('client'),
       oAuth: {
         flows: { authorizationCodeGrant: true, implicitCodeGrant: true },
         scopes,
@@ -126,7 +118,7 @@ export class PackagesStack extends cdk.Stack {
     });
     // Add identiy pool
 
-    const identityPoolConstruct = new CognitoIdentityPool(this, generateConstructId('IdentityPool'), {
+    const identityPoolConstruct = new CognitoIdentityPool(this, util.getConstructId('IdentityPool'), {
       identityPoolProps: {
         allowUnauthenticatedIdentities: true, // Allow unathenticated users
         cognitoIdentityProviders: [
@@ -152,18 +144,20 @@ export class PackagesStack extends cdk.Stack {
       graphqlResource.addMethod('POST');
     });
 
-    const lambdaUserConfirmed = new lambda.Function(this, generateConstructId('lambda-user-confirmed'), {
-      functionName: generateConstructId('lambda-user-confirmed'),
-      description: generateConstructId('lambda-user-confirmed'),
+    const lambdaUserConfirmed = new lambda.Function(this, util.getConstructId('lambda-user-confirmed'), {
+      functionName: util.getConstructId('lambda-user-confirmed'),
+      description: util.getConstructId('lambda-user-confirmed'),
       memorySize: 256,
       timeout: Duration.seconds(30),
       runtime: lambda.Runtime.NODEJS_12_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-user-confirmed'), '..')),
       environment: {
-        SSM_BACKEND_CONFIG: generateSsmParamId('/beconfig'),
+        SSM_BACKEND_CONFIG: util.getSsmParamId('beconfig'),
       },
     });
+
+    defaults.printWarning(util.getSsmParamId('beconfig'));
 
     // lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAPIGatewayInvokeFullAccess'));
     lambdaUserConfirmed.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
@@ -181,10 +175,12 @@ export class PackagesStack extends cdk.Stack {
 
     apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
-    const authRoleApiUrl = new ssm.StringParameter(this, generateConstructId('aws_graphqlEndpoint_authRole'), {
-      parameterName: generateSsmParamId('/beconfig/aws_graphqlEndpoint_authRole'),
+    const authRoleApiUrl = new ssm.StringParameter(this, util.getConstructId('aws-graphqlendpoint-authRole'), {
+      parameterName: util.getSsmParamId('beconfig/aws_graphqlEndpoint_authRole'),
       stringValue: gqUrls[authRoleResource.path],
     });
+
+    defaults.printWarning(util.getSsmParamId('beconfig/aws_graphqlEndpoint_authRole'));
 
     // const clientConfig = {
     //   aws_project_region: 'ap-southeast-1',
