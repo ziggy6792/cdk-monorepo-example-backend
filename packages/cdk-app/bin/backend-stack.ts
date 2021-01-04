@@ -7,7 +7,7 @@ import * as util from '../util';
 
 const app = new cdk.App();
 
-// const stack = new DeploymentStack(app, `${PROJECT_NAME}-test`, { stage: 'test' });
+// const stack = new DeploymentStack(app, `${PROJECT_NAME}-staging`, { stage: 'staging' });
 
 const pipelineStack = new PipelineStack(app, util.getConstructId('pipeline'), {
   description: util.getConstructId('pipeline'),
