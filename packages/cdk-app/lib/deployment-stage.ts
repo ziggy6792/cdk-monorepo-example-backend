@@ -6,7 +6,7 @@ import * as defaults from '@aws-solutions-constructs/core';
 import * as path from 'path';
 import { DeploymentStack } from './deployment-stack';
 
-export interface DeploymentStackProps extends cdk.StackProps {
+export interface DeploymentStageProps extends cdk.StackProps {
   readonly stageName: string;
 }
 
@@ -14,7 +14,7 @@ export class DeploymentStage extends Stage {
   public readonly urlOutput: cdk.CfnOutput;
   // public stack: ApigwDemoStack;
 
-  constructor(scope: Construct, id: string, props?: DeploymentStackProps) {
+  constructor(scope: Construct, id: string, props?: DeploymentStageProps) {
     super(scope, id, props);
 
     const { stageName } = props;
