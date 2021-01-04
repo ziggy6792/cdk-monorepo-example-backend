@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 import * as cdk from '@aws-cdk/core';
+import { PROJECT_NAME } from '../conf';
+import { DeploymentStack } from '../lib/deployment-stack';
 import PipelineStack from '../lib/pipeline-stack';
 import * as util from '../util';
 
-// const app = new cdk.App();
-// const stack = new PackagesStack(app, PROJECT_NAME);
-
 const app = new cdk.App();
+
+// const stack = new DeploymentStack(app, `${PROJECT_NAME}-test`, { stage: 'test' });
+
 const pipelineStack = new PipelineStack(app, util.getConstructId('pipeline'), {
   description: util.getConstructId('pipeline'),
   env: {

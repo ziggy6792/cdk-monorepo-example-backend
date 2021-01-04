@@ -4,8 +4,10 @@ import * as conf from '../conf';
 const ssmSep = '/';
 const conSep = '-';
 
-export const getConstructId = (constructId: string): string => {
-  return `${conf.PROJECT_NAME}${conSep}${constructId}`;
+export const getConstructId = (constructId: string, stage?: string): string => {
+  const contItems = [conf.PROJECT_NAME, constructId, stage].filter((v) => v != null);
+
+  return contItems.join(conSep);
 };
 
 export const getSsmParamId = (paramPath: string, stage?: string): string => {
