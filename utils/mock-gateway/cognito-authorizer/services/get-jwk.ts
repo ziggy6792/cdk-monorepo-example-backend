@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import Axios from 'axios';
+import Axios, { AxiosResponse } from 'axios';
 import { IJwk } from '../verify-jwt';
 
 const getJwk = async (poolRegion: string, poolId: string): Promise<IJwk> => {
@@ -7,7 +7,14 @@ const getJwk = async (poolRegion: string, poolId: string): Promise<IJwk> => {
   const axios = Axios.create({
     baseURL: `https://cognito-idp.${poolRegion}.amazonaws.com/${poolId}/.well-known/jwks.json`,
   });
-  const result = await axios.get('/');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let result: AxiosResponse<any>;
+  try {
+    result = await axios.get('/');
+  } catch (err) {
+    console.log(`Error fetching jwt for pool ${poolId}`);
+    return null;
+  }
   return result.data as IJwk;
 };
 export default getJwk;

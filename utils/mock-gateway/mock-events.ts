@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-export const iamAuthorizedEvent = {
+export const iamAuthorizestagingent = {
   resource: '/internal/graphql',
   path: '/internal/graphql',
   httpMethod: 'POST',
@@ -56,10 +56,10 @@ export const iamAuthorizedEvent = {
     httpMethod: 'POST',
     extendedRequestId: 'XlOUwHA-SQ0Fpcw=',
     requestTime: '15/Dec/2020:06:54:47 +0000',
-    path: '/dev/internal/graphql',
+    path: '/staging/internal/graphql',
     accountId: '694710432912',
     protocol: 'HTTP/1.1',
-    stage: 'dev',
+    stage: 'staging',
     domainPrefix: 'mnakrqgp7b',
     requestTimeEpoch: 1608015287977,
     requestId: 'dd66b750-c03f-479e-bb63-2581f9b486db',
@@ -83,7 +83,7 @@ export const iamAuthorizedEvent = {
   isBase64Encoded: false,
 };
 
-export const cognitoAuthorizedEvent = {
+export const cognitoAuthorizestagingent = {
   resource: '/external/graphql',
   path: '/external/graphql',
   httpMethod: 'POST',
@@ -172,10 +172,10 @@ export const cognitoAuthorizedEvent = {
     httpMethod: 'POST',
     extendedRequestId: 'XlOxqFRDyQ0FdnA=',
     requestTime: '15/Dec/2020:06:57:52 +0000',
-    path: '/dev/external/graphql',
+    path: '/staging/external/graphql',
     accountId: '694710432912',
     protocol: 'HTTP/1.1',
-    stage: 'dev',
+    stage: 'staging',
     domainPrefix: 'mnakrqgp7b',
     requestTimeEpoch: 1608015472952,
     requestId: '63997e6f-d2ec-46cd-a651-17065cbfd68e',

@@ -5,4 +5,4 @@ export const COGNITO_USER_POOL_ID = process.env.COGNITO_USER_POOL_ID || 'ap-sout
 
 // Other
 export const IS_PROD = ENV === 'prod';
-export const TABLE_NAME_PREFIX = IS_PROD ? 'cdk-monorepo-prod-' : 'cdk-monorepo-dev-';
+export const TABLE_NAME_PREFIX = IS_PROD ? 'cdk-monorepo-prod-' : 'cdk-monorepo-staging-';

@@ -27,6 +27,8 @@ AWSMock.mock('CognitoIdentityServiceProvider', 'adminAddUserToGroup', function (
   cb(null);
 });
 
+process.env.SSM_LAMBDA_CONFIG = '/cdk-monorepo-backend/staging/lambda-config';
+
 const connfirmSignupEvent = {
   version: '1',
   region: 'ap-southeast-1',

@@ -2,18 +2,18 @@
   "name": "@danielblignaut/cdk-app",
   "version": "0.1.0",
   "bin": {
-    "packages": "bin/packages.js"
+    "packages": "bin/backend-stack.js"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && npx cdk synth",
+    "build": "tsc -p tsconfig.build.json",
     "watch": "tsc -w -p tsconfig.build.json",
+    "synth": "npx cdk synth",
     "test": "jest",
     "cdk": "cdk",
     "clean:light": "rm -rf ./dist && rm -rf tsconfig.build.tsbuildinfo",
     "clean:full": "yarn run clean:light && rm -rf ./node_modules && rm -rf ./cdk.out"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "1.70.0",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
     "aws-cdk": "1.70.0",
@@ -33,6 +33,10 @@
     "@aws-cdk/aws-sqs": "1.75.0",
     "@aws-cdk/aws-ssm": "1.75.0",
     "@aws-cdk/core": "1.75.0",
+    "@aws-cdk/pipelines": "1.75.0",
+    "@aws-cdk/aws-codepipeline": "1.75.0",
+    "@aws-cdk/aws-codepipeline-actions": "1.75.0",
+    "@aws-cdk/assert": "1.75.0",
     "@aws-solutions-constructs/core": "1.75.0",
     "@danielblignaut/lambda-a": "^2.0.0",
     "@danielblignaut/lambda-b": "^2.0.0",
