@@ -31,8 +31,8 @@ class PipelineStack extends Stack {
         trigger: codepipelineActions.GitHubTrigger.POLL,
         // Replace these with your actual GitHub project info
         owner: 'ziggy6792',
-        repo: 'master',
-        branch: 'feature/add-pipeline-2',
+        repo: 'cdk-monorepo-example-backend',
+        branch: 'master',
       }),
 
       synthAction: SimpleSynthAction.standardYarnSynth({
