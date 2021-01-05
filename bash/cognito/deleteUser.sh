@@ -19,7 +19,7 @@
 # fi
 # done
 
-read -e -p "User Pool Id:" -i "ap-southeast-1_5zmaTsBgU" COGNITO_USER_POOL_ID
+read -e -p "User Pool Id:" -i "ap-southeast-1_bhS0HEQAm" COGNITO_USER_POOL_ID
 
 read -e -p "User Name:" -i "Facebook_10224795420532374" uname
 

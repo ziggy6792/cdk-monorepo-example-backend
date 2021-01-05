@@ -1,901 +1,167 @@
+Description: cdk-monorepo-backend-pipeline
 Resources:
-  CDKMonoRepo2apiLambdaFunctionServiceRole90EA63CB:
-    Type: AWS::IAM::Role
+  cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8:
+    Type: AWS::KMS::Key
     Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Action: sts:AssumeRole
-            Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-        Version: "2012-10-17"
-      ManagedPolicyArns:
-        - Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - :iam::aws:policy/AmazonDynamoDBFullAccess
-      Policies:
-        - PolicyDocument:
-            Statement:
-              - Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Effect: Allow
-                Resource:
-                  Fn::Join:
-                    - ""
-                    - - "arn:"
-                      - Ref: AWS::Partition
-                      - ":logs:"
-                      - Ref: AWS::Region
-                      - ":"
-                      - Ref: AWS::AccountId
-                      - :log-group:/aws/lambda/*
-            Version: "2012-10-17"
-          PolicyName: LambdaFunctionServiceRolePolicy
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaFunctionServiceRole/Resource
-  CDKMonoRepo2apiLambdaFunctionServiceRoleDefaultPolicyB235A360:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyDocument:
+      KeyPolicy:
         Statement:
           - Action:
-              - xray:PutTraceSegments
-              - xray:PutTelemetryRecords
+              - kms:Create*
+              - kms:Describe*
+              - kms:Enable*
+              - kms:List*
+              - kms:Put*
+              - kms:Update*
+              - kms:Revoke*
+              - kms:Disable*
+              - kms:Get*
+              - kms:Delete*
+              - kms:ScheduleKeyDeletion
+              - kms:CancelKeyDeletion
+              - kms:GenerateDataKey
+              - kms:TagResource
+              - kms:UntagResource
             Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :iam::694710432912:root
+            Resource: "*"
+          - Action:
+              - kms:Decrypt
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelinePipelineRole0309F669
+                  - Arn
+            Resource: "*"
+          - Action:
+              - kms:Decrypt
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectRoleEE60908C
+                  - Arn
+            Resource: "*"
+          - Action:
+              - kms:Decrypt
+              - kms:Encrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectRoleEE60908C
+                  - Arn
+            Resource: "*"
+          - Action:
+              - kms:Decrypt
+              - kms:DescribeKey
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelineUpdatePipelineSelfMutationRole18352EE4
+                  - Arn
+            Resource: "*"
+          - Action:
+              - kms:Decrypt
+              - kms:Encrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelineUpdatePipelineSelfMutationRole18352EE4
+                  - Arn
+            Resource: "*"
+          - Action:
+              - kms:Decrypt
+              - kms:DescribeKey
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelineAssetsFileRoleB61CA7D6
+                  - Arn
+            Resource: "*"
+          - Action:
+              - kms:Decrypt
+              - kms:Encrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelineAssetsFileRoleB61CA7D6
+                  - Arn
+            Resource: "*"
+          - Action:
+              - kms:Decrypt
+              - kms:DescribeKey
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :iam::694710432912:role/cdk-hnb659fds-deploy-role-694710432912-ap-southeast-1
             Resource: "*"
         Version: "2012-10-17"
-      PolicyName: CDKMonoRepo2apiLambdaFunctionServiceRoleDefaultPolicyB235A360
-      Roles:
-        - Ref: CDKMonoRepo2apiLambdaFunctionServiceRole90EA63CB
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
     Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W12
-            reason: Lambda needs the following minimum required permissions to send trace data to X-Ray and access ENIs in a VPC.
-  CDKMonoRepo2apiLambdaFunction3A0E57C3:
-    Type: AWS::Lambda::Function
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/ArtifactsBucketEncryptionKey/Resource
+  cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyAliasE82DCE36:
+    Type: AWS::KMS::Alias
     Properties:
-      Code:
-        S3Bucket:
-          Ref: AssetParameters5ecb9d0d045150551dc058edeb29a6eed6f95e4b7ccc62f31fbe1867c2547e44S3BucketAE2A719E
-        S3Key:
-          Fn::Join:
-            - ""
-            - - Fn::Select:
-                  - 0
-                  - Fn::Split:
-                      - "||"
-                      - Ref: AssetParameters5ecb9d0d045150551dc058edeb29a6eed6f95e4b7ccc62f31fbe1867c2547e44S3VersionKey9D9057F8
-              - Fn::Select:
-                  - 1
-                  - Fn::Split:
-                      - "||"
-                      - Ref: AssetParameters5ecb9d0d045150551dc058edeb29a6eed6f95e4b7ccc62f31fbe1867c2547e44S3VersionKey9D9057F8
-      Handler: index.handler
-      Role:
+      AliasName: alias/codepipeline-cdkmonorepobackendpipelinepipeline17467f37
+      TargetKeyId:
         Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunctionServiceRole90EA63CB
+          - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
           - Arn
-      Runtime: nodejs12.x
-      Description: CDK-MonoRepo2-lambda-gq-resolver
-      Environment:
-        Variables:
-          REGION: ap-southeast-1
-          ENV: dev
-          AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
-      FunctionName: CDK-MonoRepo2-lambda-gq-resolver
-      MemorySize: 256
-      Timeout: 30
-      TracingConfig:
-        Mode: Active
-    DependsOn:
-      - CDKMonoRepo2apiLambdaFunctionServiceRoleDefaultPolicyB235A360
-      - CDKMonoRepo2apiLambdaFunctionServiceRole90EA63CB
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
     Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W58
-            reason: Lambda functions has the required permission to write CloudWatch Logs. It uses custom policy instead of arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole with more tighter permissions.
-  CDKMonoRepo2apiApiAccessLogGroupB7D431BC:
-    Type: AWS::Logs::LogGroup
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/ArtifactsBucketEncryptionKeyAlias/Resource
+  cdkmonorepobackendpipelinePipelineArtifactsBucket17FCB36E:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              KMSMasterKeyID:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
+                  - Arn
+              SSEAlgorithm: aws:kms
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
     UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
     Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/ApiAccessLogGroup/Resource
-  CDKMonoRepo2apiLambdaRestApiE70B2EB5:
-    Type: AWS::ApiGateway::RestApi
-    Properties:
-      Description: CDK-MonoRepo2-api
-      EndpointConfiguration:
-        Types:
-          - EDGE
-      Name: CDK-MonoRepo2-api
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Resource
-  CDKMonoRepo2apiLambdaRestApiDeploymentD9B8DD04fe82899a5dc4e4099981e0639df80ac2:
-    Type: AWS::ApiGateway::Deployment
-    Properties:
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      Description: Automatically created by the RestApi construct
-    DependsOn:
-      - CDKMonoRepo2apiLambdaRestApiauthnonegraphqlGET08898395
-      - CDKMonoRepo2apiLambdaRestApiauthnonegraphqlOPTIONSDE899027
-      - CDKMonoRepo2apiLambdaRestApiauthnonegraphqlPOST1E2B1637
-      - CDKMonoRepo2apiLambdaRestApiauthnonegraphql975DCE31
-      - CDKMonoRepo2apiLambdaRestApiauthnoneOPTIONS16AE1233
-      - CDKMonoRepo2apiLambdaRestApiauthnoneDE6E12F4
-      - CDKMonoRepo2apiLambdaRestApiauthrolegraphqlGET375A16AB
-      - CDKMonoRepo2apiLambdaRestApiauthrolegraphqlOPTIONSB685D391
-      - CDKMonoRepo2apiLambdaRestApiauthrolegraphqlPOST80F8C02C
-      - CDKMonoRepo2apiLambdaRestApiauthrolegraphqlFC0724FC
-      - CDKMonoRepo2apiLambdaRestApiauthroleOPTIONS9EB39BF8
-      - CDKMonoRepo2apiLambdaRestApiauthroleC38DA4AC
-      - CDKMonoRepo2apiLambdaRestApiauthusergraphqlGET9A28EA1E
-      - CDKMonoRepo2apiLambdaRestApiauthusergraphqlOPTIONSF9AC01E0
-      - CDKMonoRepo2apiLambdaRestApiauthusergraphqlPOST7F5BDDA0
-      - CDKMonoRepo2apiLambdaRestApiauthusergraphqlF4A0D21A
-      - CDKMonoRepo2apiLambdaRestApiauthuserOPTIONS01DDA5E1
-      - CDKMonoRepo2apiLambdaRestApiauthuser7493C8D9
-      - CDKMonoRepo2apiLambdaRestApiOPTIONS4A1DCBE6
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W45
-            reason: ApiGateway has AccessLogging enabled in AWS::ApiGateway::Stage resource, but cfn_nag checkes for it in AWS::ApiGateway::Deployment resource
-  CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9:
-    Type: AWS::ApiGateway::Stage
-    Properties:
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AccessLogSetting:
-        DestinationArn:
-          Fn::GetAtt:
-            - CDKMonoRepo2apiApiAccessLogGroupB7D431BC
-            - Arn
-        Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","user":"$context.identity.user","caller":"$context.identity.caller","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","resourcePath":"$context.resourcePath","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength"}'
-      DeploymentId:
-        Ref: CDKMonoRepo2apiLambdaRestApiDeploymentD9B8DD04fe82899a5dc4e4099981e0639df80ac2
-      MethodSettings:
-        - DataTraceEnabled: true
-          HttpMethod: "*"
-          LoggingLevel: INFO
-          ResourcePath: /*
-      StageName: dev
-      TracingEnabled: true
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/DeploymentStage.dev/Resource
-  CDKMonoRepo2apiLambdaRestApiOPTIONS4A1DCBE6:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: OPTIONS
-      ResourceId:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaRestApiE70B2EB5
-          - RootResourceId
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationType: NONE
-      Integration:
-        IntegrationResponses:
-          - ResponseParameters:
-              method.response.header.Access-Control-Allow-Headers: "'*'"
-              method.response.header.Access-Control-Allow-Origin: "'*'"
-              method.response.header.Access-Control-Allow-Methods: "'*'"
-            StatusCode: "204"
-        RequestTemplates:
-          application/json: "{ statusCode: 200 }"
-        Type: MOCK
-      MethodResponses:
-        - ResponseParameters:
-            method.response.header.Access-Control-Allow-Headers: true
-            method.response.header.Access-Control-Allow-Origin: true
-            method.response.header.Access-Control-Allow-Methods: true
-          StatusCode: "204"
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/OPTIONS/Resource
-  CDKMonoRepo2apiLambdaRestApiauthuser7493C8D9:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaRestApiE70B2EB5
-          - RootResourceId
-      PathPart: auth-user
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-user/Resource
-  CDKMonoRepo2apiLambdaRestApiauthuserOPTIONS01DDA5E1:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: OPTIONS
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthuser7493C8D9
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationType: NONE
-      Integration:
-        IntegrationResponses:
-          - ResponseParameters:
-              method.response.header.Access-Control-Allow-Headers: "'*'"
-              method.response.header.Access-Control-Allow-Origin: "'*'"
-              method.response.header.Access-Control-Allow-Methods: "'*'"
-            StatusCode: "204"
-        RequestTemplates:
-          application/json: "{ statusCode: 200 }"
-        Type: MOCK
-      MethodResponses:
-        - ResponseParameters:
-            method.response.header.Access-Control-Allow-Headers: true
-            method.response.header.Access-Control-Allow-Origin: true
-            method.response.header.Access-Control-Allow-Methods: true
-          StatusCode: "204"
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-user/OPTIONS/Resource
-  CDKMonoRepo2apiLambdaRestApiauthusergraphqlF4A0D21A:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthuser7493C8D9
-      PathPart: graphql
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-user/graphql/Resource
-  CDKMonoRepo2apiLambdaRestApiauthusergraphqlOPTIONSF9AC01E0:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: OPTIONS
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthusergraphqlF4A0D21A
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationType: NONE
-      Integration:
-        IntegrationResponses:
-          - ResponseParameters:
-              method.response.header.Access-Control-Allow-Headers: "'*'"
-              method.response.header.Access-Control-Allow-Origin: "'*'"
-              method.response.header.Access-Control-Allow-Methods: "'*'"
-            StatusCode: "204"
-        RequestTemplates:
-          application/json: "{ statusCode: 200 }"
-        Type: MOCK
-      MethodResponses:
-        - ResponseParameters:
-            method.response.header.Access-Control-Allow-Headers: true
-            method.response.header.Access-Control-Allow-Origin: true
-            method.response.header.Access-Control-Allow-Methods: true
-          StatusCode: "204"
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-user/graphql/OPTIONS/Resource
-  CDKMonoRepo2apiLambdaRestApiauthusergraphqlGETApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETauthusergraphql13DA2B8D:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /
-            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-            - /GET/auth-user/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-user/graphql/GET/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..auth-user.graphql
-  CDKMonoRepo2apiLambdaRestApiauthusergraphqlGETApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETauthusergraphql1430E383:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /test-invoke-stage/GET/auth-user/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-user/graphql/GET/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..auth-user.graphql
-  CDKMonoRepo2apiLambdaRestApiauthusergraphqlGET9A28EA1E:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: GET
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthusergraphqlF4A0D21A
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationScopes:
-        - openid
-        - email
-        - phone
-        - aws.cognito.signin.user.admin
-      AuthorizationType: COGNITO_USER_POOLS
-      AuthorizerId:
-        Ref: CDKMonoRepo2apiCognitoAuthorizer4A252582
-      Integration:
-        IntegrationHttpMethod: POST
-        Type: AWS_PROXY
-        Uri:
-          Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - ":apigateway:"
-              - Ref: AWS::Region
-              - :lambda:path/2015-03-31/functions/
-              - Fn::GetAtt:
-                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
-                  - Arn
-              - /invocations
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-user/graphql/GET/Resource
-  CDKMonoRepo2apiLambdaRestApiauthusergraphqlPOSTApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTauthusergraphqlCAF1CAF4:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /
-            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-            - /POST/auth-user/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-user/graphql/POST/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..auth-user.graphql
-  CDKMonoRepo2apiLambdaRestApiauthusergraphqlPOSTApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTauthusergraphql4D912AE3:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /test-invoke-stage/POST/auth-user/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-user/graphql/POST/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..auth-user.graphql
-  CDKMonoRepo2apiLambdaRestApiauthusergraphqlPOST7F5BDDA0:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: POST
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthusergraphqlF4A0D21A
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationScopes:
-        - openid
-        - email
-        - phone
-        - aws.cognito.signin.user.admin
-      AuthorizationType: COGNITO_USER_POOLS
-      AuthorizerId:
-        Ref: CDKMonoRepo2apiCognitoAuthorizer4A252582
-      Integration:
-        IntegrationHttpMethod: POST
-        Type: AWS_PROXY
-        Uri:
-          Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - ":apigateway:"
-              - Ref: AWS::Region
-              - :lambda:path/2015-03-31/functions/
-              - Fn::GetAtt:
-                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
-                  - Arn
-              - /invocations
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-user/graphql/POST/Resource
-  CDKMonoRepo2apiLambdaRestApiauthroleC38DA4AC:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaRestApiE70B2EB5
-          - RootResourceId
-      PathPart: auth-role
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-role/Resource
-  CDKMonoRepo2apiLambdaRestApiauthroleOPTIONS9EB39BF8:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: OPTIONS
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthroleC38DA4AC
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationType: NONE
-      Integration:
-        IntegrationResponses:
-          - ResponseParameters:
-              method.response.header.Access-Control-Allow-Headers: "'*'"
-              method.response.header.Access-Control-Allow-Origin: "'*'"
-              method.response.header.Access-Control-Allow-Methods: "'*'"
-            StatusCode: "204"
-        RequestTemplates:
-          application/json: "{ statusCode: 200 }"
-        Type: MOCK
-      MethodResponses:
-        - ResponseParameters:
-            method.response.header.Access-Control-Allow-Headers: true
-            method.response.header.Access-Control-Allow-Origin: true
-            method.response.header.Access-Control-Allow-Methods: true
-          StatusCode: "204"
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-role/OPTIONS/Resource
-  CDKMonoRepo2apiLambdaRestApiauthrolegraphqlFC0724FC:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthroleC38DA4AC
-      PathPart: graphql
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-role/graphql/Resource
-  CDKMonoRepo2apiLambdaRestApiauthrolegraphqlOPTIONSB685D391:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: OPTIONS
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthrolegraphqlFC0724FC
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationType: NONE
-      Integration:
-        IntegrationResponses:
-          - ResponseParameters:
-              method.response.header.Access-Control-Allow-Headers: "'*'"
-              method.response.header.Access-Control-Allow-Origin: "'*'"
-              method.response.header.Access-Control-Allow-Methods: "'*'"
-            StatusCode: "204"
-        RequestTemplates:
-          application/json: "{ statusCode: 200 }"
-        Type: MOCK
-      MethodResponses:
-        - ResponseParameters:
-            method.response.header.Access-Control-Allow-Headers: true
-            method.response.header.Access-Control-Allow-Origin: true
-            method.response.header.Access-Control-Allow-Methods: true
-          StatusCode: "204"
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-role/graphql/OPTIONS/Resource
-  CDKMonoRepo2apiLambdaRestApiauthrolegraphqlGETApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETauthrolegraphql2D5E4F6D:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /
-            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-            - /GET/auth-role/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-role/graphql/GET/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..auth-role.graphql
-  CDKMonoRepo2apiLambdaRestApiauthrolegraphqlGETApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETauthrolegraphql45735608:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /test-invoke-stage/GET/auth-role/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-role/graphql/GET/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..auth-role.graphql
-  CDKMonoRepo2apiLambdaRestApiauthrolegraphqlGET375A16AB:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: GET
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthrolegraphqlFC0724FC
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationType: AWS_IAM
-      Integration:
-        IntegrationHttpMethod: POST
-        Type: AWS_PROXY
-        Uri:
-          Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - ":apigateway:"
-              - Ref: AWS::Region
-              - :lambda:path/2015-03-31/functions/
-              - Fn::GetAtt:
-                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
-                  - Arn
-              - /invocations
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-role/graphql/GET/Resource
-  CDKMonoRepo2apiLambdaRestApiauthrolegraphqlPOSTApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTauthrolegraphql2C930B3D:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /
-            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-            - /POST/auth-role/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-role/graphql/POST/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..auth-role.graphql
-  CDKMonoRepo2apiLambdaRestApiauthrolegraphqlPOSTApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTauthrolegraphql902C3C61:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /test-invoke-stage/POST/auth-role/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-role/graphql/POST/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..auth-role.graphql
-  CDKMonoRepo2apiLambdaRestApiauthrolegraphqlPOST80F8C02C:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: POST
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthrolegraphqlFC0724FC
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationType: AWS_IAM
-      Integration:
-        IntegrationHttpMethod: POST
-        Type: AWS_PROXY
-        Uri:
-          Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - ":apigateway:"
-              - Ref: AWS::Region
-              - :lambda:path/2015-03-31/functions/
-              - Fn::GetAtt:
-                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
-                  - Arn
-              - /invocations
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-role/graphql/POST/Resource
-  CDKMonoRepo2apiLambdaRestApiauthnoneDE6E12F4:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaRestApiE70B2EB5
-          - RootResourceId
-      PathPart: auth-none
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-none/Resource
-  CDKMonoRepo2apiLambdaRestApiauthnoneOPTIONS16AE1233:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: OPTIONS
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthnoneDE6E12F4
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationType: NONE
-      Integration:
-        IntegrationResponses:
-          - ResponseParameters:
-              method.response.header.Access-Control-Allow-Headers: "'*'"
-              method.response.header.Access-Control-Allow-Origin: "'*'"
-              method.response.header.Access-Control-Allow-Methods: "'*'"
-            StatusCode: "204"
-        RequestTemplates:
-          application/json: "{ statusCode: 200 }"
-        Type: MOCK
-      MethodResponses:
-        - ResponseParameters:
-            method.response.header.Access-Control-Allow-Headers: true
-            method.response.header.Access-Control-Allow-Origin: true
-            method.response.header.Access-Control-Allow-Methods: true
-          StatusCode: "204"
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-none/OPTIONS/Resource
-  CDKMonoRepo2apiLambdaRestApiauthnonegraphql975DCE31:
-    Type: AWS::ApiGateway::Resource
-    Properties:
-      ParentId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthnoneDE6E12F4
-      PathPart: graphql
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-none/graphql/Resource
-  CDKMonoRepo2apiLambdaRestApiauthnonegraphqlOPTIONSDE899027:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: OPTIONS
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthnonegraphql975DCE31
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationType: NONE
-      Integration:
-        IntegrationResponses:
-          - ResponseParameters:
-              method.response.header.Access-Control-Allow-Headers: "'*'"
-              method.response.header.Access-Control-Allow-Origin: "'*'"
-              method.response.header.Access-Control-Allow-Methods: "'*'"
-            StatusCode: "204"
-        RequestTemplates:
-          application/json: "{ statusCode: 200 }"
-        Type: MOCK
-      MethodResponses:
-        - ResponseParameters:
-            method.response.header.Access-Control-Allow-Headers: true
-            method.response.header.Access-Control-Allow-Origin: true
-            method.response.header.Access-Control-Allow-Methods: true
-          StatusCode: "204"
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-none/graphql/OPTIONS/Resource
-  CDKMonoRepo2apiLambdaRestApiauthnonegraphqlGETApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETauthnonegraphql4C0FCA58:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /
-            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-            - /GET/auth-none/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-none/graphql/GET/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..auth-none.graphql
-  CDKMonoRepo2apiLambdaRestApiauthnonegraphqlGETApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2GETauthnonegraphqlE6C1F9A8:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /test-invoke-stage/GET/auth-none/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-none/graphql/GET/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.GET..auth-none.graphql
-  CDKMonoRepo2apiLambdaRestApiauthnonegraphqlGET08898395:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: GET
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthnonegraphql975DCE31
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationType: NONE
-      Integration:
-        IntegrationHttpMethod: POST
-        Type: AWS_PROXY
-        Uri:
-          Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - ":apigateway:"
-              - Ref: AWS::Region
-              - :lambda:path/2015-03-31/functions/
-              - Fn::GetAtt:
-                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
-                  - Arn
-              - /invocations
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-none/graphql/GET/Resource
-  CDKMonoRepo2apiLambdaRestApiauthnonegraphqlPOSTApiPermissionCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTauthnonegraphql51D83AF0:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /
-            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-            - /POST/auth-none/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-none/graphql/POST/ApiPermission.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..auth-none.graphql
-  CDKMonoRepo2apiLambdaRestApiauthnonegraphqlPOSTApiPermissionTestCDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2POSTauthnonegraphql7FD0E447:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaFunction3A0E57C3
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - /test-invoke-stage/POST/auth-none/graphql
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-none/graphql/POST/ApiPermission.Test.CDKMonoRepo2CDKMonoRepo2apiLambdaRestApi3455ACE2.POST..auth-none.graphql
-  CDKMonoRepo2apiLambdaRestApiauthnonegraphqlPOST1E2B1637:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: POST
-      ResourceId:
-        Ref: CDKMonoRepo2apiLambdaRestApiauthnonegraphql975DCE31
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      AuthorizationType: NONE
-      Integration:
-        IntegrationHttpMethod: POST
-        Type: AWS_PROXY
-        Uri:
-          Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - ":apigateway:"
-              - Ref: AWS::Region
-              - :lambda:path/2015-03-31/functions/
-              - Fn::GetAtt:
-                  - CDKMonoRepo2apiLambdaFunction3A0E57C3
-                  - Arn
-              - /invocations
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/Default/auth-none/graphql/POST/Resource
-  CDKMonoRepo2apiLambdaRestApiUsagePlanAFD14053:
-    Type: AWS::ApiGateway::UsagePlan
-    Properties:
-      ApiStages:
-        - ApiId:
-            Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-          Stage:
-            Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-          Throttle: {}
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApi/UsagePlan/Resource
-  CDKMonoRepo2apiLambdaRestApiCloudWatchRole1E69854B:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/ArtifactsBucket/Resource
+  cdkmonorepobackendpipelinePipelineRole0309F669:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -903,486 +169,284 @@ Resources:
           - Action: sts:AssumeRole
             Effect: Allow
             Principal:
-              Service: apigateway.amazonaws.com
+              Service: codepipeline.amazonaws.com
         Version: "2012-10-17"
-      Policies:
-        - PolicyDocument:
-            Statement:
-              - Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:DescribeLogGroups
-                  - logs:DescribeLogStreams
-                  - logs:PutLogEvents
-                  - logs:GetLogEvents
-                  - logs:FilterLogEvents
-                Effect: Allow
-                Resource:
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/Role/Resource
+  cdkmonorepobackendpipelinePipelineRoleDefaultPolicy83ADB250:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - cdkmonorepobackendpipelinePipelineArtifactsBucket17FCB36E
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - cdkmonorepobackendpipelinePipelineArtifactsBucket17FCB36E
+                        - Arn
+                    - /*
+          - Action:
+              - kms:Decrypt
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - cdkmonorepobackendpipelinePipelineBuildSynthCodePipelineActionRole19A625F3
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - cdkmonorepobackendpipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRole93773810
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - cdkmonorepobackendpipelineAssetsFileRoleB61CA7D6
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - :iam::694710432912:role/cdk-hnb659fds-deploy-role-694710432912-ap-southeast-1
+        Version: "2012-10-17"
+      PolicyName: cdkmonorepobackendpipelinePipelineRoleDefaultPolicy83ADB250
+      Roles:
+        - Ref: cdkmonorepobackendpipelinePipelineRole0309F669
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/Role/DefaultPolicy/Resource
+  cdkmonorepobackendpipelinePipelineCD020AB7:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - cdkmonorepobackendpipelinePipelineRole0309F669
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: "1"
+              Configuration:
+                Owner: ziggy6792
+                Repo: cdk-monorepo-example
+                Branch: feature/add-pipeline-2
+                OAuthToken: "{{resolve:secretsmanager:GITHUB_OATH_TOKEN:SecretString:GITHUB_OATH_TOKEN::}}"
+                PollForSourceChanges: true
+              Name: GitHub
+              OutputArtifacts:
+                - Name: Artifact_Source_GitHub
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectBC77B5E6
+                EnvironmentVariables: '[{"name":"_PROJECT_CONFIG_HASH","type":"PLAINTEXT","value":"a25d4d5614ffea15e0464d43ff5f7eaaff82d0f0ea516cbd0f1c30bcfbc86129"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_GitHub
+              Name: Synth
+              OutputArtifacts:
+                - Name: Artifact_Build_Synth
+              RoleArn:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelinePipelineBuildSynthCodePipelineActionRole19A625F3
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: cdkmonorepobackendpipelineUpdatePipelineSelfMutation15150BF6
+              InputArtifacts:
+                - Name: Artifact_Build_Synth
+              Name: SelfMutate
+              RoleArn:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRole93773810
+                  - Arn
+              RunOrder: 1
+          Name: UpdatePipeline
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: cdkmonorepobackendpipelineAssetsFileAsset1AB447F09
+              InputArtifacts:
+                - Name: Artifact_Build_Synth
+              Name: FileAsset1
+              RoleArn:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelineAssetsFileRoleB61CA7D6
+                  - Arn
+              RunOrder: 1
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: cdkmonorepobackendpipelineAssetsFileAsset2B39CA1CE
+              InputArtifacts:
+                - Name: Artifact_Build_Synth
+              Name: FileAsset2
+              RoleArn:
+                Fn::GetAtt:
+                  - cdkmonorepobackendpipelineAssetsFileRoleB61CA7D6
+                  - Arn
+              RunOrder: 1
+          Name: Assets
+        - Actions:
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: "1"
+              Configuration:
+                StackName: cdk-monorepo-backend-staging-deployment
+                Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                RoleArn:
                   Fn::Join:
                     - ""
                     - - "arn:"
                       - Ref: AWS::Partition
-                      - ":logs:"
-                      - Ref: AWS::Region
-                      - ":"
-                      - Ref: AWS::AccountId
-                      - :*
-            Version: "2012-10-17"
-          PolicyName: LambdaRestApiCloudWatchRolePolicy
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApiCloudWatchRole/Resource
-  CDKMonoRepo2apiLambdaRestApiAccountA54C6A9D:
-    Type: AWS::ApiGateway::Account
-    Properties:
-      CloudWatchRoleArn:
-        Fn::GetAtt:
-          - CDKMonoRepo2apiLambdaRestApiCloudWatchRole1E69854B
-          - Arn
-    DependsOn:
-      - CDKMonoRepo2apiLambdaRestApiE70B2EB5
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/LambdaRestApiAccount
-  CDKMonoRepo2apiCognitoUserPoolBCEBB48D:
-    Type: AWS::Cognito::UserPool
-    Properties:
-      AccountRecoverySetting:
-        RecoveryMechanisms:
-          - Name: verified_email
-            Priority: 1
-      AdminCreateUserConfig:
-        AllowAdminCreateUserOnly: false
-      AutoVerifiedAttributes:
-        - email
-      EmailVerificationMessage: The verification code to your new account is {####}
-      EmailVerificationSubject: Verify your new account
-      LambdaConfig:
-        PostConfirmation:
-          Fn::GetAtt:
-            - CDKMonoRepo2lambdauserconfirmed1DA50857
-            - Arn
-      Policies:
-        PasswordPolicy:
-          MinimumLength: 6
-          RequireLowercase: false
-          RequireNumbers: false
-          RequireSymbols: false
-          RequireUppercase: false
-          TemporaryPasswordValidityDays: 2
-      Schema:
-        - Mutable: false
-          Name: email
-          Required: true
-        - AttributeDataType: String
-          Mutable: true
-          Name: signUpAttributes
-          StringAttributeConstraints:
-            MaxLength: "2048"
-            MinLength: "1"
-      SmsVerificationMessage: The verification code to your new account is {####}
-      UsernameAttributes:
-        - email
-      UserPoolAddOns:
-        AdvancedSecurityMode: ENFORCED
-      UserPoolName: CDK-MonoRepo2-user-pool
-      VerificationMessageTemplate:
-        DefaultEmailOption: CONFIRM_WITH_CODE
-        EmailMessage: The verification code to your new account is {####}
-        EmailSubject: Verify your new account
-        SmsMessage: The verification code to your new account is {####}
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/CognitoUserPool/Resource
-  CDKMonoRepo2apiCognitoUserPoolCDKMonoRepo2client9C6AECED:
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      UserPoolId:
-        Ref: CDKMonoRepo2apiCognitoUserPoolBCEBB48D
-      AllowedOAuthFlows:
-        - implicit
-        - code
-      AllowedOAuthFlowsUserPoolClient: true
-      AllowedOAuthScopes:
-        - openid
-        - email
-        - phone
-        - aws.cognito.signin.user.admin
-      CallbackURLs:
-        - http://localhost:3000/
-      ClientName: CDK-MonoRepo2-client
-      LogoutURLs:
-        - http://localhost:3000/
-      SupportedIdentityProviders:
-        - COGNITO
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/CognitoUserPool/CDK-MonoRepo2-client/Resource
-  CDKMonoRepo2apiCognitoUserPoolCognitoDomain08E841E3:
-    Type: AWS::Cognito::UserPoolDomain
-    Properties:
-      Domain:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      UserPoolId:
-        Ref: CDKMonoRepo2apiCognitoUserPoolBCEBB48D
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/CognitoUserPool/CognitoDomain/Resource
-  CDKMonoRepo2apiCognitoUserPoolClient343F15E4:
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      UserPoolId:
-        Ref: CDKMonoRepo2apiCognitoUserPoolBCEBB48D
-      AllowedOAuthFlows:
-        - implicit
-        - code
-      AllowedOAuthFlowsUserPoolClient: true
-      AllowedOAuthScopes:
-        - profile
-        - phone
-        - email
-        - openid
-        - aws.cognito.signin.user.admin
-      CallbackURLs:
-        - https://example.com
-      SupportedIdentityProviders:
-        - COGNITO
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/CognitoUserPoolClient/Resource
-  CDKMonoRepo2apiCognitoAuthorizer4A252582:
-    Type: AWS::ApiGateway::Authorizer
-    Properties:
-      RestApiId:
-        Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-      Type: COGNITO_USER_POOLS
-      IdentitySource: method.request.header.Authorization
-      Name: cognito-authorizer
-      ProviderARNs:
-        - Fn::GetAtt:
-            - CDKMonoRepo2apiCognitoUserPoolBCEBB48D
-            - Arn
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/CognitoAuthorizer
-  CDKMonoRepo2apiUserConfirmedInvokeApi5102B43F:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyDocument:
-        Statement:
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /OPTIONS/auth-role
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /OPTIONS/auth-role/graphql
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /GET/auth-role/graphql
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /POST/auth-role/graphql
-        Version: "2012-10-17"
-      PolicyName: CDKMonoRepo2apiUserConfirmedInvokeApi5102B43F
-      Roles:
-        - Ref: CDKMonoRepo2lambdauserconfirmedServiceRole61ACDF9A
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/UserConfirmedInvokeApi/Resource
-  CDKMonoRepo2apiIdentityPoolAuthenticatedInvokeApi7CC819C5:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyDocument:
-        Statement:
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /OPTIONS/auth-role
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /OPTIONS/auth-role/graphql
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /GET/auth-role/graphql
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /POST/auth-role/graphql
-        Version: "2012-10-17"
-      PolicyName: CDKMonoRepo2apiIdentityPoolAuthenticatedInvokeApi7CC819C5
-      Roles:
-        - Ref: CDKMonoRepo2IdentityPoolAuthRoleCognitoDefaultAuthenticatedRoleA5D22ED2
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/IdentityPoolAuthenticatedInvokeApi/Resource
-  CDKMonoRepo2apiIdentityPoolUnauthenticatedInvokeApi4A044A2B:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyDocument:
-        Statement:
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /OPTIONS/auth-role
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /OPTIONS/auth-role/graphql
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /GET/auth-role/graphql
-          - Action: execute-api:Invoke
-            Effect: Allow
-            Resource:
-              Fn::Join:
-                - ""
-                - - "arn:"
-                  - Ref: AWS::Partition
-                  - ":execute-api:"
-                  - Ref: AWS::Region
-                  - ":"
-                  - Ref: AWS::AccountId
-                  - ":"
-                  - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-                  - /
-                  - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-                  - /POST/auth-role/graphql
-        Version: "2012-10-17"
-      PolicyName: CDKMonoRepo2apiIdentityPoolUnauthenticatedInvokeApi4A044A2B
-      Roles:
-        - Ref: CDKMonoRepo2IdentityPoolUnauthRoleCognitoDefaultAuthenticatedRole923A06B1
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-api/IdentityPoolUnauthenticatedInvokeApi/Resource
-  CDKMonoRepo2IdentityPoolA2A90B6D:
-    Type: AWS::Cognito::IdentityPool
-    Properties:
-      AllowUnauthenticatedIdentities: true
-      CognitoIdentityProviders:
-        - ClientId:
-            Ref: CDKMonoRepo2apiCognitoUserPoolCDKMonoRepo2client9C6AECED
-          ProviderName:
+                      - :iam::694710432912:role/cdk-hnb659fds-cfn-exec-role-694710432912-ap-southeast-1
+                ActionMode: CHANGE_SET_REPLACE
+                ChangeSetName: PipelineChange
+                TemplatePath: Artifact_Build_Synth::assembly-cdk-monorepo-backend-pipeline-cdk-monorepo-backend-staging/cdkmonorepobackendpipelinecdkmonorepobackendstagingdeploymentB952C8A6.template.json
+              InputArtifacts:
+                - Name: Artifact_Build_Synth
+              Name: deployment.Prepare
+              RoleArn:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :iam::694710432912:role/cdk-hnb659fds-deploy-role-694710432912-ap-southeast-1
+              RunOrder: 1
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: "1"
+              Configuration:
+                StackName: cdk-monorepo-backend-staging-deployment
+                ActionMode: CHANGE_SET_EXECUTE
+                ChangeSetName: PipelineChange
+              Name: deployment.Deploy
+              RoleArn:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :iam::694710432912:role/cdk-hnb659fds-deploy-role-694710432912-ap-southeast-1
+              RunOrder: 2
+          Name: cdk-monorepo-backend-staging
+        - Actions:
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: "1"
+              Configuration:
+                StackName: cdk-monorepo-backend-prod-deployment
+                Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                RoleArn:
+                  Fn::Join:
+                    - ""
+                    - - "arn:"
+                      - Ref: AWS::Partition
+                      - :iam::694710432912:role/cdk-hnb659fds-cfn-exec-role-694710432912-ap-southeast-1
+                ActionMode: CHANGE_SET_REPLACE
+                ChangeSetName: PipelineChange
+                TemplatePath: Artifact_Build_Synth::assembly-cdk-monorepo-backend-pipeline-cdk-monorepo-backend-prod/cdkmonorepobackendpipelinecdkmonorepobackendproddeployment280F754A.template.json
+              InputArtifacts:
+                - Name: Artifact_Build_Synth
+              Name: deployment.Prepare
+              RoleArn:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :iam::694710432912:role/cdk-hnb659fds-deploy-role-694710432912-ap-southeast-1
+              RunOrder: 1
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: "1"
+              Configuration:
+                StackName: cdk-monorepo-backend-prod-deployment
+                ActionMode: CHANGE_SET_EXECUTE
+                ChangeSetName: PipelineChange
+              Name: deployment.Deploy
+              RoleArn:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :iam::694710432912:role/cdk-hnb659fds-deploy-role-694710432912-ap-southeast-1
+              RunOrder: 2
+          Name: cdk-monorepo-backend-prod
+      ArtifactStore:
+        EncryptionKey:
+          Id:
             Fn::GetAtt:
-              - CDKMonoRepo2apiCognitoUserPoolBCEBB48D
-              - ProviderName
+              - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
+              - Arn
+          Type: KMS
+        Location:
+          Ref: cdkmonorepobackendpipelinePipelineArtifactsBucket17FCB36E
+        Type: S3
+      Name: cdk-monorepo-backend-pipeline
+      RestartExecutionOnUpdate: true
+    DependsOn:
+      - cdkmonorepobackendpipelinePipelineRoleDefaultPolicy83ADB250
+      - cdkmonorepobackendpipelinePipelineRole0309F669
     Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-IdentityPool/CDK-MonoRepo2-IdentityPool
-  CDKMonoRepo2IdentityPoolAuthRoleCognitoDefaultAuthenticatedRoleA5D22ED2:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Action: sts:AssumeRoleWithWebIdentity
-            Condition:
-              StringEquals:
-                cognito-identity.amazonaws.com:aud:
-                  Ref: CDKMonoRepo2IdentityPoolA2A90B6D
-              ForAnyValue:StringLike:
-                cognito-identity.amazonaws.com:amr: authenticated
-            Effect: Allow
-            Principal:
-              Federated: cognito-identity.amazonaws.com
-        Version: "2012-10-17"
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-IdentityPool/AuthRole/CognitoDefaultAuthenticatedRole/Resource
-  CDKMonoRepo2IdentityPoolAuthRoleCognitoDefaultAuthenticatedRoleDefaultPolicyFF44F665:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyDocument:
-        Statement:
-          - Action:
-              - mobileanalytics:PutEvents
-              - cognito-sync:*
-              - cognito-identity:*
-            Effect: Allow
-            Resource: "*"
-        Version: "2012-10-17"
-      PolicyName: CDKMonoRepo2IdentityPoolAuthRoleCognitoDefaultAuthenticatedRoleDefaultPolicyFF44F665
-      Roles:
-        - Ref: CDKMonoRepo2IdentityPoolAuthRoleCognitoDefaultAuthenticatedRoleA5D22ED2
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-IdentityPool/AuthRole/CognitoDefaultAuthenticatedRole/DefaultPolicy/Resource
-  CDKMonoRepo2IdentityPoolUnauthRoleCognitoDefaultAuthenticatedRole923A06B1:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Action: sts:AssumeRoleWithWebIdentity
-            Condition:
-              StringEquals:
-                cognito-identity.amazonaws.com:aud:
-                  Ref: CDKMonoRepo2IdentityPoolA2A90B6D
-              ForAnyValue:StringLike:
-                cognito-identity.amazonaws.com:amr: unauthenticated
-            Effect: Allow
-            Principal:
-              Federated: cognito-identity.amazonaws.com
-        Version: "2012-10-17"
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-IdentityPool/UnauthRole/CognitoDefaultAuthenticatedRole/Resource
-  CDKMonoRepo2IdentityPoolUnauthRoleCognitoDefaultAuthenticatedRoleDefaultPolicyDE4EFB6C:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyDocument:
-        Statement:
-          - Action:
-              - mobileanalytics:PutEvents
-              - cognito-sync:*
-              - cognito-identity:*
-            Effect: Allow
-            Resource: "*"
-        Version: "2012-10-17"
-      PolicyName: CDKMonoRepo2IdentityPoolUnauthRoleCognitoDefaultAuthenticatedRoleDefaultPolicyDE4EFB6C
-      Roles:
-        - Ref: CDKMonoRepo2IdentityPoolUnauthRoleCognitoDefaultAuthenticatedRole923A06B1
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-IdentityPool/UnauthRole/CognitoDefaultAuthenticatedRole/DefaultPolicy/Resource
-  CDKMonoRepo2IdentityPoolRoleAttachment45D16B30:
-    Type: AWS::Cognito::IdentityPoolRoleAttachment
-    Properties:
-      IdentityPoolId:
-        Ref: CDKMonoRepo2IdentityPoolA2A90B6D
-      Roles:
-        authenticated:
-          Fn::GetAtt:
-            - CDKMonoRepo2IdentityPoolAuthRoleCognitoDefaultAuthenticatedRoleA5D22ED2
-            - Arn
-        unauthenticated:
-          Fn::GetAtt:
-            - CDKMonoRepo2IdentityPoolUnauthRoleCognitoDefaultAuthenticatedRole923A06B1
-            - Arn
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-IdentityPool/RoleAttachment
-  CDKMonoRepo2lambdauserconfirmedServiceRole61ACDF9A:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/Resource
+  cdkmonorepobackendpipelinePipelineBuildSynthCodePipelineActionRole19A625F3:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -1390,217 +454,532 @@ Resources:
           - Action: sts:AssumeRole
             Effect: Allow
             Principal:
-              Service: lambda.amazonaws.com
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :iam::694710432912:root
         Version: "2012-10-17"
-      ManagedPolicyArns:
-        - Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-        - Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - :iam::aws:policy/AmazonSSMFullAccess
-        - Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - :iam::aws:policy/AmazonCognitoPowerUser
     Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-lambda-user-confirmed/ServiceRole/Resource
-  CDKMonoRepo2lambdauserconfirmed1DA50857:
-    Type: AWS::Lambda::Function
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/Build/Synth/CodePipelineActionRole/Resource
+  cdkmonorepobackendpipelinePipelineBuildSynthCodePipelineActionRoleDefaultPolicyCBE7DFBA:
+    Type: AWS::IAM::Policy
     Properties:
-      Code:
-        S3Bucket:
-          Ref: AssetParameters8724fd3871444bd5d3f1c1795e92b575b9651d718b6072f89d7d81b1dc9a6676S3BucketF79F3ACB
-        S3Key:
-          Fn::Join:
-            - ""
-            - - Fn::Select:
-                  - 0
-                  - Fn::Split:
-                      - "||"
-                      - Ref: AssetParameters8724fd3871444bd5d3f1c1795e92b575b9651d718b6072f89d7d81b1dc9a6676S3VersionKey77BF02CF
-              - Fn::Select:
-                  - 1
-                  - Fn::Split:
-                      - "||"
-                      - Ref: AssetParameters8724fd3871444bd5d3f1c1795e92b575b9651d718b6072f89d7d81b1dc9a6676S3VersionKey77BF02CF
-      Handler: index.handler
-      Role:
-        Fn::GetAtt:
-          - CDKMonoRepo2lambdauserconfirmedServiceRole61ACDF9A
-          - Arn
-      Runtime: nodejs12.x
-      Description: CDK-MonoRepo2-lambda-user-confirmed
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectBC77B5E6
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: cdkmonorepobackendpipelinePipelineBuildSynthCodePipelineActionRoleDefaultPolicyCBE7DFBA
+      Roles:
+        - Ref: cdkmonorepobackendpipelinePipelineBuildSynthCodePipelineActionRole19A625F3
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/Build/Synth/CodePipelineActionRole/DefaultPolicy/Resource
+  cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectRoleEE60908C:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/Build/Synth/CdkBuildProject/Role/Resource
+  cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectRoleDefaultPolicy8155CFAC:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :logs:ap-southeast-1:694710432912:log-group:/aws/codebuild/
+                    - Ref: cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectBC77B5E6
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :logs:ap-southeast-1:694710432912:log-group:/aws/codebuild/
+                    - Ref: cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectBC77B5E6
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - :codebuild:ap-southeast-1:694710432912:report-group/
+                  - Ref: cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectBC77B5E6
+                  - -*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - cdkmonorepobackendpipelinePipelineArtifactsBucket17FCB36E
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - cdkmonorepobackendpipelinePipelineArtifactsBucket17FCB36E
+                        - Arn
+                    - /*
+          - Action:
+              - kms:Decrypt
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
+                - Arn
+          - Action:
+              - kms:Decrypt
+              - kms:Encrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectRoleDefaultPolicy8155CFAC
+      Roles:
+        - Ref: cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectRoleEE60908C
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/Build/Synth/CdkBuildProject/Role/DefaultPolicy/Resource
+  cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectBC77B5E6:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
       Environment:
-        Variables:
-          SSM_BACKEND_CONFIG: /CDK-MonoRepo2/beconfig
-      FunctionName: CDK-MonoRepo2-lambda-user-confirmed
-      MemorySize: 256
-      Timeout: 30
-    DependsOn:
-      - CDKMonoRepo2lambdauserconfirmedServiceRole61ACDF9A
-    Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-lambda-user-confirmed/Resource
-      aws:asset:path: /Users/sive/Documents/Training/serverless/cdk-monorepo-example/cdk-monorepo-example/packages/lambda-user-confirmed/dist
-      aws:asset:property: Code
-  CDKMonoRepo2lambdauserconfirmedPostConfirmationCognitoEEF42D29:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:4.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
         Fn::GetAtt:
-          - CDKMonoRepo2lambdauserconfirmed1DA50857
+          - cdkmonorepobackendpipelinePipelineBuildSynthCdkBuildProjectRoleEE60908C
           - Arn
-      Principal: cognito-idp.amazonaws.com
-      SourceArn:
+      Source:
+        BuildSpec: >-
+          {
+            "version": "0.2",
+            "phases": {
+              "pre_build": {
+                "commands": [
+                  "yarn install --frozen-lockfile"
+                ]
+              },
+              "build": {
+                "commands": [
+                  "yarn run build",
+                  "yarn cdk:synth"
+                ]
+              }
+            },
+            "artifacts": {
+              "base-directory": "cdk.out",
+              "files": "**/*"
+            }
+          }
+        Type: CODEPIPELINE
+      EncryptionKey:
         Fn::GetAtt:
-          - CDKMonoRepo2apiCognitoUserPoolBCEBB48D
+          - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
           - Arn
     Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-lambda-user-confirmed/PostConfirmationCognito
-  CDKMonoRepo2awsgraphqlEndpointauthRole1AB69809:
-    Type: AWS::SSM::Parameter
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/Build/Synth/CdkBuildProject/Resource
+  cdkmonorepobackendpipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRole93773810:
+    Type: AWS::IAM::Role
     Properties:
-      Type: String
-      Value:
-        Fn::Join:
-          - ""
-          - - https://
-            - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-            - .execute-api.
-            - Ref: AWS::Region
-            - "."
-            - Ref: AWS::URLSuffix
-            - /
-            - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-            - /auth-role/graphql
-      Name: /CDK-MonoRepo2/beconfig/aws_graphqlEndpoint_authRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :iam::694710432912:root
+        Version: "2012-10-17"
     Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDK-MonoRepo2-aws_graphqlEndpoint_authRole/Resource
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/Resource
+  cdkmonorepobackendpipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRoleDefaultPolicy1590B0D4:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - cdkmonorepobackendpipelineUpdatePipelineSelfMutation15150BF6
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: cdkmonorepobackendpipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRoleDefaultPolicy1590B0D4
+      Roles:
+        - Ref: cdkmonorepobackendpipelinePipelineUpdatePipelineSelfMutateCodePipelineActionRole93773810
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Pipeline/UpdatePipeline/SelfMutate/CodePipelineActionRole/DefaultPolicy/Resource
+  cdkmonorepobackendpipelineUpdatePipelineSelfMutationRole18352EE4:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/UpdatePipeline/SelfMutation/Role/Resource
+  cdkmonorepobackendpipelineUpdatePipelineSelfMutationRoleDefaultPolicyD1E37029:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :logs:ap-southeast-1:694710432912:log-group:/aws/codebuild/
+                    - Ref: cdkmonorepobackendpipelineUpdatePipelineSelfMutation15150BF6
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :logs:ap-southeast-1:694710432912:log-group:/aws/codebuild/
+                    - Ref: cdkmonorepobackendpipelineUpdatePipelineSelfMutation15150BF6
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - :codebuild:ap-southeast-1:694710432912:report-group/
+                  - Ref: cdkmonorepobackendpipelineUpdatePipelineSelfMutation15150BF6
+                  - -*
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              - arn:*:iam::*:role/*-deploy-role-*
+              - arn:*:iam::*:role/*-publishing-role-*
+          - Action: cloudformation:DescribeStacks
+            Effect: Allow
+            Resource: "*"
+          - Action: s3:ListBucket
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - cdkmonorepobackendpipelinePipelineArtifactsBucket17FCB36E
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - cdkmonorepobackendpipelinePipelineArtifactsBucket17FCB36E
+                        - Arn
+                    - /*
+          - Action:
+              - kms:Decrypt
+              - kms:DescribeKey
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
+                - Arn
+          - Action:
+              - kms:Decrypt
+              - kms:Encrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: cdkmonorepobackendpipelineUpdatePipelineSelfMutationRoleDefaultPolicyD1E37029
+      Roles:
+        - Ref: cdkmonorepobackendpipelineUpdatePipelineSelfMutationRole18352EE4
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/UpdatePipeline/SelfMutation/Role/DefaultPolicy/Resource
+  cdkmonorepobackendpipelineUpdatePipelineSelfMutation15150BF6:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:4.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - cdkmonorepobackendpipelineUpdatePipelineSelfMutationRole18352EE4
+          - Arn
+      Source:
+        BuildSpec: >-
+          {
+            "version": "0.2",
+            "phases": {
+              "install": {
+                "commands": "npm install -g aws-cdk"
+              },
+              "build": {
+                "commands": [
+                  "cdk -a . deploy cdk-monorepo-backend-pipeline --require-approval=never --verbose"
+                ]
+              }
+            }
+          }
+        Type: CODEPIPELINE
+      EncryptionKey:
+        Fn::GetAtt:
+          - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
+          - Arn
+      Name: cdk-monorepo-backend-pipeline-selfupdate
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/UpdatePipeline/SelfMutation/Resource
+  cdkmonorepobackendpipelineAssetsFileRoleB61CA7D6:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - :iam::694710432912:root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Assets/FileRole/Resource
+  cdkmonorepobackendpipelineAssetsFileRoleDefaultPolicy2C1A0981:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - :logs:ap-southeast-1:694710432912:log-group:/aws/codebuild/*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - :codebuild:ap-southeast-1:694710432912:report-group/*
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource: "*"
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource: arn:*:iam::*:role/*-file-publishing-role-*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - cdkmonorepobackendpipelinePipelineArtifactsBucket17FCB36E
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - cdkmonorepobackendpipelinePipelineArtifactsBucket17FCB36E
+                        - Arn
+                    - /*
+          - Action:
+              - kms:Decrypt
+              - kms:DescribeKey
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: cdkmonorepobackendpipelineAssetsFileRoleDefaultPolicy2C1A0981
+      Roles:
+        - Ref: cdkmonorepobackendpipelineAssetsFileRoleB61CA7D6
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Assets/FileRole/DefaultPolicy/Resource
+  cdkmonorepobackendpipelineAssetsFileAsset1AB447F09:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:4.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - cdkmonorepobackendpipelineAssetsFileRoleB61CA7D6
+          - Arn
+      Source:
+        BuildSpec: >-
+          {
+            "version": "0.2",
+            "phases": {
+              "install": {
+                "commands": "npm install -g cdk-assets"
+              },
+              "build": {
+                "commands": [
+                  "cdk-assets --path \"assembly-cdk-monorepo-backend-pipeline-cdk-monorepo-backend-staging/cdkmonorepobackendpipelinecdkmonorepobackendstagingdeploymentB952C8A6.assets.json\" --verbose publish \"ba86d91f0f9de3b922faa52b527ff783e991c5b59b2f8a6ebf6f221422bce6f0:694710432912-ap-southeast-1\"",
+                  "cdk-assets --path \"assembly-cdk-monorepo-backend-pipeline-cdk-monorepo-backend-prod/cdkmonorepobackendpipelinecdkmonorepobackendproddeployment280F754A.assets.json\" --verbose publish \"ba86d91f0f9de3b922faa52b527ff783e991c5b59b2f8a6ebf6f221422bce6f0:694710432912-ap-southeast-1\""
+                ]
+              }
+            }
+          }
+        Type: CODEPIPELINE
+      EncryptionKey:
+        Fn::GetAtt:
+          - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
+          - Arn
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Assets/FileAsset1/Default/Resource
+  cdkmonorepobackendpipelineAssetsFileAsset2B39CA1CE:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:4.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - cdkmonorepobackendpipelineAssetsFileRoleB61CA7D6
+          - Arn
+      Source:
+        BuildSpec: >-
+          {
+            "version": "0.2",
+            "phases": {
+              "install": {
+                "commands": "npm install -g cdk-assets"
+              },
+              "build": {
+                "commands": [
+                  "cdk-assets --path \"assembly-cdk-monorepo-backend-pipeline-cdk-monorepo-backend-staging/cdkmonorepobackendpipelinecdkmonorepobackendstagingdeploymentB952C8A6.assets.json\" --verbose publish \"b3393ee714d8a14bea207df286b1b1a20b97a97b31edd70fb8c6333c9469558a:694710432912-ap-southeast-1\"",
+                  "cdk-assets --path \"assembly-cdk-monorepo-backend-pipeline-cdk-monorepo-backend-prod/cdkmonorepobackendpipelinecdkmonorepobackendproddeployment280F754A.assets.json\" --verbose publish \"b3393ee714d8a14bea207df286b1b1a20b97a97b31edd70fb8c6333c9469558a:694710432912-ap-southeast-1\""
+                ]
+              }
+            }
+          }
+        Type: CODEPIPELINE
+      EncryptionKey:
+        Fn::GetAtt:
+          - cdkmonorepobackendpipelinePipelineArtifactsBucketEncryptionKeyF745E0D8
+          - Arn
+    Metadata:
+      aws:cdk:path: cdk-monorepo-backend-pipeline/cdk-monorepo-backend-pipeline/Assets/FileAsset2/Default/Resource
   CDKMetadata:
     Type: AWS::CDK::Metadata
     Properties:
-      Modules: aws-cdk=1.78.0,@aws-cdk/assets=1.75.0,@aws-cdk/aws-apigateway=1.75.0,@aws-cdk/aws-applicationautoscaling=1.75.0,@aws-cdk/aws-autoscaling-common=1.75.0,@aws-cdk/aws-certificatemanager=1.75.0,@aws-cdk/aws-cloudfront=1.75.0,@aws-cdk/aws-cloudfront-origins=1.75.0,@aws-cdk/aws-cloudwatch=1.75.0,@aws-cdk/aws-codeguruprofiler=1.75.0,@aws-cdk/aws-cognito=1.75.0,@aws-cdk/aws-dynamodb=1.75.0,@aws-cdk/aws-ec2=1.75.0,@aws-cdk/aws-elasticsearch=1.75.0,@aws-cdk/aws-events=1.75.0,@aws-cdk/aws-iam=1.75.0,@aws-cdk/aws-kinesis=1.75.0,@aws-cdk/aws-kinesisanalytics=1.75.0,@aws-cdk/aws-kms=1.75.0,@aws-cdk/aws-lambda=1.75.0,@aws-cdk/aws-lambda-event-sources=1.75.0,@aws-cdk/aws-logs=1.75.0,@aws-cdk/aws-s3=1.75.0,@aws-cdk/aws-s3-assets=1.75.0,@aws-cdk/aws-s3-notifications=1.75.0,@aws-cdk/aws-sagemaker=1.75.0,@aws-cdk/aws-sam=1.75.0,@aws-cdk/aws-secretsmanager=1.75.0,@aws-cdk/aws-sns=1.75.0,@aws-cdk/aws-sns-subscriptions=1.75.0,@aws-cdk/aws-sqs=1.75.0,@aws-cdk/aws-ssm=1.75.0,@aws-cdk/aws-stepfunctions=1.75.0,@aws-cdk/cloud-assembly-schema=1.75.0,@aws-cdk/core=1.75.0,@aws-cdk/custom-resources=1.75.0,@aws-cdk/cx-api=1.75.0,@aws-cdk/region-info=1.75.0,@aws-solutions-constructs/core=1.75.0,jsii-runtime=node.js/v14.14.0
+      Modules: aws-cdk=1.78.0,@aws-cdk/assets=1.75.0,@aws-cdk/aws-apigateway=1.75.0,@aws-cdk/aws-applicationautoscaling=1.75.0,@aws-cdk/aws-autoscaling=1.75.0,@aws-cdk/aws-autoscaling-common=1.75.0,@aws-cdk/aws-autoscaling-hooktargets=1.75.0,@aws-cdk/aws-certificatemanager=1.75.0,@aws-cdk/aws-cloudformation=1.75.0,@aws-cdk/aws-cloudfront=1.75.0,@aws-cdk/aws-cloudfront-origins=1.75.0,@aws-cdk/aws-cloudwatch=1.75.0,@aws-cdk/aws-codebuild=1.75.0,@aws-cdk/aws-codeguruprofiler=1.75.0,@aws-cdk/aws-codepipeline=1.75.0,@aws-cdk/aws-codepipeline-actions=1.75.0,@aws-cdk/aws-cognito=1.75.0,@aws-cdk/aws-dynamodb=1.75.0,@aws-cdk/aws-ec2=1.75.0,@aws-cdk/aws-ecr=1.75.0,@aws-cdk/aws-ecr-assets=1.75.0,@aws-cdk/aws-ecs=1.75.0,@aws-cdk/aws-elasticloadbalancingv2=1.75.0,@aws-cdk/aws-elasticsearch=1.75.0,@aws-cdk/aws-events=1.75.0,@aws-cdk/aws-events-targets=1.75.0,@aws-cdk/aws-iam=1.75.0,@aws-cdk/aws-kinesis=1.75.0,@aws-cdk/aws-kinesisanalytics=1.75.0,@aws-cdk/aws-kms=1.75.0,@aws-cdk/aws-lambda=1.75.0,@aws-cdk/aws-lambda-event-sources=1.75.0,@aws-cdk/aws-logs=1.75.0,@aws-cdk/aws-s3=1.75.0,@aws-cdk/aws-s3-assets=1.75.0,@aws-cdk/aws-s3-notifications=1.75.0,@aws-cdk/aws-sagemaker=1.75.0,@aws-cdk/aws-sam=1.75.0,@aws-cdk/aws-secretsmanager=1.75.0,@aws-cdk/aws-servicediscovery=1.75.0,@aws-cdk/aws-sns=1.75.0,@aws-cdk/aws-sns-subscriptions=1.75.0,@aws-cdk/aws-sqs=1.75.0,@aws-cdk/aws-ssm=1.75.0,@aws-cdk/aws-stepfunctions=1.75.0,@aws-cdk/cloud-assembly-schema=1.75.0,@aws-cdk/core=1.75.0,@aws-cdk/custom-resources=1.75.0,@aws-cdk/cx-api=1.75.0,@aws-cdk/pipelines=1.75.0,@aws-cdk/region-info=1.75.0,@aws-solutions-constructs/core=1.75.0,jsii-runtime=node.js/v14.14.0
     Metadata:
-      aws:cdk:path: CDK-MonoRepo2/CDKMetadata/Default
-    Condition: CDKMetadataAvailable
-Outputs:
-  CDKMonoRepo2apiLambdaRestApiEndpointD9FD2954:
-    Value:
-      Fn::Join:
-        - ""
-        - - https://
-          - Ref: CDKMonoRepo2apiLambdaRestApiE70B2EB5
-          - .execute-api.
-          - Ref: AWS::Region
-          - "."
-          - Ref: AWS::URLSuffix
-          - /
-          - Ref: CDKMonoRepo2apiLambdaRestApiDeploymentStagedev4C4ADBD9
-          - /
-  locallambdaconfig:
-    Description: local-lambda-config
-    Value:
-      Fn::Join:
-        - ""
-        - - '{"REGION":"ap-southeast-1","ENV":"dev","COGNITO_USER_POOL_ID":"'
-          - Ref: CDKMonoRepo2apiCognitoUserPoolBCEBB48D
-          - '"}'
-  clientconfig:
-    Description: client-config
-    Value:
-      Fn::Join:
-        - ""
-        - - '{"aws_project_region":"ap-southeast-1","aws_cognito_identity_pool_id":"'
-          - Ref: CDKMonoRepo2IdentityPoolA2A90B6D
-          - '","aws_cognito_region":"ap-southeast-1","aws_user_pools_id":"ap-southeast-1_5zmaTsBgU","aws_user_pools_web_client_id":"3cegk98tmu5kqtl2jhg1jlcl0","aws_graphqlEndpoint_authUser":"http://localhost:3100/lambda-gq-resolver/graphql","aws_graphqlEndpoint_authRole":"http://localhost:3100/lambda-gq-resolver/graphql","aws_graphqlEndpoint_authNone":"http://localhost:3100/lambda-gq-resolver/graphql"}'
+      aws:cdk:path: cdk-monorepo-backend-pipeline/CDKMetadata/Default
 Parameters:
-  AssetParameters5ecb9d0d045150551dc058edeb29a6eed6f95e4b7ccc62f31fbe1867c2547e44S3BucketAE2A719E:
-    Type: String
-    Description: S3 bucket for asset "5ecb9d0d045150551dc058edeb29a6eed6f95e4b7ccc62f31fbe1867c2547e44"
-  AssetParameters5ecb9d0d045150551dc058edeb29a6eed6f95e4b7ccc62f31fbe1867c2547e44S3VersionKey9D9057F8:
-    Type: String
-    Description: S3 key for asset version "5ecb9d0d045150551dc058edeb29a6eed6f95e4b7ccc62f31fbe1867c2547e44"
-  AssetParameters5ecb9d0d045150551dc058edeb29a6eed6f95e4b7ccc62f31fbe1867c2547e44ArtifactHashF3884A0C:
-    Type: String
-    Description: Artifact hash for asset "5ecb9d0d045150551dc058edeb29a6eed6f95e4b7ccc62f31fbe1867c2547e44"
-  AssetParameters8724fd3871444bd5d3f1c1795e92b575b9651d718b6072f89d7d81b1dc9a6676S3BucketF79F3ACB:
-    Type: String
-    Description: S3 bucket for asset "8724fd3871444bd5d3f1c1795e92b575b9651d718b6072f89d7d81b1dc9a6676"
-  AssetParameters8724fd3871444bd5d3f1c1795e92b575b9651d718b6072f89d7d81b1dc9a6676S3VersionKey77BF02CF:
-    Type: String
-    Description: S3 key for asset version "8724fd3871444bd5d3f1c1795e92b575b9651d718b6072f89d7d81b1dc9a6676"
-  AssetParameters8724fd3871444bd5d3f1c1795e92b575b9651d718b6072f89d7d81b1dc9a6676ArtifactHashFEA05CA0:
-    Type: String
-    Description: Artifact hash for asset "8724fd3871444bd5d3f1c1795e92b575b9651d718b6072f89d7d81b1dc9a6676"
-Conditions:
-  CDKMetadataAvailable:
-    Fn::Or:
-      - Fn::Or:
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - ap-east-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - ap-northeast-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - ap-northeast-2
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - ap-south-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - ap-southeast-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - ap-southeast-2
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - ca-central-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - cn-north-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - cn-northwest-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - eu-central-1
-      - Fn::Or:
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - eu-north-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - eu-west-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - eu-west-2
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - eu-west-3
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - me-south-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - sa-east-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - us-east-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - us-east-2
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - us-west-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - us-west-2
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store.
+Rules:
+  CheckBootstrapVersion:
+    Assertions:
+      - Assert:
+          Fn::Not:
+            - Fn::Contains:
+                - - "1"
+                  - "2"
+                  - "3"
+                - Ref: BootstrapVersion
+        AssertDescription: CDK bootstrap stack version 4 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.
 

@@ -1,7 +1,7 @@
 # #!/bin/bash
- 
+
 # USER_POOL_ID="compapida3444db_userpool_da3444db-compapi"
- 
+
 # RUN=1
 # until [ $RUN -eq 0 ] ; do
 # echo "Listing users"
@@ -19,11 +19,11 @@
 # fi
 # done
 
-read -e -p "User Pool Id:" -i "ap-southeast-1_TUK8FPaMg" COGNITO_USER_POOL_ID
+read -e -p "User Pool Id:" -i "ap-southeast-1_jSZ2DotQB" COGNITO_USER_POOL_ID
 
 aws cognito-idp list-users --user-pool-id $COGNITO_USER_POOL_ID |
-jq -r '.Users | .[] | .Username' |
-while read uname; do
-  echo "Deleting $uname";
-  aws cognito-idp admin-delete-user --user-pool-id $COGNITO_USER_POOL_ID --username $uname;
-done
+  jq -r '.Users | .[] | .Username' |
+  while read uname; do
+    echo "Deleting $uname"
+    aws cognito-idp admin-delete-user --user-pool-id $COGNITO_USER_POOL_ID --username $uname
+  done
