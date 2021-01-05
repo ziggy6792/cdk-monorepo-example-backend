@@ -1,11 +1,6 @@
-/* eslint-disable no-var */
-/* eslint-disable class-methods-use-this */
-// /* eslint-disable class-methods-use-this */
-// /* eslint-disable import/prefer-default-export */
-
 import { GraphQLSchema } from 'graphql';
 import 'reflect-metadata';
-import { Resolver, Query, buildSchemaSync } from 'type-graphql';
+import { buildSchemaSync } from 'type-graphql';
 import RegisterResolver from '../modules/user/Register';
 
 // declare global {
