@@ -54,7 +54,7 @@ apolloServer.applyMiddleware({ app, path: '*' });
 
 const server = serverless.createServer(app);
 commonFunctionExample();
-initMapper(REGION, TABLE_NAME_PREFIX);
+initMapper({ region: REGION, tableNamePrefix: TABLE_NAME_PREFIX });
 
 export const handler = (event, context) => {
   const logText = `

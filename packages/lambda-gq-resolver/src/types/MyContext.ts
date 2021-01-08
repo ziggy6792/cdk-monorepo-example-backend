@@ -1,15 +1,15 @@
 /* eslint-disable camelcase */
 export interface ICognitoIdentity {
-  sub: string;
-  event_id: string;
-  token_use: string;
-  scope: string;
+  sub?: string;
+  event_id?: string;
+  token_use?: string;
+  scope?: string;
   auth_time: number;
-  iss: string;
+  iss?: string;
   exp: number;
   iat: number;
-  jti: string;
-  client_id: string;
+  jti?: string;
+  client_id?: string;
   username: string;
 }
 
@@ -28,6 +28,6 @@ export interface IEvent {
 }
 
 export interface MyContext {
-  req: any;
+  req: any | null;
   identity: ICognitoIdentity | null;
 }

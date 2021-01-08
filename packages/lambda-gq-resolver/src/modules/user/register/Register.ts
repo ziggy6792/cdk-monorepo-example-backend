@@ -33,6 +33,8 @@ export default class RegisterResolver {
     user.lastName = lastName;
     user.email = email;
 
+    console.log('mapper', mapper);
+
     const createdUser = await mapper.put(user, { condition: createUniqueCondition() });
 
     return createdUser;
