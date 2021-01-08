@@ -74,6 +74,7 @@ export const deleteTables = async (): Promise<void> => {
   } catch (err) {
     console.log({ err });
   }
+  console.log('tables deleted');
 };
 
 export const createUniqueCondition = (attributePath = 'id'): FunctionExpression =>

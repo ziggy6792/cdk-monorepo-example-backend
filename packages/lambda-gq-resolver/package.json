@@ -8,8 +8,7 @@
     "build": "npx webpack --config ./webpack.config.js",
     "clean:light": "rm -rf ./dist && rm -rf ./tsconfig.build.tsbuildinfo",
     "clean:full": "yarn run clean:light && rm -rf ./node_modules",
-    "db:setup": "ts-node ./src/test-utils/test-conn.ts",
-    "test": "npm run db:setup && jest"
+    "test:setup": "ts-node ./src/test-utils/setup.ts"
   },
   "dependencies": {
     "@aws-solutions-constructs/core": "^1.75.0",
