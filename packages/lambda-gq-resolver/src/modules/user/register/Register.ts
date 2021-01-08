@@ -5,10 +5,10 @@
 
 import { Resolver, Query, Mutation, Arg, FieldResolver, Root, Ctx } from 'type-graphql';
 import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
-import { MyContext } from '../../types/MyContext';
-import { createUniqueCondition, mapper } from '../../utils/mapper';
-import User from '../../domain-models/User';
-import { RegisterInput } from './register/RegisterInput';
+import { MyContext } from '../../../types/MyContext';
+import { createUniqueCondition, mapper } from '../../../utils/mapper';
+import User from '../../../domain-models/User';
+import { RegisterInput } from './RegisterInput';
 
 @Resolver()
 export default class RegisterResolver {

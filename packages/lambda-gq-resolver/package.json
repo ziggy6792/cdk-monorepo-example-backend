@@ -7,7 +7,9 @@
   "scripts": {
     "build": "npx webpack --config ./webpack.config.js",
     "clean:light": "rm -rf ./dist && rm -rf ./tsconfig.build.tsbuildinfo",
-    "clean:full": "yarn run clean:light && rm -rf ./node_modules"
+    "clean:full": "yarn run clean:light && rm -rf ./node_modules",
+    "db:setup": "ts-node ./src/test-utils/test-conn.ts",
+    "test": "npm run db:setup && jest"
   },
   "dependencies": {
     "@aws-solutions-constructs/core": "^1.75.0",
@@ -33,5 +35,10 @@
     "express": "^4.17.1",
     "aws-serverless-express": "^3.4.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "jest": "^26.6.3",
+    "jest-watch-typeahead": "^0.6.1",
+    "ts-jest": "^26.4.4"
+  }
 }

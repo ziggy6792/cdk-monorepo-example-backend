@@ -1,7 +1,7 @@
 import { GraphQLSchema } from 'graphql';
 import 'reflect-metadata';
 import { buildSchemaSync } from 'type-graphql';
-import RegisterResolver from '../modules/user/Register';
+import RegisterResolver from '../modules/user/register/Register';
 
 // declare global {
 //   // eslint-disable-next-line @typescript-eslint/no-namespace
