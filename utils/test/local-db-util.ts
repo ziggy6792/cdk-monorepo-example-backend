@@ -15,7 +15,8 @@ export const checkConnection = async (): Promise<boolean> => {
     const isReady = stderr.includes('Connection to localhost port 8000 [tcp/irdmi] succeeded!');
     return isReady;
   } catch (err) {
-    // console.log('Local db not ready...');
+    console.log('LOCAL DB: connection error');
+    console.log(err);
     throw new Error(err);
   }
 };
@@ -56,7 +57,7 @@ export const start = async (): Promise<void> => {
       retries: 200,
     });
   } catch (err) {
-    console.log('Could not connect to local db');
+    console.log('LOCAL DB: Could not connect');
   }
 };
 
