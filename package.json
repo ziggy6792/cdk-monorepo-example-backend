@@ -47,6 +47,7 @@
     "lerna": "^3.20.2",
     "nodemon": "^2.0.6",
     "prettier-eslint": "^12.0.0",
+    "tree-kill": "^1.2.2",
     "ts-jest": "^26.4.4",
     "ts-loader": "^8.0.1",
     "ts-node": "^9.1.1",

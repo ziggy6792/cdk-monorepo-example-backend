@@ -39,7 +39,5 @@ describe('Register', () => {
     });
 
     await expect(mapper.get(Object.assign(new User(), { id: response.data.register.id }))).resolves.toBeTruthy();
-
-    console.log('global.externalLibrary', (global as any).externalLibrary);
   });
 });
