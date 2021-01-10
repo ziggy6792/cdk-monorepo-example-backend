@@ -1,9 +1,15 @@
-const {merge} = require('webpack-merge')
-const path = require('path')
-const rootConfig = require(path.join(__dirname, '../../webpack.config.build.js'))
+/* eslint-disable no-underscore-dangle */
+const { merge } = require('webpack-merge');
+const path = require('path');
 
-const output = merge(
-	rootConfig(__dirname)
-)
+const rootConfig = require(path.join(__dirname, '../../webpack.config.build.js'));
 
-module.exports = output
+const npmPackage = require('./package.json');
+
+const output = merge(rootConfig(__dirname), {
+  resolve: {
+    alias: npmPackage._moduleAliases || {},
+  },
+});
+
+module.exports = output;
