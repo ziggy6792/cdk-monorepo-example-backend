@@ -44,7 +44,7 @@ class PipelineStack extends Stack {
         // Use this if you need a build step (if you're not using ts-node
         // or if you have TypeScript Lambdas that need to be compiled).
         // installCommand: 'yarn install',
-        buildCommand: 'yarn run build',
+        buildCommand: 'yarn build',
         synthCommand: 'yarn cdk:synth',
         // subdirectory: 'packages/cdk-app',
       }),
@@ -52,14 +52,14 @@ class PipelineStack extends Stack {
 
     // const testingStage = new cdkPipeline.CdkStage(this, utils.getConstructId('test'), { stageName: 'testing', pipelineStage: { actions: [] } });
 
-    const testingStage = pipeline.addStage('testing');
+    const testingStage = pipeline.addStage('Test');
 
     const testAction = new cdkPipeline.ShellScriptAction({
       actionName: 'Test',
       additionalArtifacts: [sourceArtifact],
 
       // 'test.sh' comes from the source repository
-      commands: ['yarn install', 'yarn run build', 'yarn test'],
+      commands: ['yarn install', 'yarn build', 'yarn test'],
     });
 
     testingStage.addActions(testAction);
