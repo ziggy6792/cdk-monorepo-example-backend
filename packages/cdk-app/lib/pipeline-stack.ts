@@ -34,7 +34,7 @@ class PipelineStack extends Stack {
         // Replace these with your actual GitHub project info
         owner: 'ziggy6792',
         repo: 'cdk-monorepo-example-backend',
-        branch: 'feature/add-tests-to-pipeline',
+        branch: 'master',
       }),
 
       synthAction: SimpleSynthAction.standardYarnSynth({
