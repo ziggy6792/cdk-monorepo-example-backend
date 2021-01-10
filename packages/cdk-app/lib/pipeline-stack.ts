@@ -51,14 +51,14 @@ class PipelineStack extends Stack {
 
     // const testingStage = new cdkPipeline.CdkStage(this, utils.getConstructId('test'), { stageName: 'testing', pipelineStage: { actions: [] } });
 
-    const testingStage = pipeline.addStage('tesing');
+    const testingStage = pipeline.addStage('testing');
 
     const testAction = new cdkPipeline.ShellScriptAction({
       actionName: 'Test',
       additionalArtifacts: [sourceArtifact],
 
       // 'test.sh' comes from the source repository
-      commands: ['ls'],
+      commands: ['yarn install', 'yarn test'],
     });
 
     testingStage.addActions(testAction);
