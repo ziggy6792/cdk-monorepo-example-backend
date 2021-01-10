@@ -63,8 +63,8 @@ export const checkConnection = async (): Promise<boolean> => {
   };
 
   const dynamodb = new AWS.DynamoDB(serviceConfigOptions);
-  const tables = await promiseWithTimeout(dynamodb.listTables().promise(), 100);
-  console.log('LOCAL DB: LOCAL DB READY');
+  const tables = await promiseWithTimeout(dynamodb.listTables().promise(), 1000);
+  console.log('LOCAL DB: READY');
 
   return true;
 };
