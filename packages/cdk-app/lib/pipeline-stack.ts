@@ -65,9 +65,9 @@ class PipelineStack extends Stack {
       commands: ['yarn install', 'yarn build', 'yarn test'],
     });
 
-    testAction.project.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
-
     pipeline.codePipeline.stages[1].addAction(testAction);
+
+    testAction.project.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
 
     // const testingStage = new cdkPipeline.CdkStage(this, utils.getConstructId('test'), { stageName: 'testing', pipelineStage: { actions: [] } });
 
