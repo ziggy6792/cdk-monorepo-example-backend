@@ -58,7 +58,7 @@ class PipelineStack extends Stack {
       additionalArtifacts: [sourceArtifact],
 
       // 'test.sh' comes from the source repository
-      commands: ['yarn install', 'yarn test'],
+      commands: ['yarn install', 'yarn run build', 'yarn test'],
     });
 
     testingStage.addActions(testAction);
