@@ -4,6 +4,7 @@ import * as cdk from '@aws-cdk/core';
 import { Stack, StackProps, Construct, SecretValue } from '@aws-cdk/core';
 import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 import * as cdkPipeline from '@aws-cdk/pipelines';
+import * as iam from '@aws-cdk/aws-iam';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
@@ -62,6 +63,8 @@ class PipelineStack extends Stack {
     });
 
     testingStage.addActions(testAction);
+
+    testAction.project.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
 
     // Do this as many times as necessary with any account and region
     // Account and region may be different from the pipeline's.

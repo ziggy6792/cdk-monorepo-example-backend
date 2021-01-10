@@ -15,8 +15,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "baseUrl": "./",
-    "rootDir": "src"
+    "baseUrl": ".",
+    "rootDir": "src",
+    "paths": {
+      "src/*": ["/Users/sive/Documents/Training/serverless/cdk-monorepo-example/cdk-monorepo-example-backend/packages/lambda-a/src"]
+    }
   },
   "include": ["src"]
 }
