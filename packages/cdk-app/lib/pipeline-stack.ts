@@ -53,7 +53,7 @@ class PipelineStack extends Stack {
     const exampleAction = new cdkPipeline.ShellScriptAction({
       actionName: 'Example',
       additionalArtifacts: [sourceArtifact],
-      runOrder: 0,
+      runOrder: 1,
       // 'test.sh' comes from the source repository
       commands: ['ls'],
     });
