@@ -50,6 +50,16 @@ class PipelineStack extends Stack {
       }),
     });
 
+    const exampleAction = new cdkPipeline.ShellScriptAction({
+      actionName: 'Example',
+      additionalArtifacts: [sourceArtifact],
+
+      // 'test.sh' comes from the source repository
+      commands: ['ls'],
+    });
+
+    pipeline.codePipeline.stages[1].addAction(exampleAction);
+
     // const testingStage = new cdkPipeline.CdkStage(this, utils.getConstructId('test'), { stageName: 'testing', pipelineStage: { actions: [] } });
 
     const testingStage = pipeline.addStage('Test');
