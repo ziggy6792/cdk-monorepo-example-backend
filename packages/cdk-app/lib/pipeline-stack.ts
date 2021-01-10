@@ -3,6 +3,7 @@ import * as cdk from '@aws-cdk/core';
 
 import { Stack, StackProps, Construct, SecretValue } from '@aws-cdk/core';
 import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
+import * as cdkPipeline from '@aws-cdk/pipelines';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
@@ -47,6 +48,20 @@ class PipelineStack extends Stack {
         // subdirectory: 'packages/cdk-app',
       }),
     });
+
+    // const testingStage = new cdkPipeline.CdkStage(this, utils.getConstructId('test'), { stageName: 'testing', pipelineStage: { actions: [] } });
+
+    const testingStage = pipeline.addStage('tesing');
+
+    const testAction = new cdkPipeline.ShellScriptAction({
+      actionName: 'Test',
+      additionalArtifacts: [sourceArtifact],
+
+      // 'test.sh' comes from the source repository
+      commands: ['ls'],
+    });
+
+    testingStage.addActions(testAction);
 
     // Do this as many times as necessary with any account and region
     // Account and region may be different from the pipeline's.
