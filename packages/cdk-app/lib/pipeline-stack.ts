@@ -50,31 +50,26 @@ class PipelineStack extends Stack {
       }),
     });
 
-    const exampleAction = new cdkPipeline.ShellScriptAction({
-      actionName: 'Example',
-      additionalArtifacts: [sourceArtifact],
-      runOrder: 1,
-      // 'test.sh' comes from the source repository
-      commands: ['ls'],
-    });
-
-    pipeline.codePipeline.stages[1].addAction(exampleAction);
-
-    // const testingStage = new cdkPipeline.CdkStage(this, utils.getConstructId('test'), { stageName: 'testing', pipelineStage: { actions: [] } });
-
-    const testingStage = pipeline.addStage('Test');
+    // const exampleAction = new cdkPipeline.ShellScriptAction({
+    //   actionName: 'Example',
+    //   additionalArtifacts: [sourceArtifact],
+    //   runOrder: 1,
+    //   // 'test.sh' comes from the source repository
+    //   commands: ['ls'],
+    // });
 
     const testAction = new cdkPipeline.ShellScriptAction({
       actionName: 'Test',
       additionalArtifacts: [sourceArtifact],
-
-      // 'test.sh' comes from the source repository
+      runOrder: 1,
       commands: ['yarn install', 'yarn build', 'yarn test'],
     });
 
-    testingStage.addActions(testAction);
-
     testAction.project.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
+
+    pipeline.codePipeline.stages[1].addAction(testAction);
+
+    // const testingStage = new cdkPipeline.CdkStage(this, utils.getConstructId('test'), { stageName: 'testing', pipelineStage: { actions: [] } });
 
     // Do this as many times as necessary with any account and region
     // Account and region may be different from the pipeline's.
