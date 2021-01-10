@@ -7,8 +7,7 @@
   "scripts": {
     "build": "npx webpack --config ./webpack.config.js",
     "clean:light": "rm -rf ./dist && rm -rf ./tsconfig.build.tsbuildinfo",
-    "clean:full": "yarn run clean:light && rm -rf ./node_modules",
-    "test:setup": "ts-node ./src/test-utils/setup.ts"
+    "clean:full": "yarn run clean:light && rm -rf ./node_modules"
   },
   "dependencies": {
     "@aws-solutions-constructs/core": "^1.75.0",
