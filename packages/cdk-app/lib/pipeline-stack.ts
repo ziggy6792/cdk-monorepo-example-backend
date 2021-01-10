@@ -59,6 +59,12 @@ class PipelineStack extends Stack {
       },
     });
 
+    // deployedStagingStage.
+
+    // const testingStage = pipeline.addStage(new MyApplication(this, 'Testing', {
+    //   env: { account: '111111111111', region: 'eu-west-1' }
+    // }));
+
     const stagingStage = pipeline.addApplicationStage(deployedStagingStage);
 
     // devStage.addActions(new ManualApprovalAction({
