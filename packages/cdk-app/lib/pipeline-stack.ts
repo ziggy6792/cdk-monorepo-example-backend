@@ -3,6 +3,8 @@ import * as cdk from '@aws-cdk/core';
 
 import { Stack, StackProps, Construct, SecretValue } from '@aws-cdk/core';
 import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
+import * as cdkPipeline from '@aws-cdk/pipelines';
+import * as iam from '@aws-cdk/aws-iam';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
@@ -42,11 +44,32 @@ class PipelineStack extends Stack {
         // Use this if you need a build step (if you're not using ts-node
         // or if you have TypeScript Lambdas that need to be compiled).
         // installCommand: 'yarn install',
-        buildCommand: 'yarn run build',
+        buildCommand: 'yarn build',
         synthCommand: 'yarn cdk:synth',
         // subdirectory: 'packages/cdk-app',
       }),
     });
+
+    // const exampleAction = new cdkPipeline.ShellScriptAction({
+    //   actionName: 'Example',
+    //   additionalArtifacts: [sourceArtifact],
+    //   runOrder: 1,
+    //   // 'test.sh' comes from the source repository
+    //   commands: ['ls'],
+    // });
+
+    const testAction = new cdkPipeline.ShellScriptAction({
+      actionName: 'Test',
+      additionalArtifacts: [sourceArtifact],
+      runOrder: 1,
+      commands: ['yarn install', 'yarn build', 'yarn test'],
+    });
+
+    pipeline.codePipeline.stages[1].addAction(testAction);
+
+    testAction.project.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
+
+    // const testingStage = new cdkPipeline.CdkStage(this, utils.getConstructId('test'), { stageName: 'testing', pipelineStage: { actions: [] } });
 
     // Do this as many times as necessary with any account and region
     // Account and region may be different from the pipeline's.
