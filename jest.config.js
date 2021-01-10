@@ -36,7 +36,8 @@ module.exports = {
   // rootDir: './',
   // testRegex: '(/__tests__/.*|(\\.|/)(test))\\.tsx?$',
   testMatch: [],
-  globalSetup: './jestGlobalSetup.ts',
+  globalSetup: './utils/test/jest-setup/jestGlobalSetup.ts',
+  globalTeardown: './utils/test/jest-setup/jestGlobalTeardown.ts',
 
   watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 
