@@ -26,6 +26,7 @@ export const checkConnection = async (): Promise<boolean> => {
   let isReady = false;
   try {
     const { stderr } = await exec('bash -c "</dev/tcp/localhost/8000"; echo $?');
+    console.log('LOCAL DB: ', stderr);
     isReady = !stderr.includes('Connection refused');
   } catch (err) {
     console.log('LOCAL DB: connection error');
