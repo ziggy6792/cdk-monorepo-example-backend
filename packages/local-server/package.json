@@ -7,15 +7,14 @@
   "scripts": {
     "start": "ts-node src/index.ts"
   },
-  "_moduleAliases": {
-    "src": "/Users/sive/Documents/Training/serverless/cdk-monorepo-example/cdk-monorepo-example-backend/packages/lambda-a/dist"
-  },
   "dependencies": {
+    "@danielblignaut/common-lambda-lib": "^1.0.0",
+    "@danielblignaut/lambda-gq-resolver": "^2.0.0",
+    "apollo-server-express": "^2.19.0",
     "aws-sdk": "2.770.0",
     "express": "^4.17.1",
     "lambda-local": "^1.7.4",
     "lodash": "^4.17.20",
     "source-map-support": "^0.5.16"
-  },
-  "devDependencies": {}
+  }
 }
