@@ -2,5 +2,5 @@
   "watch": ["packages"],
   "ext": "ts,json",
   "ignore": ["**/*.test.ts"],
-  "exec": "ts-node ./utils/lambda-server"
+  "exec": "lsof -ti tcp:3100 | xargs kill && ts-node ./utils/lambda-server"
 }
