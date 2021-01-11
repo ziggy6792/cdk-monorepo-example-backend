@@ -5,7 +5,7 @@ import example from 'src/example';
 
 export const handler = async (event: any): Promise<any> => {
   example();
-  console.log('bla');
+  console.log('foo');
   return {
     statusCode: 200,
     body: JSON.stringify({

@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "scripts": {
-    "start:server": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts"
   },
   "dependencies": {
     "@danielblignaut/common-lambda-lib": "^1.0.0",
