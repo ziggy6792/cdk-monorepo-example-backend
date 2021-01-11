@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "scripts": {
+    "start": "npx webpack --config ./webpack.config.js --watch",
     "build": "npx webpack --config ./webpack.config.js",
     "clean:light": "rm -rf ./dist && rm -rf ./tsconfig.build.tsbuildinfo",
     "clean:full": "yarn run clean:light && rm -rf ./node_modules"

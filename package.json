@@ -17,7 +17,8 @@
     "test:watch": "node --expose-gc ./node_modules/.bin/jest --watch --debug --runInBand --colors",
     "test": "node --expose-gc ./node_modules/.bin/jest --coverage --debug --runInBand --colors",
     "start:local:db": "cd utils/test/local-dynamodb/libs && java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb --inMemory",
-    "start": "nodemon",
+    "start": "lerna run start --stream --parallel",
+    "nodemon": "nodemon",
     "build": "lerna run build",
     "cdk:synth": "lerna run synth --scope @danielblignaut/cdk-app && rm -rf cdk.out && cp -r packages/cdk-app/cdk.out cdk.out"
   },
