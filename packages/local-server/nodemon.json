@@ -1,4 +1,4 @@
 {
-  "watch": ["/Users/sive/Documents/Training/serverless/cdk-monorepo-example/cdk-monorepo-example-backend/packages/**/dist/**"],
+  "watch": ["../**/dist/**"],
   "exec": "yarn ts-node src/index.ts"
 }
