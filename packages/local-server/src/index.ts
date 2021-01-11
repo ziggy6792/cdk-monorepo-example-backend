@@ -12,7 +12,7 @@ const buildLocalServer = async () => {
 
   app.use('/lambda-user-confirmed', async (req, res) => {
     const result = await lambdaLocal.execute({
-      lambdaPath: path.join(__dirname, '../packages/lambda-user-confirmed/src/index'),
+      lambdaPath: path.join(__dirname, '../packages/lambda-user-confirmed/dist/index'),
       lambdaHandler: 'handler',
       envfile: path.join(__dirname, '.env-local'),
       event: {
@@ -29,7 +29,7 @@ const buildLocalServer = async () => {
 
   app.use('/lambda-a', async (req, res) => {
     const result = await lambdaLocal.execute({
-      lambdaPath: path.join(__dirname, '../packages/lambda-a/src/index'),
+      lambdaPath: path.join(__dirname, '../packages/lambda-a/dist/index'),
       lambdaHandler: 'handler',
       envfile: path.join(__dirname, '.env-local'),
       event: {
@@ -46,7 +46,7 @@ const buildLocalServer = async () => {
 
   app.use('/lambda-b', async (req, res) => {
     const result = await lambdaLocal.execute({
-      lambdaPath: path.join(__dirname, '../packages/lambda-b/src/index'),
+      lambdaPath: path.join(__dirname, '../packages/lambda-b/dist/index'),
       lambdaHandler: 'handler',
       envfile: path.join(__dirname, '.env-local'),
       event: {
@@ -65,6 +65,8 @@ const buildLocalServer = async () => {
   app.listen(port, () => console.log(`listening on port: ${port}`));
 };
 buildLocalServer();
+
+module.exports = {};
 
 // Setup gateway services
 

@@ -5,16 +5,15 @@
   "main": "dist/index.js",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "npx webpack --config ./webpack.config.js",
-    "clean:light": "rm -rf ./dist && rm -rf ./tsconfig.build.tsbuildinfo",
-    "clean:full": "yarn run clean:light && rm -rf ./node_modules"
+    "start": "ts-node src/index.ts"
   },
   "_moduleAliases": {
     "src": "/Users/sive/Documents/Training/serverless/cdk-monorepo-example/cdk-monorepo-example-backend/packages/lambda-a/dist"
   },
   "dependencies": {
-    "@danielblignaut/lambda-a": "^1.0.0",
     "aws-sdk": "2.770.0",
+    "express": "^4.17.1",
+    "lambda-local": "^1.7.4",
     "lodash": "^4.17.20",
     "source-map-support": "^0.5.16"
   },
