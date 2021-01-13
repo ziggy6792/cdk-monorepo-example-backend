@@ -1,0 +1,4 @@
+{
+  "watch": ["../../packages/**/dist/**"],
+  "exec": "yarn ts-node src/index.ts"
+}

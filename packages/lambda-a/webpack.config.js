@@ -1,9 +1,15 @@
-const {merge} = require('webpack-merge')
-const path = require('path')
-const rootConfig = require(path.join(__dirname, '../../webpack.config.build.js'))
+const { merge } = require('webpack-merge');
+const path = require('path');
 
-const output = merge(
-	rootConfig(__dirname)
-)
+const rootConfig = require(path.join(__dirname, '../../webpack.config.build.js'));
 
-module.exports = output
+const output = merge(rootConfig(__dirname), {
+  resolve: {
+    roots: [__dirname],
+    alias: {
+      src: '/src',
+    },
+  },
+});
+
+module.exports = output;
