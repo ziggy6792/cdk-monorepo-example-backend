@@ -38,5 +38,7 @@ module.exports = {
   modulePathIgnorePatterns: ['/dist/', '/build/'],
   modulePaths: ['node_modules', '<rootDir>/test/'],
   verbose: true,
+  roots: ['<rootDir>/src'],
+  moduleDirectories: ['node_modules', '<rootDir>'],
   collectCoverage: false,
 };
