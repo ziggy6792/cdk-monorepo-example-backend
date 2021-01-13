@@ -6,7 +6,7 @@ module.exports = {
   ...base,
   globals: {
     'ts-jest': {
-      tsConfig: 'some shit',
+      tsconfig: './tsconfig.json',
     },
   },
   name: 'lambda-a-bla',
