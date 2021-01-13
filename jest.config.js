@@ -31,6 +31,6 @@ const base = require('./jest.config.base.js');
 module.exports = {
   ...base,
   // projects: [project('all', ['<rootDir>/packages/**/*.test.ts'])],
-
+  roots: [],
   projects: ['<rootDir>/packages/*/jest.config.js'],
 };
