@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 const path = require('path');
 const fs = require('fs');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 class TrickLernaPlugin {
   apply(compiler) {
@@ -55,6 +56,11 @@ module.exports = (dirname) => {
     target: 'node',
     resolve: {
       extensions: ['.mjs', '.ts', '.js'],
+      plugins: [
+        new TsconfigPathsPlugin({
+          /* options: see below */
+        }),
+      ],
     },
     output: {
       libraryTarget: 'commonjs2',
