@@ -1,9 +1,16 @@
-import AWS from 'aws-sdk';
+import AWS, { DynamoDB } from 'aws-sdk';
 import TEST_DB_CONFIG from './config';
 
 const clearDb = async (): Promise<void> => {
   const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
-  const tables = await dynamodb.listTables().promise();
+  let tables: DynamoDB.ListTablesOutput;
+  try {
+    tables = await dynamodb.listTables().promise();
+  } catch (err) {
+    console.log('\nTest DB: Local db is not running');
+    console.log('global', global);
+    return;
+  }
 
   console.log('\nTest DB: Deleteing tables...');
 
