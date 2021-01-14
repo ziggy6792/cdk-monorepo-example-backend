@@ -75,10 +75,13 @@ export const start = async (): Promise<void> => {
   try {
     const isAlredyRunning = await checkConnection();
     if (isAlredyRunning) {
-      // Just incase the server is somehow stil running from the last run
-      console.log('LOCAL DB: FORCE STOP');
-      const { stderr } = await exec('yarn force:stop');
+      return;
     }
+    // if (isAlredyRunning) {
+    //   // Just incase the server is somehow stil running from the last run
+    //   console.log('LOCAL DB: FORCE STOP');
+    //   const { stderr } = await exec('yarn force:stop');
+    // }
   } catch (err) {
     // Do nothing - must be is it not running
   }
