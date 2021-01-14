@@ -16,6 +16,7 @@ const clearDb = async (): Promise<void> => {
 
   if (TEST_DB_CONFIG.region !== 'local') {
     console.log('WTF ARE YOU DOING!?');
+    return;
   }
   const deleteTableFns = tables.TableNames.map((TableName) => async () => {
     console.log(`Deleting ${TableName}`);
@@ -25,10 +26,6 @@ const clearDb = async (): Promise<void> => {
       })
       .promise();
   });
-  // await deleteTableFns[0]();
-  // const callFns = deleteTableFns.map((fn) => fn());
-  // await callFns[0];
-  // await deleteTableFns[0]();
 
   await Promise.all(deleteTableFns.map((fn) => fn()));
 };
