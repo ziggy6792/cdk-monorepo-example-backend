@@ -65,15 +65,6 @@ export const checkConnection = async (): Promise<boolean> => {
 
   const dynamodb = new AWS.DynamoDB(serviceConfigOptions);
   const tables = await promiseWithTimeout(dynamodb.listTables().promise(), 1000);
-  // tables.TableNames.forEach((table) => {
-  //   console.log('table', table);
-  //   dynamodb.drop;
-  // });
-  // await dynamodb
-  //   .deleteTable({
-  //     TableName: 'Movies',
-  //   })
-  //   .promise();
   console.log('LOCAL DB: READY');
 
   return true;
