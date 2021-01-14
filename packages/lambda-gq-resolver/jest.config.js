@@ -8,5 +8,6 @@ module.exports = {
   displayName: package.name,
   roots: ['<rootDir>/src'],
   moduleDirectories: ['node_modules', '<rootDir>'],
-  globalSetup: './src/test-utils/setup.ts',
+  // globalSetup: './src/test-utils/setup.ts',
+  // setupFilesAfterEnv: ['./src/test-utils/setup-after-env.ts'],
 };

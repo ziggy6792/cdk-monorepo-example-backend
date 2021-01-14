@@ -13,8 +13,6 @@ let localDb: child.ChildProcessWithoutNullStreams;
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-export let bla: string;
-
 // export const checkConnection = async (): Promise<boolean> => {
 //   // Removed because aws does not have nc instaled
 //   try {
