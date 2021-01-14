@@ -77,7 +77,7 @@ export const start = async (): Promise<void> => {
     if (isAlredyRunning) {
       // Just incase the server is somehow stil running from the last run
       console.log('LOCAL DB: FORCE STOP');
-      const { stderr } = await exec('yarn local:db:force:stop');
+      const { stderr } = await exec('yarn force:stop');
     }
   } catch (err) {
     // Do nothing - must be is it not running
@@ -85,7 +85,7 @@ export const start = async (): Promise<void> => {
 
   console.log('LOCAL DB: START');
 
-  localDb = child.spawn('yarn', ['local:db:start']);
+  localDb = child.spawn('yarn', ['start']);
 
   localDb.stdout.on('data', function (data) {
     console.log(`stdout: ${data.toString()}`);

@@ -6,6 +6,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "start": "cd local-dynamodb/libs && java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb --inMemory",
+    "start:inline": "ts-node start-test-db.ts",
     "force:stop": "lsof -ti tcp:8000 | xargs kill"
   },
   "dependencies": {}
