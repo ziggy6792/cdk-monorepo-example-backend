@@ -1,15 +1,10 @@
 module.exports = {
   // preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      tsConfig: 'tsconfig.test.json',
-    },
-  },
+
   transform: {
     '^.+\\.ts?$': 'ts-jest',
   },
   moduleNameMapper: {},
-
   testMatch: ['**/**.test.ts'],
   collectCoverageFrom: [
     'packages/**/*.ts',
@@ -26,19 +21,12 @@ module.exports = {
   transformIgnorePatterns: ['/node_modules/', '/build/', '/dist/'],
   watchPathIgnorePatterns: ['/node_modules/', '/build/', '/dist/', '/coverage/'],
   coverageProvider: 'v8',
-
   testEnvironment: 'node',
-  // rootDir: './',
-  // testRegex: '(/__tests__/.*|(\\.|/)(test))\\.tsx?$',
-
   watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
-
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-
   modulePathIgnorePatterns: ['/dist/', '/build/'],
-  modulePaths: ['node_modules', '<rootDir>/test/'],
+  // modulePaths: ['node_modules', '<rootDir>/test/'],
   verbose: true,
-  roots: ['<rootDir>/src'],
-  moduleDirectories: ['node_modules', '<rootDir>'],
+
   collectCoverage: false,
 };
