@@ -1,14 +1,9 @@
 import AWS from 'aws-sdk';
-import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 import { initMapper, initTables } from '../utils/mapper';
+import TEST_DB_CONFIG from './config';
 
 const testConn = async (): Promise<void> => {
-  const serviceConfigOptions: ServiceConfigurationOptions = {
-    region: 'local',
-    endpoint: 'http://localhost:8000',
-  };
-
-  AWS.config.update(serviceConfigOptions);
+  AWS.config.update(TEST_DB_CONFIG);
 
   initMapper({ region: 'local', tableNamePrefix: 'test-' });
 
