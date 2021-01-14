@@ -62,7 +62,7 @@ class PipelineStack extends Stack {
       actionName: 'Test',
       additionalArtifacts: [sourceArtifact],
       runOrder: 1,
-      commands: ['yarn install', 'yarn build', 'yarn test'],
+      commands: ['yarn install', 'yarn build', 'yarn test:with:env'],
     });
 
     pipeline.codePipeline.stages[1].addAction(testAction);

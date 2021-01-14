@@ -1,5 +1,5 @@
 {
-  "packages": ["packages/**", "!packages/app/cdk.out/**", "utils/local-server"],
+  "packages": ["packages/**", "!packages/app/cdk.out/**", "utils/**"],
   "version": "independent",
   "npmClient": "yarn",
   "useWorkspaces": true
