@@ -8,4 +8,8 @@ module.exports = {
   displayName: package.name,
   roots: ['<rootDir>/src'],
   moduleDirectories: ['node_modules', '<rootDir>'],
+  moduleNameMapper: {
+    '^@example/(.*)$': '<rootDir>/src/example/$1',
+    '^scr/(.*)$': '<rootDir>/src/$1',
+  },
 };

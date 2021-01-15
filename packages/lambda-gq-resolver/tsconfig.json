@@ -5,7 +5,9 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "composite": true,
-    "paths": {}
+    "paths": {
+      "@test-utils/*": ["src/test-utils/*"]
+    }
   },
   "include": ["src/**/*"]
 }
