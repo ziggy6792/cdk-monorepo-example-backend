@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk';
-import { initMapper, initTables } from '../utils/mapper';
+import { initMapper, initTables } from 'src/utils/mapper';
 import TEST_DB_CONFIG from './config';
 
 const testConn = async (): Promise<void> => {

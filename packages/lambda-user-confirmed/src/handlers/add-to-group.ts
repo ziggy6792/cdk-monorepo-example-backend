@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import aws from 'aws-sdk';
 import * as lambda from 'aws-lambda';
-import { CognitoPostConfimEvent } from '../types';
+import { CognitoPostConfimEvent } from 'src/types';
 
 const addToGroup = async (
   event: CognitoPostConfimEvent,

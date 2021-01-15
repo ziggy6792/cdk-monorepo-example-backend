@@ -3,7 +3,7 @@
 import aws from 'aws-sdk';
 import _ from 'lodash';
 import * as lambda from 'aws-lambda';
-import { CognitoPostConfimEvent } from '../types';
+import { CognitoPostConfimEvent } from 'src/types';
 
 // APIGatewayProxyCallback, APIGatewayProxyEvent, Context
 

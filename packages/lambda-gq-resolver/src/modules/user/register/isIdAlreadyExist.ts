@@ -2,9 +2,9 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { registerDecorator, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
-import { mapper } from '../../../utils/mapper';
+import { mapper } from 'src/utils/mapper';
 
-import User from '../../../domain-models/User';
+import User from 'src/domain-models/User';
 
 @ValidatorConstraint({ async: true })
 export class IsIdAlreadyExistConstraint implements ValidatorConstraintInterface {

@@ -1,8 +1,8 @@
 /* eslint-disable no-return-await */
-import { mapper } from '../../../utils/mapper';
-import User from '../../../domain-models/User';
-import { gCall } from '../../../test-utils/g-call';
-import testConn from '../../../test-utils/test-conn';
+import { mapper } from 'src/utils/mapper';
+import User from 'src/domain-models/User';
+import { gCall } from 'src/test-utils/g-call';
+import testConn from 'src/test-utils/test-conn';
 
 beforeAll(async () => {
   await testConn();

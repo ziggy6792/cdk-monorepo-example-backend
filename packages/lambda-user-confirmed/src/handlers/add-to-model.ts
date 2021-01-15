@@ -1,9 +1,9 @@
 import aws from 'aws-sdk';
 import * as lambda from 'aws-lambda';
-import { CognitoPostConfimEvent } from '../types';
-import * as api from '../services/gql-api';
-import { initApolloClient } from '../utils/apollo-client';
-import { config } from '../config';
+import { CognitoPostConfimEvent } from 'src/types';
+import * as api from 'src/services/gql-api';
+import { initApolloClient } from 'src/utils/apollo-client';
+import { config } from 'src/config';
 
 const addUserToModel = async (
   event: CognitoPostConfimEvent,

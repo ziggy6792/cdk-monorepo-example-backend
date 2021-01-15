@@ -21,6 +21,7 @@
     "local:db:start": "lerna run start --scope @danielblignaut/local-test-server --stream",
     "local:db:start:inline": "lerna run start:inline --scope @danielblignaut/local-test-server --stream",
     "local:db:force:stop": "lerna run force:stop --scope @danielblignaut/local-test-server --stream",
+    "lint": "eslint './packages/**/src/**/*.ts'",
     "start": "lerna run start --stream --parallel",
     "nodemon": "nodemon",
     "build": "lerna run build",
