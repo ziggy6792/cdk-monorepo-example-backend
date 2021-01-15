@@ -20,7 +20,7 @@ module.exports = {
     'no-shadow': 'off',
     'no-param-reassign': 'off',
     'func-names': 'off',
-
+    'no-restricted-imports': ['error', { patterns: ['../*', '..'] }],
     'max-len': [
       'error',
       160,

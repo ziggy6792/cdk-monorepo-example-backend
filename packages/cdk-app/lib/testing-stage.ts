@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
-import * as cdk from '@aws-cdk/core';
 import { DEPLOYMENT_CONFIG } from 'config';
+import * as cdk from '@aws-cdk/core';
 import { DeploymentStack } from './deployment-stack';
 
 export interface DeploymentStageProps extends cdk.StackProps {
