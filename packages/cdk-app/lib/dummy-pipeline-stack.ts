@@ -6,9 +6,10 @@ import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
-import { PROJECT_NAME, DEPLOYMENT_CONFIG } from 'config';
+import { DEPLOYMENT_CONFIG } from '../config/index';
 import { DeploymentStage } from './deployment-stage';
 import { DeploymentStack } from './deployment-stack';
+import { PROJECT_NAME } from '../config';
 
 class DummyPipelineStack extends Stack {
   public readonly stagingUrlOutput: cdk.CfnOutput;

@@ -4,8 +4,8 @@ import { Construct, Stage, StageProps } from '@aws-cdk/core';
 import * as cdk from '@aws-cdk/core';
 import * as defaults from '@aws-solutions-constructs/core';
 import * as path from 'path';
-import { DEPLOYMENT_CONFIG } from 'config';
 import { DeploymentStack } from './deployment-stack';
+import { DEPLOYMENT_CONFIG } from '../config';
 
 export interface DeploymentStageProps extends cdk.StackProps {
   readonly stageName: string;
