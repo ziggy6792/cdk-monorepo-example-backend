@@ -25,7 +25,6 @@ export const handler = async (
   `;
 
   console.log('env short', envLogText);
-  console.log('env', process.env);
   console.log('config', config);
 
   event = await addAttributes(event, context, callback);
