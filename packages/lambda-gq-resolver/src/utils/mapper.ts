@@ -3,32 +3,12 @@ import DynamoDB from 'aws-sdk/clients/dynamodb';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
 
-import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
-import AWS from 'aws-sdk';
-import User from '../domain-models/User';
-
-// let serviceConfigOptions: ServiceConfigurationOptions = {
-//   region: 'local',
-//   endpoint: 'http://localhost:8000',
-// };
-
-// AWS.config.update(serviceConfigOptions);
-
-// let dynamodb = new AWS.DynamoDB(serviceConfigOptions);
-
-// let docClient = new AWS.DynamoDB.DocumentClient({
-//   region: 'us-west-2',
-//   endpoint: 'http://localhost:8000',
-// });
+import User from 'src/domain-models/User';
 
 // eslint-disable-next-line import/no-mutable-exports
 export let mapper: DataMapper;
 
 let isTablesInitialized = false;
-
-// export const getIsTableInitialized = (): boolean => {
-//   return isTablesInitialized;
-// };
 
 const CREATE_TABLE_ARGS = { readCapacityUnits: 5, writeCapacityUnits: 5 };
 

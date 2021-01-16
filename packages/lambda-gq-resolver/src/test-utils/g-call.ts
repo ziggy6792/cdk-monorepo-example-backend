@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import { ExecutionResult, graphql } from 'graphql';
 import { Maybe } from 'graphql/jsutils/Maybe';
-import { MyContext } from '../types/MyContext';
-import createSchema from '../graph-ql/create-schema';
+import { MyContext } from 'src/types/MyContext';
+import createSchema from 'src/graph-ql/create-schema';
 
 interface IOptions {
   source: string;

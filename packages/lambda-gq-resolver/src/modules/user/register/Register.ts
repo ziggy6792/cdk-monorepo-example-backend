@@ -1,13 +1,9 @@
-/* eslint-disable no-var */
 /* eslint-disable class-methods-use-this */
-// /* eslint-disable class-methods-use-this */
-// /* eslint-disable import/prefer-default-export */
 
-import { Resolver, Query, Mutation, Arg, FieldResolver, Root, Ctx } from 'type-graphql';
-import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
-import { MyContext } from '../../../types/MyContext';
-import { createUniqueCondition, mapper } from '../../../utils/mapper';
-import User from '../../../domain-models/User';
+import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
+import { MyContext } from 'src/types/MyContext';
+import { createUniqueCondition, mapper } from 'src/utils/mapper';
+import User from 'src/domain-models/User';
 import { RegisterInput } from './RegisterInput';
 
 @Resolver()

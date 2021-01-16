@@ -2,10 +2,14 @@
 import 'source-map-support/register';
 import { commonFunctionExample } from '@danielblignaut/common-lambda-lib/dist/utils';
 // import example from './example';
-import example from 'src/example/example';
+import absoluteImport from '@example/example';
+import aliasImport from 'src/example/example';
+import relativeImport from './example/example';
 
 export const handler = async (event: any): Promise<any> => {
-  example();
+  absoluteImport();
+  aliasImport();
+  relativeImport();
   console.log('foo bar');
   return {
     statusCode: 200,

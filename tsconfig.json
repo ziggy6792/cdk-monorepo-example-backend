@@ -1,20 +1,17 @@
 {
-  "extends": "./tsconfig.build.json",
-
   "compilerOptions": {
+    "sourceMap": true,
+    "target": "es2017",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "importHelpers": true,
+    "declaration": true,
+    "module": "commonjs",
     "rootDir": "./",
     "baseUrl": ".",
-    "paths": {
-    }
+    "paths": {}
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    "**/build",
-    "**/dist",
-    "**/node_modules",
-    "cdk.out",
-    "**/cdk.out"
-  ]
+  "exclude": ["node_modules", "dist", "build", "**/build", "**/dist", "**/node_modules", "cdk.out", "**/cdk.out"]
 }

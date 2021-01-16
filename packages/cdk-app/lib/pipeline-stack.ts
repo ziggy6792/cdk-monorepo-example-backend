@@ -8,8 +8,8 @@ import * as iam from '@aws-cdk/aws-iam';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
+import * as utils from 'utils';
 import { DeploymentStage } from './deployment-stage';
-import * as utils from '../utils';
 
 class PipelineStack extends Stack {
   public readonly stagingUrlOutput: cdk.CfnOutput;

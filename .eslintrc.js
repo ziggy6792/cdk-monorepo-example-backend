@@ -8,6 +8,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 11,
     sourceType: 'module',
+    // project: ['./tsconfig.json', './packages/*/tsconfig.json'],
   },
   plugins: ['@typescript-eslint', 'prettier'],
 
@@ -20,7 +21,7 @@ module.exports = {
     'no-shadow': 'off',
     'no-param-reassign': 'off',
     'func-names': 'off',
-
+    'no-restricted-imports': ['error', { patterns: ['../*', '..'] }],
     'max-len': [
       'error',
       160,
