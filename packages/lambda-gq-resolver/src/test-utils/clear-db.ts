@@ -8,8 +8,7 @@ const clearDb = async (): Promise<void> => {
     tables = await dynamodb.listTables().promise();
   } catch (err) {
     console.log('\nTest DB: Local db is not running');
-    console.log('global', global);
-    return;
+    throw new Error('Local db is not running');
   }
 
   console.log('\nTest DB: Deleteing tables...');
