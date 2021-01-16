@@ -1,15 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import * as cdk from '@aws-cdk/core';
 
-import { Stack, StackProps, Construct, SecretValue } from '@aws-cdk/core';
-import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
+import { Stack, StackProps, Construct } from '@aws-cdk/core';
 
-import * as codepipeline from '@aws-cdk/aws-codepipeline';
-import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
-import { DEPLOYMENT_CONFIG } from '../config/index';
-import { DeploymentStage } from './deployment-stage';
+import { DEPLOYMENT_CONFIG, PROJECT_NAME } from 'lib/config';
 import { DeploymentStack } from './deployment-stack';
-import { PROJECT_NAME } from '../config';
 
 class DummyPipelineStack extends Stack {
   public readonly stagingUrlOutput: cdk.CfnOutput;

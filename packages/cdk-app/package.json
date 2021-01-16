@@ -7,7 +7,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "watch": "tsc -w -p tsconfig.build.json",
-    "build:wp": "npx webpack --config ./webpack.config.js",
     "synth": "npx cdk synth",
     "test": "jest",
     "cdk": "cdk",

@@ -8,8 +8,7 @@ import * as iam from '@aws-cdk/aws-iam';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
-import absImport from 'lib/example/example';
-import * as utils from './utils';
+import * as utils from 'lib/utils';
 import { DeploymentStage } from './deployment-stage';
 
 class PipelineStack extends Stack {
