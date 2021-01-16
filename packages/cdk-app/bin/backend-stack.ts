@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import * as cdk from '@aws-cdk/core';
 import * as utils from '../lib/utils';
 import { PROJECT_NAME } from '../config';

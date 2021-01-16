@@ -5,5 +5,5 @@
     "outDir": "./dist",
     "baseUrl": "./"
   },
-  "include": ["./lib/**/*", "./bin/**/*"]
+  "include": ["lib/**/*", "bin/**/*"]
 }

@@ -1,5 +1,5 @@
 {
-  "app": "npx node dist/bin/backend-stack.js",
+  "app": "npx ts-node -r tsconfig-paths/register bin/backend-stack.ts",
   "context": {
     "@aws-cdk/core:enableStackNameDuplicates": "true",
     "aws-cdk:enableDiffNoFail": "true",
