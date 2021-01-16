@@ -10,9 +10,9 @@ import * as defaults from '@aws-solutions-constructs/core';
 
 import path from 'path';
 import { Duration } from '@aws-cdk/core';
-import * as utils from '../utils';
-import { MultiAuthApiGatewayLambda } from '../constructs/multi-auth-apigateway-lambda';
-import CognitoIdentityPool from '../constructs/cognito-identity-pool';
+import * as utils from 'lib/utils';
+import { MultiAuthApiGatewayLambda } from 'lib/constructs/multi-auth-apigateway-lambda';
+import CognitoIdentityPool from 'lib/constructs/cognito-identity-pool';
 
 export interface DeploymentStackProps extends cdk.StackProps {
   readonly stageName: string;
