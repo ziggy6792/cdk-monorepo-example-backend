@@ -2,7 +2,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import path from 'path';
 import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
 import { createApolloServer } from '@danielblignaut/lambda-gq-resolver';
 import buildCognitoAutorizer from './mock-gateway/cognito-authorizer';
 import cdkExports from './mock-gateway/cdk-exports';
