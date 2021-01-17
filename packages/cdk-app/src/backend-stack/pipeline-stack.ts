@@ -1,35 +1,33 @@
 /* eslint-disable import/prefer-default-export */
 import * as cdk from '@aws-cdk/core';
 
-import { Stack, StackProps, Construct, SecretValue } from '@aws-cdk/core';
-import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 import * as cdkPipeline from '@aws-cdk/pipelines';
 import * as iam from '@aws-cdk/aws-iam';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
-import * as utils from 'lib/utils';
+import * as utils from 'src/utils';
 import { DeploymentStage } from './deployment-stage';
 
-class PipelineStack extends Stack {
+class PipelineStack extends cdk.Stack {
   public readonly stagingUrlOutput: cdk.CfnOutput;
 
   public readonly prodUrlOutput: cdk.CfnOutput;
 
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const sourceArtifact = new codepipeline.Artifact();
     const cloudAssemblyArtifact = new codepipeline.Artifact();
 
-    const pipeline = new CdkPipeline(this, utils.getConstructId('pipeline'), {
+    const pipeline = new cdkPipeline.CdkPipeline(this, utils.getConstructId('pipeline'), {
       pipelineName: utils.getConstructId('pipeline'),
       cloudAssemblyArtifact,
 
       sourceAction: new codepipelineActions.GitHubSourceAction({
         actionName: 'GitHub',
         output: sourceArtifact,
-        oauthToken: SecretValue.secretsManager('GITHUB_OATH_TOKEN', { jsonField: 'GITHUB_OATH_TOKEN' }),
+        oauthToken: cdk.SecretValue.secretsManager('GITHUB_OATH_TOKEN', { jsonField: 'GITHUB_OATH_TOKEN' }),
         trigger: codepipelineActions.GitHubTrigger.POLL,
         // Replace these with your actual GitHub project info
         owner: 'ziggy6792',
@@ -37,7 +35,7 @@ class PipelineStack extends Stack {
         branch: 'master',
       }),
 
-      synthAction: SimpleSynthAction.standardYarnSynth({
+      synthAction: cdkPipeline.SimpleSynthAction.standardYarnSynth({
         sourceArtifact,
         cloudAssemblyArtifact,
 

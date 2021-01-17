@@ -2,7 +2,7 @@
   "name": "@danielblignaut/cdk-app",
   "version": "0.1.0",
   "bin": {
-    "packages": "bin/backend-stack.js"
+    "packages": "src/index.ts"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -23,6 +23,7 @@
     "@aws-cdk/aws-apigateway": "1.75.0",
     "@aws-cdk/aws-cognito": "1.75.0",
     "@aws-cdk/aws-iam": "1.75.0",
+    "@aws-cdk/aws-logs": "1.75.0",
     "@aws-cdk/aws-lambda": "1.75.0",
     "@aws-cdk/aws-sns": "1.75.0",
     "@aws-cdk/aws-sns-subscriptions": "1.75.0",

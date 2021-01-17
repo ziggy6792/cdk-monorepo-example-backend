@@ -7,22 +7,22 @@ import * as api from './services/gql-api';
 
 AWSMock.setSDKInstance(AWS);
 
-AWSMock.mock('CognitoIdentityServiceProvider', 'adminUpdateUserAttributes', function (params, cb) {
+AWSMock.mock('CognitoIdentityServiceProvider', 'adminUpdateUserAttributes', (params, cb) => {
   console.log('adminUpdateUserAttributes called with', params);
   cb(null);
 });
 
-AWSMock.mock('CognitoIdentityServiceProvider', 'getGroup', function (params, cb) {
+AWSMock.mock('CognitoIdentityServiceProvider', 'getGroup', (params, cb) => {
   console.log('getGroup called with', params);
   cb(null);
 });
 
-AWSMock.mock('CognitoIdentityServiceProvider', 'createGroup', function (params, cb) {
+AWSMock.mock('CognitoIdentityServiceProvider', 'createGroup', (params, cb) => {
   console.log('createGroup called with', params);
   cb(null);
 });
 
-AWSMock.mock('CognitoIdentityServiceProvider', 'adminAddUserToGroup', function (params, cb) {
+AWSMock.mock('CognitoIdentityServiceProvider', 'adminAddUserToGroup', (params, cb) => {
   console.log('adminAddUserToGroup called with', params);
   cb(null);
 });

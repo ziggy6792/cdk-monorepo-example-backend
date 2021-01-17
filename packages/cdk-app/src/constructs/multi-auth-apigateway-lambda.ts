@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-restricted-syntax */
 /**
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
@@ -57,24 +59,33 @@ export interface MultiAuthApiGatewayLambdaProps {
   readonly scopes?: OAuthScope[];
 }
 
-enum RESOURCE_TYPE {
-  'AUTH_ROLE' = 'auth-role',
-  'AUTH_USER' = 'auth-user',
-  'AUTH_NONE' = 'auth-none',
+export enum RESOURCE_TYPE {
+  AUTH_ROLE = 'auth-role',
+  AUTH_USER = 'auth-user',
+  AUTH_NONE = 'auth-none',
 }
 
 export class MultiAuthApiGatewayLambda extends Construct {
   public readonly userPool: cognito.UserPool;
+
   public readonly userPoolClient: cognito.UserPoolClient;
+
   public readonly apiGateway: api.RestApi;
+
   public readonly apiGatewayCloudWatchRole: iam.Role;
+
   public readonly apiGatewayLogGroup: LogGroup;
+
   public readonly apiGatewayAuthorizer: api.CfnAuthorizer;
+
   public readonly lambdaFunction: lambda.Function;
 
   public readonly authUserResource: api.Resource;
+
   public readonly authRoleResource: api.Resource;
+
   public readonly authNoneResource: api.Resource;
+
   private readonly scopes: OAuthScope[];
 
   /**
@@ -131,7 +142,7 @@ export class MultiAuthApiGatewayLambda extends Construct {
       }
     });
 
-    for (let [key, authorizedRole] of Object.entries(authorizedRoles)) {
+    for (const [key, authorizedRole] of Object.entries(authorizedRoles)) {
       authorizedRole.attachInlinePolicy(
         new iam.Policy(this, `${key}InvokeApi`, {
           statements: authorizedRolePolicyStatements,

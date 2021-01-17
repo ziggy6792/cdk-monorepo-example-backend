@@ -22,8 +22,8 @@ import { MyContext } from './types/MyContext';
 
 import { REGION, TABLE_NAME_PREFIX } from './config/index';
 
-export const createApolloServer = (): ApolloServer => {
-  return new ApolloServer({
+export const createApolloServer = (): ApolloServer =>
+  new ApolloServer({
     schema: createSchema(),
     introspection: true,
     playground: true,
@@ -41,7 +41,6 @@ export const createApolloServer = (): ApolloServer => {
       return { req, identity: event.requestContext?.identity };
     },
   });
-};
 
 // Init
 AWS.config.update({ region: REGION });

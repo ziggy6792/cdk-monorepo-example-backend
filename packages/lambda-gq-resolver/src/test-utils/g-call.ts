@@ -9,11 +9,10 @@ interface IOptions {
   variableValues?: Maybe<{ [key: string]: any }>;
 }
 
-export const gCall = async ({ source, variableValues }: IOptions): Promise<ExecutionResult> => {
-  return graphql({
+export const gCall = async ({ source, variableValues }: IOptions): Promise<ExecutionResult> =>
+  graphql({
     schema: createSchema(),
     source,
     variableValues,
     contextValue: { req: null, identity: { username: 'test user' } } as MyContext,
   });
-};
