@@ -13,11 +13,12 @@ module.exports = {
   plugins: ['@typescript-eslint', 'prettier'],
 
   rules: {
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['warn'],
     'no-console': 'off',
     'no-plusplus': 'off',
     'no-nested-ternary': 'off',
     'no-use-before-define': 'off',
-    'no-unused-vars': 'warn',
     'no-shadow': 'off',
     'no-param-reassign': 'off',
     'func-names': 'off',

@@ -1,7 +1,6 @@
 import * as cdk from '@aws-cdk/core';
 import * as iam from '@aws-cdk/aws-iam';
 import * as cognito from '@aws-cdk/aws-cognito';
-import * as defaults from '@aws-solutions-constructs/core';
 import CognitoAuthRole from './cognito-auth-role';
 
 interface ICognitoAuthRoleProps {
