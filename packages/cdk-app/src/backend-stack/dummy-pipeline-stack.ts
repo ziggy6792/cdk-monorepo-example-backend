@@ -3,7 +3,7 @@ import * as cdk from '@aws-cdk/core';
 
 import { Stack, StackProps, Construct } from '@aws-cdk/core';
 
-import { DEPLOYMENT_CONFIG, PROJECT_NAME } from 'lib/config';
+import { DEPLOYMENT_CONFIG, PROJECT_NAME } from 'src/config';
 import { DeploymentStack } from './deployment-stack';
 
 class DummyPipelineStack extends Stack {
