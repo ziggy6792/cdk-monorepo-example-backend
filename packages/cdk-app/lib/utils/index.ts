@@ -10,13 +10,9 @@ export const getConstructId = (constructId: string, stage?: string): string => {
   return contItems.join(conSep);
 };
 
-export const getConstructName = (constructId: string, stage?: string): string => {
-  return getConstructId(constructId, stage);
-};
+export const getConstructName = (constructId: string, stage?: string): string => getConstructId(constructId, stage);
 
-export const getConstructDescription = (constructId: string, stage?: string): string => {
-  return getConstructId(constructId, stage);
-};
+export const getConstructDescription = (constructId: string, stage?: string): string => getConstructId(constructId, stage);
 
 export const getSsmParamId = (paramPath: string, stage?: string): string => {
   const pathItems = ['', config.PROJECT_NAME, stage, paramPath].filter((v) => v != null);
