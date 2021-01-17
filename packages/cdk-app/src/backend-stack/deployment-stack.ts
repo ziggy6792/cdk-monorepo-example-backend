@@ -4,12 +4,9 @@ import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as iam from '@aws-cdk/aws-iam';
 import * as cognito from '@aws-cdk/aws-cognito';
-import * as api from '@aws-cdk/aws-apigateway';
 import * as ssm from '@aws-cdk/aws-ssm';
-import * as defaults from '@aws-solutions-constructs/core';
 
 import path from 'path';
-import { Duration } from '@aws-cdk/core';
 import * as utils from 'src/utils';
 import { MultiAuthApiGatewayLambda } from 'src/constructs/multi-auth-apigateway-lambda';
 import CognitoIdentityPool from 'src/constructs/cognito-identity-pool';
@@ -44,7 +41,7 @@ export class DeploymentStack extends cdk.Stack {
         functionName: utils.getConstructName('gq-resolver', stageName),
         description: utils.getConstructDescription('gq-resolver', stageName),
         memorySize: 256,
-        timeout: Duration.seconds(30),
+        timeout: cdk.Duration.seconds(30),
         runtime: lambda.Runtime.NODEJS_12_X,
         handler: 'index.handler',
         code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-gq-resolver'), '..')),
@@ -162,7 +159,7 @@ export class DeploymentStack extends cdk.Stack {
       functionName: utils.getConstructName('user-confirmed', stageName),
       description: utils.getConstructDescription('user-confirmed', stageName),
       memorySize: 256,
-      timeout: Duration.seconds(30),
+      timeout: cdk.Duration.seconds(30),
       runtime: lambda.Runtime.NODEJS_12_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-user-confirmed'), '..')),

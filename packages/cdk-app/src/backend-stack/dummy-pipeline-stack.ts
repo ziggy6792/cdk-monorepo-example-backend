@@ -1,17 +1,15 @@
 /* eslint-disable import/prefer-default-export */
 import * as cdk from '@aws-cdk/core';
 
-import { Stack, StackProps, Construct } from '@aws-cdk/core';
-
 import { DEPLOYMENT_CONFIG, PROJECT_NAME } from 'src/config';
 import { DeploymentStack } from './deployment-stack';
 
-class DummyPipelineStack extends Stack {
+class DummyPipelineStack extends cdk.Stack {
   public readonly stagingUrlOutput: cdk.CfnOutput;
 
   public readonly prodUrlOutput: cdk.CfnOutput;
 
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const stages = ['deployment', 'prod'];
