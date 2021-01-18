@@ -10,6 +10,12 @@ module.exports = {
     sourceType: 'module',
     // project: ['./tsconfig.json', './packages/*/tsconfig.json'],
   },
+  // parserOptions: {
+  //   tsconfigRootDir: __dirname,
+  //   sourceType: 'module', // Enable the use of imports
+  //   project: ['./tsconfig.eslint.json', './packages/*/tsconfig.json'],
+  //   ecmaVersion: 11,
+  // },
   plugins: ['@typescript-eslint', 'prettier'],
 
   rules: {
