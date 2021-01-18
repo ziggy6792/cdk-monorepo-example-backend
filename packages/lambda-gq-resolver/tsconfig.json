@@ -4,7 +4,6 @@
         "rootDir": "./src",
         "outDir": "./dist",
         "baseUrl": "./",
-        "composite": true,
         "paths": {
             "@test-utils/*": ["src/test-utils/*"]
         }
