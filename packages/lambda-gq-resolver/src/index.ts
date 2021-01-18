@@ -23,24 +23,24 @@ import { MyContext } from './types/MyContext';
 import { REGION, TABLE_NAME_PREFIX } from './config/index';
 
 export const createApolloServer = (): ApolloServer =>
-  new ApolloServer({
-    schema: createSchema(),
-    introspection: true,
-    playground: true,
-    context: async (recieved: any): Promise<MyContext> => {
-      await initTables();
+    new ApolloServer({
+        schema: createSchema(),
+        introspection: true,
+        playground: true,
+        context: async (recieved: any): Promise<MyContext> => {
+            await initTables();
 
-      const { req } = recieved;
+            const { req } = recieved;
 
-      const exentHeader = req.headers['x-apigateway-event'];
+            const exentHeader = req.headers['x-apigateway-event'];
 
-      const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
+            const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
 
-      console.log('Recieved event', event);
+            console.log('Recieved event', event);
 
-      return { req, identity: event.requestContext?.identity };
-    },
-  });
+            return { req, identity: event.requestContext?.identity };
+        },
+    });
 
 // Init
 AWS.config.update({ region: REGION });
@@ -56,7 +56,7 @@ commonFunctionExample();
 initMapper({ region: REGION, tableNamePrefix: TABLE_NAME_PREFIX });
 
 export const handler = (event, context) => {
-  const logText = `
+    const logText = `
   partialConnection.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID || '${process.env.AWS_ACCESS_KEY_ID}';
   partialConnection.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || '${process.env.AWS_SECRET_ACCESS_KEY}';
   partialConnection.AWS_SESSION_TOKEN =
@@ -64,7 +64,7 @@ export const handler = (event, context) => {
     // eslint-disable-next-line max-len
     '${process.env.AWS_SESSION_TOKEN}' `;
 
-  console.log(logText);
-  // console.log('env', process.env);
-  return serverless.proxy(server, event, context);
+    console.log(logText);
+    // console.log('env', process.env);
+    return serverless.proxy(server, event, context);
 };

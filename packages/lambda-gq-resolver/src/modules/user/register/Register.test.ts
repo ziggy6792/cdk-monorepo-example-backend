@@ -5,7 +5,7 @@ import { gCall } from 'src/test-utils/g-call';
 import testConn from 'src/test-utils/test-conn';
 
 beforeAll(async () => {
-  await testConn();
+    await testConn();
 });
 
 const registerMutation = `mutation Register($input: RegisterInput!) {
@@ -19,25 +19,25 @@ const registerMutation = `mutation Register($input: RegisterInput!) {
 }`;
 
 describe('Register', () => {
-  it('create user', async () => {
-    const user = { firstName: 'Test', lastName: 'Testy', email: 'testy@test.com' };
+    it('create user', async () => {
+        const user = { firstName: 'Test First Name 1', lastName: 'Test Last Name', email: 'testy@test.com' };
 
-    const response = await gCall({
-      source: registerMutation,
-      variableValues: { input: user },
+        const response = await gCall({
+            source: registerMutation,
+            variableValues: { input: user },
+        });
+        console.log('response', response);
+
+        expect(response).toMatchObject({
+            data: {
+                register: {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                },
+            },
+        });
+
+        await expect(mapper.get(Object.assign(new User(), { id: response.data.register.id }))).resolves.toBeTruthy();
     });
-    console.log('response', response);
-
-    expect(response).toMatchObject({
-      data: {
-        register: {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-        },
-      },
-    });
-
-    await expect(mapper.get(Object.assign(new User(), { id: response.data.register.id }))).resolves.toBeTruthy();
-  });
 });

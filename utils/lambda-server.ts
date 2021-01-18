@@ -11,72 +11,69 @@ import cdkExports from './mock-gateway/cdk-exports';
 import lambdaLocal = require('lambda-local');
 
 const buildLocalServer = async () => {
-  const app = express();
+    const app = express();
 
-  // Setup local grapql server
+    // Setup local grapql server
 
-  const apolloServer = createApolloServer();
+    const apolloServer = createApolloServer();
 
-  const localGqPath = '/lambda-gq-resolver/graphql';
+    const localGqPath = '/lambda-gq-resolver/graphql';
 
-  app.use(localGqPath, await buildCognitoAutorizer(cdkExports.USER_POOL_ID));
-  apolloServer.applyMiddleware({ app, path: localGqPath });
+    app.use(localGqPath, await buildCognitoAutorizer(cdkExports.USER_POOL_ID));
+    apolloServer.applyMiddleware({ app, path: localGqPath });
 
-  app.use(express.text());
+    app.use(express.text());
 
-  app.use('/lambda-user-confirmed', async (req, res) => {
-    const result = await lambdaLocal.execute({
-      lambdaPath: path.join(__dirname, '../packages/lambda-user-confirmed/src/index'),
-      lambdaHandler: 'handler',
-      envfile: path.join(__dirname, '.env-local'),
-      event: {
-        headers: req.headers, // Pass on request headers
-        body: req.body, // Pass on request body
-      },
+    app.use('/lambda-user-confirmed', async (req, res) => {
+        const result = await lambdaLocal.execute({
+            lambdaPath: path.join(__dirname, '../packages/lambda-user-confirmed/src/index'),
+            lambdaHandler: 'handler',
+            envfile: path.join(__dirname, '.env-local'),
+            event: {
+                headers: req.headers, // Pass on request headers
+                body: req.body, // Pass on request body
+            },
+        });
+
+        res.status((result as any).statusCode)
+            .set((result as any).headers)
+            .end((result as any).body);
     });
 
-    res
-      .status((result as any).statusCode)
-      .set((result as any).headers)
-      .end((result as any).body);
-  });
+    app.use('/lambda-a', async (req, res) => {
+        const result = await lambdaLocal.execute({
+            lambdaPath: path.join(__dirname, '../packages/lambda-a/src/index'),
+            lambdaHandler: 'handler',
+            envfile: path.join(__dirname, '.env-local'),
+            event: {
+                headers: req.headers, // Pass on request headers
+                body: req.body, // Pass on request body
+            },
+        });
 
-  app.use('/lambda-a', async (req, res) => {
-    const result = await lambdaLocal.execute({
-      lambdaPath: path.join(__dirname, '../packages/lambda-a/src/index'),
-      lambdaHandler: 'handler',
-      envfile: path.join(__dirname, '.env-local'),
-      event: {
-        headers: req.headers, // Pass on request headers
-        body: req.body, // Pass on request body
-      },
+        res.status((result as any).statusCode)
+            .set((result as any).headers)
+            .end((result as any).body);
     });
 
-    res
-      .status((result as any).statusCode)
-      .set((result as any).headers)
-      .end((result as any).body);
-  });
+    app.use('/lambda-b', async (req, res) => {
+        const result = await lambdaLocal.execute({
+            lambdaPath: path.join(__dirname, '../packages/lambda-b/src/index'),
+            lambdaHandler: 'handler',
+            envfile: path.join(__dirname, '.env-local'),
+            event: {
+                headers: req.headers, // Pass on request headers
+                body: req.body, // Pass on request body
+            },
+        });
 
-  app.use('/lambda-b', async (req, res) => {
-    const result = await lambdaLocal.execute({
-      lambdaPath: path.join(__dirname, '../packages/lambda-b/src/index'),
-      lambdaHandler: 'handler',
-      envfile: path.join(__dirname, '.env-local'),
-      event: {
-        headers: req.headers, // Pass on request headers
-        body: req.body, // Pass on request body
-      },
+        res.status((result as any).statusCode)
+            .set((result as any).headers)
+            .end((result as any).body);
     });
+    const port = 3100;
 
-    res
-      .status((result as any).statusCode)
-      .set((result as any).headers)
-      .end((result as any).body);
-  });
-  const port = 3100;
-
-  app.listen(port, () => console.log(`listening on port: ${port}`));
+    app.listen(port, () => console.log(`listening on port: ${port}`));
 };
 buildLocalServer();
 

@@ -8,24 +8,24 @@ import User from 'src/domain-models/User';
 
 @ValidatorConstraint({ async: true })
 export class IsIdAlreadyExistConstraint implements ValidatorConstraintInterface {
-  async validate(id: string) {
-    try {
-      await mapper.get(Object.assign(new User(), { id }));
-      return false;
-    } catch (err) {
-      return true;
+    async validate(id: string) {
+        try {
+            await mapper.get(Object.assign(new User(), { id }));
+            return false;
+        } catch (err) {
+            return true;
+        }
     }
-  }
 }
 
 export function IsIdAlreadyExist(validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
-    registerDecorator({
-      target: object.constructor,
-      propertyName,
-      options: validationOptions,
-      constraints: [],
-      validator: IsIdAlreadyExistConstraint,
-    });
-  };
+    return function (object: Object, propertyName: string) {
+        registerDecorator({
+            target: object.constructor,
+            propertyName,
+            options: validationOptions,
+            constraints: [],
+            validator: IsIdAlreadyExistConstraint,
+        });
+    };
 }

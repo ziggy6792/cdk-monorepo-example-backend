@@ -5,12 +5,12 @@ import RegisterResolver from 'src/modules/user/register/Register';
 
 console.log('buildSchemaSync');
 const schema = buildSchemaSync({
-  resolvers: [RegisterResolver],
+    resolvers: [RegisterResolver],
 });
 
 const createSchema = (): GraphQLSchema => {
-  console.log('return schema');
-  return schema;
+    console.log('return schema');
+    return schema;
 };
 
 export default createSchema;

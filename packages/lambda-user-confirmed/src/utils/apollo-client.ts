@@ -12,33 +12,33 @@ import { buildAxiosFetch } from '@lifeomic/axios-fetch';
 export let apolloClient: ApolloClient<any> = null;
 
 interface IConnection {
-  uri: string;
-  region: string;
-  accessKeyId: string;
-  secretAccessKey: string;
-  sessionToken: string;
+    uri: string;
+    region: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+    sessionToken: string;
 }
 
 export const initApolloClient = (connection: IConnection): void => {
-  const interceptor = aws4Interceptor(
-    {
-      region: connection.region,
-      service: 'execute-api',
-    },
-    {
-      accessKeyId: connection.accessKeyId,
-      secretAccessKey: connection.secretAccessKey,
-      sessionToken: connection.sessionToken,
-    }
-  );
-  axios.interceptors.request.use(interceptor);
+    const interceptor = aws4Interceptor(
+        {
+            region: connection.region,
+            service: 'execute-api',
+        },
+        {
+            accessKeyId: connection.accessKeyId,
+            secretAccessKey: connection.secretAccessKey,
+            sessionToken: connection.sessionToken,
+        }
+    );
+    axios.interceptors.request.use(interceptor);
 
-  console.log('Set apollo client');
-  apolloClient = new ApolloClient({
-    link: createHttpLink({
-      uri: connection.uri,
-      fetch: buildAxiosFetch(axios),
-    }),
-    cache: new InMemoryCache(),
-  });
+    console.log('Set apollo client');
+    apolloClient = new ApolloClient({
+        link: createHttpLink({
+            uri: connection.uri,
+            fetch: buildAxiosFetch(axios),
+        }),
+        cache: new InMemoryCache(),
+    });
 };

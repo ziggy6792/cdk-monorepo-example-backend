@@ -1,4 +1,4 @@
 {
-  "watch": ["../../packages/**/dist/**"],
-  "exec": "yarn ts-node src/index.ts"
+    "watch": ["../../packages/**/dist/**"],
+    "exec": "yarn ts-node src/index.ts"
 }
