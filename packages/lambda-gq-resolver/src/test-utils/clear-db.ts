@@ -20,8 +20,9 @@ const clearDb = async (): Promise<void> => {
     try {
         tables = await promiseWithTimeout(dynamodb.listTables().promise(), 1000);
     } catch (err) {
-        console.log('\nTest DB: Local db is not running');
-        throw new Error('Local db is not running');
+        const errorMessage = "\nTest DB: Local db is not running. Please run 'yarn start' from root dir";
+        console.log(`\n${errorMessage}`);
+        throw new Error(errorMessage);
     }
 
     console.log('\nTest DB: Deleteing tables...');

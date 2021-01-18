@@ -8,8 +8,8 @@ module.exports = {
     parserOptions: {
         ecmaVersion: 11,
         sourceType: 'module',
-        // project: ['./tsconfig.json', './packages/*/tsconfig.json'],
     },
+    // Removed this because it seems to slow down linting
     // parserOptions: {
     //   tsconfigRootDir: __dirname,
     //   sourceType: 'module', // Enable the use of imports
