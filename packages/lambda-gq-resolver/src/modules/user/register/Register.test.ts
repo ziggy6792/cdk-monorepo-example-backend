@@ -33,7 +33,7 @@ describe('Register', () => {
                 register: {
                     firstName: user.firstName,
                     lastName: user.lastName,
-                    email: 'wrong',
+                    email: user.email,
                 },
             },
         });
