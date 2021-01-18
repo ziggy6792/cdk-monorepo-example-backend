@@ -1,71 +1,80 @@
 {
-  "name": "cdk-lerna-example",
-  "version": "1.0.0",
-  "main": "index.js",
-  "author": "danielblignaut",
-  "license": "MIT",
-  "private": true,
-  "workspaces": {
-    "packages": [
-      "packages/**",
-      "!packages/app/cdk.out/**",
-      "utils/**"
-    ]
-  },
-  "scripts": {
-    "clean:light": "rm -rf ./tsconfig.build.tsbuildinfo && rm -rf ./dist",
-    "clean:full": "yarn run clean:light && rm -rf ./node_modules",
-    "test:watch": "node --expose-gc ./node_modules/.bin/jest --watch --debug --runInBand --colors",
-    "test": "node --expose-gc ./node_modules/.bin/jest --coverage --debug --runInBand --colors",
-    "test:with:env": "yarn local:db:start:inline && yarn test",
-    "local:db:start": "lerna run start --scope @danielblignaut/local-test-server --stream",
-    "local:db:start:inline": "lerna run start:inline --scope @danielblignaut/local-test-server --stream",
-    "local:db:force:stop": "lerna run force:stop --scope @danielblignaut/local-test-server --stream",
-    "lint": "eslint './{utils,packages}/**/src/**/*.ts'",
-    "start": "lerna run start --stream --parallel",
-    "nodemon": "nodemon",
-    "build": "lerna run build",
-    "cdk:synth": "lerna run synth --scope @danielblignaut/cdk-app && rm -rf cdk.out && cp -r packages/cdk-app/cdk.out cdk.out"
-  },
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.59",
-    "@types/faker": "^5.1.5",
-    "@types/jest": "^26.0.20",
-    "@types/node": "^14.0.26",
-    "@types/promise-poller": "^1.7.0",
-    "@typescript-eslint/eslint-plugin": "^4.9.0",
-    "@typescript-eslint/parser": "^4.9.0",
-    "apollo-server-express": "^2.19.0",
-    "axios": "^0.21.0",
-    "eslint": "^7.18.0",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^7.1.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-prettier": "^3.3.1",
-    "express": "^4.17.1",
-    "faker": "^5.1.0",
-    "jest": "^26.6.3",
-    "jest-watch-typeahead": "^0.6.1",
-    "jsonwebtoken": "^8.5.1",
-    "jwk-to-pem": "^2.0.4",
-    "lambda-local": "^1.7.4",
-    "lerna": "^3.20.2",
-    "nodemon": "^2.0.6",
-    "prettier-eslint": "^12.0.0",
-    "promise-poller": "^1.9.1",
-    "tree-kill": "^1.2.2",
-    "ts-jest": "^26.4.4",
-    "ts-loader": "^8.0.1",
-    "ts-node": "^9.1.1",
-    "tsconfig-paths": "^3.9.0",
-    "tsconfig-paths-jest": "^0.0.1",
-    "typescript": "^4.0.3",
-    "webpack": "^4.44.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-merge": "^5.0.9"
-  },
-  "dependencies": {
-    "tsconfig-paths-webpack-plugin": "^3.3.0"
-  }
+    "name": "cdk-lerna-example",
+    "version": "1.0.0",
+    "main": "index.js",
+    "author": "danielblignaut",
+    "license": "MIT",
+    "private": true,
+    "workspaces": {
+        "packages": [
+            "packages/**",
+            "!packages/app/cdk.out/**",
+            "utils/**"
+        ]
+    },
+    "scripts": {
+        "clean:light": "rm -rf ./tsconfig.build.tsbuildinfo && rm -rf ./dist",
+        "clean:full": "yarn run clean:light && rm -rf ./node_modules",
+        "test:watch": "node --expose-gc ./node_modules/.bin/jest --watch --debug --runInBand --colors",
+        "test": "node --expose-gc ./node_modules/.bin/jest --coverage --debug --runInBand --colors",
+        "test:with:env": "yarn local:db:start:inline && yarn test",
+        "local:db:start": "lerna run start --scope @danielblignaut/local-test-server --stream",
+        "local:db:start:inline": "lerna run start:inline --scope @danielblignaut/local-test-server --stream",
+        "local:db:force:stop": "lerna run force:stop --scope @danielblignaut/local-test-server --stream",
+        "lint": "eslint './{utils,packages}/**/src/**/*.ts'",
+        "start": "lerna run start --stream --parallel",
+        "nodemon": "nodemon",
+        "build": "lerna run build",
+        "cdk:synth": "lerna run synth --scope @danielblignaut/cdk-app && rm -rf cdk.out && cp -r packages/cdk-app/cdk.out cdk.out"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.59",
+        "@types/faker": "^5.1.5",
+        "@types/jest": "^26.0.20",
+        "@types/node": "^14.0.26",
+        "@types/promise-poller": "^1.7.0",
+        "@typescript-eslint/eslint-plugin": "^4.9.0",
+        "@typescript-eslint/parser": "^4.9.0",
+        "apollo-server-express": "^2.19.0",
+        "axios": "^0.21.0",
+        "eslint": "^7.18.0",
+        "eslint-config-airbnb": "^18.2.1",
+        "eslint-config-airbnb-base": "^14.2.1",
+        "eslint-config-prettier": "^7.1.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-prettier": "^3.3.1",
+        "express": "^4.17.1",
+        "faker": "^5.1.0",
+        "jest": "^26.6.3",
+        "jest-watch-typeahead": "^0.6.1",
+        "jsonwebtoken": "^8.5.1",
+        "jwk-to-pem": "^2.0.4",
+        "lambda-local": "^1.7.4",
+        "lerna": "^3.20.2",
+        "nodemon": "^2.0.6",
+        "prettier-eslint": "^12.0.0",
+        "promise-poller": "^1.9.1",
+        "tree-kill": "^1.2.2",
+        "ts-jest": "^26.4.4",
+        "ts-loader": "^8.0.1",
+        "ts-node": "^9.1.1",
+        "tsconfig-paths": "^3.9.0",
+        "tsconfig-paths-jest": "^0.0.1",
+        "typescript": "^4.0.3",
+        "webpack": "^4.44.0",
+        "webpack-cli": "^3.3.12",
+        "webpack-merge": "^5.0.9"
+    },
+    "dependencies": {
+        "tsconfig-paths-webpack-plugin": "^3.3.0"
+    },
+    "lint-staged": {
+        "packages/*/src/**/*.{ts,tsx}": [
+            "eslint --fix --config ./.eslintrc.js",
+            "jest --bail --findRelatedTests"
+        ],
+        "packages/*/src/**/*.{json,ts,tsx,html,css,scss}": [
+            "prettier --write --config ./.prettierrc"
+        ]
+    }
 }

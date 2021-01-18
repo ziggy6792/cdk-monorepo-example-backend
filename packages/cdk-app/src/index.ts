@@ -9,11 +9,11 @@ const app = new cdk.App();
 // const dummyPipelineStack = new DummyPipelineStack(app, utils.getConstructId('pipeline'));
 
 const pipelineStack = new PipelineStack(app, utils.getConstructId('pipeline'), {
-  description: utils.getConstructId('pipeline'),
-  env: {
-    account: '694710432912',
-    region: 'ap-southeast-1',
-  },
+    description: utils.getConstructId('pipeline'),
+    env: {
+        account: '694710432912',
+        region: 'ap-southeast-1',
+    },
 });
 
 app.synth();

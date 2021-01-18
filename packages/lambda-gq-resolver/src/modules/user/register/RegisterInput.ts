@@ -5,19 +5,19 @@ import { IsIdAlreadyExist } from './isIdAlreadyExist';
 
 @InputType()
 export class RegisterInput {
-  @Field(() => ID, { nullable: true })
-  @IsIdAlreadyExist({ message: 'Id already in use' })
-  id: string;
+    @Field(() => ID, { nullable: true })
+    @IsIdAlreadyExist({ message: 'Id already in use' })
+    id: string;
 
-  @Field()
-  @Length(1, 255)
-  firstName: string;
+    @Field()
+    @Length(1, 255)
+    firstName: string;
 
-  @Field()
-  @Length(1, 255)
-  lastName: string;
+    @Field()
+    @Length(1, 255)
+    lastName: string;
 
-  @Field()
-  @IsEmail()
-  email: string;
+    @Field()
+    @IsEmail()
+    email: string;
 }

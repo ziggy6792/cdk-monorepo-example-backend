@@ -10,33 +10,33 @@ import verifyJwt, { ICognitoIdentity, IJwk } from './verify-jwt';
 type ExpressMiddleware = (req: express.Request, res: express.Response, next: () => void) => void;
 
 export const buildCognitoAutorizer = async (userPoolId: string, region = 'ap-southeast-1'): Promise<ExpressMiddleware> => {
-  const jwk = await getJwk(region, userPoolId);
-  return function (req, res, next): void {
-    console.log('Headers', JSON.stringify(req.headers));
+    const jwk = await getJwk(region, userPoolId);
+    return function (req, res, next): void {
+        console.log('Headers', JSON.stringify(req.headers));
 
-    console.log('');
+        console.log('');
 
-    console.log('Authorization', req.headers.authorization);
+        console.log('Authorization', req.headers.authorization);
 
-    const { headers } = req;
-    const jwtToken = headers.authorization;
+        const { headers } = req;
+        const jwtToken = headers.authorization;
 
-    console.log('token', jwtToken);
-    console.log('COGNITO_USER_POOL_ID', userPoolId);
-    console.log('REGION', region);
+        console.log('token', jwtToken);
+        console.log('COGNITO_USER_POOL_ID', userPoolId);
+        console.log('REGION', region);
 
-    let identity: ICognitoIdentity | null = null;
+        let identity: ICognitoIdentity | null = null;
 
-    if (jwtToken) {
-      identity = verifyJwt(jwk, jwtToken);
+        if (jwtToken) {
+            identity = verifyJwt(jwk, jwtToken);
 
-      console.log('identity', identity);
-    }
-    const event = buildIamAuthorizedEvent(identity);
+            console.log('identity', identity);
+        }
+        const event = buildIamAuthorizedEvent(identity);
 
-    req.headers['x-apigateway-event'] = encodeURIComponent(JSON.stringify(event));
+        req.headers['x-apigateway-event'] = encodeURIComponent(JSON.stringify(event));
 
-    next();
-  };
+        next();
+    };
 };
 export default buildCognitoAutorizer;

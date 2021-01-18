@@ -13,49 +13,49 @@ let isTablesInitialized = false;
 const CREATE_TABLE_ARGS = { readCapacityUnits: 5, writeCapacityUnits: 5 };
 
 interface IInitOptions {
-  region: string;
-  tableNamePrefix: string;
+    region: string;
+    tableNamePrefix: string;
 }
 
 let initOptions: IInitOptions;
 
 export const initMapper = (iOptions: IInitOptions): void => {
-  const { region, tableNamePrefix } = iOptions;
-  initOptions = iOptions;
-  mapper = new DataMapper({
-    client: new DynamoDB({ region }), // the SDK client used to execute operations
-    tableNamePrefix, // optionally, you can provide a table prefix to keep your dev and prod tables separate
-  });
+    const { region, tableNamePrefix } = iOptions;
+    initOptions = iOptions;
+    mapper = new DataMapper({
+        client: new DynamoDB({ region }), // the SDK client used to execute operations
+        tableNamePrefix, // optionally, you can provide a table prefix to keep your dev and prod tables separate
+    });
 };
 
 const tables = [User];
 
 export const initTables = async (): Promise<void> => {
-  try {
-    if (!isTablesInitialized) {
-      // await mapper.ensureTableExists(User, { ...CREATE_TABLE_ARGS, indexOptions: { email: { projection: { readCapacityUnits: 5 } } } });
-      const createTableFunctions = tables.map((table) => mapper.ensureTableExists(table, { ...CREATE_TABLE_ARGS }));
-      await Promise.all(createTableFunctions);
+    try {
+        if (!isTablesInitialized) {
+            // await mapper.ensureTableExists(User, { ...CREATE_TABLE_ARGS, indexOptions: { email: { projection: { readCapacityUnits: 5 } } } });
+            const createTableFunctions = tables.map((table) => mapper.ensureTableExists(table, { ...CREATE_TABLE_ARGS }));
+            await Promise.all(createTableFunctions);
+        }
+        isTablesInitialized = true;
+        // console.log(timeB - timeA);
+    } catch (err) {
+        console.log({ err });
     }
-    isTablesInitialized = true;
-    // console.log(timeB - timeA);
-  } catch (err) {
-    console.log({ err });
-  }
 };
 
 export const deleteTables = async (): Promise<void> => {
-  if (initOptions.region !== 'local' || !initOptions.tableNamePrefix.includes('test')) {
-    throw new Error(`Prevented from deleting database ${JSON.stringify(initOptions)}`);
-  }
-  try {
-    const deleteTableFunctions = tables.map((table) => mapper.ensureTableNotExists(table));
-    await Promise.all(deleteTableFunctions);
-  } catch (err) {
-    console.log({ err });
-  }
-  console.log('tables deleted');
+    if (initOptions.region !== 'local' || !initOptions.tableNamePrefix.includes('test')) {
+        throw new Error(`Prevented from deleting database ${JSON.stringify(initOptions)}`);
+    }
+    try {
+        const deleteTableFunctions = tables.map((table) => mapper.ensureTableNotExists(table));
+        await Promise.all(deleteTableFunctions);
+    } catch (err) {
+        console.log({ err });
+    }
+    console.log('tables deleted');
 };
 
 export const createUniqueCondition = (attributePath = 'id'): FunctionExpression =>
-  new FunctionExpression('attribute_not_exists', new AttributePath(attributePath));
+    new FunctionExpression('attribute_not_exists', new AttributePath(attributePath));

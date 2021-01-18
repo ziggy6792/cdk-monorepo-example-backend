@@ -5,14 +5,14 @@ import { MyContext } from 'src/types/MyContext';
 import createSchema from 'src/graph-ql/create-schema';
 
 interface IOptions {
-  source: string;
-  variableValues?: Maybe<{ [key: string]: any }>;
+    source: string;
+    variableValues?: Maybe<{ [key: string]: any }>;
 }
 
 export const gCall = async ({ source, variableValues }: IOptions): Promise<ExecutionResult> =>
-  graphql({
-    schema: createSchema(),
-    source,
-    variableValues,
-    contextValue: { req: null, identity: { username: 'test user' } } as MyContext,
-  });
+    graphql({
+        schema: createSchema(),
+        source,
+        variableValues,
+        contextValue: { req: null, identity: { username: 'test user' } } as MyContext,
+    });

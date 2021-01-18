@@ -1,5 +1,5 @@
 const example = () => {
-  console.log('example import');
+    console.log('example import');
 };
 
 export default example;
