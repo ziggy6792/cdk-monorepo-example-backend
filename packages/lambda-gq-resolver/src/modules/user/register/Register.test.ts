@@ -38,6 +38,8 @@ describe('Register', () => {
             },
         });
 
+        expect(1 === 2);
+
         await expect(mapper.get(Object.assign(new User(), { id: response.data.register.id }))).resolves.toBeTruthy();
     });
 });
