@@ -7,7 +7,7 @@ module.exports = {
     moduleNameMapper: {},
     testMatch: ['**/**.test.ts'],
     collectCoverageFrom: [
-        'packages/**/*.ts',
+        'src/**/*.ts',
         '!**/dist/**',
         '!**/node_modules/**',
         '!**/build/**',
