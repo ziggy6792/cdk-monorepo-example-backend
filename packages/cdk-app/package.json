@@ -11,7 +11,9 @@
         "test": "jest",
         "cdk": "cdk",
         "clean:light": "rm -rf ./dist && rm -rf tsconfig.build.tsbuildinfo",
-        "clean:full": "yarn run clean:light && rm -rf ./node_modules && rm -rf ./cdk.out"
+        "clean:full": "yarn run clean:light && rm -rf ./node_modules && rm -rf ./cdk.out",
+        "typecheck": "tsc --noEmit",
+        "precommit": "yarn run typecheck"
     },
     "devDependencies": {
         "@types/node": "10.17.27",
