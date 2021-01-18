@@ -67,8 +67,6 @@ class PipelineStack extends cdk.Stack {
 
         testAction.project.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
 
-        // const testingStage = new cdkPipeline.CdkStage(this, utils.getConstructId('test'), { stageName: 'testing', pipelineStage: { actions: [] } });
-
         // Do this as many times as necessary with any account and region
         // Account and region may be different from the pipeline's.
 
@@ -80,20 +78,7 @@ class PipelineStack extends cdk.Stack {
             },
         });
 
-        // deployedStagingStage.
-
-        // const testingStage = pipeline.addStage(new MyApplication(this, 'Testing', {
-        //   env: { account: '111111111111', region: 'eu-west-1' }
-        // }));
-
         const stagingStage = pipeline.addApplicationStage(deployedStagingStage);
-
-        // devStage.addActions(new ManualApprovalAction({
-        //   actionName: 'ManualApproval',
-        //   runOrder: testingStage.nextSequentialRunOrder(),
-        // }));
-
-        // pipeline.
 
         // Manual Approval
         // devStage.addActions(
@@ -115,13 +100,6 @@ class PipelineStack extends cdk.Stack {
         });
 
         pipeline.addApplicationStage(deployedProdStage);
-
-        // if (deployedProdStage.urlOutput.exportName) {
-        //   this.prodUrlOutput = new cdk.CfnOutput(this, deployedProdStage.urlOutput.exportName, { value: deployedProdStage.urlOutput.importValue });
-        // }
-        // this.devUrlOutput = new cdk.CfnOutput(this, 'webservice-prod', { value: Fn.importValue('webservice-prod') });
-
-        // this.urlOutput = service.urlOutput;
     }
 }
 
