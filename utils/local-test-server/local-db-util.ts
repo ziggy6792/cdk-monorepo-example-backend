@@ -90,15 +90,15 @@ export const start = async (): Promise<void> => {
 
     localDb = child.spawn('yarn', ['start']);
 
-    localDb.stdout.on('data', function (data) {
+    localDb.stdout.on('data', (data) => {
         console.log(`stdout: ${data.toString()}`);
     });
 
-    localDb.stderr.on('data', function (data) {
+    localDb.stderr.on('data', (data) => {
         console.log(`stderr: ${data.toString()}`);
     });
 
-    localDb.on('exit', function (code) {
+    localDb.on('exit', (code) => {
         console.log(`child process exited with code ${code.toString()}`);
     });
 

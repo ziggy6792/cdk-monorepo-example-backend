@@ -13,4 +13,5 @@ module.exports = {
     roots: ['<rootDir>/src'],
     moduleDirectories: ['node_modules', '<rootDir>'],
     moduleNameMapper,
+    globalSetup: './src/test-utils/setup.ts',
 };

@@ -15,8 +15,8 @@
     "scripts": {
         "clean:light": "rm -rf ./tsconfig.build.tsbuildinfo && rm -rf ./dist",
         "clean:full": "yarn run clean:light && rm -rf ./node_modules",
-        "test:watch": "node --expose-gc ./node_modules/.bin/jest --watch --debug --runInBand --colors",
-        "test": "node --expose-gc ./node_modules/.bin/jest --coverage --debug --runInBand --colors",
+        "test:watch": "jest --watch --debug --runInBand --colors",
+        "test": "jest --coverage --debug --runInBand --colors",
         "test:with:env": "yarn local:db:start:inline && yarn test",
         "local:db:start": "lerna run start --scope @danielblignaut/local-test-server --stream",
         "local:db:start:inline": "lerna run start:inline --scope @danielblignaut/local-test-server --stream",
@@ -69,11 +69,11 @@
         "tsconfig-paths-webpack-plugin": "^3.3.0"
     },
     "lint-staged": {
-        "packages/*/src/**/*.{ts,tsx}": [
+        "{packages,utils}/*/src/**/*.{ts,tsx}": [
             "eslint --fix --config ./.eslintrc.js",
             "jest --bail --findRelatedTests"
         ],
-        "packages/*/src/**/*.{json,ts,tsx,html,css,scss}": [
+        "{packages,utils}/*/src/**/*.{json,ts,tsx,html,css,scss}": [
             "prettier --write --config ./.prettierrc"
         ]
     },
