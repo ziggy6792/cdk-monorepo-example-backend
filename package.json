@@ -76,5 +76,11 @@
         "packages/*/src/**/*.{json,ts,tsx,html,css,scss}": [
             "prettier --write --config ./.prettierrc"
         ]
+    },
+    "husky": {
+        "hooks": {
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+            "pre-commit": "lint-staged && lerna run precommit"
+        }
     }
 }
