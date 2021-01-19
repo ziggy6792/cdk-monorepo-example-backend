@@ -207,17 +207,17 @@ export class DeploymentStack extends cdk.Stack {
         //   },
         // };
 
-        const frontendConfig = `
-REACT_APP_AWS_COGNITO_IDENDITY_POOL_ID = ${identityPoolConstruct.identityPool.ref}
-REACT_APP_AWS_USER_POOLS_ID = ${apiConstruct.userPool.userPoolId}
-REACT_APP_AWS_USER_POOLS_WEB_CLIENT_ID = ${client.userPoolClientId}
-
-REACT_APP_AWS_GRAPHQLENDPOINT_AUTHUSER = ${gqUrls[authUserResource.path]}
-REACT_APP_AWS_GRAPHQLENDPOINT_AUTHROLE = ${gqUrls[authRoleResource.path]}
-REACT_APP_AWS_GRAPHQLENDPOINT_AUTHNONE = ${gqUrls[authNoneResource.path]}
-
-REACT_APP_AWS_OATH_DOMAIN = ${domainPrefix}.auth.ap-southeast-1.amazoncognito.com
-`;
+        const frontendConfig = {
+            ENV: stageName,
+            AWS_REGION: 'ap-southeast-1',
+            AWS_COGNITO_IDENDITY_POOL_ID: identityPoolConstruct.identityPool.ref,
+            AWS_USER_POOLS_ID: apiConstruct.userPool.userPoolId,
+            AWS_USER_POOLS_WEB_CLIENT_ID: client.userPoolClientId,
+            AWS_GRAPHQLENDPOINT_AUTHUSER: gqUrls[authUserResource.path],
+            AWS_GRAPHQLENDPOINT_AUTHROLE: gqUrls[authRoleResource.path],
+            AWS_GRAPHQLENDPOINT_AUTHNONE: gqUrls[authNoneResource.path],
+            AWS_OATH_DOMAIN: `${domainPrefix}.auth.ap-southeast-1.amazoncognito.com`,
+        };
 
         const localLambdaServerConfig = {
             REGION,
@@ -234,12 +234,12 @@ REACT_APP_AWS_OATH_DOMAIN = ${domainPrefix}.auth.ap-southeast-1.amazoncognito.co
 
         const clientConfigOutput = new cdk.CfnOutput(this, 'frontend-config', {
             description: 'frontend-config',
-            value: frontendConfig,
+            value: JSON.stringify(frontendConfig),
         });
 
         const clientConfSSM = new ssm.StringParameter(this, utils.getConstructId('frontend-config', stageName), {
             parameterName: utils.getSsmParamId('frontend-config', stageName),
-            stringValue: frontendConfig,
+            stringValue: JSON.stringify(frontendConfig),
         });
     }
 }
