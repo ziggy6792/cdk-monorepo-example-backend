@@ -5,6 +5,8 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as iam from '@aws-cdk/aws-iam';
 import * as cognito from '@aws-cdk/aws-cognito';
 import * as ssm from '@aws-cdk/aws-ssm';
+import * as events from '@aws-cdk/aws-events';
+import * as eventsTargets from '@aws-cdk/aws-events-targets';
 
 import path from 'path';
 import * as utils from 'src/utils';
@@ -241,5 +243,29 @@ export class DeploymentStack extends cdk.Stack {
             parameterName: utils.getSsmParamId('frontend-config', stageName),
             stringValue: JSON.stringify(frontendConfig),
         });
+
+        const lambdaConfigFrontend = new lambda.Function(this, utils.getConstructId('configfrontend', stageName), {
+            functionName: utils.getConstructName('config-frontend', stageName),
+            description: utils.getConstructDescription('config-frontend', stageName),
+            memorySize: 256,
+            timeout: cdk.Duration.seconds(30),
+            runtime: lambda.Runtime.NODEJS_12_X,
+            handler: 'index.handler',
+            code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-config-frontend'), '..')),
+            environment: {
+                SSM_FRONTEND_CONFIG: clientConfSSM.parameterName,
+                SSM_FRONTEND_URL: '/cdk-monorepo-frontend/staging/url',
+            },
+        });
+
+        lambdaConfigFrontend.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
+
+        const rule = new events.Rule(this, utils.getConstructId('frontend-config-rule', stageName), {
+            eventPattern: { source: ['aws.ssm'], detailType: ['Parameter Store Change'] },
+        });
+
+        rule.addTarget(new eventsTargets.LambdaFunction(lambdaConfigFrontend));
+
+        // clientConfSSM
     }
 }

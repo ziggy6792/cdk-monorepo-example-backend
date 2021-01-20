@@ -1,10 +1,20 @@
 import * as cdk from '@aws-cdk/core';
 import * as utils from 'src/utils';
 import PipelineStack from 'src/backend-stack/pipeline-stack';
+import { DEPLOYMENT_CONFIG } from 'src/config';
+import { DeploymentStack } from './backend-stack/deployment-stack';
+import { PROJECT_NAME } from './config';
 
 const app = new cdk.App();
 
-// const stack = new DeploymentStack(app, `${PROJECT_NAME}-staging-deployment`, { stage: 'staging' });
+// Dummy stack
+const stageName = 'dummy';
+
+const deploymentConfig = DEPLOYMENT_CONFIG[stageName];
+
+const stack = new DeploymentStack(app, `${PROJECT_NAME}-dummy-deployment`, { stageName, ...deploymentConfig });
+
+// Pipeline stack
 
 // const dummyPipelineStack = new DummyPipelineStack(app, utils.getConstructId('pipeline'));
 

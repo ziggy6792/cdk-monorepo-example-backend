@@ -12,4 +12,9 @@ export const DEPLOYMENT_CONFIG = {
         facebookClientId: '153415723229752',
         facebookClientSecret: '8d373404c59caf111fe055f6e9deeb15',
     },
+    dummy: {
+        domainPrefix: `monorepo-dummy`,
+        facebookClientId: '153415723229752',
+        facebookClientSecret: '8d373404c59caf111fe055f6e9deeb15',
+    },
 };
