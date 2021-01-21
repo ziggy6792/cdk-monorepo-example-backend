@@ -12,19 +12,24 @@ import path from 'path';
 import * as utils from 'src/utils';
 import { MultiAuthApiGatewayLambda } from 'src/constructs/multi-auth-apigateway-lambda';
 import CognitoIdentityPool from 'src/constructs/cognito-identity-pool';
+import jsonBeautify from 'json-beautify';
 
 export interface DeploymentStackProps extends cdk.StackProps {
     readonly stageName: string;
     readonly facebookClientId: string;
     readonly facebookClientSecret: string;
     readonly domainPrefix: string;
+    readonly ssmFrontendBucket: string;
 }
 
 export class DeploymentStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: DeploymentStackProps) {
         super(scope, id, props);
 
-        const { stageName, facebookClientId, facebookClientSecret, domainPrefix } = props;
+        const { stageName, facebookClientId, facebookClientSecret, domainPrefix, ssmFrontendBucket } = props;
+
+        // Id used for the frontend config which will be uploaded to system manager
+        const frontendConfSSMId = utils.getSsmParamId('frontend-config', stageName);
 
         const REGION = 'ap-southeast-1';
 
@@ -186,9 +191,11 @@ export class DeploymentStack extends cdk.Stack {
 
         apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
+        const formatJson = (json: any) => jsonBeautify(json, null, 2, 100);
+
         const lambdaConfigSSM = new ssm.StringParameter(this, lambdaConfigParam.name, {
             parameterName: lambdaConfigParam.name,
-            stringValue: JSON.stringify(lambdaConfigParam.value),
+            stringValue: formatJson(lambdaConfigParam.value),
         });
 
         // const clientConfig = {
@@ -209,8 +216,33 @@ export class DeploymentStack extends cdk.Stack {
         //   },
         // };
 
+        const lambdaConfigFrontend = new lambda.Function(this, utils.getConstructId('configfrontend', stageName), {
+            functionName: utils.getConstructName('config-frontend', stageName),
+            description: utils.getConstructDescription('config-frontend', stageName),
+            memorySize: 256,
+            timeout: cdk.Duration.seconds(30),
+            runtime: lambda.Runtime.NODEJS_12_X,
+            handler: 'index.handler',
+            code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-config-frontend'), '..')),
+            environment: {
+                SSM_FRONTEND_CONFIG: frontendConfSSMId,
+                // SSM_FRONTEND_CONFIG: '/cdk-monorepo-backend/staging/frontend-config',
+                SSM_FRONTEND_S3BUCKET: ssmFrontendBucket,
+            },
+        });
+
+        lambdaConfigFrontend.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
+        lambdaConfigFrontend.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'));
+
+        const rule = new events.Rule(this, utils.getConstructId('frontend-config-rule', stageName), {
+            eventPattern: { source: ['aws.ssm'], detailType: ['Parameter Store Change'] },
+        });
+
+        rule.addTarget(new eventsTargets.LambdaFunction(lambdaConfigFrontend));
+
         const frontendConfig = {
             ENV: stageName,
+            BLA: 'BLA',
             AWS_REGION: 'ap-southeast-1',
             AWS_COGNITO_IDENDITY_POOL_ID: identityPoolConstruct.identityPool.ref,
             AWS_USER_POOLS_ID: apiConstruct.userPool.userPoolId,
@@ -231,40 +263,20 @@ export class DeploymentStack extends cdk.Stack {
 
         const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'locallambda-config', {
             description: 'local-lambda-config',
-            value: JSON.stringify(localLambdaServerConfig),
+            value: formatJson(localLambdaServerConfig),
         });
 
-        const clientConfigOutput = new cdk.CfnOutput(this, 'frontend-config', {
+        const frontentConfigOutput = new cdk.CfnOutput(this, 'frontend-config', {
             description: 'frontend-config',
-            value: JSON.stringify(frontendConfig),
+            value: formatJson(frontendConfig),
         });
 
-        const clientConfSSM = new ssm.StringParameter(this, utils.getConstructId('frontend-config', stageName), {
-            parameterName: utils.getSsmParamId('frontend-config', stageName),
-            stringValue: JSON.stringify(frontendConfig),
+        const frontendConfigSSM = new ssm.StringParameter(this, utils.getConstructId('frontend-config', stageName), {
+            parameterName: frontendConfSSMId,
+            stringValue: formatJson(frontendConfig),
         });
 
-        const lambdaConfigFrontend = new lambda.Function(this, utils.getConstructId('configfrontend', stageName), {
-            functionName: utils.getConstructName('config-frontend', stageName),
-            description: utils.getConstructDescription('config-frontend', stageName),
-            memorySize: 256,
-            timeout: cdk.Duration.seconds(30),
-            runtime: lambda.Runtime.NODEJS_12_X,
-            handler: 'index.handler',
-            code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-config-frontend'), '..')),
-            environment: {
-                SSM_FRONTEND_CONFIG: clientConfSSM.parameterName,
-                SSM_FRONTEND_URL: '/cdk-monorepo-frontend/staging/url',
-            },
-        });
-
-        lambdaConfigFrontend.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
-
-        const rule = new events.Rule(this, utils.getConstructId('frontend-config-rule', stageName), {
-            eventPattern: { source: ['aws.ssm'], detailType: ['Parameter Store Change'] },
-        });
-
-        rule.addTarget(new eventsTargets.LambdaFunction(lambdaConfigFrontend));
+        frontendConfigSSM.node.addDependency(rule);
 
         // clientConfSSM
     }

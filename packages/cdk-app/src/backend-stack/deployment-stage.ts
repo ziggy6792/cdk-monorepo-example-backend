@@ -21,6 +21,7 @@ export class DeploymentStage extends cdk.Stage {
 
         const stack = new DeploymentStack(this, 'deployment', {
             stageName,
+            ssmFrontendBucket: `/cdk-monorepo-frontend/${stageName}/s3-bucket`,
             ...stageConfig,
         });
 

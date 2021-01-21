@@ -14,9 +14,10 @@
     },
     "dependencies": {
         "aws-sdk": "2.770.0",
+        "json-beautify": "^1.1.1",
         "lodash": "^4.17.20",
-        "source-map-support": "^0.5.16",
-        "module-alias": "^2.2.2"
+        "module-alias": "^2.2.2",
+        "source-map-support": "^0.5.16"
     },
     "devDependencies": {}
 }
