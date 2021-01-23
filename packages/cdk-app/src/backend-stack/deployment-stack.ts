@@ -19,14 +19,14 @@ export interface DeploymentStackProps extends cdk.StackProps {
     readonly facebookClientId: string;
     readonly facebookClientSecret: string;
     readonly domainPrefix: string;
-    readonly ssmFrontendBucket: string;
+    readonly ssmPathFrontentDeployment: string;
 }
 
 export class DeploymentStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: DeploymentStackProps) {
         super(scope, id, props);
 
-        const { stageName, facebookClientId, facebookClientSecret, domainPrefix, ssmFrontendBucket } = props;
+        const { stageName, facebookClientId, facebookClientSecret, domainPrefix, ssmPathFrontentDeployment } = props;
 
         // Id used for the frontend config which will be uploaded to system manager
         const frontendConfSSMId = utils.getSsmParamId('frontend-config', stageName);
@@ -216,18 +216,18 @@ export class DeploymentStack extends cdk.Stack {
         //   },
         // };
 
-        const lambdaConfigFrontend = new lambda.Function(this, utils.getConstructId('configfrontend', stageName), {
-            functionName: utils.getConstructName('config-frontend', stageName),
-            description: utils.getConstructDescription('config-frontend', stageName),
+        const lambdaConfigFrontend = new lambda.Function(this, utils.getConstructId('deployfrontendconfig', stageName), {
+            functionName: utils.getConstructName('deploy-frontend-config', stageName),
+            description: utils.getConstructDescription('deploy-frontend-config', stageName),
             memorySize: 256,
             timeout: cdk.Duration.seconds(30),
             runtime: lambda.Runtime.NODEJS_12_X,
             handler: 'index.handler',
-            code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-config-frontend'), '..')),
+            code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-deploy-frontend-config'), '..')),
             environment: {
                 SSM_FRONTEND_CONFIG: frontendConfSSMId,
                 // SSM_FRONTEND_CONFIG: '/cdk-monorepo-backend/staging/frontend-config',
-                SSM_FRONTEND_S3BUCKET: ssmFrontendBucket,
+                SSM_PATH_FRONTEND_DEPLOYMENT: ssmPathFrontentDeployment,
             },
         });
 
@@ -242,7 +242,6 @@ export class DeploymentStack extends cdk.Stack {
 
         const frontendConfig = {
             ENV: stageName,
-            BLA: 'BLA',
             AWS_REGION: 'ap-southeast-1',
             AWS_COGNITO_IDENDITY_POOL_ID: identityPoolConstruct.identityPool.ref,
             AWS_USER_POOLS_ID: apiConstruct.userPool.userPoolId,
