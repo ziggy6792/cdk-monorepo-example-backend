@@ -1,10 +1,10 @@
 import { handler } from './index';
 import mockEvent from './mock-event';
 
-describe('test lambda-config-frontend', () => {
-    test.skip('successul', async () => {
+describe('test lambda-deploy-frontend-config', () => {
+    test('successul', async () => {
         process.env.SSM_FRONTEND_CONFIG = '/cdk-monorepo-backend/staging/frontend-config';
-        process.env.SSM_FRONTEND_S3BUCKET = '/cdk-monorepo-frontend/staging/s3-bucket';
+        process.env.SSM_PATH_FRONTEND_DEPLOYMENT = '/cdk-monorepo-frontend/staging';
 
         const res = await handler(mockEvent);
 

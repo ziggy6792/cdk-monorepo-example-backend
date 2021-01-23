@@ -2,7 +2,7 @@
 import 'source-map-support/register';
 import AWS from 'aws-sdk';
 import jsonBeautify from 'json-beautify';
-import getConfig from './services/get-config';
+import * as ssmParams from './services/ssm-params';
 
 const s3 = new AWS.S3();
 // import example from './example';
@@ -32,7 +32,7 @@ const generateResponse = (json: any = { success: true }, statusCode = 200) => ({
 export const handler = async (event: ISsmParamEvent): Promise<any> => {
     AWS.config.update({ region: process.env.AWS_REGION || 'ap-southeast-1' });
 
-    const { SSM_FRONTEND_CONFIG: ssmFrontendConfigPath, SSM_FRONTEND_S3BUCKET: ssmFrontendS3BucketPath } = process.env;
+    const { SSM_FRONTEND_CONFIG: ssmFrontendConfigPath, SSM_PATH_FRONTEND_DEPLOYMENT: ssmPathFrontendDeployment } = process.env;
 
     console.log('running config lambda');
     console.log(JSON.stringify(event));
@@ -52,28 +52,48 @@ export const handler = async (event: ISsmParamEvent): Promise<any> => {
         });
     }
 
-    const frontendConfig = await getConfig(ssmFrontendConfigPath);
-    const s3BucketName = await getConfig(ssmFrontendS3BucketPath);
+    const frontendConfig = await ssmParams.getConfig(ssmFrontendConfigPath);
+    const deploymentParams = await ssmParams.getConfigByPath(ssmPathFrontendDeployment);
+
+    console.log('deploymentParams', deploymentParams);
+
+    const deployment = {
+        s3Bucket: deploymentParams['s3-bucket'],
+        disributionId: deploymentParams['distribution-id'],
+        url: deploymentParams.url,
+    };
 
     console.log('frontendConfig');
     console.log(frontendConfig);
 
     console.log('s3Bucket');
-    console.log(s3BucketName);
+    console.log(deployment.s3Bucket);
 
     const jsonEnvConfig = jsonBeautify(JSON.parse(frontendConfig), null, 2, 100);
 
     const params = {
-        Bucket: s3BucketName,
+        Bucket: deployment.s3Bucket,
         Key: 'config/env.js', // File name you want to save as in S3
         Body: `window.env = ${jsonEnvConfig}`,
     };
 
-    try {
-        await s3.upload(params).promise();
-    } catch (err) {
-        console.log('ERROR', err);
-    }
+    await s3.upload(params).promise();
+
+    const cloudfront = new AWS.CloudFront();
+
+    // Invalidate cloudfront
+    const invalidationParams = {
+        DistributionId: deployment.disributionId,
+        InvalidationBatch: {
+            CallerReference: `${new Date().getTime()}`,
+            Paths: {
+                Quantity: 1,
+                Items: ['/config/*'],
+            },
+        },
+    };
+
+    const response = await cloudfront.createInvalidation(invalidationParams).promise();
 
     return generateResponse();
 };
