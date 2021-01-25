@@ -7,6 +7,7 @@ import * as iam from '@aws-cdk/aws-iam';
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
 import * as utils from 'src/utils';
+import * as config from 'src/config';
 import { DeploymentStage } from './deployment-stage';
 
 class PipelineStack extends cdk.Stack {
@@ -73,8 +74,8 @@ class PipelineStack extends cdk.Stack {
         const deployedStagingStage = new DeploymentStage(this, utils.getConstructId('staging'), {
             stageName: 'staging',
             env: {
-                account: '694710432912',
-                region: 'ap-southeast-1',
+                account: config.AWS_ACCOUNT_ID,
+                region: config.AWS_REGION,
             },
         });
 
@@ -94,8 +95,8 @@ class PipelineStack extends cdk.Stack {
         const deployedProdStage = new DeploymentStage(this, utils.getConstructId('prod'), {
             stageName: 'prod',
             env: {
-                account: '694710432912',
-                region: 'ap-southeast-1',
+                account: config.AWS_ACCOUNT_ID,
+                region: config.AWS_REGION,
             },
         });
 

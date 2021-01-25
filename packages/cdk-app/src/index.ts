@@ -1,6 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as utils from 'src/utils';
 import PipelineStack from 'src/backend-stack/pipeline-stack';
+import * as config from 'src/config';
 
 const app = new cdk.App();
 
@@ -13,8 +14,8 @@ const app = new cdk.App();
 const pipelineStack = new PipelineStack(app, utils.getConstructId('pipeline'), {
     description: utils.getConstructId('pipeline'),
     env: {
-        account: '694710432912',
-        region: 'ap-southeast-1',
+        account: config.AWS_ACCOUNT_ID,
+        region: config.AWS_REGION,
     },
 });
 
