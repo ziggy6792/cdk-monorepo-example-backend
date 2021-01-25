@@ -4,8 +4,10 @@ import PipelineStack from 'src/backend-stack/pipeline-stack';
 
 const app = new cdk.App();
 
-// const stack = new DeploymentStack(app, `${PROJECT_NAME}-staging-deployment`, { stage: 'staging' });
+// Dummy stack
+// createDummyStack(app);
 
+// Dummy pipline stack
 // const dummyPipelineStack = new DummyPipelineStack(app, utils.getConstructId('pipeline'));
 
 const pipelineStack = new PipelineStack(app, utils.getConstructId('pipeline'), {

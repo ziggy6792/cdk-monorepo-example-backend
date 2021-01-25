@@ -32,7 +32,7 @@ class PipelineStack extends cdk.Stack {
                 // Replace these with your actual GitHub project info
                 owner: 'ziggy6792',
                 repo: 'cdk-monorepo-example-backend',
-                branch: 'feature/runtime-config-2',
+                branch: 'master',
             }),
 
             synthAction: cdkPipeline.SimpleSynthAction.standardYarnSynth({
