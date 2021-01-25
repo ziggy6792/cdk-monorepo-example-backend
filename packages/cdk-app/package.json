@@ -1,5 +1,5 @@
 {
-    "name": "@danielblignaut/cdk-app",
+    "name": "@simonverhoeven/cdk-app",
     "version": "0.1.0",
     "bin": {
         "packages": "src/index.ts"
@@ -36,10 +36,10 @@
         "@aws-cdk/core": "1.75.0",
         "@aws-cdk/pipelines": "1.75.0",
         "@aws-solutions-constructs/core": "1.75.0",
-        "@danielblignaut/lambda-a": "^2.0.0",
-        "@danielblignaut/lambda-b": "^2.0.0",
-        "@danielblignaut/lambda-gq-resolver": "^2.0.0",
-        "@danielblignaut/lambda-user-confirmed": "^2.0.0",
+        "@simonverhoeven/lambda-a": "^2.0.0",
+        "@simonverhoeven/lambda-b": "^2.0.0",
+        "@simonverhoeven/lambda-gq-resolver": "^2.0.0",
+        "@simonverhoeven/lambda-user-confirmed": "^2.0.0",
         "aws-cdk": "1.75.0"
     }
 }

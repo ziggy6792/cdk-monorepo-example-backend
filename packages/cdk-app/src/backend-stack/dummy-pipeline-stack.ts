@@ -12,7 +12,7 @@ class DummyPipelineStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
-        const stages = ['deployment', 'prod'];
+        const stages = ['staging', 'prod'];
 
         stages.forEach((stageName) => {
             const stagingConfig = DEPLOYMENT_CONFIG[stageName];

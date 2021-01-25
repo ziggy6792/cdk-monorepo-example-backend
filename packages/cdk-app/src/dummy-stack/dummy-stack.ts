@@ -10,7 +10,6 @@ const createDummyStack = (scope: cdk.Construct) => {
 
     const stack = new DeploymentStack(scope, `${PROJECT_NAME}-dummy-deployment`, {
         stageName,
-        ssmPathFrontentDeployment: `/cdk-monorepo-frontend/prod`,
         ...deploymentConfig,
     });
 };

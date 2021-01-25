@@ -12,7 +12,7 @@ import AWS from 'aws-sdk';
 import { ApolloServer } from 'apollo-server-express';
 import * as serverless from 'aws-serverless-express';
 import Express from 'express';
-import { commonFunctionExample } from '@danielblignaut/common-lambda-lib/dist/utils';
+import { commonFunctionExample } from '@simonverhoeven/common-lambda-lib/dist/utils';
 
 import cors from 'cors';
 import createSchema from './graph-ql/create-schema';
