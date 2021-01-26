@@ -16,6 +16,7 @@ let isFetched = false;
 
 const fetchConfig = async (configPath: string): Promise<IConfig> => {
     const ssm = new SSM();
+    // return {};
     const param = await ssm.getParameter({ Name: configPath }).promise();
 
     return JSON.parse(param.Parameter.Value) as IConfig;
