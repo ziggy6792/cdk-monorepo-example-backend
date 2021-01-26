@@ -5,7 +5,8 @@
     "main": "dist/index.js",
     "license": "Apache-2.0",
     "scripts": {
-        "start": "ts-node -r tsconfig-paths/register src/index.ts"
+        "start": "nodemon",
+        "run:local": "ts-node -r tsconfig-paths/register src/index.ts"
     },
     "dependencies": {
         "@simonverhoeven/common-lambda-lib": "^1.0.0",
