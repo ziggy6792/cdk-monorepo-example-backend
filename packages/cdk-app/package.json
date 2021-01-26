@@ -40,6 +40,7 @@
         "@simonverhoeven/lambda-b": "^2.0.0",
         "@simonverhoeven/lambda-gq-resolver": "^2.0.0",
         "@simonverhoeven/lambda-user-confirmed": "^2.0.0",
-        "aws-cdk": "1.75.0"
+        "aws-cdk": "1.75.0",
+        "json-beautify": "^1.1.1"
     }
 }
