@@ -13,7 +13,7 @@ export default class RegisterResolver {
         console.log('identity', ctx.identity);
 
         console.log('Running hello resolver');
-        return 'Hello World';
+        return 'My Slot Booking API';
     }
 
     @Mutation(() => User)
