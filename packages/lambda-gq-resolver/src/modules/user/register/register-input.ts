@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { MaxLength, Length, IsEmail } from 'class-validator';
 import { Field, ID, InputType } from 'type-graphql';
-import { IsIdAlreadyExist } from './isIdAlreadyExist';
+import { IsIdAlreadyExist } from './is-id-already-exist';
 
 @InputType()
 export class RegisterInput {

@@ -23,6 +23,7 @@
         "local:db:force:stop": "lerna run force:stop --scope @simonverhoeven/local-test-server --stream",
         "lint": "eslint './{utils,packages}/**/src/**/*.ts'",
         "start": "lerna run start --stream --parallel",
+        "force:stop": "lerna run force:stop --stream --parallel",
         "nodemon": "nodemon",
         "build": "lerna run build",
         "cdk:synth": "lerna run synth --scope @simonverhoeven/cdk-app && rm -rf cdk.out && cp -r packages/cdk-app/cdk.out cdk.out"

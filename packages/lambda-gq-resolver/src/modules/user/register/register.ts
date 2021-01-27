@@ -1,15 +1,15 @@
 /* eslint-disable class-methods-use-this */
 
 import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
-import { MyContext } from 'src/types/MyContext';
+import { Context } from 'src/types';
 import { createUniqueCondition, mapper } from 'src/utils/mapper';
-import User from 'src/domain-models/User';
-import { RegisterInput } from './RegisterInput';
+import User from 'src/domain-models/user';
+import { RegisterInput } from './register-input';
 
 @Resolver()
 export default class RegisterResolver {
     @Query(() => String)
-    async hello(@Ctx() ctx: MyContext): Promise<string> {
+    async hello(@Ctx() ctx: Context): Promise<string> {
         console.log('identity', ctx.identity);
 
         console.log('Running hello resolver');
@@ -17,7 +17,7 @@ export default class RegisterResolver {
     }
 
     @Mutation(() => User)
-    async register(@Arg('input') input: RegisterInput, @Ctx() ctx: MyContext): Promise<User> {
+    async register(@Arg('input') input: RegisterInput, @Ctx() ctx: Context): Promise<User> {
         console.log('identity', ctx.identity);
 
         const { id, firstName, lastName, email } = input;

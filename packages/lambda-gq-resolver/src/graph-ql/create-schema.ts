@@ -1,7 +1,7 @@
 import { GraphQLSchema } from 'graphql';
 import 'reflect-metadata';
 import { buildSchemaSync } from 'type-graphql';
-import RegisterResolver from 'src/modules/user/register/Register';
+import RegisterResolver from 'src/modules/user/register/register';
 
 console.log('buildSchemaSync');
 const schema = buildSchemaSync({
