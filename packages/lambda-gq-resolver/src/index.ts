@@ -12,13 +12,13 @@ import AWS from 'aws-sdk';
 import { ApolloServer } from 'apollo-server-express';
 import * as serverless from 'aws-serverless-express';
 import Express from 'express';
-import { commonFunctionExample } from '@danielblignaut/common-lambda-lib/dist/utils';
+import { commonFunctionExample } from '@simonverhoeven/common-lambda-lib/dist/utils';
 
 import cors from 'cors';
 import createSchema from './graph-ql/create-schema';
 
 import { initMapper, initTables } from './utils/mapper';
-import { MyContext } from './types/MyContext';
+import { Context } from './types';
 
 import { REGION, TABLE_NAME_PREFIX } from './config/index';
 
@@ -27,7 +27,7 @@ export const createApolloServer = (): ApolloServer =>
         schema: createSchema(),
         introspection: true,
         playground: true,
-        context: async (recieved: any): Promise<MyContext> => {
+        context: async (recieved: any): Promise<Context> => {
             await initTables();
 
             const { req } = recieved;

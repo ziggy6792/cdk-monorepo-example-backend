@@ -1,6 +1,6 @@
 /* eslint-disable no-return-await */
 import { mapper } from 'src/utils/mapper';
-import User from 'src/domain-models/User';
+import User from 'src/domain-models/user';
 import { gCall } from 'src/test-utils/g-call';
 import testConn from 'src/test-utils/test-conn';
 

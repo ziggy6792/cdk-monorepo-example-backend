@@ -5,6 +5,8 @@ import { handler } from './index';
 
 import * as api from './services/gql-api';
 
+import * as config from './config';
+
 AWSMock.setSDKInstance(AWS);
 
 AWSMock.mock('CognitoIdentityServiceProvider', 'adminUpdateUserAttributes', (params, cb) => {
@@ -28,6 +30,8 @@ AWSMock.mock('CognitoIdentityServiceProvider', 'adminAddUserToGroup', (params, c
 });
 
 process.env.SSM_LAMBDA_CONFIG = '/cdk-monorepo-backend/staging/lambda-config';
+
+jest.spyOn(config, 'loadConfig').mockResolvedValue();
 
 const connfirmSignupEvent = {
     version: '1',

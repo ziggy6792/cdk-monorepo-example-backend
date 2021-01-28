@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { ExecutionResult, graphql } from 'graphql';
 import { Maybe } from 'graphql/jsutils/Maybe';
-import { MyContext } from 'src/types/MyContext';
+import { Context } from 'src/types';
 import createSchema from 'src/graph-ql/create-schema';
 
 interface IOptions {
@@ -14,5 +14,5 @@ export const gCall = async ({ source, variableValues }: IOptions): Promise<Execu
         schema: createSchema(),
         source,
         variableValues,
-        contextValue: { req: null, identity: { username: 'test user' } } as MyContext,
+        contextValue: { req: null, identity: { username: 'test user' } } as Context,
     });

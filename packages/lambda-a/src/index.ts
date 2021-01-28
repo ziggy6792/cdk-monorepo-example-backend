@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import 'source-map-support/register';
-import { commonFunctionExample } from '@danielblignaut/common-lambda-lib/dist/utils';
+import { commonFunctionExample } from '@simonverhoeven/common-lambda-lib/dist/utils';
 // import example from './example';
 import absoluteImport from '@example/example';
 import aliasImport from 'src/example/example';

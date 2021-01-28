@@ -2,6 +2,8 @@ import * as cdk from '@aws-cdk/core';
 import * as utils from 'src/utils';
 import PipelineStack from 'src/backend-stack/pipeline-stack';
 import * as config from 'src/config';
+import createDummyStack from './dummy-stack';
+import DummyPipelineStack from './backend-stack/dummy-pipeline-stack';
 
 const app = new cdk.App();
 

@@ -10,6 +10,7 @@ import path from 'path';
 import * as utils from 'src/utils';
 import { MultiAuthApiGatewayLambda } from 'src/constructs/multi-auth-apigateway-lambda';
 import CognitoIdentityPool from 'src/constructs/cognito-identity-pool';
+import jsonBeautify from 'json-beautify';
 
 export interface DeploymentStackProps extends cdk.StackProps {
     readonly stageName: string;
@@ -44,7 +45,7 @@ export class DeploymentStack extends cdk.Stack {
                 timeout: cdk.Duration.seconds(30),
                 runtime: lambda.Runtime.NODEJS_12_X,
                 handler: 'index.handler',
-                code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-gq-resolver'), '..')),
+                code: lambda.Code.fromAsset(path.join(require.resolve('@simonverhoeven/lambda-gq-resolver'), '..')),
                 environment: lambdaGqResolverEnv,
             },
             apiGatewayProps: {
@@ -162,7 +163,7 @@ export class DeploymentStack extends cdk.Stack {
             timeout: cdk.Duration.seconds(30),
             runtime: lambda.Runtime.NODEJS_12_X,
             handler: 'index.handler',
-            code: lambda.Code.fromAsset(path.join(require.resolve('@danielblignaut/lambda-user-confirmed'), '..')),
+            code: lambda.Code.fromAsset(path.join(require.resolve('@simonverhoeven/lambda-user-confirmed'), '..')),
             environment: {
                 SSM_LAMBDA_CONFIG: lambdaConfigParam.name,
             },
@@ -186,7 +187,7 @@ export class DeploymentStack extends cdk.Stack {
 
         const lambdaConfigSSM = new ssm.StringParameter(this, lambdaConfigParam.name, {
             parameterName: lambdaConfigParam.name,
-            stringValue: JSON.stringify(lambdaConfigParam.value),
+            stringValue: jsonBeautify(lambdaConfigParam.value, null, 2, 100),
         });
 
         // const clientConfig = {
@@ -229,17 +230,17 @@ export class DeploymentStack extends cdk.Stack {
 
         const localLambdaServerConfigOutput = new cdk.CfnOutput(this, 'locallambda-config', {
             description: 'local-lambda-config',
-            value: JSON.stringify(localLambdaServerConfig),
+            value: jsonBeautify(localLambdaServerConfig, null, 2, 100),
         });
 
         const clientConfigOutput = new cdk.CfnOutput(this, 'frontend-config', {
             description: 'frontend-config',
-            value: JSON.stringify(frontendConfig),
+            value: jsonBeautify(frontendConfig, null, 2, 100),
         });
 
         const clientConfSSM = new ssm.StringParameter(this, utils.getConstructId('frontend-config', stageName), {
             parameterName: utils.getSsmParamId('frontend-config', stageName),
-            stringValue: JSON.stringify(frontendConfig),
+            stringValue: jsonBeautify(frontendConfig, null, 2, 100),
         });
     }
 }
