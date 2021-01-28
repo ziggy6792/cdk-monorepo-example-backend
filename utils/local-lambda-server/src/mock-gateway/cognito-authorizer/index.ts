@@ -12,7 +12,7 @@ type ExpressMiddleware = (req: express.Request, res: express.Response, next: () 
 export const buildCognitoAutorizer = async (userPoolId: string, region = 'ap-southeast-1'): Promise<ExpressMiddleware> => {
     const jwk = await getJwk(region, userPoolId);
     return function (req, res, next): void {
-        console.log('Headers', JSON.stringify(req.headers));
+        // console.log('Headers', JSON.stringify(req.headers));
 
         console.log('');
 
