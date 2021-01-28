@@ -2,6 +2,7 @@
 /* eslint-disable camelcase */
 import jwkToPem from 'jwk-to-pem';
 import jwt from 'jsonwebtoken';
+import { ICognitoIdentity } from 'src/mock-gateway/types';
 
 export interface IJwk {
     keys: KeysEntity[];
@@ -13,20 +14,6 @@ interface KeysEntity {
     kty: string;
     n: string;
     use: string;
-}
-
-export interface ICognitoIdentity {
-    sub: string;
-    event_id: string;
-    token_use: string;
-    scope: string;
-    auth_time: number;
-    iss: string;
-    exp: number;
-    iat: number;
-    jti: string;
-    client_id: string;
-    username: string;
 }
 
 export interface IDecodedJWT {

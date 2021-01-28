@@ -10,7 +10,6 @@ import { RegisterInput } from './register-input';
 @Resolver()
 export default class RegisterResolver {
     @Query(() => String)
-    @UseMiddleware(isAuthUser)
     async hello(@Ctx() ctx: Context): Promise<string> {
         console.log('identity', ctx.identity);
 
