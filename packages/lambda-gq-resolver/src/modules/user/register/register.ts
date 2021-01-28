@@ -15,7 +15,7 @@ export default class RegisterResolver {
         console.log('identity', ctx.identity);
 
         // console.log('Running hello resolver');
-        return 'Hello from my slot booking API';
+        return 'Hello from my  API';
     }
 
     @Mutation(() => User)
