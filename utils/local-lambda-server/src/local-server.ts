@@ -23,12 +23,12 @@ const buildLocalServer = async () => {
     app.use(gqPath, await buildCognitoAutorizer(cdkExports.USER_POOL_ID));
     apolloServer.applyMiddleware({ app, path: gqPath });
 
-    gqPath = '/lambda-gq-resolver/auth-role/graphql';
+    gqPath = '/lambda-gq-resolver/auth-role-unauth/graphql';
 
     app.use(gqPath, await buildIamAutorizer(unauthenticatedUserPoolIdentity));
     apolloServer.applyMiddleware({ app, path: gqPath });
 
-    gqPath = '/lambda-gq-resolver/auth-lambda-role/graphql';
+    gqPath = '/lambda-gq-resolver/auth-role-lambda/graphql';
 
     app.use(gqPath, await buildIamAutorizer(lambdaRoleIdentity));
     apolloServer.applyMiddleware({ app, path: gqPath });

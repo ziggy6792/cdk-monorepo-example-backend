@@ -14,12 +14,11 @@ export default class RegisterResolver {
     async hello(@Ctx() ctx: Context): Promise<string> {
         console.log('identity', ctx.identity);
 
-        // console.log('Running hello resolver');
+        console.log('Running hello resolver');
         return 'Hello from my  API';
     }
 
     @Mutation(() => User)
-    @UseMiddleware(isAuthRole)
     async register(@Arg('input') input: RegisterInput, @Ctx() ctx: Context): Promise<User> {
         console.log('identity', ctx.identity);
 

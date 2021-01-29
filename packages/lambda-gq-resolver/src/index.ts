@@ -24,10 +24,10 @@ import { REGION, TABLE_NAME_PREFIX } from './config/index';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getIdentityType = (eventIdentity: any): IdentityType => {
-    if (eventIdentity.username) {
+    if (eventIdentity?.username) {
         return IdentityType.USER;
     }
-    if (eventIdentity.userArn) {
+    if (eventIdentity?.userArn) {
         if (eventIdentity.cognitoAuthenticationType === 'unauthenticated') {
             return IdentityType.ROLE_UNAUTH;
         }
@@ -36,39 +36,49 @@ const getIdentityType = (eventIdentity: any): IdentityType => {
     return null;
 };
 
+const context = async (recieved: any): Promise<Context> => {
+    await initTables();
+
+    const { req } = recieved;
+
+    const exentHeader = req.headers['x-apigateway-event'];
+
+    const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
+
+    const identityType = getIdentityType(event.requestContext?.identity);
+
+    let identity: IIdentity;
+
+    switch (identityType) {
+        case IdentityType.USER:
+            identity = { type: identityType, user: event.requestContext.identity as ICognitoIdentity };
+            break;
+        case IdentityType.ROLE:
+            identity = { type: identityType, role: event.requestContext.identity as IIamIdentity };
+            break;
+        case IdentityType.ROLE_UNAUTH:
+            identity = { type: identityType };
+            break;
+        default:
+            console.log('Auth type not found');
+            throw new Error('Auth type not found');
+    }
+
+    return { req, identity };
+};
+
 export const createApolloServer = (): ApolloServer =>
     new ApolloServer({
         schema: createSchema(),
         introspection: true,
         playground: true,
         context: async (recieved: any): Promise<Context> => {
-            await initTables();
-
-            const { req } = recieved;
-
-            const exentHeader = req.headers['x-apigateway-event'];
-
-            const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
-
-            const identityType = getIdentityType(event.requestContext?.identity);
-
-            let identity: IIdentity;
-
-            switch (identityType) {
-                case IdentityType.USER:
-                    identity = { type: identityType, user: event.requestContext.identity as ICognitoIdentity };
-                    break;
-                case IdentityType.ROLE:
-                    identity = { type: identityType, role: event.requestContext.identity as IIamIdentity };
-                    break;
-                case IdentityType.ROLE_UNAUTH:
-                    identity = { type: identityType };
-                    break;
-                default:
-                    throw new Error('Auth type not found');
+            try {
+                return context(recieved);
+            } catch (err) {
+                console.log(err);
+                throw err;
             }
-
-            return { req, identity };
         },
     });
 
