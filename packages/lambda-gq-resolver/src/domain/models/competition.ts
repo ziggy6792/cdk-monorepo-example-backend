@@ -4,7 +4,8 @@ import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
-import BaseModelWithId from 'src/domain/abstract-models/base-model-with-id';
+import DataEntity from 'src/domain/abstract-models/data-entity';
+
 import User from './user';
 
 export enum CompetitionStatus {
@@ -61,11 +62,7 @@ class CompetitionParams {
 
 @ObjectType()
 @table('Competition')
-class Competition extends BaseModelWithId {
-    @Field()
-    @attribute()
-    name: string;
-
+class Competition extends DataEntity {
     @Field()
     @attribute()
     description: string;

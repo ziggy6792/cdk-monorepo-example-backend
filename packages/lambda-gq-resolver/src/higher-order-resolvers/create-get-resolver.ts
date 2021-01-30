@@ -12,7 +12,7 @@ function createGetResolver(suffix: string, returnType: any, middleware?: Middlew
         @UseMiddleware(...(middleware || []))
         async get(@Arg('id', () => ID) id: string): Promise<any[]> {
             const entity = Object.assign(new returnType(), { id });
-            const ret = mapper.get(entity);
+            const ret = await mapper.get(entity);
             return ret;
         }
     }

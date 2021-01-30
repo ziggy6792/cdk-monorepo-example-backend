@@ -12,7 +12,7 @@ function createDeleteResolver(suffix: string, returnType: any, middleware?: Midd
         @UseMiddleware(...(middleware || []))
         async delete(@Arg('id', () => ID) id: string): Promise<any[]> {
             const entity = Object.assign(new returnType(), { id });
-            const ret = mapper.delete(entity);
+            const ret = await mapper.delete(entity);
             return ret;
         }
     }

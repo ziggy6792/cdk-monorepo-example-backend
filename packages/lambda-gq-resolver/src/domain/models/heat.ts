@@ -3,7 +3,7 @@
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
-import BaseModelWithId from 'src/domain/abstract-models/base-model-with-id';
+import DataEntity from 'src/domain/abstract-models/data-entity';
 
 export enum HeatStatus {
     OPEN = 'OPEN',
@@ -18,11 +18,7 @@ registerEnumType(HeatStatus, {
 
 @ObjectType()
 @table('Heat')
-class Heat extends BaseModelWithId {
-    @Field()
-    @attribute()
-    name: string;
-
+class Heat extends DataEntity {
     @Field()
     @attribute()
     when: string;

@@ -6,7 +6,8 @@
         "baseUrl": "./",
         "paths": {
             "@test-utils/*": ["src/test-utils/*"]
-        }
+        },
+        "lib": ["ES2020.Promise"]
     },
     "include": ["src/**/*", "src/higher-order-resolvers/create-create-resolver/.ts"]
 }

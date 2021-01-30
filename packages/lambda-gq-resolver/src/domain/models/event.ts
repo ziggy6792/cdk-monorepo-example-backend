@@ -4,7 +4,7 @@ import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
-import BaseModelWithId from 'src/domain/abstract-models/base-model-with-id';
+import DataEntity from 'src/domain/abstract-models/data-entity';
 import User from './user';
 
 export enum EventStatus {
@@ -20,11 +20,7 @@ registerEnumType(EventStatus, {
 
 @ObjectType()
 @table('Event')
-class Event extends BaseModelWithId {
-    @Field()
-    @attribute()
-    name: string;
-
+class Event extends DataEntity {
     @Field()
     @attribute()
     description: string;
