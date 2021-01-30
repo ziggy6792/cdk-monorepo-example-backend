@@ -8,5 +8,5 @@
             "@test-utils/*": ["src/test-utils/*"]
         }
     },
-    "include": ["src/**/*", "src/modules/higher-order-resolvers/create-create-resolver/.ts"]
+    "include": ["src/**/*", "src/higher-order-resolvers/create-create-resolver/.ts"]
 }

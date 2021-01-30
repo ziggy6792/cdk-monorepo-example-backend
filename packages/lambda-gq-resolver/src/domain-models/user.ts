@@ -35,14 +35,6 @@ class User {
         return parent.getFullName();
     }
 
-    generateId(): string {
-        this.id = this.getFullName().toLowerCase().replace(/\s/g, '-');
-        if (!this.id) {
-            this.id = uuidv4();
-        }
-        return this.id;
-    }
-
     private getFullName(): string {
         const { firstName, lastName } = this;
         return `${firstName}${lastName ? ` ${lastName}` : ''}`;

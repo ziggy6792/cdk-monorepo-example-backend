@@ -2,10 +2,11 @@ import { GraphQLSchema } from 'graphql';
 import 'reflect-metadata';
 import { buildSchemaSync } from 'type-graphql';
 import UserResolvers from 'src/modules/user/resolvers';
+import EventResolvers from 'src/modules/event/resolvers';
 
 console.log('buildSchemaSync');
 const schema = buildSchemaSync({
-    resolvers: [...UserResolvers] as any,
+    resolvers: [...UserResolvers, ...EventResolvers] as any,
 });
 
 const createSchema = (): GraphQLSchema => {

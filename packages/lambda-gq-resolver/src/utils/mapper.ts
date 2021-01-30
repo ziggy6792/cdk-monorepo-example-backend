@@ -4,6 +4,7 @@ import { DataMapper } from '@aws/dynamodb-data-mapper';
 import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
 
 import User from 'src/domain-models/user';
+import Event from 'src/domain-models/event';
 
 // eslint-disable-next-line import/no-mutable-exports
 export let mapper: DataMapper;
@@ -28,7 +29,7 @@ export const initMapper = (iOptions: IInitOptions): void => {
     });
 };
 
-const tables = [User];
+const tables = [User, Event];
 
 export const initTables = async (): Promise<void> => {
     try {

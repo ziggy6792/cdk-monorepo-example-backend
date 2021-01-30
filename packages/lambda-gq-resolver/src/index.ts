@@ -20,7 +20,7 @@ import createSchema from './graph-ql/create-schema';
 import { initMapper, initTables } from './utils/mapper';
 import { Context, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } from './types';
 
-import { REGION, TABLE_NAME_PREFIX } from './config/index';
+import { REGION, TABLE_NAME_PREFIX } from './config/env';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getIdentityType = (eventIdentity: any): IdentityType => {
