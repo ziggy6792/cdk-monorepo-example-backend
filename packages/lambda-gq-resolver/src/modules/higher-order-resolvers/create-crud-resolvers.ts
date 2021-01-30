@@ -5,6 +5,7 @@
 import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
 import createCreateResolver from './create-create-resolver';
 import createListResolver from './create-list-resolver';
+import createGetResolver from './create-get-resolver';
 
 interface IResolverOptions {
     middleware: Middleware<any>[];
@@ -17,16 +18,20 @@ interface ICreateOptions extends IResolverOptions {
 interface ICrudResolverOptions {
     createOptions?: ICreateOptions;
     listOptions?: IResolverOptions;
+    getOptions?: IResolverOptions;
 }
 
 const createCrudResolvers = (suffix: string, returnType: any, resolverOptions: ICrudResolverOptions): any[] => {
-    const { createOptions, listOptions } = resolverOptions;
+    const { createOptions, listOptions, getOptions } = resolverOptions;
     const crudResolvers = [];
     if (createOptions) {
         crudResolvers.push(createCreateResolver(suffix, returnType, createOptions.inputType, createOptions.middleware));
     }
     if (listOptions) {
         crudResolvers.push(createListResolver(suffix, returnType, listOptions.middleware));
+    }
+    if (getOptions) {
+        crudResolvers.push(createGetResolver(suffix, returnType, listOptions.middleware));
     }
 
     return crudResolvers;
