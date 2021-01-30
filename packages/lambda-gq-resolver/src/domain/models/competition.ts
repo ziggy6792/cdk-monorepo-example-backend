@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
 import User from './user';
-import BaseModelWithId from './abstract-models/base-model-with-id';
+import BaseModelWithId from '../abstract-models/base-model-with-id';
 
 export enum CompetitionStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',

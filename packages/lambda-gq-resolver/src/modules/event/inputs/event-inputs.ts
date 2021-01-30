@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable import/prefer-default-export */
-import { EventStatus } from 'src/domain-models/event';
+import { EventStatus } from 'src/domain/models/event';
 import { Field, InputType, ID } from 'type-graphql';
 
 @InputType()

@@ -1,4 +1,4 @@
-import Competition from 'src/domain-models/competition';
+import Competition from 'src/domain/models/competition';
 import isAuthRole from 'src/middleware/is-auth-role';
 import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolvers';
 import { CreateCompetitionInput, UpdateCompetitionInput } from 'src/modules/competition/inputs';

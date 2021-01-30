@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable import/prefer-default-export */
-import { CompetitionStatus, Gender, Level, Sport } from 'src/domain-models/competition';
+import { CompetitionStatus, Gender, Level, Sport } from 'src/domain/models/competition';
 import { Field, InputType, ID, Int } from 'type-graphql';
 
 @InputType()

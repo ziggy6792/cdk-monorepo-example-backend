@@ -3,7 +3,7 @@
 import { Resolver, Query, Ctx, UseMiddleware } from 'type-graphql';
 import { Context } from 'src/types';
 import { mapper } from 'src/utils/mapper';
-import User from 'src/domain-models/user';
+import User from 'src/domain/models/user';
 import isAuthUser from 'src/middleware/is-auth-user';
 
 @Resolver()

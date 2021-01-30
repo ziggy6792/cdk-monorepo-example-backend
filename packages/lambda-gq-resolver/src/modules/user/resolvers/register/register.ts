@@ -3,7 +3,7 @@
 import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql';
 import { Context } from 'src/types';
 import { createUniqueCondition, mapper } from 'src/utils/mapper';
-import User from 'src/domain-models/user';
+import User from 'src/domain/models/user';
 import isAuthRole from 'src/middleware/is-auth-role';
 import { RegisterInput } from './register-input';
 

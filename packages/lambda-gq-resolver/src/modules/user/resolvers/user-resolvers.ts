@@ -1,4 +1,4 @@
-import User from 'src/domain-models/user';
+import User from 'src/domain/models/user';
 import { CreateUserInput, UpdateUserInput } from 'src/modules/user/inputs';
 import isAuthRole from 'src/middleware/is-auth-role';
 import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolvers';
