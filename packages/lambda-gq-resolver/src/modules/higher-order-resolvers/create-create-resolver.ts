@@ -6,7 +6,7 @@ import { Resolver, Mutation, Arg, ClassType, UseMiddleware } from 'type-graphql'
 import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
 import { createUniqueCondition, mapper } from 'src/utils/mapper';
 
-function createCreateResolver<T extends ClassType, X extends ClassType>(suffix: string, returnType: T, inputType: X, middleware?: Middleware<any>[]) {
+function createCreateResolver(suffix: string, returnType: any, inputType: any, middleware?: Middleware<any>[]) {
     @Resolver()
     class BaseResolver {
         @Mutation(() => returnType, { name: `create${suffix}` })

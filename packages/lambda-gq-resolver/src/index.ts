@@ -15,7 +15,7 @@ import Express from 'express';
 import { commonFunctionExample } from '@simonverhoeven/common-lambda-lib/dist/utils';
 
 import cors from 'cors';
-import createSchema from './create-schema';
+import createSchema from './graph-ql/create-schema';
 
 import { initMapper, initTables } from './utils/mapper';
 import { Context, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } from './types';

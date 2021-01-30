@@ -8,12 +8,11 @@ import { mapper } from 'src/utils/mapper';
 import { toArray } from 'src/utils/async-iterator';
 import pluralize from 'pluralize';
 
-function createListResolver<T extends ClassType, X extends ClassType>(suffix: string, returnType: T, middleware?: Middleware<any>[]) {
-    @Resolver()
+function createListResolver(suffix: string, returnType: any, middleware?: Middleware<any>[]) {
     class BaseResolver {
         @Query(() => [returnType], { name: `list${pluralize.plural(suffix)}` })
         @UseMiddleware(...(middleware || []))
-        async list(@Arg('limit', () => Int, { nullable: true }) limit: number): Promise<T[]> {
+        async list(@Arg('limit', () => Int, { nullable: true }) limit: number): Promise<any[]> {
             const list = await toArray(mapper.scan(returnType));
             return list.slice(0, limit);
         }
