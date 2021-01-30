@@ -6,23 +6,27 @@ import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
 import createCreateResolver from './create-create-resolver';
 import createListResolver from './create-list-resolver';
 import createGetResolver from './create-get-resolver';
+import createUpdateResolver from './create-update-resolver';
+import createDeleteResolver from './create-delete-resolver';
 
 interface IResolverOptions {
     middleware: Middleware<any>[];
 }
 
-interface ICreateOptions extends IResolverOptions {
+interface IInputResolverOptions extends IResolverOptions {
     inputType: any;
 }
 
 interface ICrudResolverOptions {
-    createOptions?: ICreateOptions;
+    createOptions?: IInputResolverOptions;
     listOptions?: IResolverOptions;
     getOptions?: IResolverOptions;
+    updateOptions?: IInputResolverOptions;
+    deleteOptions?: IResolverOptions;
 }
 
 const createCrudResolvers = (suffix: string, returnType: any, resolverOptions: ICrudResolverOptions): any[] => {
-    const { createOptions, listOptions, getOptions } = resolverOptions;
+    const { createOptions, listOptions, getOptions, updateOptions, deleteOptions } = resolverOptions;
     const crudResolvers = [];
     if (createOptions) {
         crudResolvers.push(createCreateResolver(suffix, returnType, createOptions.inputType, createOptions.middleware));
@@ -33,10 +37,13 @@ const createCrudResolvers = (suffix: string, returnType: any, resolverOptions: I
     if (getOptions) {
         crudResolvers.push(createGetResolver(suffix, returnType, listOptions.middleware));
     }
-
+    if (updateOptions) {
+        crudResolvers.push(createUpdateResolver(suffix, returnType, updateOptions.inputType, updateOptions.middleware));
+    }
+    if (deleteOptions) {
+        crudResolvers.push(createDeleteResolver(suffix, returnType, deleteOptions.middleware));
+    }
     return crudResolvers;
 };
 
 export default createCrudResolvers;
-
-export {};
