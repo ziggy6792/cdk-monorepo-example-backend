@@ -5,6 +5,9 @@ import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
 import { Field, ID, ObjectType, Root } from 'type-graphql';
 
+// interface Deleteable {
+//     deleteChildren: () => Promise<void>;
+// }
 @ObjectType()
 @table('User')
 class User {
