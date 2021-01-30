@@ -24,9 +24,6 @@ class User extends BaseModelWithId {
     @attribute({})
     lastName: string;
 
-    // @Field()
-    // fullName: string;
-
     @Field()
     fullName(@Root() parent: User): string {
         return parent.getFullName();

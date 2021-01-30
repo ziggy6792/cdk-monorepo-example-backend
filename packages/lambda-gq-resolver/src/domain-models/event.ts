@@ -1,12 +1,9 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute, hashKey, table } from '@aws/dynamodb-data-mapper-annotations';
-import { v4 as uuidv4 } from 'uuid';
+import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
-import { Field, ID, ObjectType, Root, registerEnumType } from 'type-graphql';
+import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
-import { threadId } from 'worker_threads';
-import moment from 'src/utils/moment';
 import User from './user';
 import BaseModelWithId from './abstract-models/base-model-with-id';
 
@@ -36,7 +33,7 @@ class Event extends BaseModelWithId {
     @attribute()
     when: string;
 
-    @Field((type) => EventStatus)
+    @Field(() => EventStatus)
     @attribute()
     status: EventStatus;
 

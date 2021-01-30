@@ -8,19 +8,16 @@ class EventInput {
     @Field()
     name: string;
 
-    @Field()
+    @Field({ nullable: true })
     description: string;
 
-    @Field()
-    when: string;
-
-    @Field((type) => EventStatus)
+    @Field((type) => EventStatus, { nullable: true })
     status: EventStatus;
 
-    @Field()
+    @Field({ nullable: true })
     adminUserId: string;
 
-    @Field()
+    @Field({ nullable: true })
     selectedHeatId: string;
 }
 
@@ -28,10 +25,16 @@ class EventInput {
 export class CreateEventInput extends EventInput {
     @Field(() => ID, { nullable: true })
     id: string;
+
+    @Field()
+    when: string;
 }
 
 @InputType()
 export class UpdateEventInput extends EventInput {
     @Field(() => ID)
     id: string;
+
+    @Field({ nullable: true })
+    when: string;
 }
