@@ -3,11 +3,11 @@
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root } from 'type-graphql';
-import BaseModel from 'src/domain/abstract-models/base-model-with-id';
+import BaseModelWithId from 'src/domain/abstract-models/base-model-with-id';
 
 @ObjectType()
 @table('SeedSlot')
-class SeedSlot extends BaseModel {
+class SeedSlot extends BaseModelWithId {
     @Field(() => ID)
     @attribute()
     heatId: string;
