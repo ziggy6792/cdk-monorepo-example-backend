@@ -2,9 +2,8 @@
 /* eslint-disable new-cap */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
-import { Resolver, Mutation, Arg, ClassType, InputType, Field, UseMiddleware } from 'type-graphql';
+import { Resolver, Mutation, Arg, ClassType, UseMiddleware } from 'type-graphql';
 import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
-import isAuthRole from 'src/modules/middleware/is-auth-role';
 import { createUniqueCondition, mapper } from 'src/utils/mapper';
 
 function createCreateResolver<T extends ClassType, X extends ClassType>(suffix: string, returnType: T, inputType: X, middleware?: Middleware<any>[]) {

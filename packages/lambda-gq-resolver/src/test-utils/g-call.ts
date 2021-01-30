@@ -2,7 +2,7 @@
 import { ExecutionResult, graphql } from 'graphql';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { Context, IdentityType } from 'src/types';
-import createSchema from 'src/graph-ql/create-schema';
+import createSchema from 'src/create-schema';
 
 interface IOptions {
     source: string;
