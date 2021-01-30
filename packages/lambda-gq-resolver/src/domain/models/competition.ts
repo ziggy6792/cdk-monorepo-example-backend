@@ -53,6 +53,13 @@ registerEnumType(Level, {
 });
 
 @ObjectType()
+class CompetitionParams {
+    @Field()
+    @attribute()
+    name: string;
+}
+
+@ObjectType()
 @table('Competition')
 class Competition extends BaseModelWithId {
     @Field()
@@ -83,9 +90,9 @@ class Competition extends BaseModelWithId {
     @attribute()
     status: CompetitionStatus;
 
-    @Field()
+    @Field(() => CompetitionParams)
     @attribute()
-    params: string;
+    params: CompetitionParams;
 
     @Field()
     @attribute()

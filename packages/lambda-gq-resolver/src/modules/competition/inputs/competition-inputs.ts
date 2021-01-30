@@ -3,6 +3,11 @@
 import { CompetitionStatus, Gender, Level, Sport } from 'src/domain/models/competition';
 import { Field, InputType, ID, Int } from 'type-graphql';
 
+// @InputType()
+// class CompetitionParams {
+//     @Field()
+//     name: string;
+// }
 @InputType()
 class CompetitionInput {
     @Field()
@@ -23,8 +28,8 @@ class CompetitionInput {
     @Field(() => CompetitionStatus, { nullable: true })
     status: CompetitionStatus;
 
-    @Field({ nullable: true })
-    params: string;
+    // @Field(() => CompetitionParams, { nullable: true })
+    // params: CompetitionParams;
 
     @Field({ nullable: true })
     selectedHeatId: string;
