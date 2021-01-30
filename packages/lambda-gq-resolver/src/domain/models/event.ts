@@ -4,8 +4,8 @@ import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
+import BaseModelWithId from 'src/domain/abstract-models/base-model-with-id';
 import User from './user';
-import BaseModelWithId from '../abstract-models/base-model-with-id';
 
 export enum EventStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
