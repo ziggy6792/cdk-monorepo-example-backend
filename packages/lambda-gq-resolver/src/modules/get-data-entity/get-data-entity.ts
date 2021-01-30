@@ -3,14 +3,17 @@
 import { Resolver, Query, Mutation, Arg, Ctx, ID } from 'type-graphql';
 import { Context } from 'src/types';
 import { createUniqueCondition, mapper } from 'src/utils/mapper';
-import User from 'src/domain/models/user';
+import Event from 'src/domain/models/event';
 
 @Resolver()
 class GetDataEntityResolver {
-    @Query(() => User, { nullable: true })
-    async getDataEntity(@Arg('id', () => ID) id: string): Promise<User> {
+    @Query(() => Event, { nullable: true })
+    async getDataEntity(@Arg('id', () => ID) id: string): Promise<Event> {
         console.log(`Id is ${id}`);
-        return null;
+
+        const entity = Object.assign(new Event(), { id });
+        const ret = mapper.get(entity);
+        return ret;
     }
 }
 
