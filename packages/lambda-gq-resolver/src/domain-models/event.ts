@@ -6,7 +6,9 @@ import _ from 'lodash';
 import { Field, ID, ObjectType, Root, registerEnumType } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
 import { threadId } from 'worker_threads';
+import moment from 'src/utils/moment';
 import User from './user';
+import BaseModelWithId from './abstract-models/base-model-with-id';
 
 export enum EventStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -21,11 +23,7 @@ registerEnumType(EventStatus, {
 
 @ObjectType()
 @table('Event')
-class Event {
-    @Field(() => ID, { nullable: true })
-    @hashKey({ defaultProvider: () => uuidv4() })
-    id: string;
-
+class Event extends BaseModelWithId {
     @Field()
     @attribute()
     name: string;
@@ -33,10 +31,6 @@ class Event {
     @Field()
     @attribute()
     description: string;
-
-    @Field()
-    @attribute()
-    createdAt: string;
 
     @Field()
     @attribute()

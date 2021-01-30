@@ -12,9 +12,6 @@ class EventInput {
     description: string;
 
     @Field()
-    createdAt: string;
-
-    @Field()
     when: string;
 
     @Field((type) => EventStatus)
