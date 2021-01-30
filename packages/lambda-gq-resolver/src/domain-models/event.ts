@@ -4,6 +4,9 @@ import { attribute, hashKey, table } from '@aws/dynamodb-data-mapper-annotations
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
 import { Field, ID, ObjectType, Root, registerEnumType } from 'type-graphql';
+import { mapper } from 'src/utils/mapper';
+import { threadId } from 'worker_threads';
+import User from './user';
 
 export enum EventStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -51,8 +54,10 @@ class Event {
     @attribute()
     selectedHeatId: string;
 
-    // @Field()
-    // fullName: string;
+    @Field(() => User)
+    async adminUser(): Promise<User> {
+        return mapper.get(Object.assign(new User(), { id: this.adminUserId }));
+    }
 }
 
 export default Event;
