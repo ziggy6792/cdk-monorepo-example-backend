@@ -3,7 +3,7 @@
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root, Float } from 'type-graphql';
-import BaseModel from 'src/domain/abstract-models/base-model';
+import Creatable from 'src/domain/abstract-models/creatable';
 
 @ObjectType()
 class Run {
@@ -18,7 +18,7 @@ class Run {
 
 @ObjectType()
 @table('SeedSlot')
-class SeedSlot extends BaseModel {
+class SeedSlot extends Creatable {
     @Field(() => ID)
     @attribute()
     allocatableId: string;

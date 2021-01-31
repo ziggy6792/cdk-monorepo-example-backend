@@ -3,14 +3,14 @@
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, Root } from 'type-graphql';
-import BaseModelWithId from 'src/domain/abstract-models/base-model-with-id';
+import Identifiable from 'src/domain/abstract-models/identifiable';
 
 // interface Deleteable {
 //     deleteChildren: () => Promise<void>;
 // }
 @ObjectType()
 @table('User')
-class User extends BaseModelWithId {
+class User extends Identifiable {
     @Field()
     @attribute()
     email: string;

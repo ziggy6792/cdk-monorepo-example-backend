@@ -6,7 +6,7 @@ import { attribute } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ID, ObjectType, ClassType } from 'type-graphql';
 
-function createList<T extends ClassType>(objectTypeCls: T) {
+function createListObject<T extends ClassType>(objectTypeCls: T) {
     @ObjectType()
     class CompetitionList {
         @Field((type) => [objectTypeCls])
@@ -17,4 +17,4 @@ function createList<T extends ClassType>(objectTypeCls: T) {
     return CompetitionList;
 }
 
-export default createList;
+export default createListObject;

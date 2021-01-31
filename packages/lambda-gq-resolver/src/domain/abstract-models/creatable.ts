@@ -6,10 +6,10 @@ import { Field, ID, ObjectType } from 'type-graphql';
 import moment from 'src/utils/moment';
 
 @ObjectType({ isAbstract: true })
-abstract class BaseModel {
+abstract class Creatable {
     @Field(() => ID, { nullable: true })
     @attribute({ defaultProvider: () => moment().toISOString() })
     createdAt: string;
 }
 
-export default BaseModel;
+export default Creatable;

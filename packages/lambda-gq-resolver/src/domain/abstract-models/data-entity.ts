@@ -3,10 +3,10 @@
 import { attribute } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ID, ObjectType } from 'type-graphql';
-import BaseModelWithId from './base-model-with-id';
+import Identifiable from './identifiable';
 
 @ObjectType({ isAbstract: true })
-abstract class DataEntity extends BaseModelWithId {
+abstract class DataEntity extends Identifiable {
     @Field()
     @attribute()
     name: string;

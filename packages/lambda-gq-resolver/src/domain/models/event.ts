@@ -7,7 +7,7 @@ import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/abstract-models/data-entity';
 import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
-import createList from 'src/domain/sub-models/create-list';
+import createListObject from 'src/domain/higher-order-objects/create-list-object';
 import User from './user';
 import Competition from './competition';
 import Heat from './heat';
@@ -24,7 +24,7 @@ registerEnumType(EventStatus, {
 });
 
 @ObjectType()
-class CompetitionList extends createList(Competition) {}
+class CompetitionList extends createListObject(Competition) {}
 
 @ObjectType()
 @table('Event')
@@ -61,18 +61,13 @@ class Event extends DataEntity {
 
     @Field(() => CompetitionList)
     async competitions(): Promise<CompetitionList> {
-        // const competitions = await toArray(mapper.query(Competition, { eventId: this.id }));
-
         const filter: ConditionExpression = {
             subject: 'eventId',
             ...equals(this.id),
         };
-        const competitions = await toArray(mapper.scan(Competition, { filter }));
-
+        const items = await toArray(mapper.scan(Competition, { filter }));
         const list = new CompetitionList();
-
-        list.items = competitions;
-
+        list.items = items;
         return list;
     }
 }

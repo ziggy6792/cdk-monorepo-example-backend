@@ -2,7 +2,7 @@
 /* eslint-disable max-classes-per-file */
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import { Field, ObjectType, registerEnumType, Int, ID } from 'type-graphql';
-import BaseModelWithId from 'src/domain/abstract-models/base-model-with-id';
+import Identifiable from 'src/domain/abstract-models/identifiable';
 
 export enum RoundType {
     UPPER = 'UPPER',
@@ -16,7 +16,7 @@ registerEnumType(RoundType, {
 
 @ObjectType()
 @table('Round')
-class Round extends BaseModelWithId {
+class Round extends Identifiable {
     @Field(() => Int)
     @attribute()
     roundNo: number;
