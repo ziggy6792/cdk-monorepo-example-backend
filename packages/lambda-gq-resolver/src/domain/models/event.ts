@@ -7,7 +7,7 @@ import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/abstract-models/data-entity';
 import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
-import List from 'src/domain/sub-models/list';
+import createList from 'src/domain/sub-models/create-list';
 import User from './user';
 import Competition from './competition';
 import Heat from './heat';
@@ -23,34 +23,8 @@ registerEnumType(EventStatus, {
     description: 'The Event Status', // this one is optional
 });
 
-// function createListType<T extends ClassType>(objectTypeCls: T) {
-//     @ObjectType()
-//     class BaseResolver {
-//         //   protected items: T[] = [];
-
-//         //   @Query(type => [objectTypeCls], { name: `getAll${suffix}` })
-//         //   async getAll(@Arg("first", type => Int) first: number): Promise<T[]> {
-//         //     return this.items.slice(0, first);
-//         //   }
-
-//         @Field((type) => [objectTypeCls])
-//         @attribute()
-//         items: T[];
-//     }
-
-//     return BaseResolver;
-// }
-
-// const ListType = createListType(Competition);
-// class CompetitionList extends ListType {
-//     // ...
-// }
 @ObjectType()
-class CompetitionList {
-    @Field((type) => [Competition])
-    @attribute()
-    items: Competition[];
-}
+class CompetitionList extends createList(Competition) {}
 
 @ObjectType()
 @table('Event')
