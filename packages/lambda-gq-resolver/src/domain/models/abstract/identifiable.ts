@@ -7,10 +7,10 @@ import { Field, ID, ObjectType } from 'type-graphql';
 import Creatable from './creatable';
 
 @ObjectType({ isAbstract: true })
-abstract class Identifiable extends Creatable {
+abstract class BaseModelWithId extends Creatable {
     @Field(() => ID, { nullable: true })
     @hashKey({ defaultProvider: () => uuidv4() })
     id: string;
 }
 
-export default Identifiable;
+export default BaseModelWithId;

@@ -5,8 +5,13 @@ import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/models/abstract/data-entity';
-
+import { toArray } from 'src/utils/async-iterator';
+import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
+import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
 import User from './user';
+import Event from './event';
+import Round from './round';
+import RiderAllocation from './rider-allocation';
 
 export enum CompetitionStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -110,12 +115,42 @@ class Competition extends DataEntity {
     @Field(() => Level)
     @attribute()
     level: Level;
+
+    @Field(() => User)
+    async judgeUser(): Promise<User> {
+        return mapper.get(Object.assign(new User(), { id: this.judgeUserId }));
+    }
+
+    @Field(() => Event)
+    async event(): Promise<Event> {
+        return mapper.get(Object.assign(new Event(), { id: this.eventId }));
+    }
+
+    @Field(() => RoundList)
+    async rounds(): Promise<RoundList> {
+        const filter: ConditionExpression = {
+            subject: 'roundId',
+            ...equals(this.id),
+        };
+        const items = await toArray(mapper.scan(Round, { filter }));
+        const list = new RoundList();
+        list.items = items;
+        return list;
+    }
+
+    @Field(() => RiderAllocationList)
+    async riderAllocations(): Promise<RiderAllocationList> {
+        const filter: ConditionExpression = {
+            subject: 'allocatableId',
+            ...equals(this.id),
+        };
+        const items = await toArray(mapper.scan(RiderAllocation, { filter }));
+        const list = new RiderAllocationList();
+        list.items = items;
+        return list;
+    }
 }
 
-// judgeUser: User @connection(fields: ["judgeUserId"])
-// event: Event @connection(fields: ["eventId"])
-// rounds: [Round] @connection(keyName: "byCompetitionCreatedAt", fields: ["id"])
-// riderAllocations: [RiderAllocation] @connection(keyName: "byAllocatable", fields: ["id"])
 // scheduleItems: [ScheduleItem] @connection(keyName: "bySchedule", fields: ["id"])
 
 export default Competition;

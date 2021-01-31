@@ -2,7 +2,7 @@
 /* eslint-disable max-classes-per-file */
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
-import { Field, ObjectType, registerEnumType, ClassType } from 'type-graphql';
+import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/models/abstract/data-entity';
 import { toArray } from 'src/utils/async-iterator';

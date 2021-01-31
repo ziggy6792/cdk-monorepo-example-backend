@@ -2,19 +2,17 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
-import { Field, ID, ObjectType, ClassType } from 'type-graphql';
+import { Field, ObjectType, ClassType } from 'type-graphql';
 
 function createListObject<T extends ClassType>(objectTypeCls: T) {
     @ObjectType()
-    class CompetitionList {
-        @Field((type) => [objectTypeCls])
-        @attribute()
+    class BaseList {
+        @Field(() => [objectTypeCls])
         items: any[];
     }
 
-    return CompetitionList;
+    return BaseList;
 }
 
 export default createListObject;

@@ -4,6 +4,7 @@ import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root } from 'type-graphql';
 import Identifiable from 'src/domain/models/abstract/identifiable';
+import { mapper } from 'src/utils/mapper';
 
 @ObjectType()
 @table('SeedSlot')
@@ -27,7 +28,17 @@ class SeedSlot extends Identifiable {
 
     @Field(() => ID)
     @attribute()
-    parentSeedSlot: string;
+    parentSeedSlotId: string;
+
+    @Field(() => SeedSlot)
+    async parentSeedSlot(): Promise<SeedSlot> {
+        return mapper.get(Object.assign(new SeedSlot(), { id: this.parentSeedSlotId }));
+    }
+
+    @Field(() => SeedSlot)
+    async riderAllocation(): Promise<SeedSlot> {
+        return mapper.get(Object.assign(new SeedSlot(), { heatId: this.heatId, userId: this.userId }));
+    }
 
     private getPosition(): number {
         return 1;
@@ -36,8 +47,5 @@ class SeedSlot extends Identifiable {
 
 export default SeedSlot;
 
-// parentSeedSlotId: ID!
-// parentSeedSlot: SeedSlot @connection(fields: ["parentSeedSlotId"])
-// pSeedSlot: SeedSlot @function(name: "dbResolver-${env}")
 // riderAllocation: RiderAllocation @connection(fields: ["heatId", "userId"])
 // heat: Heat! @connection(fields: ["heatId"])

@@ -1,9 +1,11 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
+import { attribute, hashKey, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root, Float } from 'type-graphql';
 import Creatable from 'src/domain/models/abstract/creatable';
+import { mapper } from 'src/utils/mapper';
+import User from './user';
 
 @ObjectType()
 class Run {
@@ -17,14 +19,14 @@ class Run {
 }
 
 @ObjectType()
-@table('SeedSlot')
+@table('RiderAllocation')
 class RiderAllocation extends Creatable {
     @Field(() => ID)
-    @attribute()
+    @hashKey()
     allocatableId: string;
 
     @Field(() => ID)
-    @attribute()
+    @hashKey()
     userId: string;
 
     @Field(() => Int)
@@ -47,11 +49,14 @@ class RiderAllocation extends Creatable {
     private getPosition(): number {
         return 1;
     }
+
+    @Field(() => User)
+    async user(): Promise<User> {
+        return mapper.get(Object.assign(new User(), { id: this.userId }));
+    }
 }
 
 export default RiderAllocation;
 
-//   runs: [Run]
 //   position: Int
-//   user: User @connection(fields: ["userId"])
 //   allocatedTo: Allocatable @function(name: "gqResolver-${env}")

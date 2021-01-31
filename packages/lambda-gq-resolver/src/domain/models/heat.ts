@@ -9,6 +9,8 @@ import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { toArray } from 'src/utils/async-iterator';
 import { RiderAllocationList, SeedSlotList } from 'src/domain/common-objects/lists';
 import Round from './round';
+import SeedSlot from './seed-slot';
+import RiderAllocation from './rider-allocation';
 
 export enum HeatStatus {
     OPEN = 'OPEN',
@@ -51,7 +53,7 @@ class Heat extends DataEntity {
             subject: 'eventId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(SeedSlotList, { filter }));
+        const items = await toArray(mapper.scan(SeedSlot, { filter }));
         const list = new SeedSlotList();
         list.items = items;
         return list;
@@ -63,7 +65,7 @@ class Heat extends DataEntity {
             subject: 'allocatableId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(RiderAllocationList, { filter }));
+        const items = await toArray(mapper.scan(RiderAllocation, { filter }));
         const list = new RiderAllocationList();
         list.items = items;
         return list;
