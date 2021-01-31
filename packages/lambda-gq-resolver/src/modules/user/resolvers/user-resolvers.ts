@@ -5,11 +5,11 @@ import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolver
 import GetMeResolver from 'src/modules/user/resolvers/get-me';
 
 const CrudResolvers = createCrudResolvers('User', User, {
-    createOptions: { middleware: [isAuthRole], inputType: CreateUserInput },
-    updateOptions: { middleware: [isAuthRole], inputType: UpdateUserInput },
-    listOptions: { middleware: [isAuthRole] },
-    getOptions: { middleware: [isAuthRole] },
-    deleteOptions: { middleware: [isAuthRole] },
+    create: { middleware: [isAuthRole], inputType: CreateUserInput },
+    update: { middleware: [isAuthRole], inputType: UpdateUserInput },
+    list: { middleware: [isAuthRole] },
+    get: { middleware: [isAuthRole] },
+    delete: { middleware: [isAuthRole] },
 });
 
 export default [...CrudResolvers, GetMeResolver];

@@ -5,7 +5,10 @@ import _ from 'lodash';
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/abstract-models/data-entity';
+import { toArray } from 'src/utils/async-iterator';
+import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import User from './user';
+import Competition from './competition';
 
 export enum EventStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -45,6 +48,24 @@ class Event extends DataEntity {
     async adminUser(): Promise<User> {
         return mapper.get(Object.assign(new User(), { id: this.adminUserId }));
     }
+
+    @Field(() => [Competition])
+    async competitions(): Promise<Competition[]> {
+        // const competitions = await toArray(mapper.query(Competition, { eventId: this.id }));
+
+        const filter: ConditionExpression = {
+            subject: 'eventId',
+            ...equals(this.id),
+        };
+        const competitions = await toArray(mapper.scan(Competition, { filter }));
+
+        return competitions;
+    }
 }
 
 export default Event;
+
+// adminUser: User @connection(fields: ["adminUserId"])
+// competitions: [Competition] @connection(keyName: "byEvent", fields: ["id"])
+// selectedHeat: Heat @connection(fields: ["selectedHeatId"])
+// scheduleItems: [ScheduleItem] @connection(keyName: "bySchedule", fields: ["id"])

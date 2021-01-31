@@ -3,8 +3,8 @@ import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolver
 import Round from 'src/domain/models/round';
 
 const CrudResolvers = createCrudResolvers('Round', Round, {
-    listOptions: { middleware: [isAuthRole] },
-    getOptions: { middleware: [isAuthRole] },
+    list: true,
+    get: true,
 });
 
 export default [...CrudResolvers];

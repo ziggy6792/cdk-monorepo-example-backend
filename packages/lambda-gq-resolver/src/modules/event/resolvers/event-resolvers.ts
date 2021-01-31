@@ -4,11 +4,11 @@ import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolver
 import { CreateEventInput, UpdateEventInput } from 'src/modules/event/inputs';
 
 const CrudResolvers = createCrudResolvers('Event', Event, {
-    createOptions: { middleware: [isAuthRole], inputType: CreateEventInput },
-    updateOptions: { middleware: [isAuthRole], inputType: UpdateEventInput },
-    listOptions: { middleware: [isAuthRole] },
-    getOptions: { middleware: [isAuthRole] },
-    deleteOptions: { middleware: [isAuthRole] },
+    create: { inputType: CreateEventInput },
+    update: { inputType: UpdateEventInput },
+    list: true,
+    get: true,
+    delete: true,
 });
 
 export default [...CrudResolvers];

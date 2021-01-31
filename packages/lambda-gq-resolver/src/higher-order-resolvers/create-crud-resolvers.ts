@@ -10,7 +10,7 @@ import createUpdateResolver from './create-update-resolver';
 import createDeleteResolver from './create-delete-resolver';
 
 interface IResolverOptions {
-    middleware: Middleware<any>[];
+    middleware?: Middleware<any>[];
 }
 
 interface IInputResolverOptions extends IResolverOptions {
@@ -18,30 +18,37 @@ interface IInputResolverOptions extends IResolverOptions {
 }
 
 interface ICrudResolverOptions {
-    createOptions?: IInputResolverOptions;
-    listOptions?: IResolverOptions;
-    getOptions?: IResolverOptions;
-    updateOptions?: IInputResolverOptions;
-    deleteOptions?: IResolverOptions;
+    create?: IInputResolverOptions;
+    list?: IResolverOptions | boolean;
+    get?: IResolverOptions | boolean;
+    update?: IInputResolverOptions;
+    delete?: IResolverOptions | boolean;
 }
 
+const getMiddleware = (resolverOptions: IResolverOptions | boolean): any[] => {
+    if ((resolverOptions as IResolverOptions).middleware) {
+        return (resolverOptions as IResolverOptions).middleware;
+    }
+    return [];
+};
+
 const createCrudResolvers = (suffix: string, returnType: any, resolverOptions: ICrudResolverOptions): any[] => {
-    const { createOptions, listOptions, getOptions, updateOptions, deleteOptions } = resolverOptions;
+    const { create: createOptions, list: listOptions, get: getOptions, update: updateOptions, delete: deleteOptions } = resolverOptions;
     const crudResolvers = [];
     if (createOptions) {
         crudResolvers.push(createCreateResolver(suffix, returnType, createOptions.inputType, createOptions.middleware));
     }
     if (listOptions) {
-        crudResolvers.push(createListResolver(suffix, returnType, listOptions.middleware));
+        crudResolvers.push(createListResolver(suffix, returnType, getMiddleware(listOptions)));
     }
     if (getOptions) {
-        crudResolvers.push(createGetResolver(suffix, returnType, listOptions.middleware));
+        crudResolvers.push(createGetResolver(suffix, returnType, getMiddleware(getOptions)));
     }
     if (updateOptions) {
         crudResolvers.push(createUpdateResolver(suffix, returnType, updateOptions.inputType, updateOptions.middleware));
     }
     if (deleteOptions) {
-        crudResolvers.push(createDeleteResolver(suffix, returnType, deleteOptions.middleware));
+        crudResolvers.push(createDeleteResolver(suffix, returnType, getMiddleware(deleteOptions)));
     }
     return crudResolvers;
 };

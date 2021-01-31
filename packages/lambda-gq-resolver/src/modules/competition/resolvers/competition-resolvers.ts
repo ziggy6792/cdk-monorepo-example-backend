@@ -4,11 +4,11 @@ import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolver
 import { CreateCompetitionInput, UpdateCompetitionInput } from 'src/modules/competition/inputs';
 
 const CrudResolvers = createCrudResolvers('Competition', Competition, {
-    createOptions: { middleware: [isAuthRole], inputType: CreateCompetitionInput },
-    updateOptions: { middleware: [isAuthRole], inputType: UpdateCompetitionInput },
-    listOptions: { middleware: [isAuthRole] },
-    getOptions: { middleware: [isAuthRole] },
-    deleteOptions: { middleware: [isAuthRole] },
+    create: { middleware: [isAuthRole], inputType: CreateCompetitionInput },
+    update: { middleware: [isAuthRole], inputType: UpdateCompetitionInput },
+    list: { middleware: [isAuthRole] },
+    get: { middleware: [isAuthRole] },
+    delete: { middleware: [isAuthRole] },
 });
 
 export default [...CrudResolvers];
