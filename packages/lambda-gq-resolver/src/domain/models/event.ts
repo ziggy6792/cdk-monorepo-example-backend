@@ -4,10 +4,10 @@ import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ClassType } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
-import DataEntity from 'src/domain/abstract-models/data-entity';
+import DataEntity from 'src/domain/models/abstract/data-entity';
 import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
-import createListObject from 'src/domain/higher-order-objects/create-list-object';
+import { CompetitionList } from 'src/domain/common-objects/lists';
 import User from './user';
 import Competition from './competition';
 import Heat from './heat';
@@ -22,9 +22,6 @@ registerEnumType(EventStatus, {
     name: 'EventStatus', // this one is mandatory
     description: 'The Event Status', // this one is optional
 });
-
-@ObjectType()
-class CompetitionList extends createListObject(Competition) {}
 
 @ObjectType()
 @table('Event')

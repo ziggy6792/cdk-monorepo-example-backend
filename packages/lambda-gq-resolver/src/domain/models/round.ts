@@ -2,7 +2,7 @@
 /* eslint-disable max-classes-per-file */
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import { Field, ObjectType, registerEnumType, Int, ID } from 'type-graphql';
-import Identifiable from 'src/domain/abstract-models/identifiable';
+import Identifiable from 'src/domain/models/abstract/identifiable';
 
 export enum RoundType {
     UPPER = 'UPPER',

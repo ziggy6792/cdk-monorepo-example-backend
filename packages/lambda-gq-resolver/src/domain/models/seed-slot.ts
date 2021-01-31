@@ -3,7 +3,7 @@
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root } from 'type-graphql';
-import Identifiable from 'src/domain/abstract-models/identifiable';
+import Identifiable from 'src/domain/models/abstract/identifiable';
 
 @ObjectType()
 @table('SeedSlot')

@@ -4,7 +4,7 @@ import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
-import DataEntity from 'src/domain/abstract-models/data-entity';
+import DataEntity from 'src/domain/models/abstract/data-entity';
 
 import User from './user';
 

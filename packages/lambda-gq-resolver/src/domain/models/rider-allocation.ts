@@ -3,7 +3,7 @@
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root, Float } from 'type-graphql';
-import Creatable from 'src/domain/abstract-models/creatable';
+import Creatable from 'src/domain/models/abstract/creatable';
 
 @ObjectType()
 class Run {
@@ -18,7 +18,7 @@ class Run {
 
 @ObjectType()
 @table('SeedSlot')
-class SeedSlot extends Creatable {
+class RiderAllocation extends Creatable {
     @Field(() => ID)
     @attribute()
     allocatableId: string;
@@ -40,7 +40,7 @@ class SeedSlot extends Creatable {
     runs: [Run];
 
     @Field()
-    position(@Root() parent: SeedSlot): number {
+    position(@Root() parent: RiderAllocation): number {
         return parent.getPosition();
     }
 
@@ -49,7 +49,7 @@ class SeedSlot extends Creatable {
     }
 }
 
-export default SeedSlot;
+export default RiderAllocation;
 
 //   runs: [Run]
 //   position: Int
