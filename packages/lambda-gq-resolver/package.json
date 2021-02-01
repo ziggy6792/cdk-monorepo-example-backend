@@ -29,6 +29,7 @@
         "aws-serverless-express": "^3.4.0",
         "class-validator": "^0.12.2",
         "cors": "^2.8.5",
+        "deasync": "^0.1.21",
         "express": "^4.17.1",
         "graphql": "^15.4.0",
         "lodash": "^4.17.20",
@@ -36,6 +37,7 @@
         "pluralize": "^8.0.0",
         "reflect-metadata": "^0.1.13",
         "source-map-support": "^0.5.16",
+        "sync": "^0.2.5",
         "type-graphql": "^1.1.1",
         "uuid": "^8.3.1"
     },
