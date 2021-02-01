@@ -33,11 +33,15 @@ const clearDb = async (): Promise<void> => {
     }
     const deleteTableFns = tables.TableNames.map((TableName) => async () => {
         console.log(`Deleting ${TableName}`);
-        return dynamodb
-            .deleteTable({
-                TableName,
-            })
-            .promise();
+        try {
+            dynamodb
+                .deleteTable({
+                    TableName,
+                })
+                .promise();
+        } catch (err) {
+            console.log(err);
+        }
     });
 
     await Promise.all(deleteTableFns.map((fn) => fn()));
