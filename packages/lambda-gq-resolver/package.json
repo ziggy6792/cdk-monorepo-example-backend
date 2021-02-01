@@ -7,7 +7,7 @@
     "scripts": {
         "start": "npx webpack --config ./webpack.config.js --watch",
         "build": "npx webpack --config ./webpack.config.js",
-        "test:setup": "ts-node src/test-utils/setup-tests.ts",
+        "test:setup": "ts-node -r tsconfig-paths/register src/test-utils/setup-tests.ts",
         "clean:light": "rm -rf ./dist && rm -rf ./tsconfig.build.tsbuildinfo",
         "clean:full": "yarn run clean:light && rm -rf ./node_modules",
         "typecheck": "tsc --noEmit",

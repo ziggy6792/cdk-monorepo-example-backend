@@ -9,8 +9,6 @@ export default async (): Promise<void> => {
         console.log('start setup');
         console.log(exec(`cd "${__dirname}" && yarn test:setup`));
         console.log('end setup');
-
-        // child.execSync(`yarn ts-node ${__dirname}/run-setup.ts`);
     } catch (err) {
         console.log(err);
     }
