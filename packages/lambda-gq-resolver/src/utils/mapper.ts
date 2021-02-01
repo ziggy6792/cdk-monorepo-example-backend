@@ -3,7 +3,7 @@ import DynamoDB from 'aws-sdk/clients/dynamodb';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
 
-import User from 'src/domain-models/user';
+import User from 'src/domain/models/user';
 
 // eslint-disable-next-line import/no-mutable-exports
 export let mapper: DataMapper;

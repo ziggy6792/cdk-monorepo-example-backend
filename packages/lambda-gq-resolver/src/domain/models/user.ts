@@ -1,17 +1,16 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute, hashKey, table } from '@aws/dynamodb-data-mapper-annotations';
-import { v4 as uuidv4 } from 'uuid';
+import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
-import { Field, ID, ObjectType, Root } from 'type-graphql';
+import { Field, ObjectType, Root } from 'type-graphql';
+import Identifiable from 'src/domain/models/abstract/identifiable';
 
+// interface Deleteable {
+//     deleteChildren: () => Promise<void>;
+// }
 @ObjectType()
 @table('User')
-class User {
-    @Field(() => ID, { nullable: true })
-    @hashKey({ defaultProvider: () => uuidv4() })
-    id: string;
-
+class User extends Identifiable {
     @Field()
     @attribute()
     email: string;
@@ -24,20 +23,9 @@ class User {
     @attribute({})
     lastName: string;
 
-    // @Field()
-    // fullName: string;
-
     @Field()
     fullName(@Root() parent: User): string {
         return parent.getFullName();
-    }
-
-    generateId(): string {
-        this.id = this.getFullName().toLowerCase().replace(/\s/g, '-');
-        if (!this.id) {
-            this.id = uuidv4();
-        }
-        return this.id;
     }
 
     private getFullName(): string {
