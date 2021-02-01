@@ -37,10 +37,10 @@ const clearDb = async (): Promise<void> => {
             dynamodb
                 .deleteTable({
                     TableName,
-                })
+                }) 
                 .promise();
         } catch (err) {
-            console.log(err);
+            console.log(err); 
         }
     });
 

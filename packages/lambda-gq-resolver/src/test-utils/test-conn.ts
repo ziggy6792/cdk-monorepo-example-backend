@@ -8,6 +8,8 @@ const testConn = async (): Promise<void> => {
     initMapper({ region: 'local', tableNamePrefix: 'test-' });
 
     await initTables();
+    console.log('tables initialized')
 };
 
 export default testConn;
+  
