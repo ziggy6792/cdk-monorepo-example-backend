@@ -7,6 +7,7 @@ import SeedSlot from 'src/domain/models/seed-slot';
 
 import AWS, { DynamoDB } from 'aws-sdk';
 import TEST_DB_CONFIG from '@test-utils/config';
+import console from 'console';
 // // eslint-disable-next-line no-restricted-imports
 // import { initTables } from '../utils/mapper';
 
@@ -14,10 +15,17 @@ beforeAll(async () => {
     await testConn();
 });
 
-const getSeedSlotQuery = `{getSeedSlot(id:"123"){
-    id
-    userId
-  }}`;
+// const getSeedSlotQuery = `{getSeedSlot(id:"123"){
+//     id
+//     userId
+//   }}`;
+
+const getSeedSlotQuery = `query GetSeedSlot($id: ID!) {
+    getSeedSlot(id: $id) {
+      id
+      userId
+    }
+  }`;
 
 //   @Field(() => SeedSlot)
 //     async riderAllocation(): Promise<RiderAllocation> {
@@ -26,7 +34,7 @@ const getSeedSlotQuery = `{getSeedSlot(id:"123"){
 
 describe('SeedSlot', () => {
     it('get', async () => {
-        const seedslot = new SeedSlot();
+        let seedslot = new SeedSlot();
 
         const mockUserId = '123';
         const mockHeatId = '456';
@@ -34,21 +42,19 @@ describe('SeedSlot', () => {
         seedslot.userId = mockUserId;
         seedslot.heatId = mockHeatId;
 
-        console.log('mapper', JSON.stringify(mapper));
+        seedslot = await mapper.put(seedslot);
 
-        await mapper.put(seedslot);
+        console.log('seedslotid', seedslot.id);
 
         // const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
 
         expect(1 + 1 === 2);
 
-        // const user = { firstName: 'Test Firstname', lastName: 'Test Lastname', email: 'testy@test.com' };
-
-        // const response = await gCall({
-        //     source: getSeedSlotQuery,
-        //     variableValues: { input: user },
-        // });
-        // console.log('response', response);
+        const response = await gCall({
+            source: getSeedSlotQuery,
+            variableValues: { id: seedslot.id },
+        });
+        console.log('response', response);
 
         // expect(response).toMatchObject({
         //     data: {
