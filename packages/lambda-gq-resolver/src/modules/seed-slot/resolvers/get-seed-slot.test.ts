@@ -26,7 +26,6 @@ const getSeedSlotQuery = `{getSeedSlot(id:"123"){
 
 describe('SeedSlot', () => {
     it('get', async () => {
-        await testConn();
         const seedslot = new SeedSlot();
 
         const mockUserId = '123';
@@ -37,19 +36,9 @@ describe('SeedSlot', () => {
 
         console.log('mapper', JSON.stringify(mapper));
 
-        // await mapper.put(seedslot);
+        await mapper.put(seedslot);
 
-        const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
-
-        let tables: DynamoDB.ListTablesOutput;
-        try {
-            tables = await dynamodb.listTables().promise();
-            console.log('tables', tables);
-        } catch (err) {
-            const errorMessage = "\nTest DB: Local db is not running. Please run 'yarn start' from root dir";
-            console.log(`\n${errorMessage}`);
-            throw new Error(errorMessage);
-        }
+        // const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
 
         expect(1 + 1 === 2);
 

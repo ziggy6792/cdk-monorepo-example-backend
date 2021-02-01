@@ -10,7 +10,6 @@ const testConn = async (): Promise<void> => {
 
     await clearDb();
     await initTables();
-    console.log('Tables initalized');
 };
 
 export default testConn;

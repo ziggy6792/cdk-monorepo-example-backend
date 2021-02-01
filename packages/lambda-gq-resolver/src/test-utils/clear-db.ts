@@ -50,19 +50,4 @@ const clearDb = async (): Promise<void> => {
     console.log(results.join('\n'));
 };
 
-export const lsitTables = async (): Promise<void> => {
-    const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
-    let tables: DynamoDB.ListTablesOutput;
-    try {
-        tables = await promiseWithTimeout(dynamodb.listTables().promise(), 10000);
-    } catch (err) {
-        const errorMessage = "\nTest DB: Local db is not running. Please run 'yarn start' from root dir";
-        // eslint-disable-next-line no-console
-        console.log(`\n${errorMessage}`);
-        throw new Error(errorMessage);
-    }
-
-    console.log('tables', tables);
-};
-
 export default clearDb;
