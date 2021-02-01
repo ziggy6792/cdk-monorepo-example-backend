@@ -19,7 +19,7 @@ const registerMutation = `mutation Register($input: RegisterInput!) {
 }`;
 
 describe('Register', () => {
-    it('create user', async () => {
+    it.skip('Register', async () => {
         const user = { firstName: 'Test Firstname', lastName: 'Test Lastname', email: 'testy@test.com' };
 
         const response = await gCall({
