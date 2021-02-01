@@ -10,11 +10,8 @@ const testConn = async (): Promise<void> => {
 
     initMapper({ region: 'local', tableNamePrefix: 'test-' });
 
-    await clearDb();
+    // await clearDb();
     await initTables();
-    // await lsitTables();
-
-    // await delay(30000);
 
     console.log('tables initialized');
 };
