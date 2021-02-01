@@ -2,7 +2,7 @@ import * as child from 'child_process';
 
 import deasync from 'deasync';
 
-export default async (): Promise<void> => {
+export default (): void => {
     const exec = deasync(child.exec);
 
     try {
