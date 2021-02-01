@@ -33,7 +33,7 @@ const getIdentityType = (eventIdentity: any): IdentityType => {
         }
         return IdentityType.ROLE;
     }
-    return null;
+    return IdentityType.NONE;
 };
 
 const context = async (recieved: any): Promise<Context> => {
@@ -45,7 +45,7 @@ const context = async (recieved: any): Promise<Context> => {
 
     const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
 
-    const identityType = getIdentityType(event.requestContext?.identity);
+    const identityType = getIdentityType(event?.requestContext?.identity);
 
     let identity: IIdentity;
 
@@ -56,12 +56,9 @@ const context = async (recieved: any): Promise<Context> => {
         case IdentityType.ROLE:
             identity = { type: identityType, role: event.requestContext.identity as IIamIdentity };
             break;
-        case IdentityType.ROLE_UNAUTH:
+        default:
             identity = { type: identityType };
             break;
-        default:
-            console.log('Auth type not found');
-            throw new Error('Auth type not found');
     }
 
     return { req, identity };
