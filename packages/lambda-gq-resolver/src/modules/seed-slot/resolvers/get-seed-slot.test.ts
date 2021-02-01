@@ -1,36 +1,26 @@
 /* eslint-disable no-return-await */
-import { initTables, mapper } from 'src/utils/mapper';
-import User from 'src/domain/models/user';
+import { mapper } from 'src/utils/mapper';
 import { gCall } from 'src/test-utils/g-call';
 import testConn from 'src/test-utils/test-conn';
 import SeedSlot from 'src/domain/models/seed-slot';
 
-import AWS, { DynamoDB } from 'aws-sdk';
-import TEST_DB_CONFIG from '@test-utils/config';
 import console from 'console';
-// // eslint-disable-next-line no-restricted-imports
-// import { initTables } from '../utils/mapper';
+import RiderAllocation from 'src/domain/models/rider-allocation';
 
 beforeAll(async () => {
     await testConn();
 });
 
-// const getSeedSlotQuery = `{getSeedSlot(id:"123"){
-//     id
-//     userId
-//   }}`;
-
 const getSeedSlotQuery = `query GetSeedSlot($id: ID!) {
     getSeedSlot(id: $id) {
       id
       userId
+      riderAllocation{
+        allocatableId
+        userId
+      }
     }
   }`;
-
-//   @Field(() => SeedSlot)
-//     async riderAllocation(): Promise<RiderAllocation> {
-//         return mapper.get(Object.assign(new RiderAllocation(), { allocatableId: this.heatId, userId: this.userId }));
-//     }
 
 describe('SeedSlot', () => {
     it('get', async () => {
@@ -46,26 +36,25 @@ describe('SeedSlot', () => {
 
         console.log('seedslotid', seedslot.id);
 
-        // const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
+        let riderAllocation = new RiderAllocation();
 
-        expect(1 + 1 === 2);
+        riderAllocation.userId = mockUserId;
+        riderAllocation.allocatableId = mockHeatId;
+
+        riderAllocation = await mapper.put(riderAllocation);
+
+        // const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
 
         const response = await gCall({
             source: getSeedSlotQuery,
             variableValues: { id: seedslot.id },
         });
-        console.log('response', response);
+        console.log('response', JSON.stringify(response));
 
-        // expect(response).toMatchObject({
-        //     data: {
-        //         register: {
-        //             firstName: user.firstName,
-        //             lastName: user.lastName,
-        //             email: user.email,
-        //         },
-        //     },
-        // });
+        const expectedResult = {
+            data: { getSeedSlot: { id: seedslot.id, userId: '123', riderAllocation: { allocatableId: '456', userId: '123' } } },
+        };
 
-        // await expect(mapper.get(Object.assign(new User(), { id: response.data.register.id }))).resolves.toBeTruthy();
+        expect(response).toMatchObject(expectedResult);
     });
 });

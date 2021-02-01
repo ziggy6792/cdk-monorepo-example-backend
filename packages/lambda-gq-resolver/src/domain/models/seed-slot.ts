@@ -36,7 +36,7 @@ class SeedSlot extends Identifiable {
         return mapper.get(Object.assign(new SeedSlot(), { id: this.parentSeedSlotId }));
     }
 
-    @Field(() => SeedSlot)
+    @Field(() => RiderAllocation)
     async riderAllocation(): Promise<RiderAllocation> {
         return mapper.get(Object.assign(new RiderAllocation(), { allocatableId: this.heatId, userId: this.userId }));
     }
