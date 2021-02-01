@@ -10,9 +10,15 @@ export default async (): Promise<void> => {
     const cp = require('child_process');
     const exec = deasync(child.exec);
 
+    // console.log(process.env);
+
     // // output result of ls -la
     try {
-        console.log(exec(`yarn ts-node ${__dirname}/run-setup.ts`));
+        console.log('start setup');
+        console.log(exec(`cd "${__dirname}" && yarn test:setup`));
+        console.log('end setup');
+
+        // child.execSync(`yarn ts-node ${__dirname}/run-setup.ts`);
     } catch (err) {
         console.log(err);
     }
