@@ -6,6 +6,12 @@ import testConn from 'src/test-utils/test-conn';
 
 beforeAll(async () => {
     await testConn();
+    console.log('finished setup');
+});
+
+afterAll(async () => {
+    console.log('finished!');
+    // AWS.DynamoDB
 });
 
 const registerMutation = `mutation CreateUser($input: CreateUserInput!) {
@@ -30,7 +36,7 @@ describe('User', () => {
 
         expect(response).toMatchObject({
             data: {
-                register: {
+                createUser: {
                     firstName: user.firstName,
                     lastName: user.lastName,
                     email: user.email,
@@ -38,6 +44,6 @@ describe('User', () => {
             },
         });
 
-        await expect(mapper.get(Object.assign(new User(), { id: response.data.register.id }))).resolves.toBeTruthy();
+        await expect(mapper.get(Object.assign(new User(), { id: response.data.createUser.id }))).resolves.toBeTruthy();
     });
 });

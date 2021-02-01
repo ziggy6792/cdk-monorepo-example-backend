@@ -1,24 +1,25 @@
 import AWS, { DynamoDB } from 'aws-sdk';
 import TEST_DB_CONFIG from './config';
 
-const promiseWithTimeout = function (promise: Promise<any>, ms: number) {
-    // Create a promise that rejects in <ms> milliseconds
-    const timeout = new Promise((resolve, reject) => {
-        const id = setTimeout(() => {
-            clearTimeout(id);
-            reject(new Error(`Timed out in ${ms}ms.`));
-        }, ms);
-    });
+// const promiseWithTimeout = function (promise: Promise<any>, ms: number) {
+//     // Create a promise that rejects in <ms> milliseconds
+//     const timeout = new Promise((resolve, reject) => {
+//         const id = setTimeout(() => {
+//             clearTimeout(id);
+//             reject(new Error(`Timed out in ${ms}ms.`));
+//         }, ms);
+//     });
 
-    // Returns a race between our timeout and the passed in promise
-    return Promise.race([promise, timeout]);
-};
+//     // Returns a race between our timeout and the passed in promise
+//     return Promise.race([promise, timeout]);
+// };
 
 const clearDb = async (): Promise<void> => {
     const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
+    console.log(JSON.stringify(dynamodb));
     let tables: DynamoDB.ListTablesOutput;
     try {
-        tables = await promiseWithTimeout(dynamodb.listTables().promise(), 10000);
+        tables = await dynamodb.listTables().promise();
     } catch (err) {
         const errorMessage = "\nTest DB: Local db is not running. Please run 'yarn start' from root dir";
         console.log(`\n${errorMessage}`);
