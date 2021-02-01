@@ -1,40 +1,37 @@
-/* eslint-disable no-return-await */
 import { mapper } from 'src/utils/mapper';
 import { gCall } from 'src/test-utils/g-call';
 import testConn from 'src/test-utils/test-conn';
 import SeedSlot from 'src/domain/models/seed-slot';
 
-import console from 'console';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 
 beforeAll(async () => {
     await testConn();
 });
 
-const getSeedSlotQuery = `query GetSeedSlot($id: ID!) {
-    getSeedSlot(id: $id) {
-      id
-      userId
-      riderAllocation{
-        allocatableId
-        userId
-      }
-    }
-  }`;
+describe('getSeedSlot', () => {
+    it('should get rider allocation', async () => {
+        const query = `query GetSeedSlot($id: ID!) {
+            getSeedSlot(id: $id) {
+              id
+              userId
+              riderAllocation{
+                allocatableId
+                userId
+              }
+            }
+          }`;
 
-describe('SeedSlot', () => {
-    it('get', async () => {
         let seedslot = new SeedSlot();
 
-        const mockUserId = '123';
-        const mockHeatId = '456';
+        const mockUserId = 'userId';
+        const mockHeatId = 'headId';
 
+        seedslot.id = 'seedSlotId';
         seedslot.userId = mockUserId;
         seedslot.heatId = mockHeatId;
 
         seedslot = await mapper.put(seedslot);
-
-        console.log('seedslotid', seedslot.id);
 
         let riderAllocation = new RiderAllocation();
 
@@ -43,18 +40,42 @@ describe('SeedSlot', () => {
 
         riderAllocation = await mapper.put(riderAllocation);
 
-        // const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
-
         const response = await gCall({
-            source: getSeedSlotQuery,
+            source: query,
             variableValues: { id: seedslot.id },
         });
-        console.log('response', JSON.stringify(response));
 
-        const expectedResult = {
-            data: { getSeedSlot: { id: seedslot.id, userId: '123', riderAllocation: { allocatableId: '456', userId: '123' } } },
-        };
+        expect(response).toMatchObject({
+            data: { getSeedSlot: { id: 'seedSlotId', userId: 'userId', riderAllocation: { allocatableId: 'headId', userId: 'userId' } } },
+        });
+    });
 
-        expect(response).toMatchObject(expectedResult);
+    it('should get the parent seed slot', async () => {
+        const query = `query GetSeedSlot($id: ID!) {
+            getSeedSlot(id: $id) {
+              id              
+              parentSeedSlot{
+                id
+                userId
+              }
+            }
+          }`;
+
+        let parentSeedSlot = new SeedSlot();
+        parentSeedSlot.id = 'parentSeedSlotId';
+        parentSeedSlot.userId = 'userId';
+        parentSeedSlot = await mapper.put(parentSeedSlot);
+
+        let seedslot = new SeedSlot();
+        seedslot.id = 'childSeedSlotId';
+        seedslot.parentSeedSlotId = parentSeedSlot.id;
+        seedslot = await mapper.put(seedslot);
+
+        const response = await gCall({
+            source: query,
+            variableValues: { id: seedslot.id },
+        });
+
+        expect(response).toMatchObject({ data: { getSeedSlot: { id: 'childSeedSlotId', parentSeedSlot: { id: 'parentSeedSlotId', userId: 'userId' } } } });
     });
 });
