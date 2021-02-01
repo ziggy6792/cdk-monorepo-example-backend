@@ -9,6 +9,7 @@ import RoundResolvers from 'src/modules/round/resolvers';
 import SeedSlotResolvers from 'src/modules/seed-slot/resolvers';
 import GetDataEntityResolver from 'src/modules/get-data-entity';
 import RegisterResolver from 'src/modules/user/resolvers/register';
+import BuildCompetition from 'src/modules/build-competition';
 
 console.log('buildSchemaSync');
 const schema = buildSchemaSync({
@@ -21,6 +22,7 @@ const schema = buildSchemaSync({
         ...SeedSlotResolvers,
         GetDataEntityResolver,
         RegisterResolver,
+        BuildCompetition,
     ] as any,
 });
 
