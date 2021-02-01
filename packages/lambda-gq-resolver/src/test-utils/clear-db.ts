@@ -18,7 +18,7 @@ const clearDb = async (): Promise<void> => {
     const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
     let tables: DynamoDB.ListTablesOutput;
     try {
-        tables = await promiseWithTimeout(dynamodb.listTables().promise(), 1000);
+        tables = await promiseWithTimeout(dynamodb.listTables().promise(), 10000);
     } catch (err) {
         const errorMessage = "\nTest DB: Local db is not running. Please run 'yarn start' from root dir";
         console.log(`\n${errorMessage}`);
@@ -32,15 +32,22 @@ const clearDb = async (): Promise<void> => {
         return;
     }
     const deleteTableFns = tables.TableNames.map((TableName) => async () => {
-        console.log(`Deleting ${TableName}`);
-        return dynamodb
-            .deleteTable({
-                TableName,
-            })
-            .promise();
+        // console.log(`Deleting ${TableName}`);
+        try {
+            await dynamodb
+                .deleteTable({
+                    TableName,
+                })
+                .promise();
+        } catch (err) {
+            console.log(err);
+        }
+        return `Deleted ${TableName}`;
     });
 
-    await Promise.all(deleteTableFns.map((fn) => fn()));
+    const results = await Promise.all(deleteTableFns.map((fn) => fn()));
+    // eslint-disable-next-line no-console
+    console.log(results.join('\n'));
 };
 
 export default clearDb;

@@ -5,6 +5,7 @@ import express from 'express';
 import { createApolloServer } from '@simonverhoeven/lambda-gq-resolver';
 import buildCognitoAutorizer from './mock-gateway/cognito-authorizer';
 import cdkExports from './mock-gateway/cdk-exports';
+import buildIamAutorizer from './mock-gateway/iam-authozier';
 // import { cognitoAutorizer } from './mock-gateway/cognito-authorizer';
 // eslint-disable-next-line import/order
 import lambdaLocal = require('lambda-local');
@@ -16,10 +17,19 @@ const buildLocalServer = async () => {
 
     const apolloServer = createApolloServer();
 
-    const localGqPath = '/lambda-gq-resolver/graphql';
+    let gqPath = '/lambda-gq-resolver/auth-user/graphql';
 
-    app.use(localGqPath, await buildCognitoAutorizer(cdkExports.USER_POOL_ID));
-    apolloServer.applyMiddleware({ app, path: localGqPath });
+    app.use(gqPath, await buildCognitoAutorizer(cdkExports.USER_POOL_ID));
+    apolloServer.applyMiddleware({ app, path: gqPath });
+
+    gqPath = '/lambda-gq-resolver/auth-role/graphql';
+
+    app.use(gqPath, await buildIamAutorizer());
+    apolloServer.applyMiddleware({ app, path: gqPath });
+
+    gqPath = '/lambda-gq-resolver/auth-none/graphql';
+
+    apolloServer.applyMiddleware({ app, path: gqPath });
 
     app.use(express.text());
 

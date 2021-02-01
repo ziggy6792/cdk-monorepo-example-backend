@@ -1,6 +1,6 @@
 /* eslint-disable no-return-await */
 import { mapper } from 'src/utils/mapper';
-import User from 'src/domain-models/user';
+import User from 'src/domain/models/user';
 import { gCall } from 'src/test-utils/g-call';
 import testConn from 'src/test-utils/test-conn';
 
@@ -8,8 +8,8 @@ beforeAll(async () => {
     await testConn();
 });
 
-const registerMutation = `mutation Register($input: RegisterInput!) {
-  register(input: $input) {
+const registerMutation = `mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
     id
     email
     firstName
@@ -18,7 +18,7 @@ const registerMutation = `mutation Register($input: RegisterInput!) {
   }
 }`;
 
-describe('Register', () => {
+describe('User', () => {
     it('create user', async () => {
         const user = { firstName: 'Test Firstname', lastName: 'Test Lastname', email: 'testy@test.com' };
 

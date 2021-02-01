@@ -1,4 +1,15 @@
 /* eslint-disable camelcase */
+
+export enum IdentityType {
+    ROLE = 'role',
+    USER = 'user',
+    ROLE_UNAUTH = 'role_unauth',
+}
+export interface IIdentity {
+    type: IdentityType;
+    user?: ICognitoIdentity;
+    role?: IIamIdentity;
+}
 export interface ICognitoIdentity {
     sub?: string;
     event_id?: string;
@@ -11,6 +22,21 @@ export interface ICognitoIdentity {
     jti?: string;
     client_id?: string;
     username: string;
+}
+
+export interface IIamIdentity {
+    cognitoIdentityPoolId: string;
+    accountId: string;
+    cognitoIdentityId: string;
+    caller: string;
+    sourceIp: string;
+    principalOrgId?: null;
+    accessKey: string;
+    cognitoAuthenticationType: string;
+    cognitoAuthenticationProvider?: null;
+    userArn: string;
+    userAgent: string;
+    user: string;
 }
 
 export interface IDecodedJWT {
@@ -29,5 +55,5 @@ export interface IEvent {
 
 export interface Context {
     req: any | null;
-    identity: ICognitoIdentity | null;
+    identity: IIdentity;
 }

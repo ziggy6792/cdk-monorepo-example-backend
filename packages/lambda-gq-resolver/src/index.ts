@@ -18,9 +18,54 @@ import cors from 'cors';
 import createSchema from './graph-ql/create-schema';
 
 import { initMapper, initTables } from './utils/mapper';
-import { Context } from './types';
+import { Context, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } from './types';
 
-import { REGION, TABLE_NAME_PREFIX } from './config/index';
+import { REGION, TABLE_NAME_PREFIX } from './config/env';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getIdentityType = (eventIdentity: any): IdentityType => {
+    if (eventIdentity?.username) {
+        return IdentityType.USER;
+    }
+    if (eventIdentity?.userArn) {
+        if (eventIdentity.cognitoAuthenticationType === 'unauthenticated') {
+            return IdentityType.ROLE_UNAUTH;
+        }
+        return IdentityType.ROLE;
+    }
+    return null;
+};
+
+const context = async (recieved: any): Promise<Context> => {
+    await initTables();
+
+    const { req } = recieved;
+
+    const exentHeader = req.headers['x-apigateway-event'];
+
+    const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
+
+    const identityType = getIdentityType(event.requestContext?.identity);
+
+    let identity: IIdentity;
+
+    switch (identityType) {
+        case IdentityType.USER:
+            identity = { type: identityType, user: event.requestContext.identity as ICognitoIdentity };
+            break;
+        case IdentityType.ROLE:
+            identity = { type: identityType, role: event.requestContext.identity as IIamIdentity };
+            break;
+        case IdentityType.ROLE_UNAUTH:
+            identity = { type: identityType };
+            break;
+        default:
+            console.log('Auth type not found');
+            throw new Error('Auth type not found');
+    }
+
+    return { req, identity };
+};
 
 export const createApolloServer = (): ApolloServer =>
     new ApolloServer({
@@ -28,17 +73,12 @@ export const createApolloServer = (): ApolloServer =>
         introspection: true,
         playground: true,
         context: async (recieved: any): Promise<Context> => {
-            await initTables();
-
-            const { req } = recieved;
-
-            const exentHeader = req.headers['x-apigateway-event'];
-
-            const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
-
-            console.log('Recieved event', event);
-
-            return { req, identity: event.requestContext?.identity };
+            try {
+                return context(recieved);
+            } catch (err) {
+                console.log(err);
+                throw err;
+            }
         },
     });
 

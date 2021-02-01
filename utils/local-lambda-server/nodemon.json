@@ -1,4 +1,4 @@
 {
-    "watch": ["../../packages/**/dist/**"],
+    "watch": ["../../packages/**/dist/**", "./**"],
     "exec": "yarn run:local"
 }

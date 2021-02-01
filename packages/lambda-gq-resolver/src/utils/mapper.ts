@@ -3,7 +3,7 @@ import DynamoDB from 'aws-sdk/clients/dynamodb';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
 
-import User from 'src/domain-models/user';
+import models from 'src/domain/models';
 
 // eslint-disable-next-line import/no-mutable-exports
 export let mapper: DataMapper;
@@ -28,13 +28,21 @@ export const initMapper = (iOptions: IInitOptions): void => {
     });
 };
 
-const tables = [User];
+const tables = models;
+
+const ensureTableExists = async (table) => {
+    try {
+        await mapper.ensureTableExists(table, { ...CREATE_TABLE_ARGS });
+    } catch (err) {
+        console.log(err);
+    }
+};
 
 export const initTables = async (): Promise<void> => {
     try {
         if (!isTablesInitialized) {
             // await mapper.ensureTableExists(User, { ...CREATE_TABLE_ARGS, indexOptions: { email: { projection: { readCapacityUnits: 5 } } } });
-            const createTableFunctions = tables.map((table) => mapper.ensureTableExists(table, { ...CREATE_TABLE_ARGS }));
+            const createTableFunctions = tables.map((table) => ensureTableExists(table));
             await Promise.all(createTableFunctions);
         }
         isTablesInitialized = true;
@@ -54,7 +62,6 @@ export const deleteTables = async (): Promise<void> => {
     } catch (err) {
         console.log({ err });
     }
-    console.log('tables deleted');
 };
 
 export const createUniqueCondition = (attributePath = 'id'): FunctionExpression =>

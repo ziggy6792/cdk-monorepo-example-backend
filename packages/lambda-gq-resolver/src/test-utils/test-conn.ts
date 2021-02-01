@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
 import { initMapper, initTables } from 'src/utils/mapper';
+import clearDb from './clear-db';
 import TEST_DB_CONFIG from './config';
 
 const testConn = async (): Promise<void> => {
@@ -7,6 +8,7 @@ const testConn = async (): Promise<void> => {
 
     initMapper({ region: 'local', tableNamePrefix: 'test-' });
 
+    await clearDb();
     await initTables();
 };
 
