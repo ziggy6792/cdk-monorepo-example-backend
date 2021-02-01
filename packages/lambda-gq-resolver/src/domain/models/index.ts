@@ -7,3 +7,4 @@ import SeedSlot from './seed-slot';
 import Round from './round';
 
 export default [Event, Competition, User, Heat, RiderAllocation, SeedSlot, Round];
+// export default [User];
