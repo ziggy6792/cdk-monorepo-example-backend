@@ -16,7 +16,6 @@ import TEST_DB_CONFIG from './config';
 
 const clearDb = async (): Promise<void> => {
     const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
-    console.log(JSON.stringify(dynamodb));
     let tables: DynamoDB.ListTablesOutput;
     try {
         tables = await dynamodb.listTables().promise();

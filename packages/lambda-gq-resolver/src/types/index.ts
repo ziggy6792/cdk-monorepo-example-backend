@@ -4,6 +4,7 @@ export enum IdentityType {
     ROLE = 'role',
     USER = 'user',
     ROLE_UNAUTH = 'role_unauth',
+    NONE = 'none',
 }
 export interface IIdentity {
     type: IdentityType;
