@@ -7,7 +7,7 @@
     "scripts": {
         "start": "npx webpack --config ./webpack.config.js --watch",
         "build": "npx webpack --config ./webpack.config.js",
-        "test:setup": "ts-node src/test-utils/run-setup.ts",
+        "test:setup": "ts-node src/test-utils/setup-tests.ts",
         "clean:light": "rm -rf ./dist && rm -rf ./tsconfig.build.tsbuildinfo",
         "clean:full": "yarn run clean:light && rm -rf ./node_modules",
         "typecheck": "tsc --noEmit",
@@ -20,6 +20,7 @@
         "@aws/dynamodb-expressions": "^0.7.3",
         "@simonverhoeven/common-lambda-lib": "^1.0.0",
         "@types/aws-serverless-express": "^3.3.3",
+        "@types/deasync": "^0.1.1",
         "@types/jsonwebtoken": "^8.5.0",
         "@types/jwk-to-pem": "^2.0.0",
         "@types/lodash": "^4.14.165",
@@ -38,7 +39,6 @@
         "pluralize": "^8.0.0",
         "reflect-metadata": "^0.1.13",
         "source-map-support": "^0.5.16",
-        "sync": "^0.2.5",
         "type-graphql": "^1.1.1",
         "uuid": "^8.3.1"
     },
