@@ -6,6 +6,7 @@ import { Field, ObjectType, ID, Int, Root } from 'type-graphql';
 import Identifiable from 'src/domain/models/abstract/identifiable';
 import { mapper } from 'src/utils/mapper';
 import RiderAllocation from './rider-allocation';
+import Heat from './heat';
 
 @ObjectType()
 @table('SeedSlot')
@@ -41,12 +42,14 @@ class SeedSlot extends Identifiable {
         return mapper.get(Object.assign(new RiderAllocation(), { allocatableId: this.heatId, userId: this.userId }));
     }
 
+    @Field(() => Heat)
+    async heat(): Promise<Heat> {
+        return mapper.get(Object.assign(new Heat(), { id: this.heatId }));
+    }
+
     private getPosition(): number {
         return 1;
     }
 }
 
 export default SeedSlot;
-
-// riderAllocation: RiderAllocation @connection(fields: ["heatId", "userId"])
-// heat: Heat! @connection(fields: ["heatId"])
