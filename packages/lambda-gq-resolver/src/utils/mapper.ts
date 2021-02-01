@@ -30,10 +30,9 @@ export const initMapper = (iOptions: IInitOptions): void => {
 
 const tables = models;
 
-const ensureTableExists = (table) => {
+const ensureTableExists = async (table) => {
     try {
-        mapper.ensureTableExists(table, { ...CREATE_TABLE_ARGS });
-        console.log('created table');
+        await mapper.ensureTableExists(table, { ...CREATE_TABLE_ARGS });
     } catch (err) {
         console.log(err);
     }
@@ -63,7 +62,6 @@ export const deleteTables = async (): Promise<void> => {
     } catch (err) {
         console.log({ err });
     }
-    console.log('tables deleted');
 };
 
 export const createUniqueCondition = (attributePath = 'id'): FunctionExpression =>
