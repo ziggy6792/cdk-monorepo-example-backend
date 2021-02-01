@@ -30,11 +30,20 @@ export const initMapper = (iOptions: IInitOptions): void => {
 
 const tables = models;
 
+const ensureTableExists = (table) => {
+    try {
+        mapper.ensureTableExists(table, { ...CREATE_TABLE_ARGS });
+        console.log('created table');
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 export const initTables = async (): Promise<void> => {
     try {
         if (!isTablesInitialized) {
             // await mapper.ensureTableExists(User, { ...CREATE_TABLE_ARGS, indexOptions: { email: { projection: { readCapacityUnits: 5 } } } });
-            const createTableFunctions = tables.map((table) => mapper.ensureTableExists(table, { ...CREATE_TABLE_ARGS }));
+            const createTableFunctions = tables.map((table) => ensureTableExists(table));
             await Promise.all(createTableFunctions);
         }
         isTablesInitialized = true;

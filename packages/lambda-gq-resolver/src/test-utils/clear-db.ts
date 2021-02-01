@@ -1,4 +1,6 @@
 import AWS, { DynamoDB } from 'aws-sdk';
+// // eslint-disable-next-line no-restricted-imports
+// import { initTables } from '../utils/mapper';
 import TEST_DB_CONFIG from './config';
 
 const promiseWithTimeout = function (promise: Promise<any>, ms: number) {

@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root } from 'type-graphql';
 import Identifiable from 'src/domain/models/abstract/identifiable';
 import { mapper } from 'src/utils/mapper';
+import RiderAllocation from './rider-allocation';
 
 @ObjectType()
 @table('SeedSlot')
@@ -36,8 +37,8 @@ class SeedSlot extends Identifiable {
     }
 
     @Field(() => SeedSlot)
-    async riderAllocation(): Promise<SeedSlot> {
-        return mapper.get(Object.assign(new SeedSlot(), { heatId: this.heatId, userId: this.userId }));
+    async riderAllocation(): Promise<RiderAllocation> {
+        return mapper.get(Object.assign(new RiderAllocation(), { allocatableId: this.heatId, userId: this.userId }));
     }
 
     private getPosition(): number {

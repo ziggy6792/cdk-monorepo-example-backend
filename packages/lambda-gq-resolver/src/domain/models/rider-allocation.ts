@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute, hashKey, table } from '@aws/dynamodb-data-mapper-annotations';
+import { attribute, hashKey, rangeKey, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root, Float } from 'type-graphql';
 import Creatable from 'src/domain/models/abstract/creatable';
@@ -26,7 +26,7 @@ class RiderAllocation extends Creatable {
     allocatableId: string;
 
     @Field(() => ID)
-    @hashKey()
+    @rangeKey()
     userId: string;
 
     @Field(() => Int)
