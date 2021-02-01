@@ -67,7 +67,7 @@ describe('getSeedSlot', () => {
         parentSeedSlot = await mapper.put(parentSeedSlot);
 
         let seedslot = new SeedSlot();
-        seedslot.id = 'childSeedSlotId';
+        seedslot.id = 'childSeedSlotId!';
         seedslot.parentSeedSlotId = parentSeedSlot.id;
         seedslot = await mapper.put(seedslot);
 
@@ -76,6 +76,6 @@ describe('getSeedSlot', () => {
             variableValues: { id: seedslot.id },
         });
 
-        expect(response).toMatchObject({ data: { getSeedSlot: { id: 'childSeedSlotId', parentSeedSlot: { id: 'parentSeedSlotId', userId: 'userId' } } } });
+        expect(response).toMatchObject({ data: { getSeedSlot: { id: 'childSeedSlotId!', parentSeedSlot: { id: 'parentSeedSlotId', userId: 'userId' } } } });
     });
 });
