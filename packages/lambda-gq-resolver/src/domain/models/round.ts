@@ -41,13 +41,17 @@ class Round extends Identifiable {
 
     @Field(() => HeatList)
     async heats(): Promise<HeatList> {
-        const filter: ConditionExpression = {
-            subject: 'roundId',
-            ...equals(this.id),
-        };
-        const items = await toArray(mapper.scan(Heat, { filter }));
+        // const filter: ConditionExpression = {
+        //     subject: 'roundId',
+        //     ...equals(this.id),
+        // };
+        // const items = await toArray(mapper.scan(Heat, { filter, indexName: 'partition-createdAt-index' }));
+        // const list = new HeatList();
+        // list.items = items;
+        const items = await toArray(mapper.query(Heat, { roundId: this.id }, { indexName: 'byRound' }));
         const list = new HeatList();
         list.items = items;
+
         return list;
     }
 

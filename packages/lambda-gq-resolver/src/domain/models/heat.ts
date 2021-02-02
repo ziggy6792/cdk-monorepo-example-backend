@@ -8,9 +8,14 @@ import { mapper } from 'src/utils/mapper';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { toArray } from 'src/utils/async-iterator';
 import { RiderAllocationList, SeedSlotList } from 'src/domain/common-objects/lists';
+import { DynamoDB } from 'aws-sdk';
+
+import getEnvConfig from 'src/config/get-env-config';
 import Round from './round';
 import SeedSlot from './seed-slot';
 import RiderAllocation from './rider-allocation';
+
+const { TABLE_NAME_PREFIX } = getEnvConfig();
 
 export enum HeatStatus {
     OPEN = 'OPEN',
@@ -75,6 +80,52 @@ class Heat extends DataEntity {
         const list = new RiderAllocationList();
         list.items = items;
         return list;
+    }
+
+    static async createIndexes(): Promise<void> {
+        console.log('RUNNING HEAT CREATE INDEXES!!!!');
+        const dynamodb = new DynamoDB();
+        await dynamodb
+            .updateTable({
+                TableName: `${TABLE_NAME_PREFIX}Heat`,
+                AttributeDefinitions: [
+                    {
+                        AttributeName: 'roundId',
+                        AttributeType: 'S',
+                    },
+                    {
+                        AttributeName: 'createdAt',
+                        AttributeType: 'S',
+                    },
+                ],
+                GlobalSecondaryIndexUpdates: [
+                    {
+                        Create: {
+                            IndexName: 'byRound',
+                            KeySchema: [
+                                {
+                                    AttributeName: 'roundId',
+                                    KeyType: 'HASH',
+                                },
+                                {
+                                    AttributeName: 'createdAt',
+                                    KeyType: 'RANGE',
+                                },
+                            ],
+                            ProvisionedThroughput: {
+                                ReadCapacityUnits: 5,
+                                WriteCapacityUnits: 5,
+                            },
+                            Projection: {
+                                ProjectionType: 'ALL',
+                            },
+                        },
+                    },
+                ],
+            })
+            .promise();
+
+        //
     }
 }
 

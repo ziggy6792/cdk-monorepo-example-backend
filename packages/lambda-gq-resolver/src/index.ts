@@ -21,7 +21,9 @@ import context from './typegraphql-setup/context';
 import { initMapper } from './utils/mapper';
 import { IContext } from './types';
 
-import { REGION, TABLE_NAME_PREFIX } from './config/env';
+import getEnvConfig from './config/get-env-config';
+
+const { REGION } = getEnvConfig();
 
 export const createApolloServer = (): ApolloServer =>
     new ApolloServer({
@@ -49,7 +51,7 @@ apolloServer.applyMiddleware({ app, path: '*' });
 
 const server = serverless.createServer(app);
 commonFunctionExample();
-initMapper({ region: REGION, tableNamePrefix: TABLE_NAME_PREFIX });
+initMapper();
 
 export const handler = (event, context) => {
     const logText = `
