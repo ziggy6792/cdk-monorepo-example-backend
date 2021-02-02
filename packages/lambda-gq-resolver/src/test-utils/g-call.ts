@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import { ExecutionResult, graphql } from 'graphql';
 import { Maybe } from 'graphql/jsutils/Maybe';
-import { Context, IdentityType } from 'src/types';
-import createSchema from 'src/graph-ql/create-schema';
+import { IContext, IdentityType } from 'src/types';
+import createSchema from 'src/typegraphql-setup/create-schema';
 
 interface IOptions {
     source: string;
@@ -14,5 +14,5 @@ export const gCall = async ({ source, variableValues }: IOptions): Promise<Execu
         schema: createSchema(),
         source,
         variableValues,
-        contextValue: { req: null, identity: { type: IdentityType.ROLE } } as Context,
+        contextValue: { req: null, identity: { type: IdentityType.ROLE } } as IContext,
     });

@@ -54,7 +54,7 @@ export interface IEvent {
     identity: ICognitoIdentity;
 }
 
-export interface Context {
+export interface IContext {
     req: any | null;
     identity: IIdentity;
 }

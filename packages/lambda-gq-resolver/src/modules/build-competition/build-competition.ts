@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware, ID } from 'type-graphql';
-import { Context } from 'src/types';
+import { IContext } from 'src/types';
 import { createUniqueCondition, mapper } from 'src/utils/mapper';
 import User from 'src/domain/models/user';
 import isAuthRole from 'src/middleware/is-auth-role';
@@ -13,7 +13,7 @@ export default class BuildCompetition {
     @Mutation(() => Competition, { nullable: true })
     // @UseMiddleware(isAuthUser)
     async buildCompetition(
-        @Ctx() ctx: Context,
+        @Ctx() ctx: IContext,
         @Arg('id', () => ID) id: string,
         @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput
     ): Promise<Competition> {

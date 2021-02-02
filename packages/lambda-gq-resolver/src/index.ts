@@ -15,61 +15,20 @@ import Express from 'express';
 import { commonFunctionExample } from '@simonverhoeven/common-lambda-lib/dist/utils';
 
 import cors from 'cors';
-import createSchema from './graph-ql/create-schema';
+import createSchema from './typegraphql-setup/create-schema';
+import context from './typegraphql-setup/context';
 
-import { initMapper, initTables } from './utils/mapper';
-import { Context, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } from './types';
+import { initMapper } from './utils/mapper';
+import { IContext } from './types';
 
 import { REGION, TABLE_NAME_PREFIX } from './config/env';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getIdentityType = (eventIdentity: any): IdentityType => {
-    if (eventIdentity?.username) {
-        return IdentityType.USER;
-    }
-    if (eventIdentity?.userArn) {
-        if (eventIdentity.cognitoAuthenticationType === 'unauthenticated') {
-            return IdentityType.ROLE_UNAUTH;
-        }
-        return IdentityType.ROLE;
-    }
-    return IdentityType.NONE;
-};
-
-const context = async (recieved: any): Promise<Context> => {
-    await initTables();
-
-    const { req } = recieved;
-
-    const exentHeader = req.headers['x-apigateway-event'];
-
-    const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
-
-    const identityType = getIdentityType(event?.requestContext?.identity);
-
-    let identity: IIdentity;
-
-    switch (identityType) {
-        case IdentityType.USER:
-            identity = { type: identityType, user: event.requestContext.identity as ICognitoIdentity };
-            break;
-        case IdentityType.ROLE:
-            identity = { type: identityType, role: event.requestContext.identity as IIamIdentity };
-            break;
-        default:
-            identity = { type: identityType };
-            break;
-    }
-
-    return { req, identity };
-};
 
 export const createApolloServer = (): ApolloServer =>
     new ApolloServer({
         schema: createSchema(),
         introspection: true,
         playground: true,
-        context: async (recieved: any): Promise<Context> => {
+        context: async (recieved: any): Promise<IContext> => {
             try {
                 return context(recieved);
             } catch (err) {
