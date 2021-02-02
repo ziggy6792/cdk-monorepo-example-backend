@@ -31,7 +31,7 @@ abstract class Creatable {
         return [];
     }
 
-    async getAllChildren(): Promise<Creatable[]> {
+    async getDescendants(): Promise<Creatable[]> {
         const traverse = async (node: Creatable, childrenList: Creatable[] = []): Promise<Creatable[]> => {
             const children = await node.getChildren();
             for (const child of children) {

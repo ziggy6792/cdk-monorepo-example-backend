@@ -14,7 +14,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { VALUE, valueIsNull } from 'src/utils/utility';
 import { toArray } from 'src/utils/async-iterator';
 import Creatable from 'src/domain/models/abstract/creatable';
-import console from 'console';
 import { CompetitionParamsInput } from './inputs';
 
 @Resolver()
@@ -30,9 +29,9 @@ export default class BuildCompetition {
 
         const competition = await mapper.get(Object.assign(new CompetitionModel(), { id }));
 
-        const prevCompChildren = await competition.getAllChildren();
+        const prevCompDescendants = await competition.getDescendants();
 
-        console.log('no of children', prevCompChildren.length);
+        console.log('no of children', prevCompDescendants.length);
 
         params.rounds = _.orderBy(params.rounds, ['roundNo', 'type'], ['asc', 'asc']);
 
@@ -84,7 +83,7 @@ export default class BuildCompetition {
         console.log(JSON.stringify(params));
 
         await Promise.all([
-            toArray(mapper.batchDelete(prevCompChildren)),
+            toArray(mapper.batchDelete(prevCompDescendants)),
             toArray(mapper.batchPut(seedSlotsToCreate)),
             toArray(mapper.batchPut(heatsToCreate)),
             toArray(mapper.batchPut(roundsToCreate)),
