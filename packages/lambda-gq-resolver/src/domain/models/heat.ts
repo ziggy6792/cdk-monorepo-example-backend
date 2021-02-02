@@ -88,6 +88,7 @@ class Heat extends DataEntity {
     static async createIndexes(): Promise<void> {
         console.log('RUNNING HEAT CREATE INDEXES!!!!');
         const dynamodb = new DynamoDB();
+
         await dynamodb
             .updateTable({
                 TableName: `${TABLE_NAME_PREFIX}Heat`,

@@ -13,4 +13,5 @@ module.exports = {
     roots: ['<rootDir>/src'],
     moduleDirectories: ['node_modules', '<rootDir>'],
     moduleNameMapper,
+    setupFilesAfterEnv: ['./src/test-utils/setup-after-env.ts'],
 };

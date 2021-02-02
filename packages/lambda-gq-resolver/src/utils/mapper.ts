@@ -6,10 +6,10 @@ import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
 import models from 'src/domain/models';
 import getEnvConfig from 'src/config/get-env-config';
 
-const config = getEnvConfig();
-
 // eslint-disable-next-line import/no-mutable-exports
 export let mapper: DataMapper;
+
+const config = getEnvConfig();
 
 let isTablesInitialized = false;
 
@@ -20,6 +20,7 @@ export const initMapper = (): void => {
         client: new DynamoDB({ region: config.REGION }), // the SDK client used to execute operations
         tableNamePrefix: config.TABLE_NAME_PREFIX, // optionally, you can provide a table prefix to keep your dev and prod tables separate
     });
+    console.log('REGION!', config.REGION);
 };
 
 const tables = models;
