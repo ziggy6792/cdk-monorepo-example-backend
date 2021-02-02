@@ -11,6 +11,7 @@ import { CompetitionList } from 'src/domain/common-objects/lists';
 import User from './user';
 import Competition from './competition';
 import Heat from './heat';
+import Creatable from './abstract/creatable';
 
 export enum EventStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -70,6 +71,10 @@ class Event extends DataEntity {
         const list = new CompetitionList();
         list.items = await this.getCompetitions();
         return list;
+    }
+
+    async getChildren(): Promise<Creatable[]> {
+        return this.getCompetitions();
     }
 }
 

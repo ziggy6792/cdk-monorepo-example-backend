@@ -9,6 +9,7 @@ import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { mapper } from 'src/utils/mapper';
 import Heat from './heat';
 import Competition from './competition';
+import Creatable from './abstract/creatable';
 
 export enum RoundType {
     UPPER = 'UPPER',
@@ -62,6 +63,10 @@ class Round extends Identifiable {
     @Field(() => Competition, { name: 'competition' })
     async getCompetition(): Promise<Competition> {
         return mapper.get(Object.assign(new Competition(), { id: this.competitionId }));
+    }
+
+    async getChildren(): Promise<Creatable[]> {
+        return this.getHeats();
     }
 }
 

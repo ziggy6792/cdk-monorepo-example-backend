@@ -14,6 +14,7 @@ import getEnvConfig from 'src/config/get-env-config';
 import Round from './round';
 import SeedSlot from './seed-slot';
 import RiderAllocation from './rider-allocation';
+import Creatable from './abstract/creatable';
 
 const { TABLE_NAME_PREFIX } = getEnvConfig();
 
@@ -130,6 +131,10 @@ class Heat extends DataEntity {
             .promise();
 
         //
+    }
+
+    async getChildren(): Promise<Creatable[]> {
+        return this.getSeedSlots();
     }
 }
 

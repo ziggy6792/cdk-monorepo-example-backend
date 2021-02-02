@@ -12,6 +12,7 @@ import User from './user';
 import Event from './event';
 import Round from './round';
 import RiderAllocation from './rider-allocation';
+import Creatable from './abstract/creatable';
 
 export enum CompetitionStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -154,6 +155,10 @@ class Competition extends DataEntity {
         const list = new RiderAllocationList();
         list.items = await this.getRiderAllocations();
         return list;
+    }
+
+    async getChildren(): Promise<Creatable[]> {
+        return this.getRounds();
     }
 }
 

@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { VALUE, valueIsNull } from 'src/utils/utility';
 import { toArray } from 'src/utils/async-iterator';
 import Creatable from 'src/domain/models/abstract/creatable';
+import console from 'console';
 import { CompetitionParamsInput } from './inputs';
 
 @Resolver()
@@ -25,11 +26,13 @@ export default class BuildCompetition {
         @Arg('id', () => ID) id: string,
         @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput
     ): Promise<CompetitionModel> {
+        const start = new Date().getTime();
+
         const competition = await mapper.get(Object.assign(new CompetitionModel(), { id }));
 
-        const rounds = await competition.getRounds();
+        const prevCompChildren = await competition.getAllChildren();
 
-        mapper.batchDelete(rounds);
+        console.log('no of children', prevCompChildren.length);
 
         params.rounds = _.orderBy(params.rounds, ['roundNo', 'type'], ['asc', 'asc']);
 
@@ -79,32 +82,13 @@ export default class BuildCompetition {
         console.log('Running buildCompetition resolver');
         console.log(id);
         console.log(JSON.stringify(params));
-        console.log(params.rounds[0].heats[0].seedSlots[0].seed);
 
-        // await toArray(mapper.batchPut(seedSlotsToCreate));
-        // await toArray(mapper.batchPut(heatsToCreate));
-        // await toArray(mapper.batchPut(roundsToCreate));
-
-        const start = new Date().getTime();
-
-        // let orderedPutOperations = [];
-
-        // const generatePutOperations = (items: Creatable[]) => items.map((item) => async () => mapper.put(item));
-
-        // heatsToCreate.forEach((heat) => {
-        //     console.log(heat.name);
-        // });
-
-        // orderedPutOperations = _.concat(orderedPutOperations, generatePutOperations(seedSlotsToCreate));
-        // orderedPutOperations = _.concat(orderedPutOperations, generatePutOperations(heatsToCreate));
-        // orderedPutOperations = _.concat(orderedPutOperations, generatePutOperations(roundsToCreate));
-
-        // for (let i = 0; i < orderedPutOperations.length; i++) {
-        //     // eslint-disable-next-line no-await-in-loop
-        //     // await orderedPutOperations[i]();
-        // }
-
-        await Promise.all([toArray(mapper.batchPut(seedSlotsToCreate)), toArray(mapper.batchPut(heatsToCreate)), toArray(mapper.batchPut(roundsToCreate))]);
+        await Promise.all([
+            toArray(mapper.batchDelete(prevCompChildren)),
+            toArray(mapper.batchPut(seedSlotsToCreate)),
+            toArray(mapper.batchPut(heatsToCreate)),
+            toArray(mapper.batchPut(roundsToCreate)),
+        ]);
 
         const end = new Date().getTime();
 
@@ -113,3 +97,20 @@ export default class BuildCompetition {
         return competition;
     }
 }
+
+// let orderedPutOperations = [];
+
+// const generatePutOperations = (items: Creatable[]) => items.map((item) => async () => mapper.put(item));
+
+// heatsToCreate.forEach((heat) => {
+//     console.log(heat.name);
+// });
+
+// orderedPutOperations = _.concat(orderedPutOperations, generatePutOperations(seedSlotsToCreate));
+// orderedPutOperations = _.concat(orderedPutOperations, generatePutOperations(heatsToCreate));
+// orderedPutOperations = _.concat(orderedPutOperations, generatePutOperations(roundsToCreate));
+
+// for (let i = 0; i < orderedPutOperations.length; i++) {
+//     // eslint-disable-next-line no-await-in-loop
+//     // await orderedPutOperations[i]();
+// }
