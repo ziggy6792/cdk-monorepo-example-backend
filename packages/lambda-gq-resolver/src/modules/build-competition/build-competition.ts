@@ -5,18 +5,24 @@ import { IContext } from 'src/types';
 import { createUniqueCondition, mapper } from 'src/utils/mapper';
 import User from 'src/domain/models/user';
 import isAuthRole from 'src/middleware/is-auth-role';
-import Competition from 'src/domain/models/competition';
+import CompetitionModel from 'src/domain/models/competition';
 import { CompetitionParamsInput } from './inputs';
 
 @Resolver()
 export default class BuildCompetition {
-    @Mutation(() => Competition, { nullable: true })
+    @Mutation(() => CompetitionModel, { nullable: true })
     // @UseMiddleware(isAuthUser)
     async buildCompetition(
         @Ctx() ctx: IContext,
         @Arg('id', () => ID) id: string,
         @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput
-    ): Promise<Competition> {
+    ): Promise<CompetitionModel> {
+        const competition = await mapper.get(Object.assign(new CompetitionModel(), { id }));
+
+        const rounnds = await competition.getRounds();
+
+        mapper.batchDelete(rounnds);
+
         console.log('Running buildCompetition resolver');
         console.log(id);
         console.log(JSON.stringify(params));

@@ -7,7 +7,6 @@ import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/models/abstract/data-entity';
 import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
-import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
 import User from './user';
 import Event from './event';
 import Round from './round';
@@ -65,9 +64,9 @@ class CompetitionParams {
     name: string;
 }
 
-@ObjectType()
 @table('Competition')
-class Competition extends DataEntity {
+@ObjectType({ isAbstract: true })
+export class Competition extends DataEntity {
     @Field()
     @attribute()
     description: string;
@@ -116,38 +115,31 @@ class Competition extends DataEntity {
     @attribute()
     level: Level;
 
-    @Field(() => User)
-    async judgeUser(): Promise<User> {
+    async getJudgeUser(): Promise<User> {
         return mapper.get(Object.assign(new User(), { id: this.judgeUserId }));
     }
 
-    @Field(() => Event)
-    async event(): Promise<Event> {
+    async getEvent(): Promise<Event> {
         return mapper.get(Object.assign(new Event(), { id: this.eventId }));
     }
 
-    @Field(() => RoundList)
-    async rounds(): Promise<RoundList> {
+    async getRounds(): Promise<Round[]> {
         const filter: ConditionExpression = {
             subject: 'roundId',
             ...equals(this.id),
         };
         const items = await toArray(mapper.scan(Round, { filter }));
-        const list = new RoundList();
-        list.items = items;
-        return list;
+
+        return items;
     }
 
-    @Field(() => RiderAllocationList)
-    async riderAllocations(): Promise<RiderAllocationList> {
+    async getRderAllocations(): Promise<RiderAllocation[]> {
         const filter: ConditionExpression = {
             subject: 'allocatableId',
             ...equals(this.id),
         };
         const items = await toArray(mapper.scan(RiderAllocation, { filter }));
-        const list = new RiderAllocationList();
-        list.items = items;
-        return list;
+        return items;
     }
 }
 

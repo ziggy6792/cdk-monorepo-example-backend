@@ -8,7 +8,7 @@ import Identifiable from 'src/domain/models/abstract/identifiable';
 // interface Deleteable {
 //     deleteChildren: () => Promise<void>;
 // }
-@ObjectType()
+@ObjectType({ isAbstract: true })
 @table('User')
 class User extends Identifiable {
     @Field()
@@ -23,12 +23,7 @@ class User extends Identifiable {
     @attribute({})
     lastName: string;
 
-    @Field()
-    fullName(@Root() parent: User): string {
-        return parent.getFullName();
-    }
-
-    private getFullName(): string {
+    getFullName(): string {
         const { firstName, lastName } = this;
         return `${firstName}${lastName ? ` ${lastName}` : ''}`;
     }

@@ -8,6 +8,7 @@ import { mapper } from 'src/utils/mapper';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { toArray } from 'src/utils/async-iterator';
 import { RiderAllocationList, SeedSlotList } from 'src/domain/common-objects/lists';
+import * as models from 'src/domain/models';
 import Round from './round';
 import SeedSlot from './seed-slot';
 import RiderAllocation from './rider-allocation';
@@ -23,45 +24,20 @@ registerEnumType(HeatStatus, {
     description: 'The Heat Status', // this one is optional
 });
 
-@ObjectType({ isAbstract: true })
-@table('Heat')
-class Heat extends DataEntity {
-    @Field()
-    @attribute()
-    when: string;
-
-    @Field(() => ID)
-    @attribute()
-    roundId: string;
-
-    @Field(() => HeatStatus)
-    @attribute()
-    status: HeatStatus;
-
-    @Field(() => Int)
-    @attribute()
-    progressionsPerHeat: number;
-
-    @Field(() => Round)
-    async selectedHeat(): Promise<Round> {
-        return mapper.get(Object.assign(new Round(), { id: this.roundId }));
+@ObjectType()
+class Heat extends models.Heat {
+    @Field(() => SeedSlotList)
+    async seedSlots(): Promise<SeedSlotList> {
+        const list = new SeedSlotList();
+        list.items = await this.getSeedSlots();
+        return list;
     }
 
-    async getSeedSlots(): Promise<SeedSlot[]> {
-        const filter: ConditionExpression = {
-            subject: 'eventId',
-            ...equals(this.id),
-        };
-        return toArray(mapper.scan(SeedSlot, { filter }));
-    }
-
-    async getRiderAllocations(): Promise<RiderAllocation[]> {
-        const filter: ConditionExpression = {
-            subject: 'allocatableId',
-            ...equals(this.id),
-        };
-
-        return toArray(mapper.scan(RiderAllocation, { filter }));
+    @Field(() => RiderAllocationList)
+    async riderAllocations(): Promise<RiderAllocationList> {
+        const list = new RiderAllocationList();
+        list.items = await this.getRiderAllocations();
+        return list;
     }
 }
 

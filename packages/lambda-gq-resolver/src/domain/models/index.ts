@@ -1,9 +1,7 @@
-import Competition from './competition';
-import Event from './event';
-import User from './user';
-import Heat from './heat';
-import RiderAllocation from './rider-allocation';
-import SeedSlot from './seed-slot';
-import Round from './round';
-
-export default [Event, Competition, User, Heat, RiderAllocation, SeedSlot, Round];
+export { default as Competition } from './competition';
+export { default as Event } from './event';
+export { default as User } from './user';
+export { default as Heat } from './heat';
+export { default as RiderAllocation } from './rider-allocation';
+export { default as SeedSlot } from './seed-slot';
+export { default as Round } from './round';

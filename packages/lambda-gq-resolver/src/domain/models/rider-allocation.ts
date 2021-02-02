@@ -18,7 +18,7 @@ class Run {
     isPublic: boolean;
 }
 
-@ObjectType()
+@ObjectType({ isAbstract: true })
 @table('RiderAllocation')
 class RiderAllocation extends Creatable {
     @Field(() => ID)
@@ -46,12 +46,12 @@ class RiderAllocation extends Creatable {
         return parent.getPosition();
     }
 
-    private getPosition(): number {
+    getPosition(): number {
         return 1;
     }
 
     @Field(() => User)
-    async user(): Promise<User> {
+    async getUser(): Promise<User> {
         return mapper.get(Object.assign(new User(), { id: this.userId }));
     }
 }

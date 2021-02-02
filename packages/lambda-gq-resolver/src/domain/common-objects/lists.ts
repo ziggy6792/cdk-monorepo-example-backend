@@ -3,14 +3,14 @@ import createListObject from 'src/domain/common-objects/higher-order-objects/cre
 import { Field, ObjectType } from 'type-graphql';
 import SeedSlot from 'src/domain/models/seed-slot';
 import RiderAllocation from 'src/domain/models/rider-allocation';
-import Competition from 'src/domain/models/competition';
+import CompetitionModel from 'src/domain/models/competition';
 import Round from 'src/domain/models/round';
 import Heat from 'src/domain/models/heat';
 
 @ObjectType()
 export class CompetitionList {
-    @Field((type) => [Competition])
-    items: Competition[];
+    @Field((type) => [CompetitionModel])
+    items: CompetitionModel[];
 }
 
 @ObjectType()

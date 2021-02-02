@@ -7,8 +7,10 @@ import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/models/abstract/data-entity';
 import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
+import { CompetitionList } from 'src/domain/common-objects/lists';
+import * as models from 'src/domain/models';
 import User from './user';
-import Competition from './competition';
+import CompetitionModel from './competition';
 import Heat from './heat';
 
 export enum EventStatus {
@@ -22,44 +24,23 @@ registerEnumType(EventStatus, {
     description: 'The Event Status', // this one is optional
 });
 
-@ObjectType({ isAbstract: true })
-@table('Event')
-class Event extends DataEntity {
-    @Field()
-    @attribute()
-    description: string;
-
-    @Field()
-    @attribute()
-    when: string;
-
-    @Field(() => EventStatus)
-    @attribute()
-    status: EventStatus;
-
-    @Field()
-    @attribute()
-    adminUserId: string;
-
-    @Field()
-    @attribute()
-    selectedHeatId: string;
-
-    async getAdminUser(): Promise<User> {
-        return mapper.get(Object.assign(new User(), { id: this.adminUserId }));
+@ObjectType()
+class Event extends models.Event {
+    @Field(() => User)
+    async adminUser(): Promise<User> {
+        return this.getAdminUser();
     }
 
-    async getSelectedHeat(): Promise<Heat> {
-        return mapper.get(Object.assign(new Heat(), { id: this.selectedHeatId }));
+    @Field(() => Heat)
+    async selectedHeat(): Promise<Heat> {
+        return this.getSelectedHeat();
     }
 
-    async getCompetitions(): Promise<Competition[]> {
-        const filter: ConditionExpression = {
-            subject: 'eventId',
-            ...equals(this.id),
-        };
-
-        return toArray(mapper.scan(Competition, { filter }));
+    @Field(() => CompetitionList)
+    async competitions(): Promise<CompetitionList> {
+        const list = new CompetitionList();
+        list.items = await this.getCompetitions();
+        return list;
     }
 }
 

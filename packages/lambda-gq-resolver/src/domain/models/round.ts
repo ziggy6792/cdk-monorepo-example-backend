@@ -20,7 +20,7 @@ registerEnumType(RoundType, {
     description: 'The Round Type', // this one is optional
 });
 
-@ObjectType()
+@ObjectType({ isAbstract: true })
 @table('Round')
 class Round extends Identifiable {
     @Field(() => Int)
@@ -40,19 +40,16 @@ class Round extends Identifiable {
     startTime: string;
 
     @Field(() => HeatList)
-    async heats(): Promise<HeatList> {
+    async getHeats(): Promise<Heat[]> {
         const filter: ConditionExpression = {
             subject: 'roundId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(Heat, { filter }));
-        const list = new HeatList();
-        list.items = items;
-        return list;
+        return toArray(mapper.scan(Heat, { filter }));
     }
 
     @Field(() => Competition)
-    async competition(): Promise<Competition> {
+    async getCompetition(): Promise<Competition> {
         return mapper.get(Object.assign(new Competition(), { id: this.competitionId }));
     }
 }
