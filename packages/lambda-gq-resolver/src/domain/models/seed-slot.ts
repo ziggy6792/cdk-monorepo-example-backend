@@ -28,13 +28,20 @@ class SeedSlot extends Identifiable {
         return parent.getPosition();
     }
 
-    @Field(() => ID)
+    @Field(() => ID, { nullable: true })
     @attribute()
     parentSeedSlotId: string;
 
-    @Field(() => SeedSlot)
-    async parentSeedSlot(): Promise<SeedSlot> {
+    async getParentSeedSlot(): Promise<SeedSlot> {
+        if (!this.parentSeedSlotId) {
+            return null;
+        }
         return mapper.get(Object.assign(new SeedSlot(), { id: this.parentSeedSlotId }));
+    }
+
+    @Field(() => SeedSlot, { nullable: true })
+    protected async parentSeedSlot(): Promise<SeedSlot> {
+        return this.getParentSeedSlot();
     }
 
     @Field(() => RiderAllocation)

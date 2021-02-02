@@ -10,6 +10,10 @@ abstract class Creatable {
     @Field(() => ID, { nullable: true })
     @attribute({ defaultProvider: () => moment().toISOString() })
     createdAt: string;
+
+    setDefaults(): void {
+        this.createdAt = moment().toISOString();
+    }
 }
 
 export default Creatable;

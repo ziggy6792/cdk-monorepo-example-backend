@@ -47,15 +47,21 @@ class Heat extends DataEntity {
         return mapper.get(Object.assign(new Round(), { id: this.roundId }));
     }
 
-    @Field(() => SeedSlotList)
-    async seedSlots(): Promise<SeedSlotList> {
+    async getSeedSlots(): Promise<SeedSlot[]> {
         const filter: ConditionExpression = {
-            subject: 'eventId',
+            subject: 'heatId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(SeedSlot, { filter }));
+        let items = await toArray(mapper.scan(SeedSlot, { filter }));
+        items = _.orderBy(items, ['seed'], ['asc']);
+
+        return items;
+    }
+
+    @Field(() => SeedSlotList)
+    protected async seedSlots(): Promise<SeedSlotList> {
         const list = new SeedSlotList();
-        list.items = items;
+        list.items = await this.getSeedSlots();
         return list;
     }
 

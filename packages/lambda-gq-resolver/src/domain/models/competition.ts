@@ -126,27 +126,33 @@ class Competition extends DataEntity {
         return mapper.get(Object.assign(new Event(), { id: this.eventId }));
     }
 
-    @Field(() => RoundList)
-    async rounds(): Promise<RoundList> {
+    async getRounds(): Promise<Round[]> {
         const filter: ConditionExpression = {
-            subject: 'roundId',
+            subject: 'competitionId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(Round, { filter }));
+        return toArray(mapper.scan(Round, { filter }));
+    }
+
+    @Field(() => RoundList)
+    protected async rounds(): Promise<RoundList> {
         const list = new RoundList();
-        list.items = items;
+        list.items = await this.getRounds();
         return list;
     }
 
-    @Field(() => RiderAllocationList)
-    async riderAllocations(): Promise<RiderAllocationList> {
+    async getRiderAllocations(): Promise<RiderAllocation[]> {
         const filter: ConditionExpression = {
             subject: 'allocatableId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(RiderAllocation, { filter }));
+        return toArray(mapper.scan(RiderAllocation, { filter }));
+    }
+
+    @Field(() => RiderAllocationList)
+    protected async riderAllocations(): Promise<RiderAllocationList> {
         const list = new RiderAllocationList();
-        list.items = items;
+        list.items = await this.getRiderAllocations();
         return list;
     }
 }
