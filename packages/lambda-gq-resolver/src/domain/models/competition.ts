@@ -116,13 +116,13 @@ class Competition extends DataEntity {
     @attribute()
     level: Level;
 
-    @Field(() => User)
-    async judgeUser(): Promise<User> {
+    @Field(() => User, { name: 'judgeUser' })
+    async getJudgeUser(): Promise<User> {
         return mapper.get(Object.assign(new User(), { id: this.judgeUserId }));
     }
 
-    @Field(() => Event)
-    async event(): Promise<Event> {
+    @Field(() => Event, { name: 'event' })
+    async getEvent(): Promise<Event> {
         return mapper.get(Object.assign(new Event(), { id: this.eventId }));
     }
 

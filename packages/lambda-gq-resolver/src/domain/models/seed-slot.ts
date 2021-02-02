@@ -32,6 +32,7 @@ class SeedSlot extends Identifiable {
     @attribute()
     parentSeedSlotId: string;
 
+    @Field(() => SeedSlot, { nullable: true, name: 'parentSeedSlot' })
     async getParentSeedSlot(): Promise<SeedSlot> {
         if (!this.parentSeedSlotId) {
             return null;
@@ -39,18 +40,13 @@ class SeedSlot extends Identifiable {
         return mapper.get(Object.assign(new SeedSlot(), { id: this.parentSeedSlotId }));
     }
 
-    @Field(() => SeedSlot, { nullable: true })
-    protected async parentSeedSlot(): Promise<SeedSlot> {
-        return this.getParentSeedSlot();
-    }
-
-    @Field(() => RiderAllocation)
-    async riderAllocation(): Promise<RiderAllocation> {
+    @Field(() => RiderAllocation, { name: 'riderAllocation' })
+    async getRiderAllocation(): Promise<RiderAllocation> {
         return mapper.get(Object.assign(new RiderAllocation(), { allocatableId: this.heatId, userId: this.userId }));
     }
 
-    @Field(() => Heat)
-    async heat(): Promise<Heat> {
+    @Field(() => Heat, { name: 'heat' })
+    async getHeat(): Promise<Heat> {
         return mapper.get(Object.assign(new Heat(), { id: this.heatId }));
     }
 

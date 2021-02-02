@@ -56,15 +56,19 @@ class Event extends DataEntity {
         return mapper.get(Object.assign(new Heat(), { id: this.selectedHeatId }));
     }
 
-    @Field(() => CompetitionList)
-    async competitions(): Promise<CompetitionList> {
+    async getCompetitions(): Promise<Competition[]> {
         const filter: ConditionExpression = {
             subject: 'eventId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(Competition, { filter }));
+
+        return toArray(mapper.scan(Competition, { filter }));
+    }
+
+    @Field(() => CompetitionList)
+    protected async competitions(): Promise<CompetitionList> {
         const list = new CompetitionList();
-        list.items = items;
+        list.items = await this.getCompetitions();
         return list;
     }
 }

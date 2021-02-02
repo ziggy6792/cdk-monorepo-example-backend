@@ -46,12 +46,12 @@ class RiderAllocation extends Creatable {
         return parent.getPosition();
     }
 
-    private getPosition(): number {
+    getPosition(): number {
         return 1;
     }
 
-    @Field(() => User)
-    async user(): Promise<User> {
+    @Field(() => User, { name: 'user' })
+    async getUser(): Promise<User> {
         return mapper.get(Object.assign(new User(), { id: this.userId }));
     }
 }

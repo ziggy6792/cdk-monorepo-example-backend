@@ -47,8 +47,8 @@ class Heat extends DataEntity {
     @attribute()
     progressionsPerHeat: number;
 
-    @Field(() => Round)
-    async selectedHeat(): Promise<Round> {
+    @Field(() => Round, { name: 'selectedHeat' })
+    async getSelectedHeat(): Promise<Round> {
         return mapper.get(Object.assign(new Round(), { id: this.roundId }));
     }
 
@@ -70,15 +70,18 @@ class Heat extends DataEntity {
         return list;
     }
 
-    @Field(() => RiderAllocationList)
-    async riderAllocations(): Promise<RiderAllocationList> {
+    async getRiderAllocations(): Promise<RiderAllocation[]> {
         const filter: ConditionExpression = {
             subject: 'allocatableId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(RiderAllocation, { filter }));
+        return toArray(mapper.scan(RiderAllocation, { filter }));
+    }
+
+    @Field(() => RiderAllocationList)
+    protected async riderAllocations(): Promise<RiderAllocationList> {
         const list = new RiderAllocationList();
-        list.items = items;
+        list.items = await this.getRiderAllocations();
         return list;
     }
 

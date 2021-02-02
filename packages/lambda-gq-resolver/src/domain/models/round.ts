@@ -40,7 +40,7 @@ class Round extends Identifiable {
     startTime: string;
 
     @Field(() => HeatList)
-    async heats(): Promise<HeatList> {
+    async getHeats(): Promise<Heat[]> {
         // const filter: ConditionExpression = {
         //     subject: 'roundId',
         //     ...equals(this.id),
@@ -48,15 +48,19 @@ class Round extends Identifiable {
         // const items = await toArray(mapper.scan(Heat, { filter, indexName: 'partition-createdAt-index' }));
         // const list = new HeatList();
         // list.items = items;
-        const items = await toArray(mapper.query(Heat, { roundId: this.id }, { indexName: 'byRound' }));
-        const list = new HeatList();
-        list.items = items;
 
+        return toArray(mapper.query(Heat, { roundId: this.id }, { indexName: 'byRound' }));
+    }
+
+    @Field(() => HeatList)
+    protected async heats(): Promise<HeatList> {
+        const list = new HeatList();
+        list.items = await this.getHeats();
         return list;
     }
 
-    @Field(() => Competition)
-    async competition(): Promise<Competition> {
+    @Field(() => Competition, { name: 'competition' })
+    async getCompetition(): Promise<Competition> {
         return mapper.get(Object.assign(new Competition(), { id: this.competitionId }));
     }
 }
