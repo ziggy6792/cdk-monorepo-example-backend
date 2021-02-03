@@ -1,5 +1,8 @@
+import { PROJECT_NAME } from '@simonverhoeven/global-config';
+
 // Dummy stack
-import { DEPLOYMENT_CONFIG, PROJECT_NAME } from 'src/config';
+
+import { DEPLOYMENT_CONFIG } from 'src/config';
 import * as cdk from '@aws-cdk/core';
 import DeploymentStack from 'src/backend-stack/deployment-stack';
 

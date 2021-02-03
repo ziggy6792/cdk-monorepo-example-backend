@@ -2,68 +2,11 @@
 import * as cdk from '@aws-cdk/core';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
 import * as utils from 'src/utils';
+import { DB_SCHEMA, IAttributeType, getTableName } from '@simonverhoeven/global-config';
 
 interface DbTablesProps {
     stageName: string;
 }
-
-enum IAttributeType {
-    BINARY = 'B',
-    NUMBER = 'N',
-    STRING = 'S',
-}
-
-interface IAttribute {
-    tpye: IAttributeType;
-    name: string;
-}
-
-interface IGlobalSecondaryIndex {
-    indexName: string;
-    partitionKey: IAttribute;
-    sortKey: IAttribute;
-}
-
-interface TableSchema {
-    tableName?: string;
-    partitionKey?: IAttribute;
-    sortKey?: IAttribute;
-    globalSecondaryIndexes?: IGlobalSecondaryIndex[];
-}
-
-interface IDbSchema {
-    [key: string]: TableSchema;
-}
-
-const idPartitionKey = { name: 'id', tpye: IAttributeType.STRING };
-
-const applyDefaults = (schema: IDbSchema) => {
-    for (const [key, tableSchema] of Object.entries(schema)) {
-        tableSchema.tableName = tableSchema.tableName || key;
-        tableSchema.partitionKey = tableSchema.partitionKey || idPartitionKey;
-    }
-    return schema;
-};
-
-const dbSchema: IDbSchema = applyDefaults({
-    User: { partitionKey: idPartitionKey },
-    SeedSlot: { partitionKey: idPartitionKey },
-    Round: { partitionKey: idPartitionKey },
-    RiderAllocation: { partitionKey: idPartitionKey, sortKey: { name: 'userId', tpye: IAttributeType.STRING } },
-    Heat: {
-        partitionKey: idPartitionKey,
-        globalSecondaryIndexes: [
-            {
-                indexName: 'byRound',
-                partitionKey: { name: 'roundId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'createdAt', tpye: IAttributeType.STRING },
-            },
-        ],
-    },
-    Event: { partitionKey: idPartitionKey },
-    Competition: { partitionKey: idPartitionKey },
-});
-
 class DbTables extends cdk.Construct {
     // Public reference to the IAM role
 
@@ -76,10 +19,10 @@ class DbTables extends cdk.Construct {
             [IAttributeType.BINARY]: dynamodb.AttributeType.BINARY,
         };
 
-        for (const [key, tableSchema] of Object.entries(dbSchema)) {
+        for (const [key, tableSchema] of Object.entries(DB_SCHEMA)) {
             const { tableName, partitionKey, sortKey, globalSecondaryIndexes } = tableSchema;
             const table = new dynamodb.Table(this, utils.getConstructId(`${tableName}`, stageName), {
-                tableName: utils.getTableName(tableName, stageName),
+                tableName: getTableName(tableName, stageName),
                 partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.tpye] },
                 sortKey: sortKey ? { name: sortKey.name, type: typeLookup[sortKey.tpye] } : undefined,
             });
