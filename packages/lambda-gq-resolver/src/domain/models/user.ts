@@ -8,6 +8,12 @@ import Identifiable from 'src/domain/models/abstract/identifiable';
 // interface Deleteable {
 //     deleteChildren: () => Promise<void>;
 // }
+
+const metadataKey = 'MyDecorator';
+
+function MyDecorator(target, propertyKey) {
+    attribute();
+}
 @ObjectType()
 @table('User')
 class User extends Identifiable {

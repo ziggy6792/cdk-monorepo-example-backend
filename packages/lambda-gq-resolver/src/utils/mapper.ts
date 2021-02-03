@@ -28,6 +28,28 @@ const tables = models;
 const ensureTableExists = async (table: typeof tables[number]) => {
     try {
         await mapper.ensureTableExists(table, { ...CREATE_TABLE_ARGS });
+        // console.log('table');
+        // console.log((table.prototype as any).DynamoDbSchema);
+        // console.log(JSON.stringify(Object.entries(table.prototype)));
+
+        // // eslint-disable-next-line new-cap
+        // const bla = new table();
+        // console.log((bla as any).prototype);
+
+        // console.log(Object.getPrototypeOf(table));
+        // console.log(Object.getPrototypeOf(bla));
+
+        // console.log(JSON.stringify(Object.getPrototypeOf(bla)));
+
+        // const proto = Object.getPrototypeOf(bla);
+
+        // console.log(Object.entries(proto));
+        // console.log(myDecoratorUsingClass(table, 'id'));
+
+        // console.log('keys', Reflect.getMetadata('hashKey', bla, 'id'));
+
+        // console.log(Object.entries(Object.getOwnPropertyDescriptors(proto)));
+
         await table.createIndexes();
     } catch (err) {
         console.log(err);
