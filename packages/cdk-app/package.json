@@ -37,7 +37,7 @@
         "@aws-cdk/core": "1.75.0",
         "@aws-cdk/pipelines": "1.75.0",
         "@aws-solutions-constructs/core": "1.75.0",
-        "@simonverhoeven/global-config": "^1.0.0",
+        "@simonverhoeven/common": "^1.0.0",
         "@simonverhoeven/lambda-a": "^2.0.0",
         "@simonverhoeven/lambda-b": "^2.0.0",
         "@simonverhoeven/lambda-gq-resolver": "^2.0.0",

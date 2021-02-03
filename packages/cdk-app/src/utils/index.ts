@@ -1,11 +1,11 @@
-import { PROJECT_NAME } from '@simonverhoeven/global-config';
+import { commonConfig } from '@simonverhoeven/common';
 
 const ssmSep = '/';
 const conSep = '-';
 const tableSep = '-';
 
 export const getConstructId = (constructId: string, stage?: string): string => {
-    const contItems = [PROJECT_NAME, constructId, stage].filter((v) => v != null);
+    const contItems = [commonConfig.PROJECT_NAME, constructId, stage].filter((v) => v != null);
 
     return contItems.join(conSep);
 };
@@ -15,7 +15,7 @@ export const getConstructName = (constructId: string, stage?: string): string =>
 export const getConstructDescription = (constructId: string, stage?: string): string => getConstructId(constructId, stage);
 
 export const getSsmParamId = (paramPath: string, stage?: string): string => {
-    const pathItems = ['', PROJECT_NAME, stage, paramPath].filter((v) => v != null);
+    const pathItems = ['', commonConfig.PROJECT_NAME, stage, paramPath].filter((v) => v != null);
 
     return pathItems.join(ssmSep);
 };

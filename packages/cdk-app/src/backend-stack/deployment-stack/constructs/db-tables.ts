@@ -2,7 +2,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
 import * as utils from 'src/utils';
-import { DB_SCHEMA, IAttributeType, getTableName } from '@simonverhoeven/global-config';
+import { commonConfig, IAttributeType, commonUtils } from '@simonverhoeven/common';
 
 interface DbTablesProps {
     stageName: string;
@@ -19,10 +19,10 @@ class DbTables extends cdk.Construct {
             [IAttributeType.BINARY]: dynamodb.AttributeType.BINARY,
         };
 
-        for (const [key, tableSchema] of Object.entries(DB_SCHEMA)) {
+        for (const [key, tableSchema] of Object.entries(commonConfig.DB_SCHEMA)) {
             const { tableName, partitionKey, sortKey, globalSecondaryIndexes } = tableSchema;
             const table = new dynamodb.Table(this, utils.getConstructId(`${tableName}`, stageName), {
-                tableName: getTableName(tableName, stageName),
+                tableName: commonUtils.getTableName(tableName, stageName),
                 partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.tpye] },
                 sortKey: sortKey ? { name: sortKey.name, type: typeLookup[sortKey.tpye] } : undefined,
             });

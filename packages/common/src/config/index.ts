@@ -1,32 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-restricted-syntax */
-enum IAttributeType {
-    BINARY = 'B',
-    NUMBER = 'N',
-    STRING = 'S',
-}
 
-interface IAttribute {
-    tpye: IAttributeType;
-    name: string;
-}
-
-interface IGlobalSecondaryIndex {
-    indexName: string;
-    partitionKey: IAttribute;
-    sortKey: IAttribute;
-}
-
-interface TableSchema {
-    tableName?: string;
-    partitionKey?: IAttribute;
-    sortKey?: IAttribute;
-    globalSecondaryIndexes?: IGlobalSecondaryIndex[];
-}
-
-interface IDbSchema {
-    [key: string]: TableSchema;
-}
+import { IDbSchema, IAttributeType } from './types';
 
 const idPartitionKey = { name: 'id', tpye: IAttributeType.STRING };
 
@@ -59,9 +34,4 @@ const DB_SCHEMA: IDbSchema = applyDefaults({
 
 const PROJECT_NAME = 'cdk-monorepo-backend';
 
-const getTableName = (tableName: string, stage?: string): string => {
-    const contItems = [PROJECT_NAME, stage, tableName].filter((v) => v != null);
-    return contItems.join('-');
-};
-
-export { DB_SCHEMA, IAttributeType, PROJECT_NAME, getTableName };
+export default { DB_SCHEMA, PROJECT_NAME };
