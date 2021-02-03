@@ -8,17 +8,17 @@ import DummyPipelineStack from './backend-stack/dummy-pipeline-stack';
 const app = new cdk.App();
 
 // Dummy stack
-// createDummyStack(app);
+createDummyStack(app);
 
 // Dummy pipline stack
 // const dummyPipelineStack = new DummyPipelineStack(app, utils.getConstructId('pipeline'));
 
-const pipelineStack = new PipelineStack(app, utils.getConstructId('pipeline'), {
-    description: utils.getConstructId('pipeline'),
-    env: {
-        account: config.AWS_ACCOUNT_ID,
-        region: config.AWS_REGION,
-    },
-});
+// const pipelineStack = new PipelineStack(app, utils.getConstructId('pipeline'), {
+//     description: utils.getConstructId('pipeline'),
+//     env: {
+//         account: config.AWS_ACCOUNT_ID,
+//         region: config.AWS_REGION,
+//     },
+// });
 
-app.synth();
+// app.synth();

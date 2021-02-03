@@ -2,7 +2,7 @@
 import * as cdk from '@aws-cdk/core';
 
 import { DEPLOYMENT_CONFIG, PROJECT_NAME } from 'src/config';
-import { DeploymentStack } from './deployment-stack';
+import DeploymentStack from './deployment-stack';
 
 class DummyPipelineStack extends cdk.Stack {
     public readonly stagingUrlOutput: cdk.CfnOutput;

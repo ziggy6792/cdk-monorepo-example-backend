@@ -11,6 +11,7 @@ import * as utils from 'src/utils';
 import { MultiAuthApiGatewayLambda } from 'src/constructs/multi-auth-apigateway-lambda';
 import CognitoIdentityPool from 'src/constructs/cognito-identity-pool';
 import jsonBeautify from 'json-beautify';
+import DbTables from './constructs/db-tables';
 
 export interface DeploymentStackProps extends cdk.StackProps {
     readonly stageName: string;
@@ -19,7 +20,7 @@ export interface DeploymentStackProps extends cdk.StackProps {
     readonly domainPrefix: string;
 }
 
-export class DeploymentStack extends cdk.Stack {
+class DeploymentStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: DeploymentStackProps) {
         super(scope, id, props);
 
@@ -185,28 +186,12 @@ export class DeploymentStack extends cdk.Stack {
 
         apiConstruct.lambdaFunction.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
+        const dbTablesContruct = new DbTables(this, utils.getConstructId('db-tables', stageName), { stageName });
+
         const lambdaConfigSSM = new ssm.StringParameter(this, lambdaConfigParam.name, {
             parameterName: lambdaConfigParam.name,
             stringValue: jsonBeautify(lambdaConfigParam.value, null, 2, 100),
         });
-
-        // const clientConfig = {
-        //   aws_project_region: 'ap-southeast-1',
-        //   aws_cognito_identity_pool_id: identityPoolConstruct.identityPool.ref,
-        //   aws_cognito_region: 'ap-southeast-1',
-        //   aws_user_pools_id: apiConstruct.userPool.userPoolId,
-        //   aws_user_pools_web_client_id: client.userPoolClientId,
-        //   aws_graphqlEndpoint_authUser: gqUrls[authUserResource.path],
-        //   aws_graphqlEndpoint_authRole: gqUrls[authRoleResource.path],
-        //   aws_graphqlEndpoint_authNone: gqUrls[authNoneResource.path],
-        //   oauth: {
-        //     domain: `${domainPrefix}.auth.ap-southeast-1.amazoncognito.com`,
-        //     scope: scopes.map((scope) => scope.scopeName),
-        //     // redirectSignIn: '/profile/',
-        //     // redirectSignOut: '/profile/',
-        //     responseType: 'code',
-        //   },
-        // };
 
         const frontendConfig = {
             ENV: stageName,
@@ -244,3 +229,5 @@ export class DeploymentStack extends cdk.Stack {
         });
     }
 }
+
+export default DeploymentStack;
