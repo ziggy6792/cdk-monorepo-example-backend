@@ -13,37 +13,6 @@ let localDb: child.ChildProcessWithoutNullStreams;
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-// export const checkConnection = async (): Promise<boolean> => {
-//   // Removed because aws does not have nc instaled
-//   try {
-//     const { stderr } = await exec('nc -z localhost 8000 ');
-//     console.log(stderr);
-//     const isReady = stderr.includes('Connection to localhost port 8000 [tcp/irdmi] succeeded!');
-//     return isReady;
-//   } catch (err) {
-//     // console.log('LOCAL DB: connection error');
-//     throw new Error(err);
-//   }
-// };
-
-// export const checkConnection = async (): Promise<boolean> => {
-//   let isReady = false;
-//   try {
-//     const { stderr } = await exec('bash -c "</dev/tcp/localhost/8000"; echo $?');
-//     console.log('LOCAL DB: ', stderr);
-//     isReady = !stderr.includes('Connection refused');
-//   } catch (err) {
-//     console.log('LOCAL DB: connection error');
-//     console.log(err);
-//     throw new Error(err);
-//   }
-//   if (!isReady) {
-//     throw new Error('Not ready');
-//   }
-//   console.log('LOCAL DB: Connection Ready');
-//   return true;
-// };
-
 const promiseWithTimeout = function (promise: Promise<any>, ms: number) {
     // Create a promise that rejects in <ms> milliseconds
     const timeout = new Promise((resolve, reject) => {
