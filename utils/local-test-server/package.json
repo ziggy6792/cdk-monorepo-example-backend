@@ -7,9 +7,10 @@
     "scripts": {
         "start": "cd local-dynamodb/libs && java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb --inMemory",
         "start:inline": "ts-node src/start-test-db.ts",
-        "create:tables": "ts-node src/index.ts",
-        "start:create:tables": "npm-run-all --parallel start create:tables",
-        "force:stop": "lsof -ti tcp:8000 | xargs kill"
+        "force:stop": "lsof -ti tcp:8000 | xargs kill",
+        "start:new": "npm-run-all --parallel start watch:tables",
+        "watch:tables": "nodemon",
+        "create:tables": "ts-node src/index.ts"
     },
     "dependencies": {},
     "devDependencies": {

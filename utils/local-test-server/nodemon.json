@@ -1,0 +1,5 @@
+{
+    "watch": ["../../packages/common/dist/**", "src/**"],
+    "exec": "yarn create:tables",
+    "ext": "js, json, ts"
+}
