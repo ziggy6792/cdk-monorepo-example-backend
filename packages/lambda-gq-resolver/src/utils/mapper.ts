@@ -18,7 +18,7 @@ const CREATE_TABLE_ARGS = { readCapacityUnits: 5, writeCapacityUnits: 5 };
 export const initMapper = (): void => {
     mapper = new DataMapper({
         client: new DynamoDB({ region: config.REGION }), // the SDK client used to execute operations
-        tableNamePrefix: config.TABLE_NAME_PREFIX, // optionally, you can provide a table prefix to keep your dev and prod tables separate
+        // tableNamePrefix: config.TABLE_NAME_PREFIX, // optionally, you can provide a table prefix to keep your dev and prod tables separate
     });
     console.log('REGION!', config.REGION);
 };

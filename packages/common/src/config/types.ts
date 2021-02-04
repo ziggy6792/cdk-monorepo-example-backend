@@ -15,13 +15,20 @@ export interface IGlobalSecondaryIndex {
     sortKey: IAttribute;
 }
 
-export interface TableSchema {
+export interface IDefaultTableSchema {
     tableName?: string;
     partitionKey?: IAttribute;
     sortKey?: IAttribute;
     globalSecondaryIndexes?: IGlobalSecondaryIndex[];
 }
 
-export interface IDbSchema {
-    [key: string]: TableSchema;
+export interface ITableSchema {
+    tableName: string;
+    partitionKey: IAttribute;
+    sortKey?: IAttribute;
+    globalSecondaryIndexes?: IGlobalSecondaryIndex[];
+}
+
+export interface IDefaultDbSchema {
+    [key: string]: IDefaultTableSchema;
 }

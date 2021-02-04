@@ -5,6 +5,8 @@ import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root, Float } from 'type-graphql';
 import Creatable from 'src/domain/models/abstract/creatable';
 import { mapper } from 'src/utils/mapper';
+import { commonConfig, commonUtils } from '@simonverhoeven/common';
+import getEnvConfig from 'src/config/get-env-config';
 import User from './user';
 
 @ObjectType()
@@ -19,6 +21,7 @@ class Run {
 }
 
 @ObjectType()
+// @table(commonUtils.getTableName(commonConfig.DB_SCHEMA.RiderAllocation.tableName, getEnvConfig().ENV))
 @table('RiderAllocation')
 class RiderAllocation extends Creatable {
     @Field(() => ID)

@@ -1,5 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
+import { commonConfig, commonUtils } from '@simonverhoeven/common';
+
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
@@ -8,6 +10,7 @@ import DataEntity from 'src/domain/models/abstract/data-entity';
 import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
+import getEnvConfig from 'src/config/get-env-config';
 import User from './user';
 import Event from './event';
 import Round from './round';
@@ -65,7 +68,7 @@ class CompetitionParams {
     @attribute()
     name: string;
 }
-
+// commonUtils.getTableName(commonConfig.DB_SCHEMA.Competition.tableName, getEnvConfig().ENV)
 @ObjectType()
 @table('Competition')
 class Competition extends DataEntity {

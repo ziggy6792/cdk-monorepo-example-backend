@@ -1,3 +1,4 @@
+import { commonUtils, commonConfig } from '@simonverhoeven/common';
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
@@ -8,6 +9,7 @@ import DataEntity from 'src/domain/models/abstract/data-entity';
 import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { CompetitionList } from 'src/domain/common-objects/lists';
+import getEnvConfig from 'src/config/get-env-config';
 import User from './user';
 import Competition from './competition';
 import Heat from './heat';
@@ -24,8 +26,9 @@ registerEnumType(EventStatus, {
     description: 'The Event Status', // this one is optional
 });
 
-@ObjectType()
+// @table(commonUtils.getTableName(commonConfig.DB_SCHEMA.Event.tableName, getEnvConfig().ENV))
 @table('Event')
+@ObjectType()
 class Event extends DataEntity {
     @Field()
     @attribute()

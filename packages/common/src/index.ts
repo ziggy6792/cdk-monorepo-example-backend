@@ -4,3 +4,5 @@ import commonUtils from './utils';
 
 export { IAttributeType };
 export { commonConfig, commonUtils };
+
+console.log(commonConfig.DB_SCHEMA);

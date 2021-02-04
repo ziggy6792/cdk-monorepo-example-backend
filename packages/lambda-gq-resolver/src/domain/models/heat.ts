@@ -11,12 +11,11 @@ import { RiderAllocationList, SeedSlotList } from 'src/domain/common-objects/lis
 import { DynamoDB } from 'aws-sdk';
 
 import getEnvConfig from 'src/config/get-env-config';
+import { commonConfig, commonUtils } from '@simonverhoeven/common';
 import Round from './round';
 import SeedSlot from './seed-slot';
 import RiderAllocation from './rider-allocation';
 import Creatable from './abstract/creatable';
-
-const { TABLE_NAME_PREFIX } = getEnvConfig();
 
 export enum HeatStatus {
     OPEN = 'OPEN',
@@ -30,6 +29,7 @@ registerEnumType(HeatStatus, {
 });
 
 @ObjectType()
+// @table(commonUtils.getTableName(commonConfig.DB_SCHEMA.Heat.tableName, getEnvConfig().ENV))
 @table('Heat')
 class Heat extends DataEntity {
     @Field()
@@ -90,45 +90,45 @@ class Heat extends DataEntity {
         console.log('RUNNING HEAT CREATE INDEXES!!!!');
         const dynamodb = new DynamoDB();
 
-        await dynamodb
-            .updateTable({
-                TableName: `${TABLE_NAME_PREFIX}Heat`,
-                AttributeDefinitions: [
-                    {
-                        AttributeName: 'roundId',
-                        AttributeType: 'S',
-                    },
-                    {
-                        AttributeName: 'createdAt',
-                        AttributeType: 'S',
-                    },
-                ],
-                GlobalSecondaryIndexUpdates: [
-                    {
-                        Create: {
-                            IndexName: 'byRound',
-                            KeySchema: [
-                                {
-                                    AttributeName: 'roundId',
-                                    KeyType: 'HASH',
-                                },
-                                {
-                                    AttributeName: 'createdAt',
-                                    KeyType: 'RANGE',
-                                },
-                            ],
-                            ProvisionedThroughput: {
-                                ReadCapacityUnits: 5,
-                                WriteCapacityUnits: 5,
-                            },
-                            Projection: {
-                                ProjectionType: 'ALL',
-                            },
-                        },
-                    },
-                ],
-            })
-            .promise();
+        // await dynamodb
+        //     .updateTable({
+        //         TableName: `${TABLE_NAME_PREFIX}Heat`,
+        //         AttributeDefinitions: [
+        //             {
+        //                 AttributeName: 'roundId',
+        //                 AttributeType: 'S',
+        //             },
+        //             {
+        //                 AttributeName: 'createdAt',
+        //                 AttributeType: 'S',
+        //             },
+        //         ],
+        //         GlobalSecondaryIndexUpdates: [
+        //             {
+        //                 Create: {
+        //                     IndexName: 'byRound',
+        //                     KeySchema: [
+        //                         {
+        //                             AttributeName: 'roundId',
+        //                             KeyType: 'HASH',
+        //                         },
+        //                         {
+        //                             AttributeName: 'createdAt',
+        //                             KeyType: 'RANGE',
+        //                         },
+        //                     ],
+        //                     ProvisionedThroughput: {
+        //                         ReadCapacityUnits: 5,
+        //                         WriteCapacityUnits: 5,
+        //                     },
+        //                     Projection: {
+        //                         ProjectionType: 'ALL',
+        //                     },
+        //                 },
+        //             },
+        //         ],
+        //     })
+        //     .promise();
 
         //
     }

@@ -5,5 +5,4 @@ jest.spyOn(envConfig, 'default').mockReturnValue({
     REGION: 'local',
     COGNITO_USER_POOL_ID: '',
     IS_PROD: false,
-    TABLE_NAME_PREFIX: 'test-',
 });
