@@ -1,4 +1,5 @@
 {
-    "watch": ["../../packages/**/dist/**", "./**"],
-    "exec": "yarn run:local"
+    "watch": ["../../packages/**/dist/**", "src/**"],
+    "exec": "yarn run:local",
+    "ext": "js, json, ts"
 }
