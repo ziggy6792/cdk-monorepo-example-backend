@@ -4,18 +4,15 @@ import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, Root } from 'type-graphql';
 import Identifiable from 'src/domain/models/abstract/identifiable';
+import * as utils from 'src/utils/utility';
+import { commonConfig } from '@simonverhoeven/common';
 
 // interface Deleteable {
 //     deleteChildren: () => Promise<void>;
 // }
 
-const metadataKey = 'MyDecorator';
-
-function MyDecorator(target, propertyKey) {
-    attribute();
-}
 @ObjectType()
-@table('User')
+@table(utils.getTableName(commonConfig.DB_SCHEMA.User.tableName))
 class User extends Identifiable {
     @Field()
     @attribute()

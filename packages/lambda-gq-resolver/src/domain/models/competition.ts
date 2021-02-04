@@ -10,7 +10,7 @@ import DataEntity from 'src/domain/models/abstract/data-entity';
 import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
-import getEnvConfig from 'src/config/get-env-config';
+import * as utils from 'src/utils/utility';
 import User from './user';
 import Event from './event';
 import Round from './round';
@@ -68,9 +68,8 @@ class CompetitionParams {
     @attribute()
     name: string;
 }
-// commonUtils.getTableName(commonConfig.DB_SCHEMA.Competition.tableName, getEnvConfig().ENV)
 @ObjectType()
-@table('Competition')
+@table(utils.getTableName(commonConfig.DB_SCHEMA.Competition.tableName))
 class Competition extends DataEntity {
     @Field()
     @attribute()

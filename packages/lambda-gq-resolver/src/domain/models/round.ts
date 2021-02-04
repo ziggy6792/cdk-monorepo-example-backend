@@ -7,6 +7,8 @@ import { HeatList } from 'src/domain/common-objects/lists';
 import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { mapper } from 'src/utils/mapper';
+import * as utils from 'src/utils/utility';
+import { commonConfig } from '@simonverhoeven/common';
 import Heat from './heat';
 import Competition from './competition';
 import Creatable from './abstract/creatable';
@@ -22,7 +24,7 @@ registerEnumType(RoundType, {
 });
 
 @ObjectType()
-@table('Round')
+@table(utils.getTableName(commonConfig.DB_SCHEMA.Round.tableName))
 class Round extends Identifiable {
     @Field(() => Int)
     @attribute()

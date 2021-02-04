@@ -15,7 +15,7 @@ export interface IGlobalSecondaryIndex {
     sortKey: IAttribute;
 }
 
-export interface IDefaultTableSchema {
+export interface ITableSchemaConfig {
     tableName?: string;
     partitionKey?: IAttribute;
     sortKey?: IAttribute;
@@ -29,6 +29,6 @@ export interface ITableSchema {
     globalSecondaryIndexes?: IGlobalSecondaryIndex[];
 }
 
-export interface IDefaultDbSchema {
-    [key: string]: IDefaultTableSchema;
+export interface IDbSchemaConfig {
+    [key: string]: ITableSchemaConfig;
 }

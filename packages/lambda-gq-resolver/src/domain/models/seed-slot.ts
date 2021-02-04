@@ -5,11 +5,13 @@ import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root } from 'type-graphql';
 import Identifiable from 'src/domain/models/abstract/identifiable';
 import { mapper } from 'src/utils/mapper';
+import * as utils from 'src/utils/utility';
+import { commonConfig } from '@simonverhoeven/common';
 import RiderAllocation from './rider-allocation';
 import Heat from './heat';
 
 @ObjectType()
-@table('SeedSlot')
+@table(utils.getTableName(commonConfig.DB_SCHEMA.SeedSlot.tableName))
 class SeedSlot extends Identifiable {
     @Field(() => ID)
     @attribute()

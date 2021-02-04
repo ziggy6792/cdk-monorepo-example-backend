@@ -1,11 +1,13 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-restricted-syntax */
 
-import { ITableSchema, IDefaultDbSchema, IAttributeType } from './types';
+import { ITableSchema, IDbSchemaConfig, IAttributeType } from './types';
 
 const idPartitionKey = { name: 'id', tpye: IAttributeType.STRING };
 
-const defaultSchema = {
+const PROJECT_NAME = 'cdk-monorepo-backend';
+
+const DB_SCHEMA_CONFIG = {
     User: { partitionKey: idPartitionKey },
     SeedSlot: { partitionKey: idPartitionKey },
     Round: { partitionKey: idPartitionKey },
@@ -24,9 +26,9 @@ const defaultSchema = {
     Competition: { partitionKey: idPartitionKey },
 };
 
-type ICompleteSchema = { readonly [key in keyof typeof defaultSchema]: ITableSchema };
+type IDbSchema = { readonly [key in keyof typeof DB_SCHEMA_CONFIG]: ITableSchema };
 
-const applyDefaults = <T extends IDefaultDbSchema>(schema: T): ICompleteSchema => {
+const applyDefaults = <T extends IDbSchemaConfig>(schema: T): IDbSchema => {
     const ret = {};
 
     for (const [key, tableSchema] of Object.entries(schema)) {
@@ -36,11 +38,9 @@ const applyDefaults = <T extends IDefaultDbSchema>(schema: T): ICompleteSchema =
             ...tableSchema,
         };
     }
-    return ret as ICompleteSchema;
+    return ret as IDbSchema;
 };
 
-const DB_SCHEMA: ICompleteSchema = applyDefaults(defaultSchema);
-
-const PROJECT_NAME = 'cdk-monorepo-backend';
+const DB_SCHEMA = applyDefaults(DB_SCHEMA_CONFIG);
 
 export default { DB_SCHEMA, PROJECT_NAME };

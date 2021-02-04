@@ -12,6 +12,7 @@ import { DynamoDB } from 'aws-sdk';
 
 import getEnvConfig from 'src/config/get-env-config';
 import { commonConfig, commonUtils } from '@simonverhoeven/common';
+import * as utils from 'src/utils/utility';
 import Round from './round';
 import SeedSlot from './seed-slot';
 import RiderAllocation from './rider-allocation';
@@ -29,8 +30,7 @@ registerEnumType(HeatStatus, {
 });
 
 @ObjectType()
-// @table(commonUtils.getTableName(commonConfig.DB_SCHEMA.Heat.tableName, getEnvConfig().ENV))
-@table('Heat')
+@table(utils.getTableName(commonConfig.DB_SCHEMA.Heat.tableName))
 class Heat extends DataEntity {
     @Field()
     @attribute()

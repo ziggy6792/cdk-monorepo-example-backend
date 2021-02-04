@@ -7,6 +7,7 @@ import Creatable from 'src/domain/models/abstract/creatable';
 import { mapper } from 'src/utils/mapper';
 import { commonConfig, commonUtils } from '@simonverhoeven/common';
 import getEnvConfig from 'src/config/get-env-config';
+import * as utils from 'src/utils/utility';
 import User from './user';
 
 @ObjectType()
@@ -21,8 +22,7 @@ class Run {
 }
 
 @ObjectType()
-// @table(commonUtils.getTableName(commonConfig.DB_SCHEMA.RiderAllocation.tableName, getEnvConfig().ENV))
-@table('RiderAllocation')
+@table(utils.getTableName(commonConfig.DB_SCHEMA.RiderAllocation.tableName))
 class RiderAllocation extends Creatable {
     @Field(() => ID)
     @hashKey()
