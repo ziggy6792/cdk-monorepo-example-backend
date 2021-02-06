@@ -34,36 +34,6 @@ class DbTables extends cdk.Construct {
                 });
             });
         }
-
-        // const tableName = 'MyFirstTable';
-
-        // const table = new dynamodb.Table(this, utils.getConstructId(tableName, stageName), {
-        //     partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
-
-        //     tableName: utils.getTableName(tableName, stageName),
-        // });
-
-        // table.addGlobalSecondaryIndex({
-        //     indexName: 'byRound',
-        //     partitionKey: { name: 'roundId', type: dynamodb.AttributeType.STRING },
-        //     sortKey: { name: 'createdAt', type: dynamodb.AttributeType.STRING },
-        // });
-
-        // table.addGlobalSecondaryIndex({
-        //     indexName: 'byRound2',
-        //     partitionKey: { name: 'roundId', type: dynamodb.AttributeType.STRING },
-        //     sortKey: { name: 'createdAt', type: dynamodb.AttributeType.STRING },
-        // });
-
-        // table.addGlobalSecondaryIndex({
-        //     indexName: 'byRound3',
-        //     partitionKey: { name: 'roundId', type: dynamodb.AttributeType.STRING },
-        //     sortKey: { name: 'createdAt', type: dynamodb.AttributeType.STRING },
-        // });
-
-        // for (const [key, value] of Object.entries(dbSchema)) {
-        //     console.log(`${key}: ${value}`);
-        // }
     }
 }
 
