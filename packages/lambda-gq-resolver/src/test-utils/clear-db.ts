@@ -47,22 +47,21 @@ const deleteItem = async (tableName: string, key: any) => {
 };
 
 const purgeTable = async function (tableName: string) {
-    let keys = null;
+    const keys = await getKeys(tableName);
 
-    const deleteAllRecords = async function (tableName: string) {
+    const deleteAllRecords = async function () {
         // console.log('records', records);
-        keys = keys || (await getKeys(tableName));
 
         const records = await getRecordKeys(tableName, keys);
 
         const deleteFns = records.Items.map((item) => async () => deleteItem(tableName, item));
         await Promise.all(deleteFns.map((fn) => fn()));
         if (records.Items.length > 0) {
-            await deleteAllRecords(tableName); // Will call the same function over and over
+            await deleteAllRecords(); // Will call the same function over and over
         }
     };
 
-    await deleteAllRecords(tableName);
+    await deleteAllRecords();
 };
 
 const clearDb = async (): Promise<void> => {
