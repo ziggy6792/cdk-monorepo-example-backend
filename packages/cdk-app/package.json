@@ -43,6 +43,8 @@
         "@simonverhoeven/lambda-gq-resolver": "^2.0.0",
         "@simonverhoeven/lambda-user-confirmed": "^2.0.0",
         "aws-cdk": "1.75.0",
-        "json-beautify": "^1.1.1"
+        "json-beautify": "^1.1.1",
+        "aws-cdk-local": "^1.65.3",
+        "localstack": "^1.0.0"
     }
 }

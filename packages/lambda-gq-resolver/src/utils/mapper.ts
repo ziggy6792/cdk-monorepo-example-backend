@@ -11,10 +11,6 @@ export let mapper: DataMapper;
 
 const config = getEnvConfig();
 
-let isTablesInitialized = false;
-
-const CREATE_TABLE_ARGS = { readCapacityUnits: 5, writeCapacityUnits: 5 };
-
 export const initMapper = (): void => {
     mapper = new DataMapper({
         client: new DynamoDB({ region: config.REGION }), // the SDK client used to execute operations
@@ -23,52 +19,59 @@ export const initMapper = (): void => {
     console.log('REGION!', config.REGION);
 };
 
-const tables = models;
+export const createUniqueCondition = (attributePath = 'id'): FunctionExpression =>
+    new FunctionExpression('attribute_not_exists', new AttributePath(attributePath));
 
-const ensureTableExists = async (table: typeof tables[number]) => {
-    try {
-        await mapper.ensureTableExists(table, { ...CREATE_TABLE_ARGS });
-        // console.log('table');
-        // console.log((table.prototype as any).DynamoDbSchema);
-        // console.log(JSON.stringify(Object.entries(table.prototype)));
+// const tables = models;
 
-        // // eslint-disable-next-line new-cap
-        // const bla = new table();
-        // console.log((bla as any).prototype);
+// let isTablesInitialized = false;
 
-        // console.log(Object.getPrototypeOf(table));
-        // console.log(Object.getPrototypeOf(bla));
+// const CREATE_TABLE_ARGS = { readCapacityUnits: 5, writeCapacityUnits: 5 };
 
-        // console.log(JSON.stringify(Object.getPrototypeOf(bla)));
+// const ensureTableExists = async (table: typeof tables[number]) => {
+//     try {
+//         await mapper.ensureTableExists(table, { ...CREATE_TABLE_ARGS });
+//         // console.log('table');
+//         // console.log((table.prototype as any).DynamoDbSchema);
+//         // console.log(JSON.stringify(Object.entries(table.prototype)));
 
-        // const proto = Object.getPrototypeOf(bla);
+//         // // eslint-disable-next-line new-cap
+//         // const bla = new table();
+//         // console.log((bla as any).prototype);
 
-        // console.log(Object.entries(proto));
-        // console.log(myDecoratorUsingClass(table, 'id'));
+//         // console.log(Object.getPrototypeOf(table));
+//         // console.log(Object.getPrototypeOf(bla));
 
-        // console.log('keys', Reflect.getMetadata('hashKey', bla, 'id'));
+//         // console.log(JSON.stringify(Object.getPrototypeOf(bla)));
 
-        // console.log(Object.entries(Object.getOwnPropertyDescriptors(proto)));
+//         // const proto = Object.getPrototypeOf(bla);
 
-        await table.createIndexes();
-    } catch (err) {
-        console.log(err);
-    }
-};
+//         // console.log(Object.entries(proto));
+//         // console.log(myDecoratorUsingClass(table, 'id'));
 
-export const initTables = async (): Promise<void> => {
-    try {
-        if (!isTablesInitialized) {
-            // await mapper.ensureTableExists(User, { ...CREATE_TABLE_ARGS, indexOptions: { email: { projection: { readCapacityUnits: 5 } } } });
-            const createTableFunctions = tables.map(async (table) => ensureTableExists(table));
-            await Promise.all(createTableFunctions);
-        }
-        isTablesInitialized = true;
-        // console.log(timeB - timeA);
-    } catch (err) {
-        console.log({ err });
-    }
-};
+//         // console.log('keys', Reflect.getMetadata('hashKey', bla, 'id'));
+
+//         // console.log(Object.entries(Object.getOwnPropertyDescriptors(proto)));
+
+//         await table.createIndexes();
+//     } catch (err) {
+//         console.log(err);
+//     }
+// };
+
+// export const initTables = async (): Promise<void> => {
+//     try {
+//         if (!isTablesInitialized) {
+//             // await mapper.ensureTableExists(User, { ...CREATE_TABLE_ARGS, indexOptions: { email: { projection: { readCapacityUnits: 5 } } } });
+//             const createTableFunctions = tables.map(async (table) => ensureTableExists(table));
+//             await Promise.all(createTableFunctions);
+//         }
+//         isTablesInitialized = true;
+//         // console.log(timeB - timeA);
+//     } catch (err) {
+//         console.log({ err });
+//     }
+// };
 
 // export const deleteTables = async (): Promise<void> => {
 //     if (initOptions.region !== 'local' || !initOptions.tableNamePrefix.includes('test')) {
@@ -81,6 +84,3 @@ export const initTables = async (): Promise<void> => {
 //         console.log({ err });
 //     }
 // };
-
-export const createUniqueCondition = (attributePath = 'id'): FunctionExpression =>
-    new FunctionExpression('attribute_not_exists', new AttributePath(attributePath));

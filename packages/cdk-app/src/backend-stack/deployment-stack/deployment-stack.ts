@@ -11,7 +11,7 @@ import * as utils from 'src/utils';
 import { MultiAuthApiGatewayLambda } from 'src/constructs/multi-auth-apigateway-lambda';
 import CognitoIdentityPool from 'src/constructs/cognito-identity-pool';
 import jsonBeautify from 'json-beautify';
-import DbTables from './constructs/db-tables';
+import DbTables from 'src/constructs/db-tables';
 
 export interface DeploymentStackProps extends cdk.StackProps {
     readonly stageName: string;

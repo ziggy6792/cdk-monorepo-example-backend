@@ -29,7 +29,7 @@ const DB_SCHEMA_CONFIG = {
 type IDbSchema = { readonly [key in keyof typeof DB_SCHEMA_CONFIG]: ITableSchema };
 
 const applyDefaults = <T extends IDbSchemaConfig>(schema: T): IDbSchema => {
-    const ret = {};
+    const ret: any = {};
 
     for (const [key, tableSchema] of Object.entries(schema)) {
         ret[key] = {

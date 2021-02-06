@@ -9,8 +9,6 @@
 
 import 'reflect-metadata';
 
-import { initTables } from 'src/utils/mapper';
-
 import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } from 'src/types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,8 +26,6 @@ const getIdentityType = (eventIdentity: any): IdentityType => {
 };
 
 const context = async (recieved: any): Promise<IContext> => {
-    await initTables();
-
     const { req } = recieved;
 
     const exentHeader = req.headers['x-apigateway-event'];
