@@ -11,7 +11,7 @@ const DB_SCHEMA_CONFIG = {
     User: { partitionKey: idPartitionKey },
     SeedSlot: { partitionKey: idPartitionKey },
     Round: { partitionKey: idPartitionKey },
-    RiderAllocation: { partitionKey: idPartitionKey, sortKey: { name: 'userId', tpye: IAttributeType.STRING } },
+    RiderAllocation: { partitionKey: { name: 'allocatableId', tpye: IAttributeType.STRING }, sortKey: { name: 'userId', tpye: IAttributeType.STRING } },
     Heat: {
         partitionKey: idPartitionKey,
         globalSecondaryIndexes: [

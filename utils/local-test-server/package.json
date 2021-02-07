@@ -5,7 +5,7 @@
     "main": "dist/index.js",
     "license": "Apache-2.0",
     "scripts": {
-        "start": "npm-run-all --parallel start:localstack watch:tables",
+        "start:old": "npm-run-all --parallel start:localstack watch:tables",
         "start:localstack": "docker-compose up",
         "force:stop": "docker container stop localstack_main",
         "start:inline": "ts-node src/start-test-db.ts",
