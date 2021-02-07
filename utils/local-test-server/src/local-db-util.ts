@@ -33,47 +33,72 @@ export const checkConnection = async (): Promise<boolean> => {
     return true;
 };
 
+const deployLocalTestStack = (): Promise<boolean> =>
+    new Promise((resolve, reject) => {
+        const deployLocalTestStack = child.spawn('yarn', ['cdk:app:deploy:local:test:stack']);
+
+        deployLocalTestStack.stdout.on('data', (data) => {
+            console.log(`stdout: ${data.toString()}`);
+        });
+
+        deployLocalTestStack.stderr.on('data', (data) => {
+            console.log(`stderr: ${data.toString()}`);
+        });
+
+        deployLocalTestStack.on('exit', (code) => {
+            console.log(`child process exited with code ${code.toString()}`);
+            if (code === 0) {
+                resolve(true);
+            } else {
+                reject(new Error(`child process exited with code ${code.toString()}`));
+            }
+        });
+    });
+
 export const start = async (): Promise<void> => {
     console.log('\n\nLOCAL DB: INIT');
+
+    let isLocalDbRunning = false;
+
     try {
-        const isAlredyRunning = await checkConnection();
-        if (isAlredyRunning) {
-            return;
-        }
-        // if (isAlredyRunning) {
-        //   // Just incase the server is somehow stil running from the last run
-        //   console.log('LOCAL DB: FORCE STOP');
-        //   const { stderr } = await exec('yarn force:stop');
-        // }
+        isLocalDbRunning = await checkConnection();
     } catch (err) {
         // Do nothing - must be is it not running
     }
 
-    console.log('LOCAL DB: START');
+    if (!isLocalDbRunning) {
+        // Start local db
+        console.log('LOCAL DB: START');
 
-    localDb = child.spawn('yarn', ['start:localstack']);
+        localDb = child.spawn('yarn', ['start:localstack']);
 
-    localDb.stdout.on('data', (data) => {
-        console.log(`stdout: ${data.toString()}`);
-    });
-
-    localDb.stderr.on('data', (data) => {
-        console.log(`stderr: ${data.toString()}`);
-    });
-
-    localDb.on('exit', (code) => {
-        console.log(`child process exited with code ${code.toString()}`);
-    });
-
-    try {
-        await poll({
-            taskFn: checkConnection,
-            interval: 100,
-            retries: 200,
+        localDb.stdout.on('data', (data) => {
+            console.log(`stdout: ${data.toString()}`);
         });
-    } catch (err) {
-        console.log('LOCAL DB: Could not connect');
+
+        localDb.stderr.on('data', (data) => {
+            console.log(`stderr: ${data.toString()}`);
+        });
+
+        localDb.on('exit', (code) => {
+            console.log(`child process exited with code ${code.toString()}`);
+        });
+
+        try {
+            await poll({
+                taskFn: checkConnection,
+                interval: 100,
+                retries: 200,
+            });
+        } catch (err) {
+            console.log('LOCAL DB: Could not connect');
+            throw new Error('LOCAL DB: Could not connect');
+        }
     }
+
+    console.log('LOCAL DB: deploying tables');
+
+    await deployLocalTestStack();
 };
 
 export const stop = (): void => {

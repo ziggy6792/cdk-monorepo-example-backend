@@ -14,6 +14,8 @@ const context = JSON.parse(process.env.CDK_CONTEXT_JSON);
 // console.log(context);
 // console.log(context.env);
 
+console.log('env is', context.env);
+
 enum EnvType {
     TEST = 'test',
     PROD = 'prod',
@@ -38,5 +40,9 @@ switch (context.env) {
             },
         });
 }
+
+// new LocalTestStack(app, utils.getConstructId('local-test'), {
+//     stageName: 'test',
+// });
 
 app.synth();
