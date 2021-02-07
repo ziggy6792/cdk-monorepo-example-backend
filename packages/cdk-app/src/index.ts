@@ -15,19 +15,30 @@ const context = JSON.parse(process.env.CDK_CONTEXT_JSON);
 // console.log(context.env);
 
 enum EnvType {
+    PIPELINE = 'pipeline',
     TEST = 'test',
-    PROD = 'prod',
     DUMMY = 'dummy',
 }
 
-context.env = context.env || EnvType.PROD;
+context.env = context.env || EnvType.PIPELINE;
 
 console.log('environment:', context.env);
+
+console.log('process.env', JSON.stringify(process.env));
+
+console.log('default env', {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+});
 
 switch (context.env) {
     case EnvType.TEST:
         new LocalTestStack(app, utils.getConstructId('local-test'), {
             stageName: 'test',
+            env: {
+                account: process.env.CDK_DEFAULT_ACCOUNT,
+                region: process.env.CDK_DEFAULT_REGION,
+            },
         });
         break;
     case EnvType.DUMMY:
