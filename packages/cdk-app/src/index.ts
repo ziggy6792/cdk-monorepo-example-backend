@@ -8,21 +8,33 @@ import LocalTestStack from 'src/local-stacks/local-test-stack';
 const app = new cdk.App();
 
 // Dummy stack
-// createDummyStack(app);
+createDummyStack(app);
 
-const testStack = new LocalTestStack(app, utils.getConstructId('local-test-stack'), {
+const testStack = new LocalTestStack(app, utils.getConstructId('local-test'), {
     stageName: 'test',
 });
+
+console.log('context', app.node.tryGetContext('custom'));
+console.log('context', app.node.tryGetContext('@aws-cdk/core:newStyleStackSynthesis'));
+
+console.log(JSON.parse(process.env.npm_config_argv));
+
+const context = JSON.parse(process.env.CDK_CONTEXT_JSON);
+
+console.log(JSON.parse(process.env.CDK_CONTEXT_JSON));
+
+if (context['@aws-cdk/core:newStyleStackSynthesis']) {
+    // eslint-disable-next-line no-constant-condition
+    const pipelineStack = new PipelineStack(app, utils.getConstructId('pipeline'), {
+        description: utils.getConstructId('pipeline'),
+        env: {
+            account: config.AWS_ACCOUNT_ID,
+            region: config.AWS_REGION,
+        },
+    });
+}
 
 // Dummy pipline stack
 // const dummyPipelineStack = new DummyPipelineStack(app, utils.getConstructId('pipeline'));
 
-// const pipelineStack = new PipelineStack(app, utils.getConstructId('pipeline'), {
-//     description: utils.getConstructId('pipeline'),
-//     env: {
-//         account: config.AWS_ACCOUNT_ID,
-//         region: config.AWS_REGION,
-//     },
-// });
-
-// app.synth();
+app.synth();
