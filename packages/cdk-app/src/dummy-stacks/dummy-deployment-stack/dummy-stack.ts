@@ -2,7 +2,7 @@
 
 import { DEPLOYMENT_CONFIG } from 'src/config';
 import * as cdk from '@aws-cdk/core';
-import DeploymentStack from 'src/backend-stack/deployment-stack';
+import DeploymentStack from 'src/stacks/deployment-stack';
 import { commonConfig } from '@simonverhoeven/common';
 
 const createDummyStack = (scope: cdk.Construct) => {

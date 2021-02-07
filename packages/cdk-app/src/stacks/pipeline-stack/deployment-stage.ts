@@ -2,7 +2,7 @@
 
 import * as cdk from '@aws-cdk/core';
 import { DEPLOYMENT_CONFIG } from 'src/config';
-import DeploymentStack from './deployment-stack';
+import DeploymentStack from 'src/stacks/deployment-stack';
 
 export interface DeploymentStageProps extends cdk.StackProps {
     readonly stageName: string;

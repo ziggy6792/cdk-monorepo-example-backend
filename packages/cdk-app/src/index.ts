@@ -1,14 +1,18 @@
 import * as cdk from '@aws-cdk/core';
 import * as utils from 'src/utils';
-import PipelineStack from 'src/backend-stack/pipeline-stack';
 import * as config from 'src/config';
-import createDummyStack from './dummy-stack';
-import DummyPipelineStack from './backend-stack/dummy-pipeline-stack';
+import PipelineStack from 'src/stacks/pipeline-stack';
+import createDummyStack from 'src/dummy-stacks/dummy-deployment-stack';
+import LocalTestStack from 'src/local-stacks/local-test-stack';
 
 const app = new cdk.App();
 
 // Dummy stack
-createDummyStack(app);
+// createDummyStack(app);
+
+const testStack = new LocalTestStack(app, utils.getConstructId('local-test-stack'), {
+    stageName: 'test',
+});
 
 // Dummy pipline stack
 // const dummyPipelineStack = new DummyPipelineStack(app, utils.getConstructId('pipeline'));
