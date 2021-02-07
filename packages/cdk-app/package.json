@@ -17,7 +17,7 @@
         "precommit": "yarn run typecheck",
         "deploy:local:test:stack": "yarn cdklocal destroy -f -c env=test && yarn cdklocal deploy -c env=test",
         "destroy:local:test:stack": "yarn cdklocal destroy -f -c env=test",
-        "local:test:env:bootstrap": "cdklocal bootstrap -c env=test"
+        "local:test:env:bootstrap": "aws configure set aws_access_key_id mock-access-key && aws configure set aws_secret_access_key mock-secret-access-key && cdklocal bootstrap -c env=test"
     },
     "devDependencies": {
         "@types/node": "10.17.27",

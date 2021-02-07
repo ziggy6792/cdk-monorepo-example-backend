@@ -21,6 +21,8 @@ class LocalTestStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: LocalTetsStackProps) {
         super(scope, id, props);
 
+        console.log('environment', JSON.stringify(this.environment));
+
         const { stageName } = props;
 
         const dbTablesContruct = new DbTables(this, utils.getConstructId('db-tables', stageName), { stageName });
