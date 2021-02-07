@@ -3,9 +3,8 @@ import * as child from 'child_process';
 import kill from 'tree-kill';
 import poll from 'promise-poller';
 import util from 'util';
-import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
-import { table } from 'console';
-import AWS = require('aws-sdk');
+import AWS from 'aws-sdk';
+import TEST_DB_CONFIG from './config';
 
 const exec = util.promisify(child.exec);
 
@@ -27,13 +26,8 @@ const promiseWithTimeout = function (promise: Promise<any>, ms: number) {
 };
 
 export const checkConnection = async (): Promise<boolean> => {
-    const serviceConfigOptions: ServiceConfigurationOptions = {
-        region: 'local',
-        endpoint: 'http://localhost:8000',
-    };
-
-    const dynamodb = new AWS.DynamoDB(serviceConfigOptions);
-    const tables = await promiseWithTimeout(dynamodb.listTables().promise(), 1000);
+    const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
+    const tables = await dynamodb.listTables().promise();
     console.log('LOCAL DB: READY');
 
     return true;
@@ -57,7 +51,7 @@ export const start = async (): Promise<void> => {
 
     console.log('LOCAL DB: START');
 
-    localDb = child.spawn('yarn', ['start']);
+    localDb = child.spawn('yarn', ['start:localstack']);
 
     localDb.stdout.on('data', (data) => {
         console.log(`stdout: ${data.toString()}`);

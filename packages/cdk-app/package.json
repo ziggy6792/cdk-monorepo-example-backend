@@ -2,18 +2,20 @@
     "name": "@simonverhoeven/cdk-app",
     "version": "0.1.0",
     "bin": {
-        "packages": "src/index.ts"
+        "packages": "src/index.ts",
+        "cdk-app": "./dist/bin/echo-hello.sh"
     },
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
-        "watch": "tsc -w -p tsconfig.build.json",
+        "start": "tsc -w -p tsconfig.build.json",
         "synth": "npx cdk synth",
         "test": "jest",
         "cdk": "cdk",
         "clean:light": "rm -rf ./dist && rm -rf tsconfig.build.tsbuildinfo",
         "clean:full": "yarn run clean:light && rm -rf ./node_modules && rm -rf ./cdk.out",
         "typecheck": "tsc --noEmit",
-        "precommit": "yarn run typecheck"
+        "precommit": "yarn run typecheck",
+        "deploy:local:test:stack": "yarn cdklocal destroy -f -c env=test && yarn cdklocal deploy -c env=test"
     },
     "devDependencies": {
         "@types/node": "10.17.27",

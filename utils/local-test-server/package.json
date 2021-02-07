@@ -5,14 +5,15 @@
     "main": "dist/index.js",
     "license": "Apache-2.0",
     "scripts": {
-        "start": "cd local-dynamodb/libs && java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb --inMemory",
+        "start": "npm-run-all --parallel start:localstack watch:tables",
+        "start:localstack": "docker-compose up",
+        "force:stop": "docker container stop localstack_main",
         "start:inline": "ts-node src/start-test-db.ts",
-        "force:stop": "lsof -ti tcp:8000 | xargs kill",
-        "start:new": "npm-run-all --parallel start watch:tables",
-        "watch:tables": "nodemon",
-        "create:tables": "ts-node src/index.ts"
+        "deploy:local:test:stack": "lerna run --stream  deploy:local:test:stack --scope @simonverhoeven/cdk-app"
     },
-    "dependencies": {},
+    "dependencies": {
+        "@simonverhoeven/cdk-app": "^0.1.0"
+    },
     "devDependencies": {
         "npm-run-all": "^4.1.5"
     }

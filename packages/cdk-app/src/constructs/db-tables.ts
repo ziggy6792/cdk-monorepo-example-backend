@@ -2,7 +2,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
 import * as utils from 'src/utils';
-// import { commonConfig, IAttributeType, commonUtils } from '@simonverhoeven/common';
+import { commonConfig, IAttributeType, commonUtils } from '@simonverhoeven/common';
 
 interface DbTablesProps {
     stageName: string;
@@ -13,27 +13,27 @@ class DbTables extends cdk.Construct {
     constructor(scope: cdk.Construct, id: string, { stageName }: DbTablesProps) {
         super(scope, id);
 
-        // const typeLookup = {
-        //     [IAttributeType.STRING]: dynamodb.AttributeType.STRING,
-        //     [IAttributeType.NUMBER]: dynamodb.AttributeType.NUMBER,
-        //     [IAttributeType.BINARY]: dynamodb.AttributeType.BINARY,
-        // };
+        const typeLookup = {
+            [IAttributeType.STRING]: dynamodb.AttributeType.STRING,
+            [IAttributeType.NUMBER]: dynamodb.AttributeType.NUMBER,
+            [IAttributeType.BINARY]: dynamodb.AttributeType.BINARY,
+        };
 
-        // for (const [key, tableSchema] of Object.entries(commonConfig.DB_SCHEMA)) {
-        //     const { tableName, partitionKey, sortKey, globalSecondaryIndexes } = tableSchema;
-        //     const table = new dynamodb.Table(this, utils.getConstructId(`${tableName}`, stageName), {
-        //         tableName: commonUtils.getTableName(tableName, stageName),
-        //         partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.tpye] },
-        //         sortKey: sortKey ? { name: sortKey.name, type: typeLookup[sortKey.tpye] } : undefined,
-        //     });
-        //     globalSecondaryIndexes?.forEach(({ indexName, partitionKey, sortKey }) => {
-        //         table.addGlobalSecondaryIndex({
-        //             indexName,
-        //             partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.tpye] },
-        //             sortKey: { name: sortKey.name, type: typeLookup[sortKey.tpye] },
-        //         });
-        //     });
-        // }
+        for (const [key, tableSchema] of Object.entries(commonConfig.DB_SCHEMA)) {
+            const { tableName, partitionKey, sortKey, globalSecondaryIndexes } = tableSchema;
+            const table = new dynamodb.Table(this, utils.getConstructId(`${tableName}`, stageName), {
+                tableName: commonUtils.getTableName(tableName, stageName),
+                partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.tpye] },
+                sortKey: sortKey ? { name: sortKey.name, type: typeLookup[sortKey.tpye] } : undefined,
+            });
+            globalSecondaryIndexes?.forEach(({ indexName, partitionKey, sortKey }) => {
+                table.addGlobalSecondaryIndex({
+                    indexName,
+                    partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.tpye] },
+                    sortKey: { name: sortKey.name, type: typeLookup[sortKey.tpye] },
+                });
+            });
+        }
     }
 }
 
