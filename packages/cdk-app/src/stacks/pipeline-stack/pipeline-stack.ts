@@ -60,6 +60,7 @@ class PipelineStack extends cdk.Stack {
         // });
 
         const testAction = new cdkPipeline.ShellScriptAction({
+            environment: { privileged: true },
             actionName: 'Test',
             additionalArtifacts: [sourceArtifact],
             runOrder: 1,
