@@ -14,13 +14,15 @@ const context = JSON.parse(process.env.CDK_CONTEXT_JSON);
 // console.log(context);
 // console.log(context.env);
 
-console.log('env is', context.env);
-
 enum EnvType {
     TEST = 'test',
     PROD = 'prod',
     DUMMY = 'dummy',
 }
+
+context.env = context.env || EnvType.PROD;
+
+console.log('environment:', context.env);
 
 switch (context.env) {
     case EnvType.TEST:
