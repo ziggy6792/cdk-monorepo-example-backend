@@ -15,6 +15,8 @@ export class DeploymentStage extends cdk.Stage {
     constructor(scope: cdk.Construct, id: string, props?: DeploymentStageProps) {
         super(scope, id, props);
 
+        this.node.setContext('@aws-cdk/core:stackRelativeExports', 'true');
+
         const { stageName } = props;
 
         const stageConfig = DEPLOYMENT_CONFIG[stageName];

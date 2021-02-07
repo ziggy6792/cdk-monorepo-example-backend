@@ -18,6 +18,8 @@ class PipelineStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
+        this.node.setContext('@aws-cdk/core:newStyleStackSynthesis', 'true');
+
         const sourceArtifact = new codepipeline.Artifact();
         const cloudAssemblyArtifact = new codepipeline.Artifact();
 
