@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 /* eslint-disable no-fallthrough */
 /* eslint-disable no-new */
 import * as cdk from '@aws-cdk/core';
@@ -24,21 +25,18 @@ context.env = context.env || EnvType.PIPELINE;
 
 console.log('environment:', context.env);
 
-console.log('process.env', JSON.stringify(process.env));
-
-console.log('default env', {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
-});
-
 switch (context.env) {
     case EnvType.TEST:
+        const env = {
+            account: process.env.CDK_DEFAULT_ACCOUNT || '000000000000',
+            region: process.env.CDK_DEFAULT_REGION || 'ap-southeast-1',
+        };
+        console.log('process.env', JSON.stringify(process.env));
+
+        console.log('default env', env);
         new LocalTestStack(app, utils.getConstructId('local-test'), {
             stageName: 'test',
-            env: {
-                account: process.env.CDK_DEFAULT_ACCOUNT,
-                region: process.env.CDK_DEFAULT_REGION,
-            },
+            env,
         });
         break;
     case EnvType.DUMMY:
