@@ -64,7 +64,7 @@ class PipelineStack extends cdk.Stack {
             actionName: 'Test',
             additionalArtifacts: [sourceArtifact],
             runOrder: 1,
-            commands: ['yarn install', 'yarn build', 'yarn local:test:env:bootstrap', 'yarn test:with:env'],
+            commands: ['yarn install', 'yarn build', 'yarn local:test:env:bootstrap', 'echo hello', 'yarn test:with:env'],
         });
 
         pipeline.codePipeline.stages[1].addAction(testAction);
