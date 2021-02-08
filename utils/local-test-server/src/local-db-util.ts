@@ -77,11 +77,11 @@ const deployLocalTestStack = (): Promise<void> => {
         });
 
         deployLocalTestStack.on('exit', (code) => {
-            console.log(`deploy:local:test:stack: child process exited with code ${code.toString()}`);
+            console.log(`deploy:local:test:stack: child process exited with code ${code?.toString()}`);
             if (code === 0) {
                 resolve();
             } else {
-                reject(new Error(`child process exited with code ${code.toString()}`));
+                reject(new Error(`child process exited with code ${code?.toString()}`));
             }
         });
     });
@@ -89,6 +89,11 @@ const deployLocalTestStack = (): Promise<void> => {
 
 export const start = async (): Promise<void> => {
     console.log('\n\nLOCAL TEST ENV: INIT');
+
+    // do app specific cleaning before exiting
+    process.on('SIGINT', () => {
+        console.log('Got SIGINT.  Press Control-C to exit.');
+    });
 
     let isLocalDbRunning = false;
 
