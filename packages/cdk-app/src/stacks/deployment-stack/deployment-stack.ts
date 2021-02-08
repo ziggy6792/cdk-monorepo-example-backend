@@ -24,7 +24,7 @@ class DeploymentStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: DeploymentStackProps) {
         super(scope, id, props);
 
-        this.node.setContext('@aws-cdk/core:newStyleStackSynthesis', 'true');
+        // this.node.setContext('@aws-cdk/core:newStyleStackSynthesis', 'true');
 
         const { stageName, facebookClientId, facebookClientSecret, domainPrefix } = props;
 

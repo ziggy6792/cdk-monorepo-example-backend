@@ -18,7 +18,7 @@ class PipelineStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
-        this.node.setContext('@aws-cdk/core:newStyleStackSynthesis', 'true');
+        // this.node.setContext('@aws-cdk/core:newStyleStackSynthesis', 'true');
 
         const sourceArtifact = new codepipeline.Artifact();
         const cloudAssemblyArtifact = new codepipeline.Artifact();
@@ -35,7 +35,7 @@ class PipelineStack extends cdk.Stack {
                 // Replace these with your actual GitHub project info
                 owner: 'ziggy6792',
                 repo: 'cdk-monorepo-example-backend',
-                branch: 'feature/new-test-env',
+                branch: 'feature/local-stack-in-codebuild',
             }),
 
             synthAction: cdkPipeline.SimpleSynthAction.standardYarnSynth({
@@ -64,8 +64,8 @@ class PipelineStack extends cdk.Stack {
             actionName: 'Test',
             additionalArtifacts: [sourceArtifact],
             runOrder: 1,
-            // commands: ['yarn install', 'yarn build', 'echo hello', 'yarn test:with:env'],
-            commands: ['yarn install', 'yarn build', 'echo hello'],
+            commands: ['yarn install', 'yarn build', 'echo hello', 'yarn test:with:env'],
+            // commands: ['yarn install', 'yarn build', 'echo hello'],
         });
 
         pipeline.codePipeline.stages[1].addAction(testAction);

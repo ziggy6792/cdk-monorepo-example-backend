@@ -6,6 +6,8 @@ import util from 'util';
 import AWS from 'aws-sdk';
 import TEST_DB_CONFIG from './config';
 
+AWS.config.update(TEST_DB_CONFIG);
+
 const exec = util.promisify(child.exec);
 
 let localDb: child.ChildProcessWithoutNullStreams;
@@ -26,9 +28,21 @@ const promiseWithTimeout = function (promise: Promise<any>, ms: number) {
 };
 
 export const checkConnection = async (): Promise<boolean> => {
-    const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
+    const dynamodb = new AWS.DynamoDB();
     const tables = await promiseWithTimeout(dynamodb.listTables().promise(), 1000);
     console.log('LOCAL TEST ENV: READY');
+
+    return true;
+};
+
+export const isBootstraped = async (): Promise<boolean> => {
+    const client = new AWS.S3();
+    try {
+        const response = await client.listBuckets().promise();
+        console.log('response', response);
+    } catch (err) {
+        console.log({ err });
+    }
 
     return true;
 };
@@ -47,7 +61,7 @@ const startLocalServer = async (): Promise<void> => {
     });
 
     localDb.on('exit', (code) => {
-        console.log(`child process exited with code ${code.toString()}`);
+        console.log(`child process exited with code ${code?.toString()}`);
     });
 
     try {
@@ -132,6 +146,8 @@ export const start = async (): Promise<void> => {
         // Start local TEST ENV
         await startLocalServer();
     }
+
+    // await isBootstraped();
 
     await bootstrap();
 
