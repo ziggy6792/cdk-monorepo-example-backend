@@ -2,8 +2,7 @@
     "name": "@simonverhoeven/cdk-app",
     "version": "0.1.0",
     "bin": {
-        "packages": "src/index.ts",
-        "cdk-app": "./dist/bin/echo-hello.sh"
+        "packages": "src/index.ts"
     },
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
