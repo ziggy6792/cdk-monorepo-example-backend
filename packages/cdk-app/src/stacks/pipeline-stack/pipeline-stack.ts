@@ -41,7 +41,6 @@ class PipelineStack extends cdk.Stack {
             synthAction: cdkPipeline.SimpleSynthAction.standardYarnSynth({
                 sourceArtifact,
                 cloudAssemblyArtifact,
-
                 // Use this if you need a build step (if you're not using ts-node
                 // or if you have TypeScript Lambdas that need to be compiled).
                 // installCommand: 'yarn install',
