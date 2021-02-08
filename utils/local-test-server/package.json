@@ -9,7 +9,8 @@
         "start:localstack": "docker-compose up",
         "force:stop": "docker container stop localstack_main",
         "start:inline": "ts-node src/start-test-db.ts",
-        "cdk:app:deploy:local:test:stack": "lerna run --stream  deploy:local:test:stack --scope @simonverhoeven/cdk-app"
+        "cdk:app:deploy:local:test:stack": "lerna run --stream deploy:local:test:stack --scope @simonverhoeven/cdk-app",
+        "cdk:app:local:test:env:bootstrap": "lerna run --stream local:test:env:bootstrap --scope @simonverhoeven/cdk-app"
     },
     "dependencies": {
         "@simonverhoeven/cdk-app": "^0.1.0"

@@ -87,6 +87,31 @@ const deployLocalTestStack = (): Promise<void> => {
     });
 };
 
+const bootstrap = (): Promise<void> => {
+    console.log('LOCAL TEST ENV: bootstrapping local test stack');
+
+    return new Promise((resolve, reject) => {
+        const deployLocalTestStack = child.spawn('yarn', ['cdk:app:local:test:env:bootstrap']);
+
+        deployLocalTestStack.stdout.on('data', (data) => {
+            console.log(`local:test:env:bootstrap: ${data.toString()}`);
+        });
+
+        deployLocalTestStack.stderr.on('data', (data) => {
+            console.log(`local:test:env:bootstrap: ${data.toString()}`);
+        });
+
+        deployLocalTestStack.on('exit', (code) => {
+            console.log(`local:test:env:bootstrap: child process exited with code ${code?.toString()}`);
+            if (code === 0) {
+                resolve();
+            } else {
+                reject(new Error(`child process exited with code ${code?.toString()}`));
+            }
+        });
+    });
+};
+
 export const start = async (): Promise<void> => {
     console.log('\n\nLOCAL TEST ENV: INIT');
 
@@ -107,6 +132,8 @@ export const start = async (): Promise<void> => {
         // Start local TEST ENV
         await startLocalServer();
     }
+
+    await bootstrap();
 
     await deployLocalTestStack();
 };
