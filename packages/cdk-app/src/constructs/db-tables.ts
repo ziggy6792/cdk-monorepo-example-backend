@@ -25,6 +25,7 @@ class DbTables extends cdk.Construct {
                 tableName: commonUtils.getTableName(tableName, stageName),
                 partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.tpye] },
                 sortKey: sortKey ? { name: sortKey.name, type: typeLookup[sortKey.tpye] } : undefined,
+                billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
             });
             globalSecondaryIndexes?.forEach(({ indexName, partitionKey, sortKey }) => {
                 table.addGlobalSecondaryIndex({
