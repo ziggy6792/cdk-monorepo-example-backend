@@ -144,7 +144,7 @@ const bootstrap = (): Promise<void> => {
 
 interface IArgs {
     _: string[];
-    isLocal: boolean;
+    isSkipBootstrap: boolean;
 }
 
 export const start = async (): Promise<void> => {
@@ -173,7 +173,7 @@ export const start = async (): Promise<void> => {
         console.log('READYY!!!!!');
     }
 
-    if (!args.isLocal) {
+    if (!args.isSkipBootstrap) {
         await bootstrap();
     }
 

@@ -18,6 +18,7 @@ const LOCAL_STACL_CONFIG = {
             sts: 'running',
             kinesis: 'running',
             s3: 'running',
+            ssm: 'running',
             cloudformation: 'running',
             dynamodb: 'running',
         },
