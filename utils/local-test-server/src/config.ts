@@ -9,7 +9,7 @@ const TEST_DB_CONFIG: ServiceConfigurationOptions = {
     },
 };
 
-const LOCAL_STACL_CONFIG = {
+const LOCAL_STACK_CONFIG = {
     checkHealthEndpoint: 'http://localhost:4566/health',
     readyResponse: {
         services: {
@@ -25,6 +25,4 @@ const LOCAL_STACL_CONFIG = {
     },
 };
 
-// const actual =
-
-export default LOCAL_STACL_CONFIG;
+export default LOCAL_STACK_CONFIG;

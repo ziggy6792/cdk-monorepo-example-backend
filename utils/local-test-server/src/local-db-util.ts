@@ -8,7 +8,8 @@ import AWS from 'aws-sdk';
 import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
 import axios from 'axios';
-import LOCAL_STACL_CONFIG from './config';
+import _ from 'lodash';
+import LOCAL_STACK_CONFIG from './config';
 
 // AWS.config.update(TEST_DB_CONFIG);
 
@@ -40,10 +41,10 @@ const promiseWithTimeout = function (promise: Promise<any>, ms: number) {
 // };
 
 export const checkConnection = async (): Promise<boolean> => {
-    const response = await axios.get(LOCAL_STACL_CONFIG.checkHealthEndpoint, { timeout: 1000 });
-    const ready = JSON.stringify(response.data) === JSON.stringify(LOCAL_STACL_CONFIG.readyResponse);
+    const response = await axios.get(LOCAL_STACK_CONFIG.checkHealthEndpoint, { timeout: 1000 });
+    const ready = _.isEqual(response.data, LOCAL_STACK_CONFIG.readyResponse);
     if (!ready) {
-        console.log('expected', JSON.stringify(LOCAL_STACL_CONFIG.readyResponse));
+        console.log('expected', JSON.stringify(LOCAL_STACK_CONFIG.readyResponse));
         console.log('');
         console.log('actual', JSON.stringify(response.data));
 
