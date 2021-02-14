@@ -9,4 +9,19 @@ const TEST_DB_CONFIG: ServiceConfigurationOptions = {
     },
 };
 
-export default TEST_DB_CONFIG;
+const LOCAL_STACL_CONFIG = {
+    checkHealthEndpoint: 'http://localhost:4566/health',
+    readyResponse: {
+        services: {
+            dynamodbstreams: 'running',
+            iam: 'running',
+            sts: 'running',
+            kinesis: 'running',
+            s3: 'running',
+            cloudformation: 'running',
+            dynamodb: 'running',
+        },
+    },
+};
+
+export default LOCAL_STACL_CONFIG;

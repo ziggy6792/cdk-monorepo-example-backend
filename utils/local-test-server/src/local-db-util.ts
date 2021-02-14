@@ -4,9 +4,13 @@ import kill from 'tree-kill';
 import poll from 'promise-poller';
 import util from 'util';
 import AWS from 'aws-sdk';
-import TEST_DB_CONFIG from './config';
+// import TEST_DB_CONFIG from './config';
+import yargs from 'yargs/yargs';
+import { hideBin } from 'yargs/helpers';
+import axios from 'axios';
+import LOCAL_STACL_CONFIG from './config';
 
-AWS.config.update(TEST_DB_CONFIG);
+// AWS.config.update(TEST_DB_CONFIG);
 
 const exec = util.promisify(child.exec);
 
@@ -27,12 +31,24 @@ const promiseWithTimeout = function (promise: Promise<any>, ms: number) {
     return Promise.race([promise, timeout]);
 };
 
-export const checkConnection = async (): Promise<boolean> => {
-    const dynamodb = new AWS.DynamoDB();
-    const tables = await promiseWithTimeout(dynamodb.listTables().promise(), 1000);
-    console.log('LOCAL TEST ENV: READY');
+// export const checkConnection = async (): Promise<boolean> => {
+//     const dynamodb = new AWS.DynamoDB();
+//     const tables = await promiseWithTimeout(dynamodb.listTables().promise(), 1000);
+//     console.log('LOCAL TEST ENV: READY');
 
-    return true;
+//     return true;
+// };
+
+export const checkConnection = async (): Promise<boolean> => {
+    const response = await axios.get(LOCAL_STACL_CONFIG.checkHealthEndpoint, { timeout: 1000 });
+    const ready = JSON.stringify(response.data) === JSON.stringify(LOCAL_STACL_CONFIG.readyResponse);
+    console.log('ready', ready);
+    if (!ready) {
+        console.log('response', response.data);
+
+        throw new Error('Not ready');
+    }
+    return ready;
 };
 
 export const isBootstraped = async (): Promise<boolean> => {
@@ -67,8 +83,8 @@ const startLocalServer = async (): Promise<void> => {
     try {
         await poll({
             taskFn: checkConnection,
-            interval: 100,
-            retries: 200,
+            interval: 1000,
+            retries: 60,
         });
     } catch (err) {
         console.log('LOCAL TEST ENV: Could not connect');
@@ -126,8 +142,17 @@ const bootstrap = (): Promise<void> => {
     });
 };
 
+interface IArgs {
+    _: string[];
+    isLocal: boolean;
+}
+
 export const start = async (): Promise<void> => {
     console.log('\n\nLOCAL TEST ENV: INIT');
+
+    const args = (yargs(hideBin(process.argv)).argv as unknown) as IArgs;
+
+    console.log('Recieved Args', args);
 
     // do app specific cleaning before exiting
     process.on('SIGINT', () => {
@@ -145,11 +170,12 @@ export const start = async (): Promise<void> => {
     if (!isLocalDbRunning) {
         // Start local TEST ENV
         await startLocalServer();
+        console.log('READYY!!!!!');
     }
 
-    // await isBootstraped();
-
-    await bootstrap();
+    if (!args.isLocal) {
+        await bootstrap();
+    }
 
     await deployLocalTestStack();
 };

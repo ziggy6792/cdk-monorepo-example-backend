@@ -13,7 +13,9 @@
         "cdk:app:local:test:env:bootstrap": "lerna run --stream local:test:env:bootstrap --scope @simonverhoeven/cdk-app"
     },
     "dependencies": {
-        "@simonverhoeven/cdk-app": "^0.1.0"
+        "@simonverhoeven/cdk-app": "^0.1.0",
+        "axios": "^0.21.1",
+        "yargs": "^16.2.0"
     },
     "devDependencies": {
         "npm-run-all": "^4.1.5"
