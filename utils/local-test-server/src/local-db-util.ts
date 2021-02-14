@@ -42,9 +42,10 @@ const promiseWithTimeout = function (promise: Promise<any>, ms: number) {
 export const checkConnection = async (): Promise<boolean> => {
     const response = await axios.get(LOCAL_STACL_CONFIG.checkHealthEndpoint, { timeout: 1000 });
     const ready = JSON.stringify(response.data) === JSON.stringify(LOCAL_STACL_CONFIG.readyResponse);
-    console.log('ready', ready);
     if (!ready) {
-        console.log('response', response.data);
+        console.log('expected', JSON.stringify(LOCAL_STACL_CONFIG.readyResponse));
+        console.log('');
+        console.log('actual', JSON.stringify(response.data));
 
         throw new Error('Not ready');
     }
