@@ -24,7 +24,7 @@ const DB_SCHEMA_CONFIG = {
     },
     Event: { partitionKey: idPartitionKey },
     Competition: { partitionKey: idPartitionKey },
-    ScheduleItem: { partitionKey: idPartitionKey },
+    // ScheduleItem: { partitionKey: idPartitionKey },
 };
 
 type IDbSchema = { readonly [key in keyof typeof DB_SCHEMA_CONFIG]: ITableSchema };

@@ -18,7 +18,6 @@ const LOCAL_STACK_CONFIG = {
             sts: 'running',
             kinesis: 'running',
             s3: 'running',
-            ssm: 'running',
             cloudformation: 'running',
             dynamodb: 'running',
         },

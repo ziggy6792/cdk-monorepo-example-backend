@@ -26,13 +26,6 @@ class LocalTestStack extends cdk.Stack {
         const { stageName } = props;
 
         const dbTablesContruct = new DbTables(this, utils.getConstructId('db-tables', stageName), { stageName });
-
-        // This ensures that there is always a change so stack. As there is a bug with localstack that will freeze in state Update_Faild
-        // If no change is present in stack
-        const emptyChangesetWorkaround = new ssm.StringParameter(this, utils.getConstructId('deployed-at', stageName), {
-            parameterName: utils.getSsmParamId('deployed-at', stageName),
-            stringValue: new Date().toTimeString(),
-        });
     }
 }
 
