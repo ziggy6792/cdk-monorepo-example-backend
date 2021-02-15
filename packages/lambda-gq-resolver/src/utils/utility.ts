@@ -10,6 +10,6 @@ export const VALUE = {
 export const valueIsNull = (value: any): boolean => value === null || value === undefined || value === VALUE.NULL;
 
 export const getTableName = (tableName: string): string => {
-    const ret = commonUtils.getTableName(tableName, envConig.ENV);
+    const ret = commonUtils.getTableName(tableName, envConig.env);
     return ret;
 };

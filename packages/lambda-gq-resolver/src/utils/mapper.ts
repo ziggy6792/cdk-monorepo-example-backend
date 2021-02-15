@@ -9,14 +9,14 @@ import getEnvConfig from 'src/config/get-env-config';
 // eslint-disable-next-line import/no-mutable-exports
 export let mapper: DataMapper;
 
-const config = getEnvConfig();
+const { awsConfig } = getEnvConfig();
 
 export const initMapper = (): void => {
     mapper = new DataMapper({
-        client: new DynamoDB({ region: config.REGION }), // the SDK client used to execute operations
+        client: new DynamoDB(awsConfig), // the SDK client used to execute operations
         // tableNamePrefix: config.TABLE_NAME_PREFIX, // optionally, you can provide a table prefix to keep your dev and prod tables separate
     });
-    console.log('REGION!', config.REGION);
+    console.log('REGION!');
 };
 
 export const createUniqueCondition = (attributePath = 'id'): FunctionExpression =>

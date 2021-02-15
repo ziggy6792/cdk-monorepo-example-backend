@@ -1,10 +1,12 @@
 import AWS from 'aws-sdk';
+import getEnvConfig from 'src/config/get-env-config';
 import { initMapper } from 'src/utils/mapper';
 import clearDb from './clear-db';
-import TEST_DB_CONFIG from './config';
+
+const { awsConfig } = getEnvConfig();
 
 const testConn = async (): Promise<void> => {
-    AWS.config.update(TEST_DB_CONFIG);
+    AWS.config.update(awsConfig);
 
     initMapper();
 

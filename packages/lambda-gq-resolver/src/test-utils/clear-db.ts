@@ -1,5 +1,5 @@
 import AWS, { DynamoDB } from 'aws-sdk';
-import TEST_DB_CONFIG from './config';
+import TEST_AWS_CONFIG from './config';
 
 // const promiseWithTimeout = function (promise: Promise<any>, ms: number) {
 //     // Create a promise that rejects in <ms> milliseconds
@@ -14,7 +14,7 @@ import TEST_DB_CONFIG from './config';
 //     return Promise.race([promise, timeout]);
 // };
 
-const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
+const dynamodb = new AWS.DynamoDB(TEST_AWS_CONFIG);
 
 const getRecordKeys = async (tableName: string, hashKeys: string[]) => {
     const ExpressionAttributeNames = {};
@@ -76,7 +76,7 @@ const clearDb = async (): Promise<void> => {
 
     console.log('\nTest DB: Purging tables...');
 
-    if (TEST_DB_CONFIG.region !== 'local') {
+    if (TEST_AWS_CONFIG.region !== 'local') {
         console.log('WTF ARE YOU DOING!?');
         return;
     }

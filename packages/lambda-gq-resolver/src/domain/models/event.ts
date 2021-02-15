@@ -26,7 +26,6 @@ registerEnumType(EventStatus, {
     description: 'The Event Status', // this one is optional
 });
 
-// @table(commonUtils.getTableName(commonConfig.DB_SCHEMA.Event.tableName, getEnvConfig().ENV))
 @table(utils.getTableName(commonConfig.DB_SCHEMA.Event.tableName))
 @ObjectType()
 class Event extends DataEntity {

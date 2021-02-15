@@ -15,6 +15,7 @@ import Express from 'express';
 import { commonFunctionExample } from '@simonverhoeven/common-lambda-lib/dist/utils';
 
 import cors from 'cors';
+
 import createSchema from './typegraphql-setup/create-schema';
 import context from './typegraphql-setup/context';
 
@@ -23,7 +24,7 @@ import { IContext } from './types';
 
 import getEnvConfig from './config/get-env-config';
 
-const { REGION } = getEnvConfig();
+const { awsConfig } = getEnvConfig();
 
 export const createApolloServer = (): ApolloServer =>
     new ApolloServer({
@@ -41,7 +42,8 @@ export const createApolloServer = (): ApolloServer =>
     });
 
 // Init
-AWS.config.update({ region: REGION });
+AWS.config.update(awsConfig);
+//
 const app = Express();
 app.use(cors({ allowedHeaders: '*', origin: '*', methods: '*' }));
 const apolloServer = createApolloServer();
