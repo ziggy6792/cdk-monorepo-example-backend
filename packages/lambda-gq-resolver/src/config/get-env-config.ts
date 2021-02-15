@@ -1,18 +1,29 @@
-const LOCAL_ENV = 'dummy';
+import localAwsConfig from '@test-utils/config';
+import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 
-//  env
-const ENV = process.env.ENV || LOCAL_ENV;
-const REGION = process.env.REGION || 'ap-southeast-1';
+export enum EnvType {
+    STAGING = 'staging',
+    PROD = 'prod',
+    TEST = 'test',
+}
 
-// Others
-const IS_PROD = ENV === 'prod';
+// Point to test (local) or staging (cloud)
+const localEnv: EnvType = EnvType.TEST;
 
-const env = {
-    ENV,
-    REGION,
-    IS_PROD,
+const env = (process.env.ENV as EnvType) || localEnv;
+
+const awsConfig: ServiceConfigurationOptions = {
+    region: process.env.REGION || 'ap-southeast-1',
 };
 
-const getEnvConfig = () => env;
+const envConfig = {
+    env,
+    awsConfig: localEnv === EnvType.TEST ? localAwsConfig : awsConfig,
+};
+
+const getEnvConfig = () => {
+    console.log('envConfig', envConfig);
+    return envConfig;
+};
 
 export default getEnvConfig;

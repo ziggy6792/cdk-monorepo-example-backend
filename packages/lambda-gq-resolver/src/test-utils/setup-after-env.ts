@@ -1,7 +1,8 @@
 import * as envConfig from 'src/config/get-env-config';
+import localAwsConfig from './config';
 
+// Ignore what is set in config and force test env config
 jest.spyOn(envConfig, 'default').mockReturnValue({
-    ENV: 'test',
-    REGION: 'local',
-    IS_PROD: false,
+    env: envConfig.EnvType.TEST,
+    awsConfig: localAwsConfig,
 });
