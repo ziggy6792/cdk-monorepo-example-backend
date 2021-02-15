@@ -7,6 +7,7 @@ import CompetitionResolvers from 'src/modules/competition/resolvers';
 import HeatResolvers from 'src/modules/heat/resolvers';
 import RoundResolvers from 'src/modules/round/resolvers';
 import SeedSlotResolvers from 'src/modules/seed-slot/resolvers';
+import RiderAllocationResolvers from 'src/modules/rider-allocation/resolvers';
 import GetDataEntityResolver from 'src/modules/get-data-entity';
 import RegisterResolver from 'src/modules/user/resolvers/register';
 import BuildCompetition from 'src/modules/build-competition';
@@ -20,6 +21,7 @@ const schema = buildSchemaSync({
         ...HeatResolvers,
         ...RoundResolvers,
         ...SeedSlotResolvers,
+        ...RiderAllocationResolvers,
         GetDataEntityResolver,
         RegisterResolver,
         BuildCompetition,

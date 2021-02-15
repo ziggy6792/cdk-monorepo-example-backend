@@ -20,9 +20,6 @@ abstract class Creatable {
     @attribute({ defaultProvider: () => getCreatedAt() })
     createdAt: string;
 
-    @attribute({ defaultProvider: () => 'partition' })
-    partition: string;
-
     setDefaults(): void {
         this.createdAt = getCreatedAt();
     }
