@@ -60,12 +60,7 @@ class Event extends DataEntity {
     }
 
     async getCompetitions(): Promise<Competition[]> {
-        const filter: ConditionExpression = {
-            subject: 'eventId',
-            ...equals(this.id),
-        };
-
-        return toArray(mapper.scan(Competition, { filter }));
+        return toArray(mapper.query(Competition, { eventId: this.id }, { indexName: 'byEvent' }));
     }
 
     @Field(() => CompetitionList)

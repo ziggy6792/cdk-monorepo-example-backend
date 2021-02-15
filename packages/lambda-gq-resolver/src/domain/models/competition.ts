@@ -130,11 +130,7 @@ class Competition extends DataEntity {
     }
 
     async getRounds(): Promise<Round[]> {
-        const filter: ConditionExpression = {
-            subject: 'competitionId',
-            ...equals(this.id),
-        };
-        return toArray(mapper.scan(Round, { filter }));
+        return toArray(mapper.query(Round, { competitionId: this.id }, { indexName: 'byCompetition' }));
     }
 
     @Field(() => RoundList)
@@ -145,11 +141,12 @@ class Competition extends DataEntity {
     }
 
     async getRiderAllocations(): Promise<RiderAllocation[]> {
-        const filter: ConditionExpression = {
-            subject: 'allocatableId',
-            ...equals(this.id),
-        };
-        return toArray(mapper.scan(RiderAllocation, { filter }));
+        // const filter: ConditionExpression = {
+        //     subject: 'allocatableId',
+        //     ...equals(this.id),
+        // };
+        // // return toArray(mapper.scan(RiderAllocation, { filter }));
+        return toArray(mapper.query(RiderAllocation, { allocatableId: this.id }, { indexName: 'byAllocatable' }));
     }
 
     @Field(() => RiderAllocationList)

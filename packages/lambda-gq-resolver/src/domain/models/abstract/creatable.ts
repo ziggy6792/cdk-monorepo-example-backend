@@ -43,32 +43,6 @@ abstract class Creatable {
 
         return traverse(this);
     }
-
-    // async deleteAllChildren(): Promise<Creatable[]> {
-    //     // const allChildren = await this.getAllChildren();
-
-    //     // // await toArray(mapper.batchDelete([allChildren[0]]));
-
-    //     // const exampleRound = allChildren[0];
-
-    //     // // console.log(exampleRound.constructor);
-    //     // console.log(exampleRound);
-
-    //     const allChildren = await this.getAllChildren();
-
-    //     return allChildren;
-
-    //     // return toArray(mapper.batchDelete(allChildren));
-
-    //     // const heats = allChildren.filter((child) => child.constructor === Heat);
-
-    //     // console.log('heats', heats);
-    // }
-
-    static createIndexes(): Promise<void> {
-        // do nothing
-        return null;
-    }
 }
 
 export default Creatable;
