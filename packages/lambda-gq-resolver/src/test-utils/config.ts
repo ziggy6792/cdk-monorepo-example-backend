@@ -1,6 +1,6 @@
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 
-const TEST_AWS_CONFIG: ServiceConfigurationOptions = {
+const localAwsConfig: ServiceConfigurationOptions = {
     region: 'local',
     endpoint: 'http://localhost:4566',
     httpOptions: {
@@ -8,4 +8,4 @@ const TEST_AWS_CONFIG: ServiceConfigurationOptions = {
     },
 };
 
-export default TEST_AWS_CONFIG;
+export default localAwsConfig;

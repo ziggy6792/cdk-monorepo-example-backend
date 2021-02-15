@@ -1,4 +1,4 @@
-import TEST_AWS_CONFIG from '@test-utils/config';
+import localAwsConfig from '@test-utils/config';
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 
 export enum EnvType {
@@ -18,7 +18,7 @@ const awsConfig: ServiceConfigurationOptions = {
 
 const envConfig = {
     env,
-    awsConfig: localEnv === EnvType.TEST ? TEST_AWS_CONFIG : awsConfig,
+    awsConfig: localEnv === EnvType.TEST ? localAwsConfig : awsConfig,
 };
 
 const getEnvConfig = () => {
