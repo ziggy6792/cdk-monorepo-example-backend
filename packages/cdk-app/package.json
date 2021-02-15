@@ -16,7 +16,7 @@
         "precommit": "yarn run typecheck",
         "deploy:local:test:stack": "yarn destroy:local:test:stack && yarn cdklocal deploy -c env=test -c @aws-cdk/core:newStyleStackSynthesis=''",
         "destroy:local:test:stack": "yarn cdklocal destroy -f -c env=test -c @aws-cdk/core:newStyleStackSynthesis=''",
-        "local:test:env:bootstrap": "cdklocal bootstrap -c env=test -c @aws-cdk/core:newStyleStackSynthesis='' --verbose",
+        "local:test:env:bootstrap": "cdklocal bootstrap -c env=test -c @aws-cdk/core:newStyleStackSynthesis=''",
         "local:test:env:bootstrap:old": "aws configure set aws_access_key_id mock-access-key && aws configure set aws_secret_access_key mock-secret-access-key && cdklocal bootstrap -c env=test --verbose --profile default"
     },
     "devDependencies": {

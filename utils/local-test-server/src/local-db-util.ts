@@ -1,9 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import * as child from 'child_process';
 import kill from 'tree-kill';
-import poll from 'promise-poller';
 import util from 'util';
-import AWS from 'aws-sdk';
 // import TEST_DB_CONFIG from './config';
 import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
@@ -13,15 +11,32 @@ import LOCAL_STACK_CONFIG from './config';
 
 // AWS.config.update(TEST_DB_CONFIG);
 
-const exec = util.promisify(child.exec);
+// const startLocalServer = async (): Promise<void> => {
+//     console.log('LOCAL TEST ENV: START');
 
-let localDb: child.ChildProcessWithoutNullStreams;
+//     spawnAndLog('yarn', ['start:localstack'], 'localstack');
 
-const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+//     try {
+//         await poll({
+//             taskFn: checkConnection,
+//             interval: 1000,
+//             retries: 60,
+//         });
+//     } catch (err) {
+//         console.log('LOCAL TEST ENV: Could not connect');
+//         throw new Error('LOCAL TEST ENV: Could not connect');
+//     }
+// };
+
+// const exec = util.promisify(child.exec);
+// const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+// let localDb: child.ChildProcessWithoutNullStreams;
 
 interface IArgs {
     _: string[];
     isSkipBootstrap: boolean;
+    isStartDynamodbAdmin: boolean;
 }
 
 export const checkConnection = async (): Promise<boolean> => {
@@ -37,18 +52,35 @@ export const checkConnection = async (): Promise<boolean> => {
     return ready;
 };
 
-const spawnAndLog = (command: string, args: string[], logPrefix = ''): Promise<void> => {
-    console.log('LOCAL TEST ENV: bootstrapping local test stack');
+// const spawnAndLog = (command: string, args: string[], logPrefix = '', waitUntilOutput: string = null): Promise<void> => {
+
+interface ISpawnAndWaitProps {
+    logPrefix?: string;
+    waitUntilOutputIncludes?: string;
+}
+
+const spawnAndLog = (
+    command: string,
+    args: string[],
+    { logPrefix, waitUntilOutputIncludes }: ISpawnAndWaitProps = { logPrefix: null, waitUntilOutputIncludes: null }
+): Promise<void> => {
+    const outputFound = (data: any) => waitUntilOutputIncludes && data.toString().includes(waitUntilOutputIncludes);
 
     return new Promise((resolve, reject) => {
         const spawn = child.spawn(command, args);
 
         spawn.stdout.on('data', (data) => {
             console.log(`${logPrefix}: ${data.toString()}`);
+            if (outputFound(data)) {
+                resolve();
+            }
         });
 
         spawn.stderr.on('data', (data) => {
             console.log(`${logPrefix}: ${data.toString()}`);
+            if (outputFound(data)) {
+                resolve();
+            }
         });
 
         spawn.on('exit', (code) => {
@@ -60,23 +92,6 @@ const spawnAndLog = (command: string, args: string[], logPrefix = ''): Promise<v
             }
         });
     });
-};
-
-const startLocalServer = async (): Promise<void> => {
-    console.log('LOCAL TEST ENV: START');
-
-    spawnAndLog('yarn', ['start:localstack'], 'localstack:');
-
-    try {
-        await poll({
-            taskFn: checkConnection,
-            interval: 1000,
-            retries: 60,
-        });
-    } catch (err) {
-        console.log('LOCAL TEST ENV: Could not connect');
-        throw new Error('LOCAL TEST ENV: Could not connect');
-    }
 };
 
 export const start = async (): Promise<void> => {
@@ -101,19 +116,22 @@ export const start = async (): Promise<void> => {
 
     if (!isLocalDbRunning) {
         // Start local TEST ENV
-        await startLocalServer();
+        // await startLocalServer();
+
+        await spawnAndLog('yarn', ['start:localstack'], { logPrefix: 'localstack', waitUntilOutputIncludes: 'Ready.' });
         console.log('READYY!!!!!');
     }
 
-    if (!args.isSkipBootstrap) {
-        await spawnAndLog('yarn', ['cdk:app:local:test:env:bootstrap'], 'local:test:env:bootstrap');
+    if (args.isStartDynamodbAdmin) {
+        await spawnAndLog('yarn', ['start:dynamodb:admin'], {
+            logPrefix: 'start:dynamodb:admin',
+            waitUntilOutputIncludes: 'listening on http://localhost:8001',
+        });
     }
 
-    await spawnAndLog('yarn', ['cdk:app:deploy:local:test:stack'], 'deploy:local:test:stack');
-};
+    if (!args.isSkipBootstrap) {
+        await spawnAndLog('yarn', ['cdk:app:local:test:env:bootstrap'], { logPrefix: 'local:test:env:bootstrap' });
+    }
 
-export const stop = (): void => {
-    console.log('\n\nLOCAL TEST ENV: STOP');
-
-    kill(localDb.pid);
+    await spawnAndLog('nodemon', [], { logPrefix: 'deploy:local:test:stack' });
 };
