@@ -34,8 +34,9 @@ switch (context.env) {
         // console.log('process.env', JSON.stringify(process.env));
 
         console.log('default env', env);
-        new LocalTestStack(app, utils.getConstructId('local-test'), {
+        new LocalTestStack(app, utils.getConstructId(`local-test`), {
             stackName: utils.getConstructId('local-test'),
+            // stackName: utils.getConstructId(`local-test-${new Date().getTime()}`),
             stageName: 'test',
             env,
         });

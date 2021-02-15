@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 
-const TEST_DB_CONFIG: ServiceConfigurationOptions = {
+export const TEST_DB_CONFIG: ServiceConfigurationOptions = {
     region: 'local',
     endpoint: 'http://localhost:4566',
     httpOptions: {
