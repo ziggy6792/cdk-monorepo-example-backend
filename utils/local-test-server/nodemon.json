@@ -1,0 +1,5 @@
+{
+    "watch": ["../../packages/common/dist/**", "src/**"],
+    "exec": "yarn cdk:app:deploy:local:test:stack",
+    "ext": "js, json, ts"
+}

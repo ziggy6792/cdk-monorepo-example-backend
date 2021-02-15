@@ -5,11 +5,13 @@ import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root } from 'type-graphql';
 import Identifiable from 'src/domain/models/abstract/identifiable';
 import { mapper } from 'src/utils/mapper';
+import * as utils from 'src/utils/utility';
+import { commonConfig } from '@simonverhoeven/common';
 import RiderAllocation from './rider-allocation';
 import Heat from './heat';
 
 @ObjectType()
-@table('SeedSlot')
+@table(utils.getTableName(commonConfig.DB_SCHEMA.SeedSlot.tableName))
 class SeedSlot extends Identifiable {
     @Field(() => ID)
     @attribute()
@@ -28,22 +30,25 @@ class SeedSlot extends Identifiable {
         return parent.getPosition();
     }
 
-    @Field(() => ID)
+    @Field(() => ID, { nullable: true })
     @attribute()
     parentSeedSlotId: string;
 
-    @Field(() => SeedSlot)
-    async parentSeedSlot(): Promise<SeedSlot> {
+    @Field(() => SeedSlot, { nullable: true, name: 'parentSeedSlot' })
+    async getParentSeedSlot(): Promise<SeedSlot> {
+        if (!this.parentSeedSlotId) {
+            return null;
+        }
         return mapper.get(Object.assign(new SeedSlot(), { id: this.parentSeedSlotId }));
     }
 
-    @Field(() => RiderAllocation)
-    async riderAllocation(): Promise<RiderAllocation> {
+    @Field(() => RiderAllocation, { name: 'riderAllocation' })
+    async getRiderAllocation(): Promise<RiderAllocation> {
         return mapper.get(Object.assign(new RiderAllocation(), { allocatableId: this.heatId, userId: this.userId }));
     }
 
-    @Field(() => Heat)
-    async heat(): Promise<Heat> {
+    @Field(() => Heat, { name: 'heat' })
+    async getHeat(): Promise<Heat> {
         return mapper.get(Object.assign(new Heat(), { id: this.heatId }));
     }
 

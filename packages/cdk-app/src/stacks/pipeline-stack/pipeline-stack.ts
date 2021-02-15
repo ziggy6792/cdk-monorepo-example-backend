@@ -18,6 +18,8 @@ class PipelineStack extends cdk.Stack {
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
+        // this.node.setContext('@aws-cdk/core:newStyleStackSynthesis', 'true');
+
         const sourceArtifact = new codepipeline.Artifact();
         const cloudAssemblyArtifact = new codepipeline.Artifact();
 
@@ -39,7 +41,6 @@ class PipelineStack extends cdk.Stack {
             synthAction: cdkPipeline.SimpleSynthAction.standardYarnSynth({
                 sourceArtifact,
                 cloudAssemblyArtifact,
-
                 // Use this if you need a build step (if you're not using ts-node
                 // or if you have TypeScript Lambdas that need to be compiled).
                 // installCommand: 'yarn install',
@@ -49,15 +50,8 @@ class PipelineStack extends cdk.Stack {
             }),
         });
 
-        // const exampleAction = new cdkPipeline.ShellScriptAction({
-        //   actionName: 'Example',
-        //   additionalArtifacts: [sourceArtifact],
-        //   runOrder: 1,
-        //   // 'test.sh' comes from the source repository
-        //   commands: ['ls'],
-        // });
-
         const testAction = new cdkPipeline.ShellScriptAction({
+            environment: { privileged: true },
             actionName: 'Test',
             additionalArtifacts: [sourceArtifact],
             runOrder: 1,
@@ -68,8 +62,8 @@ class PipelineStack extends cdk.Stack {
 
         testAction.project.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMFullAccess'));
 
-        // Do this as many times as necessary with any account and region
         // Account and region may be different from the pipeline's.
+        // Do this as many times as necessary with any account and region
 
         const deployedStagingStage = new DeploymentStage(this, utils.getConstructId('staging'), {
             stageName: 'staging',

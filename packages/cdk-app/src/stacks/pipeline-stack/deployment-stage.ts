@@ -2,7 +2,7 @@
 
 import * as cdk from '@aws-cdk/core';
 import { DEPLOYMENT_CONFIG } from 'src/config';
-import { DeploymentStack } from './deployment-stack';
+import DeploymentStack from 'src/stacks/deployment-stack';
 
 export interface DeploymentStageProps extends cdk.StackProps {
     readonly stageName: string;
@@ -14,6 +14,8 @@ export class DeploymentStage extends cdk.Stage {
 
     constructor(scope: cdk.Construct, id: string, props?: DeploymentStageProps) {
         super(scope, id, props);
+
+        this.node.setContext('@aws-cdk/core:stackRelativeExports', 'true');
 
         const { stageName } = props;
 

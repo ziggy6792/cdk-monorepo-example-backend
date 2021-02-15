@@ -1,3 +1,4 @@
+import { commonUtils, commonConfig } from '@simonverhoeven/common';
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
@@ -8,9 +9,11 @@ import DataEntity from 'src/domain/models/abstract/data-entity';
 import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { CompetitionList } from 'src/domain/common-objects/lists';
+import * as utils from 'src/utils/utility';
 import User from './user';
 import Competition from './competition';
 import Heat from './heat';
+import Creatable from './abstract/creatable';
 
 export enum EventStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -23,8 +26,9 @@ registerEnumType(EventStatus, {
     description: 'The Event Status', // this one is optional
 });
 
+// @table(commonUtils.getTableName(commonConfig.DB_SCHEMA.Event.tableName, getEnvConfig().ENV))
+@table(utils.getTableName(commonConfig.DB_SCHEMA.Event.tableName))
 @ObjectType()
-@table('Event')
 class Event extends DataEntity {
     @Field()
     @attribute()
@@ -56,16 +60,24 @@ class Event extends DataEntity {
         return mapper.get(Object.assign(new Heat(), { id: this.selectedHeatId }));
     }
 
-    @Field(() => CompetitionList)
-    async competitions(): Promise<CompetitionList> {
+    async getCompetitions(): Promise<Competition[]> {
         const filter: ConditionExpression = {
             subject: 'eventId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(Competition, { filter }));
+
+        return toArray(mapper.scan(Competition, { filter }));
+    }
+
+    @Field(() => CompetitionList)
+    protected async competitions(): Promise<CompetitionList> {
         const list = new CompetitionList();
-        list.items = items;
+        list.items = await this.getCompetitions();
         return list;
+    }
+
+    async getChildren(): Promise<Creatable[]> {
+        return this.getCompetitions();
     }
 }
 

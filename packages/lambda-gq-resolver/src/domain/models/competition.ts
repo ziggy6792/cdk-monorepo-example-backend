@@ -1,5 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
+import { commonConfig, commonUtils } from '@simonverhoeven/common';
+
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
@@ -8,10 +10,12 @@ import DataEntity from 'src/domain/models/abstract/data-entity';
 import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
+import * as utils from 'src/utils/utility';
 import User from './user';
 import Event from './event';
 import Round from './round';
 import RiderAllocation from './rider-allocation';
+import Creatable from './abstract/creatable';
 
 export enum CompetitionStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -64,9 +68,8 @@ class CompetitionParams {
     @attribute()
     name: string;
 }
-
 @ObjectType()
-@table('Competition')
+@table(utils.getTableName(commonConfig.DB_SCHEMA.Competition.tableName))
 class Competition extends DataEntity {
     @Field()
     @attribute()
@@ -116,38 +119,48 @@ class Competition extends DataEntity {
     @attribute()
     level: Level;
 
-    @Field(() => User)
-    async judgeUser(): Promise<User> {
+    @Field(() => User, { name: 'judgeUser' })
+    async getJudgeUser(): Promise<User> {
         return mapper.get(Object.assign(new User(), { id: this.judgeUserId }));
     }
 
-    @Field(() => Event)
-    async event(): Promise<Event> {
+    @Field(() => Event, { name: 'event' })
+    async getEvent(): Promise<Event> {
         return mapper.get(Object.assign(new Event(), { id: this.eventId }));
     }
 
-    @Field(() => RoundList)
-    async rounds(): Promise<RoundList> {
+    async getRounds(): Promise<Round[]> {
         const filter: ConditionExpression = {
-            subject: 'roundId',
+            subject: 'competitionId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(Round, { filter }));
+        return toArray(mapper.scan(Round, { filter }));
+    }
+
+    @Field(() => RoundList)
+    protected async rounds(): Promise<RoundList> {
         const list = new RoundList();
-        list.items = items;
+        list.items = await this.getRounds();
         return list;
     }
 
-    @Field(() => RiderAllocationList)
-    async riderAllocations(): Promise<RiderAllocationList> {
+    async getRiderAllocations(): Promise<RiderAllocation[]> {
         const filter: ConditionExpression = {
             subject: 'allocatableId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(RiderAllocation, { filter }));
+        return toArray(mapper.scan(RiderAllocation, { filter }));
+    }
+
+    @Field(() => RiderAllocationList)
+    protected async riderAllocations(): Promise<RiderAllocationList> {
         const list = new RiderAllocationList();
-        list.items = items;
+        list.items = await this.getRiderAllocations();
         return list;
+    }
+
+    async getChildren(): Promise<Creatable[]> {
+        return this.getRounds();
     }
 }
 

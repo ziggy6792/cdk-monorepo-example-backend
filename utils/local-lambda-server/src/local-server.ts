@@ -3,8 +3,9 @@
 import path from 'path';
 import express from 'express';
 import { createApolloServer } from '@simonverhoeven/lambda-gq-resolver';
+import config from 'src/config';
 import buildCognitoAutorizer from './mock-gateway/cognito-authorizer';
-import cdkExports from './mock-gateway/cdk-exports';
+
 import buildIamAutorizer from './mock-gateway/iam-authozier';
 // import { cognitoAutorizer } from './mock-gateway/cognito-authorizer';
 // eslint-disable-next-line import/order
@@ -19,7 +20,7 @@ const buildLocalServer = async () => {
 
     let gqPath = '/lambda-gq-resolver/auth-user/graphql';
 
-    app.use(gqPath, await buildCognitoAutorizer(cdkExports.USER_POOL_ID));
+    app.use(gqPath, await buildCognitoAutorizer(config.USER_POOL_ID));
     apolloServer.applyMiddleware({ app, path: gqPath });
 
     gqPath = '/lambda-gq-resolver/auth-role/graphql';

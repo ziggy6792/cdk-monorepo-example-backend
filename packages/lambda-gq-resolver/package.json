@@ -17,6 +17,7 @@
         "@aws/dynamodb-data-mapper": "^0.7.3",
         "@aws/dynamodb-data-mapper-annotations": "^0.7.3",
         "@aws/dynamodb-expressions": "^0.7.3",
+        "@simonverhoeven/common": "^1.0.0",
         "@simonverhoeven/common-lambda-lib": "^1.0.0",
         "@types/aws-serverless-express": "^3.3.3",
         "@types/jsonwebtoken": "^8.5.0",

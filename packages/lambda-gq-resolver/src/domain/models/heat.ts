@@ -8,9 +8,15 @@ import { mapper } from 'src/utils/mapper';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { toArray } from 'src/utils/async-iterator';
 import { RiderAllocationList, SeedSlotList } from 'src/domain/common-objects/lists';
+import { DynamoDB } from 'aws-sdk';
+
+import getEnvConfig from 'src/config/get-env-config';
+import { commonConfig, commonUtils } from '@simonverhoeven/common';
+import * as utils from 'src/utils/utility';
 import Round from './round';
 import SeedSlot from './seed-slot';
 import RiderAllocation from './rider-allocation';
+import Creatable from './abstract/creatable';
 
 export enum HeatStatus {
     OPEN = 'OPEN',
@@ -24,7 +30,7 @@ registerEnumType(HeatStatus, {
 });
 
 @ObjectType()
-@table('Heat')
+@table(utils.getTableName(commonConfig.DB_SCHEMA.Heat.tableName))
 class Heat extends DataEntity {
     @Field()
     @attribute()
@@ -42,33 +48,93 @@ class Heat extends DataEntity {
     @attribute()
     progressionsPerHeat: number;
 
-    @Field(() => Round)
-    async selectedHeat(): Promise<Round> {
+    @Field(() => Round, { name: 'selectedHeat' })
+    async getSelectedHeat(): Promise<Round> {
         return mapper.get(Object.assign(new Round(), { id: this.roundId }));
     }
 
-    @Field(() => SeedSlotList)
-    async seedSlots(): Promise<SeedSlotList> {
+    async getSeedSlots(): Promise<SeedSlot[]> {
         const filter: ConditionExpression = {
-            subject: 'eventId',
+            subject: 'heatId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(SeedSlot, { filter }));
+        let items = await toArray(mapper.scan(SeedSlot, { filter }));
+        items = _.orderBy(items, ['seed'], ['asc']);
+
+        return items;
+    }
+
+    @Field(() => SeedSlotList)
+    protected async seedSlots(): Promise<SeedSlotList> {
         const list = new SeedSlotList();
-        list.items = items;
+        list.items = await this.getSeedSlots();
         return list;
     }
 
-    @Field(() => RiderAllocationList)
-    async riderAllocations(): Promise<RiderAllocationList> {
+    async getRiderAllocations(): Promise<RiderAllocation[]> {
         const filter: ConditionExpression = {
             subject: 'allocatableId',
             ...equals(this.id),
         };
-        const items = await toArray(mapper.scan(RiderAllocation, { filter }));
+        return toArray(mapper.scan(RiderAllocation, { filter }));
+    }
+
+    @Field(() => RiderAllocationList)
+    protected async riderAllocations(): Promise<RiderAllocationList> {
         const list = new RiderAllocationList();
-        list.items = items;
+        list.items = await this.getRiderAllocations();
         return list;
+    }
+
+    static async createIndexes(): Promise<void> {
+        console.log('RUNNING HEAT CREATE INDEXES!!!!');
+        const dynamodb = new DynamoDB();
+
+        // await dynamodb
+        //     .updateTable({
+        //         TableName: `${TABLE_NAME_PREFIX}Heat`,
+        //         AttributeDefinitions: [
+        //             {
+        //                 AttributeName: 'roundId',
+        //                 AttributeType: 'S',
+        //             },
+        //             {
+        //                 AttributeName: 'createdAt',
+        //                 AttributeType: 'S',
+        //             },
+        //         ],
+        //         GlobalSecondaryIndexUpdates: [
+        //             {
+        //                 Create: {
+        //                     IndexName: 'byRound',
+        //                     KeySchema: [
+        //                         {
+        //                             AttributeName: 'roundId',
+        //                             KeyType: 'HASH',
+        //                         },
+        //                         {
+        //                             AttributeName: 'createdAt',
+        //                             KeyType: 'RANGE',
+        //                         },
+        //                     ],
+        //                     ProvisionedThroughput: {
+        //                         ReadCapacityUnits: 5,
+        //                         WriteCapacityUnits: 5,
+        //                     },
+        //                     Projection: {
+        //                         ProjectionType: 'ALL',
+        //                     },
+        //                 },
+        //             },
+        //         ],
+        //     })
+        //     .promise();
+
+        //
+    }
+
+    async getChildren(): Promise<Creatable[]> {
+        return this.getSeedSlots();
     }
 }
 

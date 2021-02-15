@@ -14,8 +14,57 @@ import TEST_DB_CONFIG from './config';
 //     return Promise.race([promise, timeout]);
 // };
 
+const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
+
+const getRecordKeys = async (tableName: string, hashKeys: string[]) => {
+    const ExpressionAttributeNames = {};
+
+    hashKeys.forEach((key) => {
+        ExpressionAttributeNames[`#${key}`] = key;
+    });
+
+    const ProjectionExpression = Object.keys(ExpressionAttributeNames).join(',');
+
+    return dynamodb
+        .scan({
+            TableName: tableName,
+            ExpressionAttributeNames,
+            ProjectionExpression,
+            Select: 'SPECIFIC_ATTRIBUTES',
+        })
+        .promise();
+};
+
+const getKeys = async (tableName: string) => {
+    const tableData = await dynamodb.describeTable({ TableName: tableName }).promise();
+
+    return tableData.Table.KeySchema.filter(({ KeyType }) => ['HASH', 'RANGE'].includes(KeyType)).map(({ AttributeName }) => AttributeName);
+};
+
+const deleteItem = async (tableName: string, key: any) => {
+    console.log('deleting item', key);
+    dynamodb.deleteItem({ TableName: tableName, Key: key }).promise();
+};
+
+const purgeTable = async function (tableName: string) {
+    const keys = await getKeys(tableName);
+
+    const deleteAllRecords = async function () {
+        // console.log('records', records);
+
+        const records = await getRecordKeys(tableName, keys);
+
+        const deleteFns = records.Items.map((item) => async () => deleteItem(tableName, item));
+        await Promise.all(deleteFns.map((fn) => fn()));
+        if (records.Items.length > 0) {
+            await deleteAllRecords(); // Will call the same function over and over
+        }
+    };
+
+    await deleteAllRecords();
+};
+
 const clearDb = async (): Promise<void> => {
-    const dynamodb = new AWS.DynamoDB(TEST_DB_CONFIG);
     let tables: DynamoDB.ListTablesOutput;
     try {
         tables = await dynamodb.listTables().promise();
@@ -25,7 +74,7 @@ const clearDb = async (): Promise<void> => {
         throw new Error(errorMessage);
     }
 
-    console.log('\nTest DB: Deleteing tables...');
+    console.log('\nTest DB: Purging tables...');
 
     if (TEST_DB_CONFIG.region !== 'local') {
         console.log('WTF ARE YOU DOING!?');
@@ -34,15 +83,16 @@ const clearDb = async (): Promise<void> => {
     const deleteTableFns = tables.TableNames.map((TableName) => async () => {
         // console.log(`Deleting ${TableName}`);
         try {
-            await dynamodb
-                .deleteTable({
-                    TableName,
-                })
-                .promise();
+            // await dynamodb
+            //     .deleteTable({
+            //         TableName,
+            //     })
+            //     .promise();
+            await purgeTable(TableName);
         } catch (err) {
             console.log(err);
         }
-        return `Deleted ${TableName}`;
+        return `Purged ${TableName}`;
     });
 
     const results = await Promise.all(deleteTableFns.map((fn) => fn()));

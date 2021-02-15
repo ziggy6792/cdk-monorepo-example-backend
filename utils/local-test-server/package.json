@@ -5,9 +5,22 @@
     "main": "dist/index.js",
     "license": "Apache-2.0",
     "scripts": {
-        "start": "cd local-dynamodb/libs && java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb --inMemory",
-        "start:inline": "ts-node start-test-db.ts",
-        "force:stop": "lsof -ti tcp:8000 | xargs kill"
+        "start": "yarn start:test:db --isStartDynamodbAdmin --watch",
+        "start:test:db": "ts-node src/start-test-db.ts",
+        "start:localstack": "docker-compose up",
+        "start:dynamodb:admin": "DYNAMO_ENDPOINT=http://localhost:4566 yarn dynamodb-admin",
+        "force:stop": "docker container stop localstack_main",
+        "cdk:app:deploy:local:test:stack": "lerna run --stream deploy:local:test:stack --scope @simonverhoeven/cdk-app",
+        "cdk:app:local:test:env:bootstrap": "lerna run --stream local:test:env:bootstrap --scope @simonverhoeven/cdk-app"
     },
-    "dependencies": {}
+    "dependencies": {
+        "@simonverhoeven/cdk-app": "^0.1.0",
+        "axios": "^0.21.1",
+        "dynamodb-admin": "^4.0.0",
+        "lodash": "^4.17.20",
+        "yargs": "^16.2.0"
+    },
+    "devDependencies": {
+        "npm-run-all": "^4.1.5"
+    }
 }

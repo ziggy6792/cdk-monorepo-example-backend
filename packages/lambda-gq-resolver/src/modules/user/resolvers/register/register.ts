@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql';
-import { Context } from 'src/types';
+import { IContext } from 'src/types';
 import { createUniqueCondition, mapper } from 'src/utils/mapper';
 import User from 'src/domain/models/user';
 import isAuthRole from 'src/middleware/is-auth-role';
@@ -11,7 +11,7 @@ import { RegisterInput } from './register-input';
 export default class RegisterResolver {
     @Query(() => String)
     // @UseMiddleware(isAuthUser)
-    async hello(@Ctx() ctx: Context): Promise<string> {
+    async hello(@Ctx() ctx: IContext): Promise<string> {
         console.log('identity', ctx.identity);
 
         console.log('Running hello resolver');
@@ -19,7 +19,7 @@ export default class RegisterResolver {
     }
 
     @Mutation(() => User)
-    async register(@Arg('input') input: RegisterInput, @Ctx() ctx: Context): Promise<User> {
+    async register(@Arg('input') input: RegisterInput, @Ctx() ctx: IContext): Promise<User> {
         console.log('identity', ctx.identity);
 
         const { id, firstName, lastName, email } = input;

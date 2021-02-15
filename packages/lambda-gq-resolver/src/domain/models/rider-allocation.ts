@@ -5,6 +5,9 @@ import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root, Float } from 'type-graphql';
 import Creatable from 'src/domain/models/abstract/creatable';
 import { mapper } from 'src/utils/mapper';
+import { commonConfig, commonUtils } from '@simonverhoeven/common';
+import getEnvConfig from 'src/config/get-env-config';
+import * as utils from 'src/utils/utility';
 import User from './user';
 
 @ObjectType()
@@ -19,7 +22,7 @@ class Run {
 }
 
 @ObjectType()
-@table('RiderAllocation')
+@table(utils.getTableName(commonConfig.DB_SCHEMA.RiderAllocation.tableName))
 class RiderAllocation extends Creatable {
     @Field(() => ID)
     @hashKey()
@@ -46,12 +49,12 @@ class RiderAllocation extends Creatable {
         return parent.getPosition();
     }
 
-    private getPosition(): number {
+    getPosition(): number {
         return 1;
     }
 
-    @Field(() => User)
-    async user(): Promise<User> {
+    @Field(() => User, { name: 'user' })
+    async getUser(): Promise<User> {
         return mapper.get(Object.assign(new User(), { id: this.userId }));
     }
 }
