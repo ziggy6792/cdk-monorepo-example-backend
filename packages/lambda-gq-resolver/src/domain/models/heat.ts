@@ -54,14 +54,7 @@ class Heat extends DataEntity {
     }
 
     async getSeedSlots(): Promise<SeedSlot[]> {
-        const filter: ConditionExpression = {
-            subject: 'heatId',
-            ...equals(this.id),
-        };
-        let items = await toArray(mapper.scan(SeedSlot, { filter }));
-        items = _.orderBy(items, ['seed'], ['asc']);
-
-        return items;
+        return toArray(mapper.query(SeedSlot, { heatId: this.id }, { indexName: 'byHeat' }));
     }
 
     @Field(() => SeedSlotList)
@@ -72,11 +65,7 @@ class Heat extends DataEntity {
     }
 
     async getRiderAllocations(): Promise<RiderAllocation[]> {
-        const filter: ConditionExpression = {
-            subject: 'allocatableId',
-            ...equals(this.id),
-        };
-        return toArray(mapper.scan(RiderAllocation, { filter }));
+        return toArray(mapper.query(RiderAllocation, { allocatableId: this.id }, { indexName: 'byAllocatable' }));
     }
 
     @Field(() => RiderAllocationList)
@@ -84,53 +73,6 @@ class Heat extends DataEntity {
         const list = new RiderAllocationList();
         list.items = await this.getRiderAllocations();
         return list;
-    }
-
-    static async createIndexes(): Promise<void> {
-        console.log('RUNNING HEAT CREATE INDEXES!!!!');
-        const dynamodb = new DynamoDB();
-
-        // await dynamodb
-        //     .updateTable({
-        //         TableName: `${TABLE_NAME_PREFIX}Heat`,
-        //         AttributeDefinitions: [
-        //             {
-        //                 AttributeName: 'roundId',
-        //                 AttributeType: 'S',
-        //             },
-        //             {
-        //                 AttributeName: 'createdAt',
-        //                 AttributeType: 'S',
-        //             },
-        //         ],
-        //         GlobalSecondaryIndexUpdates: [
-        //             {
-        //                 Create: {
-        //                     IndexName: 'byRound',
-        //                     KeySchema: [
-        //                         {
-        //                             AttributeName: 'roundId',
-        //                             KeyType: 'HASH',
-        //                         },
-        //                         {
-        //                             AttributeName: 'createdAt',
-        //                             KeyType: 'RANGE',
-        //                         },
-        //                     ],
-        //                     ProvisionedThroughput: {
-        //                         ReadCapacityUnits: 5,
-        //                         WriteCapacityUnits: 5,
-        //                     },
-        //                     Projection: {
-        //                         ProjectionType: 'ALL',
-        //                     },
-        //                 },
-        //             },
-        //         ],
-        //     })
-        //     .promise();
-
-        //
     }
 
     async getChildren(): Promise<Creatable[]> {
