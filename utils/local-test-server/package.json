@@ -5,7 +5,8 @@
     "main": "dist/index.js",
     "license": "Apache-2.0",
     "scripts": {
-        "start": "ts-node src/start-test-db.ts --isStartDynamodbAdmin=true",
+        "start": "yarn start:test:db --isStartDynamodbAdmin --watch",
+        "start:test:db": "ts-node src/start-test-db.ts",
         "start:localstack": "docker-compose up",
         "start:dynamodb:admin": "DYNAMO_ENDPOINT=http://localhost:4566 yarn dynamodb-admin",
         "force:stop": "docker container stop localstack_main",

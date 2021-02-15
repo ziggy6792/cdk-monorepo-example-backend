@@ -50,21 +50,12 @@ class PipelineStack extends cdk.Stack {
             }),
         });
 
-        // const exampleAction = new cdkPipeline.ShellScriptAction({
-        //   actionName: 'Example',
-        //   additionalArtifacts: [sourceArtifact],
-        //   runOrder: 1,
-        //   // 'test.sh' comes from the source repository
-        //   commands: ['ls'],
-        // });
-
         const testAction = new cdkPipeline.ShellScriptAction({
             environment: { privileged: true },
             actionName: 'Test',
             additionalArtifacts: [sourceArtifact],
             runOrder: 1,
-            commands: ['yarn install', 'yarn build', 'echo hello', 'yarn test:with:env'],
-            // commands: ['yarn install', 'yarn build', 'echo hello'],
+            commands: ['yarn install', 'yarn build', 'yarn test:with:env'],
         });
 
         pipeline.codePipeline.stages[1].addAction(testAction);

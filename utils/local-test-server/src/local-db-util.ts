@@ -37,6 +37,7 @@ interface IArgs {
     _: string[];
     isSkipBootstrap: boolean;
     isStartDynamodbAdmin: boolean;
+    watch: boolean;
 }
 
 export const checkConnection = async (): Promise<boolean> => {
@@ -59,7 +60,7 @@ interface ISpawnAndWaitProps {
     waitUntilOutputIncludes?: string;
 }
 
-const spawnAndLog = (
+const spawnAndWait = (
     command: string,
     args: string[],
     { logPrefix, waitUntilOutputIncludes }: ISpawnAndWaitProps = { logPrefix: null, waitUntilOutputIncludes: null }
@@ -118,20 +119,24 @@ export const start = async (): Promise<void> => {
         // Start local TEST ENV
         // await startLocalServer();
 
-        await spawnAndLog('yarn', ['start:localstack'], { logPrefix: 'localstack', waitUntilOutputIncludes: 'Ready.' });
+        await spawnAndWait('yarn', ['start:localstack'], { logPrefix: 'localstack', waitUntilOutputIncludes: 'Ready.' });
         console.log('READYY!!!!!');
     }
 
     if (args.isStartDynamodbAdmin) {
-        await spawnAndLog('yarn', ['start:dynamodb:admin'], {
+        await spawnAndWait('yarn', ['start:dynamodb:admin'], {
             logPrefix: 'start:dynamodb:admin',
             waitUntilOutputIncludes: 'listening on http://localhost:8001',
         });
     }
 
     if (!args.isSkipBootstrap) {
-        await spawnAndLog('yarn', ['cdk:app:local:test:env:bootstrap'], { logPrefix: 'local:test:env:bootstrap' });
+        await spawnAndWait('yarn', ['cdk:app:local:test:env:bootstrap'], { logPrefix: 'local:test:env:bootstrap' });
     }
 
-    await spawnAndLog('nodemon', [], { logPrefix: 'deploy:local:test:stack' });
+    if (args.watch) {
+        await spawnAndWait('nodemon', [], { logPrefix: 'deploy:local:test:stack' });
+    } else {
+        await spawnAndWait('yarn', ['cdk:app:deploy:local:test:stack'], { logPrefix: 'deploy:local:test:stack' });
+    }
 };
