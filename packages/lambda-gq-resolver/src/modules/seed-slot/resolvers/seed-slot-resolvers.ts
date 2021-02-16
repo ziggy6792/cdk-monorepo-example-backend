@@ -3,7 +3,6 @@ import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolver
 import SeedSlot from 'src/domain/models/seed-slot';
 
 const CrudResolvers = createCrudResolvers('SeedSlot', SeedSlot, {
-    list: true,
     get: true,
 });
 

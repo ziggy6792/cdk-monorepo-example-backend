@@ -6,7 +6,6 @@ import { CreateEventInput, UpdateEventInput } from 'src/modules/event/inputs';
 const CrudResolvers = createCrudResolvers('Event', Event, {
     create: { inputType: CreateEventInput },
     update: { inputType: UpdateEventInput },
-    list: true,
     get: true,
     delete: true,
 });

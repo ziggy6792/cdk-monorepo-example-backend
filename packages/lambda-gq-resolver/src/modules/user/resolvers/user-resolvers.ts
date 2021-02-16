@@ -7,7 +7,6 @@ import GetMeResolver from 'src/modules/user/resolvers/get-me';
 const CrudResolvers = createCrudResolvers('User', User, {
     create: { middleware: [isAuthRole], inputType: CreateUserInput },
     update: { middleware: [isAuthRole], inputType: UpdateUserInput },
-    list: { middleware: [isAuthRole] },
     get: { middleware: [isAuthRole] },
     delete: { middleware: [isAuthRole] },
 });

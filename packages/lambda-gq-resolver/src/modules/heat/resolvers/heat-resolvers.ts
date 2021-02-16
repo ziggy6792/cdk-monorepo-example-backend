@@ -3,7 +3,6 @@ import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolver
 import Heat from 'src/domain/models/heat';
 
 const CrudResolvers = createCrudResolvers('Heat', Heat, {
-    list: true,
     get: true,
 });
 

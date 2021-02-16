@@ -6,7 +6,6 @@ import { CreateCompetitionInput, UpdateCompetitionInput } from 'src/modules/comp
 const CrudResolvers = createCrudResolvers('Competition', Competition, {
     create: { middleware: [isAuthRole], inputType: CreateCompetitionInput },
     update: { middleware: [isAuthRole], inputType: UpdateCompetitionInput },
-    list: { middleware: [isAuthRole] },
     get: { middleware: [isAuthRole] },
     delete: { middleware: [isAuthRole] },
 });
