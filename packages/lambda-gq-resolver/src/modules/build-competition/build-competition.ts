@@ -14,7 +14,6 @@ import { CompetitionParamsInput } from './inputs';
 @Resolver()
 export default class BuildCompetition {
     @Mutation(() => CompetitionModel, { nullable: true })
-    // @UseMiddleware(isAuthUser)
     async buildCompetition(
         @Arg('id', () => ID) id: string,
         @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput

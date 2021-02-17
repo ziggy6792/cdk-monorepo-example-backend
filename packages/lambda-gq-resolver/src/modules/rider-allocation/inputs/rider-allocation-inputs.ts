@@ -7,7 +7,7 @@ class RiderAllocationInput {
     @Field(() => ID)
     allocatableId: string;
 
-    @Field(() => ID)
+    @Field(() => ID, { nullable: true })
     userId: string;
 
     @Field(() => Int)

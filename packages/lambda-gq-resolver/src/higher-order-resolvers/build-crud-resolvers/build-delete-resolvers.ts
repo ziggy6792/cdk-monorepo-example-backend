@@ -5,7 +5,6 @@
 /* eslint-disable class-methods-use-this */
 
 import { Arg, UseMiddleware, ID, Mutation, Resolver } from 'type-graphql';
-import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
 import { mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
 import { toArray } from 'src/utils/async-iterator';
