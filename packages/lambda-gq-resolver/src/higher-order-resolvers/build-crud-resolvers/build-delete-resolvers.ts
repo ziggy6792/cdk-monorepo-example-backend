@@ -36,7 +36,7 @@ export function buildDeleteResolvers(buildResolversProps: IBuildResolversProps) 
         const { middleware } = resolverProps.many;
         @Resolver()
         class DeleteManyResolver {
-            @Mutation(() => [returnType], { name: `create${pluralize.plural(suffix)}` })
+            @Mutation(() => [returnType], { name: `delete${pluralize.plural(suffix)}` })
             @UseMiddleware(...(middleware || []))
             async create(@Arg('inputs', () => [inputType]) inputs: any[]) {
                 const entities = inputs.map((input) => Object.assign(new returnType(), input));

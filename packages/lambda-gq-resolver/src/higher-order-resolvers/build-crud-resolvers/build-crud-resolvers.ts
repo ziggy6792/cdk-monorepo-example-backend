@@ -5,21 +5,21 @@
 import { ICreateCrudResolverOptions, CrudBuilders, ResolverType } from './types';
 
 import CrudResolverBuilder from './crud-resolver-builder';
-import { buildCreateResolvers } from './build-create-resolver';
-import { buildDeleteResolvers } from './build-delete-resolver';
-import { buildUpdateResolvers } from './build-update-resolver';
-import { buildGetResolvers } from './build-get-resolver';
+import { buildCreateResolvers } from './build-create-resolvers';
+import { buildDeleteResolvers } from './build-delete-resolvers';
+import { buildUpdateResolvers } from './build-update-resolvers';
+import { buildGetResolvers } from './build-get-resolvers';
 
-const resolverBuilderFunctions: CrudBuilders = {
+const crudBuilders: CrudBuilders = {
     [ResolverType.CREATE]: buildCreateResolvers,
     [ResolverType.DELETE]: buildDeleteResolvers,
     [ResolverType.UPDATE]: buildUpdateResolvers,
     [ResolverType.GET]: buildGetResolvers,
 };
-const crudResolverManager = new CrudResolverBuilder(resolverBuilderFunctions);
+const crudResolverBuilder = new CrudResolverBuilder(crudBuilders);
 
 const buildCrudResolvers = (suffix: string, returnType: any, resolverOptions: ICreateCrudResolverOptions): any[] => {
-    const generatedCrudResolvers = crudResolverManager.buildCrudResolvers(suffix, returnType, resolverOptions);
+    const generatedCrudResolvers = crudResolverBuilder.buildCrudResolvers(suffix, returnType, resolverOptions);
 
     console.log('crudResolvers', generatedCrudResolvers);
 
