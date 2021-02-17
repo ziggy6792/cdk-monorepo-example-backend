@@ -12,6 +12,8 @@ import { IBuildResolversProps } from './types';
 export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) {
     const retResolvers = [];
 
+    console.log('buildResolversProps', buildResolversProps);
+
     const { suffix, returnType, resolverProps, idFields, inputType } = buildResolversProps;
 
     const createEntity = async (entity: any) => {

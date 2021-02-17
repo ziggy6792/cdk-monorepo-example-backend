@@ -17,8 +17,10 @@ const isAllowedToCreate: MiddlewareFn<IContext> = async ({ context: { identity }
 
 const CrudResolvers = buildCrudResolvers('RiderAllocation', RiderAllocation, {
     idFields: ['allocatableId', 'userId'],
-    create: { inputType: CreateRiderAllocationInput, resolverProps: { one: { middleware: [isAllowedToCreate] } } },
-    update: { inputType: UpdateRiderAllocationInput, resolverProps: { many: true } },
+    resolvers: {
+        create: { inputType: CreateRiderAllocationInput, resolverProps: { one: { middleware: [isAllowedToCreate] } } },
+        update: { inputType: UpdateRiderAllocationInput, resolverProps: { many: true } },
+    },
 });
 
 export default [...CrudResolvers];

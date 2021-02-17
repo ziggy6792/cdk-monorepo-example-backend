@@ -24,10 +24,12 @@ export interface IInputResolverOptions<T> extends IResolverOptions<T> {
 
 export interface IBaseCrudResolverOptions<T> {
     idFields?: string[];
-    create?: IInputResolverOptions<T>;
-    get?: IResolverOptions<T> | IInputResolverOptions<T>;
-    update?: IInputResolverOptions<T>;
-    delete?: IResolverOptions<T> | IInputResolverOptions<T>;
+    resolvers: {
+        create?: IInputResolverOptions<T>;
+        get?: IResolverOptions<T> | IInputResolverOptions<T>;
+        update?: IInputResolverOptions<T>;
+        delete?: IResolverOptions<T> | IInputResolverOptions<T>;
+    };
 }
 
 export interface IBuildResolversProps {

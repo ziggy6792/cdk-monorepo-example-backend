@@ -30,7 +30,7 @@ const getExpandedResolverProps = <T>(options: IOneAndOrManyProps<T>): IBaseOne<T
 
 const applyDefaults = (crudOptions: ICreateCrudResolverOptions): ICompleteCrudResolverOptions => {
     // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(crudOptions)) {
+    for (const [key, value] of Object.entries(crudOptions.resolvers)) {
         const resolverOptions = value as IResolverOptions<IResProps | boolean>;
 
         const resProps = getExpandedResolverProps(resolverOptions.resolverProps);
@@ -53,7 +53,6 @@ class CrudResolverManager {
     private crudResolvers: any[];
 
     constructor(suffix: string, returnType: any, createCrud: ICreateCrudResolverOptions) {
-        console.log(createCrud);
         this.completeOptions = applyDefaults(createCrud);
         this.suffix = suffix;
         this.returnType = returnType;
@@ -71,16 +70,16 @@ class CrudResolverManager {
     }
 
     getBuildResolversProps(resolverType: ResolverType): IBuildResolversProps | null {
-        if (!this.completeOptions[resolverType]) {
+        if (!this.completeOptions.resolvers[resolverType]) {
             return null;
         }
 
-        const resolverProps = getExpandedResolverProps(this.completeOptions[resolverType].resolverProps);
+        const resolverProps = getExpandedResolverProps(this.completeOptions.resolvers[resolverType].resolverProps);
 
         const ret = {
             suffix: this.suffix,
             returnType: this.returnType,
-            inputType: this.completeOptions[resolverType as ResolverType.CREATE | ResolverType.UPDATE]?.inputType,
+            inputType: this.completeOptions.resolvers[resolverType as ResolverType.CREATE | ResolverType.UPDATE]?.inputType,
             idFields: this.completeOptions.idFields,
             resolverProps: {
                 one: resolverProps.one,
