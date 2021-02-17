@@ -1,5 +1,4 @@
 import isAuthRole from 'src/middleware/is-auth-role';
-
 import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
@@ -33,9 +32,9 @@ const isAllowedToUpdateMany: MiddlewareFn<IContext> = async ({ args, context: { 
         return next();
     }
 
-    const inputs = args.inputs as UpdateRiderAllocationInput[];
+    const riderAllocations = args.input as UpdateRiderAllocationInput[];
 
-    const competitionIds = inputs.map((input) => Object.assign(new Competition(), { id: input.allocatableId }));
+    const competitionIds = riderAllocations.map((input) => Object.assign(new Competition(), { id: input.allocatableId }));
 
     // Get rider allocation competitions
     const competitions = await toArray(mapper.batchGet(competitionIds));

@@ -48,7 +48,7 @@ export function buildUpdateResolvers(buildResolversProps: IBuildResolversProps) 
         class DelteManyResolver {
             @Mutation(() => [returnType], { name: `update${pluralize.plural(suffix)}` })
             @UseMiddleware(...(middleware || []))
-            async create(@Arg('inputs', () => [inputType]) inputs: any[]) {
+            async create(@Arg('input', () => [inputType]) inputs: any[]) {
                 const entities = inputs.map((input) => Object.assign(new returnType(), input));
                 const updateFns = entities.map((entity) => async () => updateEntity(entity));
                 const updatedEntities = await Promise.all(updateFns.map((fn) => fn()));

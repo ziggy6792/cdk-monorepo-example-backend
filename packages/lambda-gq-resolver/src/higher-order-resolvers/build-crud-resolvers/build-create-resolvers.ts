@@ -46,7 +46,7 @@ export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) 
         class CreateManyResolver {
             @Mutation(() => [returnType], { name: `create${pluralize.plural(suffix)}` })
             @UseMiddleware(...(middleware || []))
-            async create(@Arg('inputs', () => [inputType]) inputs: any[]) {
+            async create(@Arg('input', () => [inputType]) inputs: any[]) {
                 const entities = inputs.map((input) => Object.assign(new returnType(), input));
                 const createFns = entities.map((entity) => async () => createEntity(entity));
                 const createdEnties = await Promise.all(createFns.map((fn) => fn()));
