@@ -2,9 +2,10 @@
 
 import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql';
 import { IContext } from 'src/types';
-import { createExistsCondition, mapper } from 'src/utils/mapper';
+import { mapper } from 'src/utils/mapper';
 import User from 'src/domain/models/user';
 import isAuthRole from 'src/middleware/is-auth-role';
+import { createExistsCondition } from 'src/utils/utility';
 import { RegisterInput } from './register-input';
 
 @Resolver()

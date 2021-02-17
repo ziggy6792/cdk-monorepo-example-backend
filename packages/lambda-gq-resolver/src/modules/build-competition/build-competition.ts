@@ -1,19 +1,14 @@
 /* eslint-disable class-methods-use-this */
 
-import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware, ID } from 'type-graphql';
-import { IContext } from 'src/types';
-import { createExistsCondition, mapper } from 'src/utils/mapper';
-import User from 'src/domain/models/user';
-import isAuthRole from 'src/middleware/is-auth-role';
+import { Resolver, Mutation, Arg, ID } from 'type-graphql';
+import { mapper } from 'src/utils/mapper';
 import CompetitionModel from 'src/domain/models/competition';
 import _ from 'lodash';
 import SeedSlot from 'src/domain/models/seed-slot';
 import Round from 'src/domain/models/round';
 import Heat from 'src/domain/models/heat';
-import { v4 as uuidv4 } from 'uuid';
-import { VALUE, valueIsNull } from 'src/utils/utility';
+import { valueIsNull } from 'src/utils/utility';
 import { toArray } from 'src/utils/async-iterator';
-import Creatable from 'src/domain/models/abstract/creatable';
 import { CompetitionParamsInput } from './inputs';
 
 @Resolver()
@@ -21,7 +16,6 @@ export default class BuildCompetition {
     @Mutation(() => CompetitionModel, { nullable: true })
     // @UseMiddleware(isAuthUser)
     async buildCompetition(
-        @Ctx() ctx: IContext,
         @Arg('id', () => ID) id: string,
         @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput
     ): Promise<CompetitionModel> {

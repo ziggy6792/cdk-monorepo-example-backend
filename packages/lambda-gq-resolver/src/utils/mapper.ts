@@ -21,19 +21,3 @@ export const initMapper = (): void => {
 
 // export const createUniqueCondition = (attributePath = 'id'): FunctionExpression =>
 //     new FunctionExpression('attribute_not_exists', new AttributePath(attributePath));
-
-export const createNotExistsCondition = (attributePaths = ['id']): ConditionExpression => {
-    const andExpression: ConditionExpression = {
-        type: 'And',
-        conditions: attributePaths.map((path) => new FunctionExpression('attribute_not_exists', new AttributePath(path))),
-    };
-    return andExpression;
-};
-
-export const createExistsCondition = (attributePaths = ['id']): ConditionExpression => {
-    const andExpression: ConditionExpression = {
-        type: 'And',
-        conditions: attributePaths.map((path) => new FunctionExpression('attribute_exists', new AttributePath(path))),
-    };
-    return andExpression;
-};

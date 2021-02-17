@@ -4,15 +4,14 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
 import { Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
-import { createNotExistsCondition, mapper } from 'src/utils/mapper';
+import { mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
 import _ from 'lodash';
+import { createNotExistsCondition, mapDbException } from 'src/utils/utility';
 import { IBuildResolversProps } from './types';
 
 export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) {
     const retResolvers = [];
-
-    console.log('buildResolversProps', buildResolversProps);
 
     const { suffix, returnType, resolverProps, idFields, inputType } = buildResolversProps;
 
@@ -21,20 +20,17 @@ export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) 
             const createdEntity = await mapper.put(entity, { condition: createNotExistsCondition(idFields) });
             return createdEntity;
         } catch (err) {
-            if (err?.code === 'ConditionalCheckFailedException') {
-                const keys = _.pickBy(entity, (value, key) => idFields.includes(key));
-                throw new Error(`${suffix} ${JSON.stringify(keys)} already exists`);
-            }
-            throw err;
+            const keys = _.pickBy(entity, (value, key) => idFields.includes(key));
+            throw mapDbException(err, `${suffix} ${JSON.stringify(keys)} already exists`);
         }
     };
 
     if (resolverProps.one) {
-        const oneRsolverProps = resolverProps.one;
+        const { middleware } = resolverProps.one;
         @Resolver()
         class CreateOneResolver {
             @Mutation(() => returnType, { name: `create${suffix}` })
-            @UseMiddleware(...(oneRsolverProps.middleware || []))
+            @UseMiddleware(...(middleware || []))
             async create(@Arg('input', () => inputType) input: any) {
                 const entity = Object.assign(new returnType(), input);
                 const createdEntity = await createEntity(entity);
@@ -45,11 +41,11 @@ export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) 
     }
 
     if (resolverProps.many) {
-        const manyResolverProps = resolverProps.one;
+        const { middleware } = resolverProps.many;
         @Resolver()
         class CreateManyResolver {
             @Mutation(() => [returnType], { name: `create${pluralize.plural(suffix)}` })
-            @UseMiddleware(...(manyResolverProps.middleware || []))
+            @UseMiddleware(...(middleware || []))
             async create(@Arg('inputs', () => [inputType]) inputs: any[]) {
                 const entities = inputs.map((input) => Object.assign(new returnType(), input));
                 const createFns = entities.map((entity) => async () => createEntity(entity));

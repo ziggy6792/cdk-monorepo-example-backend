@@ -16,11 +16,12 @@ export function buildGetResolvers(buildResolversProps: IBuildResolversProps) {
     const { suffix, returnType, resolverProps } = buildResolversProps;
 
     if (resolverProps.one) {
-        const oneRsolverProps = resolverProps.one;
+        const { middleware } = resolverProps.one;
+
         @Resolver()
         class DelteOneResolver {
             @Query(() => returnType, { name: `get${suffix}` })
-            @UseMiddleware(...(oneRsolverProps.middleware || []))
+            @UseMiddleware(...(middleware || []))
             async get(@Arg('id', () => ID) id: string): Promise<any[]> {
                 const entity = Object.assign(new returnType(), { id });
                 const ret = await mapper.get(entity);
@@ -32,11 +33,12 @@ export function buildGetResolvers(buildResolversProps: IBuildResolversProps) {
     }
 
     if (resolverProps.many) {
-        const manyResolverProps = resolverProps.one;
+        const { middleware } = resolverProps.many;
+
         @Resolver()
         class CreateManyResolver {
             @Query(() => [returnType], { name: `list${pluralize.plural(suffix)}` })
-            @UseMiddleware(...(manyResolverProps.middleware || []))
+            @UseMiddleware(...(middleware || []))
             async list(@Arg('limit', () => Int, { nullable: true }) limit: number): Promise<any[]> {
                 const list = await toArray(mapper.scan(returnType));
                 return list.slice(0, limit);
