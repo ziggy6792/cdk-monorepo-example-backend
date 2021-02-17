@@ -31,6 +31,7 @@ interface IInputResolverOptions<T> extends IResolverOptions<T> {
 }
 
 interface IBaseCrudResolverOptions<T> {
+    idFields?: string[];
     create?: IInputResolverOptions<T>;
     get?: IResolverOptions<T> | IInputResolverOptions<T>;
     update?: IInputResolverOptions<T>;
@@ -50,30 +51,33 @@ const getExpandedResolverProps = <T>(options: IOneAndOrManyProps<T>): IBaseOne<T
     many: ((options as IBaseMany<T>)?.many as unknown) as T,
 });
 
-const applyDefaults = (resolverOptions: ICreateCrudResolverOptions): ICompleteCrudResolverOptions => {
+const applyDefaults = (crudOptions: ICreateCrudResolverOptions): ICompleteCrudResolverOptions => {
     // eslint-disable-next-line no-restricted-syntax
-    for (const [key, value] of Object.entries(resolverOptions)) {
-        const resProps = getExpandedResolverProps((value as IResolverOptions<IResProps | boolean>).resolverProps);
+    for (const [key, value] of Object.entries(crudOptions)) {
+        const resolverOptions = value as IResolverOptions<IResProps | boolean>;
+
+        const resProps = getExpandedResolverProps(resolverOptions.resolverProps);
 
         resProps.one = resProps.one === true ? defaultResolverProps : resProps.one;
         resProps.many = resProps.many === true ? defaultResolverProps : resProps.many;
     }
+    crudOptions.idFields = crudOptions.idFields || ['id'];
 
-    return resolverOptions as ICompleteCrudResolverOptions;
+    return crudOptions as ICompleteCrudResolverOptions;
 };
 
 const buildCrudResolvers = (suffix: string, returnType: any, resolverOptions: ICreateCrudResolverOptions): any[] => {
-    const { create: createOptions, get: getOptions, update: updateOptions, delete: deleteOptions } = applyDefaults(resolverOptions);
+    const { create: createOptions, get: getOptions, update: updateOptions, delete: deleteOptions, idFields } = applyDefaults(resolverOptions);
     // console.log('resolverOptions', applyDefaults(resolverOptions));
     const crudResolvers = [];
 
     if (createOptions) {
         const resolverProps = getExpandedResolverProps(createOptions.resolverProps);
         if (resolverProps.one) {
-            crudResolvers.push(buildCreateOneResolver(suffix, returnType, createOptions.inputType, resolverProps.one.middleware));
+            crudResolvers.push(buildCreateOneResolver(suffix, returnType, createOptions.inputType, idFields, resolverProps.one.middleware));
         }
         if (resolverProps.many) {
-            crudResolvers.push(buildCreateManyResolver(suffix, returnType, createOptions.inputType, resolverProps.many.middleware));
+            crudResolvers.push(buildCreateManyResolver(suffix, returnType, createOptions.inputType, idFields, resolverProps.many.middleware));
         }
     }
     if (getOptions) {
@@ -88,10 +92,10 @@ const buildCrudResolvers = (suffix: string, returnType: any, resolverOptions: IC
     if (updateOptions) {
         const resolverProps = getExpandedResolverProps(updateOptions.resolverProps);
         if (resolverProps.one) {
-            crudResolvers.push(buildUpdateOneResolver(suffix, returnType, updateOptions.inputType, resolverProps.one.middleware));
+            crudResolvers.push(buildUpdateOneResolver(suffix, returnType, updateOptions.inputType, idFields, resolverProps.one.middleware));
         }
         if (resolverProps.many) {
-            crudResolvers.push(buildUpdateManyResolver(suffix, returnType, updateOptions.inputType, resolverProps.many.middleware));
+            crudResolvers.push(buildUpdateManyResolver(suffix, returnType, updateOptions.inputType, idFields, resolverProps.many.middleware));
         }
     }
     if (deleteOptions) {

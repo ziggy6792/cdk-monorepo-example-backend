@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import DynamoDB from 'aws-sdk/clients/dynamodb';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
-import { FunctionExpression, AttributePath } from '@aws/dynamodb-expressions';
+import { FunctionExpression, AttributePath, ConditionExpression } from '@aws/dynamodb-expressions';
 
 import models from 'src/domain/models';
 import getEnvConfig from 'src/config/get-env-config';
@@ -19,5 +19,21 @@ export const initMapper = (): void => {
     console.log('REGION!');
 };
 
-export const createUniqueCondition = (attributePath = 'id'): FunctionExpression =>
-    new FunctionExpression('attribute_not_exists', new AttributePath(attributePath));
+// export const createUniqueCondition = (attributePath = 'id'): FunctionExpression =>
+//     new FunctionExpression('attribute_not_exists', new AttributePath(attributePath));
+
+export const createNotExistsCondition = (attributePaths = ['id']): ConditionExpression => {
+    const andExpression: ConditionExpression = {
+        type: 'And',
+        conditions: attributePaths.map((path) => new FunctionExpression('attribute_not_exists', new AttributePath(path))),
+    };
+    return andExpression;
+};
+
+export const createExistsCondition = (attributePaths = ['id']): ConditionExpression => {
+    const andExpression: ConditionExpression = {
+        type: 'And',
+        conditions: attributePaths.map((path) => new FunctionExpression('attribute_exists', new AttributePath(path))),
+    };
+    return andExpression;
+};

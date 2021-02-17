@@ -2,7 +2,7 @@
 
 import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware, ID } from 'type-graphql';
 import { IContext } from 'src/types';
-import { createUniqueCondition, mapper } from 'src/utils/mapper';
+import { createExistsCondition, mapper } from 'src/utils/mapper';
 import User from 'src/domain/models/user';
 import isAuthRole from 'src/middleware/is-auth-role';
 import CompetitionModel from 'src/domain/models/competition';
