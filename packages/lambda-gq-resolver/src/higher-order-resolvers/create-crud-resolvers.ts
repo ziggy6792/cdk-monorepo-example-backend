@@ -10,11 +10,11 @@ import createUpdateResolver from './create-update-resolver';
 import createDeleteResolver from './create-delete-resolver';
 import createCreateManyResolver from './create-create-many-resolver';
 
-interface IOptions {
+interface IResProps {
     middleware?: Middleware<any>[];
 }
 
-type IBaseResolverOptions<T> = IBaseOne<T> | IBaseMany<T> | (IBaseOne<T> & IBaseMany<T>);
+type IOneAndOrManyProps<T> = IBaseOne<T> | IBaseMany<T> | (IBaseOne<T> & IBaseMany<T>);
 
 interface IBaseOne<T> {
     one: T;
@@ -25,7 +25,7 @@ interface IBaseMany<T> {
 }
 
 interface IResolverOptions<T> {
-    options: IBaseResolverOptions<T>;
+    resolvers: IOneAndOrManyProps<T>;
 }
 
 interface IInputResolverOptions<T> extends IResolverOptions<T> {
@@ -39,15 +39,15 @@ interface IBaseCrudResolverOptions<T> {
     delete?: IResolverOptions<T> | IInputResolverOptions<T>;
 }
 
-type ICreateCrudResolverOptions = IBaseCrudResolverOptions<IOptions | boolean>;
+type ICreateCrudResolverOptions = IBaseCrudResolverOptions<IResProps | boolean>;
 
-type ICompleteCrudResolverOptions = IBaseCrudResolverOptions<IOptions>;
+type ICompleteCrudResolverOptions = IBaseCrudResolverOptions<IResProps>;
 
-const defaultOptions = {
+const defaultResolverProps = {
     middleware: [],
 };
 
-const getOneAndManyOptions = <T>(options: IBaseResolverOptions<T>): IBaseOne<T> & IBaseMany<T> => ({
+const getOneAndManyProps = <T>(options: IOneAndOrManyProps<T>): IBaseOne<T> & IBaseMany<T> => ({
     one: ((options as IBaseOne<T>)?.one as unknown) as T,
     many: ((options as IBaseMany<T>)?.many as unknown) as T,
 });
@@ -55,10 +55,10 @@ const getOneAndManyOptions = <T>(options: IBaseResolverOptions<T>): IBaseOne<T> 
 const applyDefaults = (resolverOptions: ICreateCrudResolverOptions): ICompleteCrudResolverOptions => {
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(resolverOptions)) {
-        const resOptions = getOneAndManyOptions((value as IResolverOptions<IOptions | boolean>).options);
+        const resProps = getOneAndManyProps((value as IResolverOptions<IResProps | boolean>).resolvers);
 
-        resOptions.one = resOptions.one === true ? defaultOptions : resOptions.one;
-        resOptions.many = resOptions.many === true ? defaultOptions : resOptions.many;
+        resProps.one = resProps.one === true ? defaultResolverProps : resProps.one;
+        resProps.many = resProps.many === true ? defaultResolverProps : resProps.many;
     }
 
     return resolverOptions as ICompleteCrudResolverOptions;
@@ -66,42 +66,42 @@ const applyDefaults = (resolverOptions: ICreateCrudResolverOptions): ICompleteCr
 
 const createCrudResolvers = (suffix: string, returnType: any, resolverOptions: ICreateCrudResolverOptions): any[] => {
     const { create: createOptions, get: getOptions, update: updateOptions, delete: deleteOptions } = applyDefaults(resolverOptions);
-    console.log('resolverOptions', applyDefaults(resolverOptions));
+    // console.log('resolverOptions', applyDefaults(resolverOptions));
     const crudResolvers = [];
 
     if (createOptions) {
-        const fullCreateOptions = getOneAndManyOptions(createOptions.options);
-        if (fullCreateOptions.one) {
-            crudResolvers.push(createCreateResolver(suffix, returnType, createOptions.inputType, fullCreateOptions.one.middleware));
+        const resolverProps = getOneAndManyProps(createOptions.resolvers);
+        if (resolverProps.one) {
+            crudResolvers.push(createCreateResolver(suffix, returnType, createOptions.inputType, resolverProps.one.middleware));
         }
-        if (fullCreateOptions.many) {
-            crudResolvers.push(createCreateManyResolver(suffix, returnType, createOptions.inputType, fullCreateOptions.many.middleware));
+        if (resolverProps.many) {
+            crudResolvers.push(createCreateManyResolver(suffix, returnType, createOptions.inputType, resolverProps.many.middleware));
         }
     }
     if (getOptions) {
-        const fullGetOptions = getOneAndManyOptions(getOptions.options);
-        if (fullGetOptions.one) {
-            crudResolvers.push(createGetResolver(suffix, returnType, fullGetOptions.one.middleware));
+        const resolverProps = getOneAndManyProps(getOptions.resolvers);
+        if (resolverProps.one) {
+            crudResolvers.push(createGetResolver(suffix, returnType, resolverProps.one.middleware));
         }
-        if (fullGetOptions.many) {
-            crudResolvers.push(createListResolver(suffix, returnType, fullGetOptions.many.middleware));
+        if (resolverProps.many) {
+            crudResolvers.push(createListResolver(suffix, returnType, resolverProps.many.middleware));
         }
     }
     if (updateOptions) {
-        const fullUpdateOptions = getOneAndManyOptions(updateOptions.options);
-        if (fullUpdateOptions.one) {
-            crudResolvers.push(createUpdateResolver(suffix, returnType, updateOptions.inputType, fullUpdateOptions.one.middleware));
+        const resolverProps = getOneAndManyProps(updateOptions.resolvers);
+        if (resolverProps.one) {
+            crudResolvers.push(createUpdateResolver(suffix, returnType, updateOptions.inputType, resolverProps.one.middleware));
         }
-        if (fullUpdateOptions.many) {
+        if (resolverProps.many) {
             // Todo
         }
     }
     if (deleteOptions) {
-        const fullDeleteOptions = getOneAndManyOptions(deleteOptions.options);
-        if (fullDeleteOptions.one) {
-            crudResolvers.push(createDeleteResolver(suffix, returnType, fullDeleteOptions.one.middleware));
+        const resolverProps = getOneAndManyProps(deleteOptions.resolvers);
+        if (resolverProps.one) {
+            crudResolvers.push(createDeleteResolver(suffix, returnType, resolverProps.one.middleware));
         }
-        if (fullDeleteOptions.many) {
+        if (resolverProps.many) {
             // Todo
         }
     }

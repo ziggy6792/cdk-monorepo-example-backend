@@ -3,7 +3,7 @@ import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolver
 import { CreateRiderAllocationInput } from 'src/modules/rider-allocation/inputs';
 
 const CrudResolvers = createCrudResolvers('RiderAllocation', RiderAllocation, {
-    create: { inputType: CreateRiderAllocationInput, options: { one: true, many: true } },
+    create: { inputType: CreateRiderAllocationInput, resolvers: { one: true, many: true } },
 });
 
 export default [...CrudResolvers];
