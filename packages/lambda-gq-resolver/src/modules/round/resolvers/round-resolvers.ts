@@ -3,7 +3,7 @@ import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolver
 import Round from 'src/domain/models/round';
 
 const CrudResolvers = createCrudResolvers('Round', Round, {
-    get: true,
+    get: { options: { one: true, many: true } },
 });
 
 export default [...CrudResolvers];
