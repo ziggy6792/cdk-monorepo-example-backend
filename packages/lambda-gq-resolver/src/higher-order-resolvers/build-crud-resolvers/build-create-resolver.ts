@@ -4,7 +4,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
 import { Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
-import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
 import { createNotExistsCondition, mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
 import _ from 'lodash';
@@ -12,7 +11,6 @@ import { IBuildResolversProps } from './types';
 
 export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) {
     const retResolvers = [];
-    console.log('buildResolversProps', buildResolversProps);
 
     const { suffix, returnType, resolverProps, idFields, inputType } = buildResolversProps;
 

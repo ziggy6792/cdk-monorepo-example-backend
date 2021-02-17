@@ -1,8 +1,11 @@
+import { buildGetResolvers } from './build-get-resolver';
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable new-cap */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
 import { buildCreateResolvers } from './build-create-resolver';
+import { buildDeleteResolvers } from './build-delete-resolver';
+import { buildUpdateResolvers } from './build-update-resolver';
 import {
     IBaseOne,
     IOneAndOrManyProps,
@@ -12,6 +15,8 @@ import {
     IResolverOptions,
     IResProps,
     IBuildResolversProps,
+    ResolverType,
+    CrudBuilders,
 } from './types';
 
 const defaultResolverProps = {
@@ -57,21 +62,25 @@ class CrudResolverManager {
         this.buildCreateResolvers();
     }
 
+    // buildCrud(crudBuilders: CrudBuilders){
+    //     this.completeOptions.
+    // }
+
     getCrudResolvers() {
         return this.crudResolvers;
     }
 
-    getBuildResolversProps(key: 'create' | 'update' | 'delete' | 'get'): IBuildResolversProps | null {
-        if (!this.completeOptions[key]) {
+    getBuildResolversProps(resolverType: ResolverType): IBuildResolversProps | null {
+        if (!this.completeOptions[resolverType]) {
             return null;
         }
 
-        const resolverProps = getExpandedResolverProps(this.completeOptions[key].resolverProps);
+        const resolverProps = getExpandedResolverProps(this.completeOptions[resolverType].resolverProps);
 
         const ret = {
             suffix: this.suffix,
             returnType: this.returnType,
-            inputType: this.completeOptions[key as 'create' | 'update']?.inputType,
+            inputType: this.completeOptions[resolverType as ResolverType.CREATE | ResolverType.UPDATE]?.inputType,
             idFields: this.completeOptions.idFields,
             resolverProps: {
                 one: resolverProps.one,
@@ -81,8 +90,17 @@ class CrudResolverManager {
         return ret;
     }
 
+    buildResolvers(resolverType: ResolverType, buildFunction: (buildResolverProps: IBuildResolversProps) => any[]): any[] {
+        const buildResolverProps = this.getBuildResolversProps(resolverType);
+
+        if (!buildResolverProps) {
+            return [];
+        }
+        return buildFunction(buildResolverProps);
+    }
+
     buildCreateResolvers() {
-        const crateResolverProps = this.getBuildResolversProps('create');
+        const crateResolverProps = this.getBuildResolversProps(ResolverType.CREATE);
 
         if (crateResolverProps) {
             this.appendResolvers(buildCreateResolvers(crateResolverProps));

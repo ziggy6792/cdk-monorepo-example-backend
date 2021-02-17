@@ -44,3 +44,14 @@ export interface IBuildResolversProps {
 export type ICreateCrudResolverOptions = IBaseCrudResolverOptions<IResProps | boolean>;
 
 export type ICompleteCrudResolverOptions = IBaseCrudResolverOptions<IResProps>;
+
+// export type ResolverType = 'create' | 'update' | 'delete' | 'get';
+
+export enum ResolverType {
+    CREATE = 'create',
+    UPDATE = 'update',
+    DELETE = 'delete',
+    GET = 'get',
+}
+
+export type CrudBuilders = { [key in ResolverType]?: (buildResolverProps: IBuildResolversProps) => any[] };

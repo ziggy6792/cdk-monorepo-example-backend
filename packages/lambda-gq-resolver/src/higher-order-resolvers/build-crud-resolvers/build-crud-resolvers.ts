@@ -2,9 +2,20 @@
 /* eslint-disable new-cap */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
-import { ICreateCrudResolverOptions } from './types';
+import { ICreateCrudResolverOptions, CrudBuilders, ResolverType } from './types';
 
 import CrudResolverManager from './crud-resolver-manager';
+import { buildCreateResolvers } from './build-create-resolver';
+import { buildDeleteResolvers } from './build-delete-resolver';
+import { buildUpdateResolvers } from './build-update-resolver';
+import { buildGetResolvers } from './build-get-resolver';
+
+const resolverBuilderFunctions: CrudBuilders = {
+    [ResolverType.CREATE]: buildCreateResolvers,
+    [ResolverType.DELETE]: buildDeleteResolvers,
+    [ResolverType.UPDATE]: buildUpdateResolvers,
+    [ResolverType.GET]: buildGetResolvers,
+};
 
 const buildCrudResolvers = (suffix: string, returnType: any, resolverOptions: ICreateCrudResolverOptions): any[] => {
     const crudResolverManager = new CrudResolverManager(suffix, returnType, resolverOptions);

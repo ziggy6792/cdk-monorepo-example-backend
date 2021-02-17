@@ -3,41 +3,46 @@
 /* eslint-disable new-cap */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
-import { Resolver, Mutation, Arg, ClassType, UseMiddleware } from 'type-graphql';
-import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
+import { Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
 import { createExistsCondition, mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
-import { toArray } from 'src/utils/async-iterator';
+import { IBuildResolversProps } from './types';
 
-// Note that this is really doing an upsert
+export function buildUpdateResolvers(buildResolversProps: IBuildResolversProps) {
+    const retResolvers = [];
 
-export function buildUpdateOneResolver(suffix: string, returnType: any, inputType: any, idFields: string[], middleware?: Middleware<any>[]) {
-    @Resolver()
-    class BaseResolver {
-        @Mutation(() => returnType, { name: `update${suffix}` })
-        @UseMiddleware(...(middleware || []))
-        async update(@Arg('input', () => inputType) input: any) {
-            const entity = Object.assign(new returnType(), input);
-            const createdEntity = await mapper.update(entity, { condition: createExistsCondition(idFields) });
-            return createdEntity;
+    const { suffix, returnType, resolverProps, idFields, inputType } = buildResolversProps;
+
+    if (resolverProps.one) {
+        const oneRsolverProps = resolverProps.one;
+        @Resolver()
+        class UpdateOneResolver {
+            @Mutation(() => returnType, { name: `update${suffix}` })
+            @UseMiddleware(...(oneRsolverProps.middleware || []))
+            async update(@Arg('input', () => inputType) input: any) {
+                const entity = Object.assign(new returnType(), input);
+                const createdEntity = await mapper.update(entity, { condition: createExistsCondition(idFields) });
+                return createdEntity;
+            }
         }
+        retResolvers.push(UpdateOneResolver);
     }
 
-    return BaseResolver;
-}
-
-export function buildUpdateManyResolver(suffix: string, returnType: any, inputType: any, idFields: string[], middleware?: Middleware<any>[]) {
-    @Resolver()
-    class BaseResolver {
-        @Mutation(() => [returnType], { name: `update${pluralize.plural(suffix)}` })
-        @UseMiddleware(...(middleware || []))
-        async create(@Arg('inputs', () => [inputType]) inputs: any[]) {
-            const entities = inputs.map((input) => Object.assign(new returnType(), input));
-            const updateFns = entities.map((entity) => async () => mapper.update(entity, { condition: createExistsCondition(idFields) }));
-            const updatedEntities = await Promise.all(updateFns.map((fn) => fn()));
-            return updatedEntities;
+    if (resolverProps.many) {
+        const manyResolverProps = resolverProps.one;
+        @Resolver()
+        class DelteManyResolver {
+            @Mutation(() => [returnType], { name: `update${pluralize.plural(suffix)}` })
+            @UseMiddleware(...(manyResolverProps.middleware || []))
+            async create(@Arg('inputs', () => [inputType]) inputs: any[]) {
+                const entities = inputs.map((input) => Object.assign(new returnType(), input));
+                const updateFns = entities.map((entity) => async () => mapper.update(entity, { condition: createExistsCondition(idFields) }));
+                const updatedEntities = await Promise.all(updateFns.map((fn) => fn()));
+                return updatedEntities;
+            }
         }
+        retResolvers.push(DelteManyResolver);
     }
 
-    return BaseResolver;
+    return retResolvers;
 }
