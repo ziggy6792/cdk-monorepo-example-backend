@@ -3,12 +3,10 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
 import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
-import createCreateResolver from './create-create-resolver';
-import createListResolver from './create-list-resolver';
-import createGetResolver from './create-get-resolver';
-import createUpdateResolver from './create-update-resolver';
-import createDeleteResolver from './create-delete-resolver';
-import createCreateManyResolver from './create-create-many-resolver';
+import { buildCreateOneResolver, buildCreateManyResolver } from './build-create-resolver';
+import { buildGetOneResolver, builGetManyResolver } from './build-get-resolver';
+import { buildUpdateManyResolver, buildUpdateOneResolver } from './build-update-resolver';
+import { buildDeleteManyResolver, buildDeleteOneResolver } from './build-delete-resolver';
 
 interface IResProps {
     middleware?: Middleware<any>[];
@@ -25,7 +23,7 @@ interface IBaseMany<T> {
 }
 
 interface IResolverOptions<T> {
-    resolvers: IOneAndOrManyProps<T>;
+    resolverProps: IOneAndOrManyProps<T>;
 }
 
 interface IInputResolverOptions<T> extends IResolverOptions<T> {
@@ -47,7 +45,7 @@ const defaultResolverProps = {
     middleware: [],
 };
 
-const getOneAndManyProps = <T>(options: IOneAndOrManyProps<T>): IBaseOne<T> & IBaseMany<T> => ({
+const getExpandedResolverProps = <T>(options: IOneAndOrManyProps<T>): IBaseOne<T> & IBaseMany<T> => ({
     one: ((options as IBaseOne<T>)?.one as unknown) as T,
     many: ((options as IBaseMany<T>)?.many as unknown) as T,
 });
@@ -55,7 +53,7 @@ const getOneAndManyProps = <T>(options: IOneAndOrManyProps<T>): IBaseOne<T> & IB
 const applyDefaults = (resolverOptions: ICreateCrudResolverOptions): ICompleteCrudResolverOptions => {
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(resolverOptions)) {
-        const resProps = getOneAndManyProps((value as IResolverOptions<IResProps | boolean>).resolvers);
+        const resProps = getExpandedResolverProps((value as IResolverOptions<IResProps | boolean>).resolverProps);
 
         resProps.one = resProps.one === true ? defaultResolverProps : resProps.one;
         resProps.many = resProps.many === true ? defaultResolverProps : resProps.many;
@@ -64,48 +62,48 @@ const applyDefaults = (resolverOptions: ICreateCrudResolverOptions): ICompleteCr
     return resolverOptions as ICompleteCrudResolverOptions;
 };
 
-const createCrudResolvers = (suffix: string, returnType: any, resolverOptions: ICreateCrudResolverOptions): any[] => {
+const buildCrudResolvers = (suffix: string, returnType: any, resolverOptions: ICreateCrudResolverOptions): any[] => {
     const { create: createOptions, get: getOptions, update: updateOptions, delete: deleteOptions } = applyDefaults(resolverOptions);
     // console.log('resolverOptions', applyDefaults(resolverOptions));
     const crudResolvers = [];
 
     if (createOptions) {
-        const resolverProps = getOneAndManyProps(createOptions.resolvers);
+        const resolverProps = getExpandedResolverProps(createOptions.resolverProps);
         if (resolverProps.one) {
-            crudResolvers.push(createCreateResolver(suffix, returnType, createOptions.inputType, resolverProps.one.middleware));
+            crudResolvers.push(buildCreateOneResolver(suffix, returnType, createOptions.inputType, resolverProps.one.middleware));
         }
         if (resolverProps.many) {
-            crudResolvers.push(createCreateManyResolver(suffix, returnType, createOptions.inputType, resolverProps.many.middleware));
+            crudResolvers.push(buildCreateManyResolver(suffix, returnType, createOptions.inputType, resolverProps.many.middleware));
         }
     }
     if (getOptions) {
-        const resolverProps = getOneAndManyProps(getOptions.resolvers);
+        const resolverProps = getExpandedResolverProps(getOptions.resolverProps);
         if (resolverProps.one) {
-            crudResolvers.push(createGetResolver(suffix, returnType, resolverProps.one.middleware));
+            crudResolvers.push(buildGetOneResolver(suffix, returnType, resolverProps.one.middleware));
         }
         if (resolverProps.many) {
-            crudResolvers.push(createListResolver(suffix, returnType, resolverProps.many.middleware));
+            crudResolvers.push(builGetManyResolver(suffix, returnType, resolverProps.many.middleware));
         }
     }
     if (updateOptions) {
-        const resolverProps = getOneAndManyProps(updateOptions.resolvers);
+        const resolverProps = getExpandedResolverProps(updateOptions.resolverProps);
         if (resolverProps.one) {
-            crudResolvers.push(createUpdateResolver(suffix, returnType, updateOptions.inputType, resolverProps.one.middleware));
+            crudResolvers.push(buildUpdateOneResolver(suffix, returnType, updateOptions.inputType, resolverProps.one.middleware));
         }
         if (resolverProps.many) {
-            // Todo
+            crudResolvers.push(buildUpdateManyResolver(suffix, returnType, updateOptions.inputType, resolverProps.many.middleware));
         }
     }
     if (deleteOptions) {
-        const resolverProps = getOneAndManyProps(deleteOptions.resolvers);
+        const resolverProps = getExpandedResolverProps(deleteOptions.resolverProps);
         if (resolverProps.one) {
-            crudResolvers.push(createDeleteResolver(suffix, returnType, resolverProps.one.middleware));
+            crudResolvers.push(buildDeleteOneResolver(suffix, returnType, resolverProps.one.middleware));
         }
         if (resolverProps.many) {
-            // Todo
+            crudResolvers.push(buildDeleteManyResolver(suffix, returnType, resolverProps.many.middleware));
         }
     }
     return crudResolvers;
 };
 
-export default createCrudResolvers;
+export default buildCrudResolvers;

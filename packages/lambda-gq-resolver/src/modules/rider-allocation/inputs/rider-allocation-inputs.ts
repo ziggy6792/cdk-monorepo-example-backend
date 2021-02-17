@@ -16,3 +16,6 @@ class RiderAllocationInput {
 
 @InputType()
 export class CreateRiderAllocationInput extends RiderAllocationInput {}
+
+@InputType()
+export class UpdateRiderAllocationInput extends RiderAllocationInput {}
