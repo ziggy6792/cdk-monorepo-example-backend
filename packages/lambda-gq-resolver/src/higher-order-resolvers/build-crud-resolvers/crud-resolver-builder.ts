@@ -39,13 +39,17 @@ const buildCrudPropsToCompleteCrudProps = (buildCrudProps: IBuildCrudProps): ICo
             resolvers: [],
         };
 
-        if ((resolverProps as IOneResProps).one) {
+        const oneProps = resolverProps as IOneResProps;
+        if (oneProps.one) {
             console.log('one');
-            completeCrudProps.crudProps[resolverType].resolvers.push({ ...(resolverProps as IOneResProps).one, multiplicityType: Multiplicity.ONE });
+            const passedInProps = oneProps.one === true ? {} : oneProps.one;
+            completeCrudProps.crudProps[resolverType].resolvers.push({ ...defaultResolverProps, ...passedInProps, multiplicityType: Multiplicity.ONE });
         }
-        if ((resolverProps as IManyResProps).many) {
+        const manyProps = resolverProps as IManyResProps;
+        if (manyProps.many) {
             console.log('many');
-            completeCrudProps.crudProps[resolverType].resolvers.push({ ...(resolverProps as IManyResProps).many, multiplicityType: Multiplicity.MANY });
+            const passedInProps = manyProps.many === true ? {} : manyProps.many;
+            completeCrudProps.crudProps[resolverType].resolvers.push({ ...defaultResolverProps, ...passedInProps, multiplicityType: Multiplicity.MANY });
         }
     });
     return completeCrudProps as ICompleteCrudProps;

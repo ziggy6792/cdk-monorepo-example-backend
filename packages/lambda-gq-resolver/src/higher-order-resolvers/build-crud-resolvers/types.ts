@@ -17,11 +17,11 @@ export interface IResProps {
 }
 
 export interface IOneResProps {
-    one: IResProps;
+    one: IResProps | boolean;
 }
 
 export interface IManyResProps {
-    many: IResProps;
+    many: IResProps | boolean;
 }
 
 export interface IMultiplicityResProps extends IResProps {
