@@ -8,10 +8,10 @@ import { mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
 import _ from 'lodash';
 import { createNotExistsCondition, mapDbException } from 'src/utils/utility';
-import { IBuildResolversProps, Multiplicity } from './types';
+import { IBuildResolverProps, Multiplicity } from './types';
 
-export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) {
-    const { suffix, returnType, resolverBuildProps, idFields, inputType } = buildResolversProps;
+const buildCreateResolvers = (buildResolversProps: IBuildResolverProps) => {
+    const { suffix, returnType, resolversToBuild, idFields, inputType } = buildResolversProps;
 
     const createEntity = async (entity: any) => {
         try {
@@ -23,7 +23,7 @@ export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) 
         }
     };
 
-    const resolvers = resolverBuildProps.map((props) => {
+    const resolvers = resolversToBuild.map((props) => {
         const { middleware } = props;
 
         if (props.multiplicityType === Multiplicity.ONE) {
@@ -57,4 +57,6 @@ export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) 
     });
 
     return resolvers;
-}
+};
+
+export default buildCreateResolvers;

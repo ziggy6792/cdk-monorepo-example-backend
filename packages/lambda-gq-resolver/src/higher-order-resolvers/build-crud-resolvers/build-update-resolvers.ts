@@ -9,10 +9,10 @@ import pluralize from 'pluralize';
 import { createExistsCondition, mapDbException } from 'src/utils/utility';
 import _ from 'lodash';
 
-import { IBuildResolversProps, Multiplicity } from './types';
+import { IBuildResolverProps, Multiplicity } from './types';
 
-export function buildUpdateResolvers(buildResolversProps: IBuildResolversProps) {
-    const { suffix, returnType, resolverBuildProps, idFields, inputType } = buildResolversProps;
+const buildUpdateResolvers = (buildResolversProps: IBuildResolverProps) => {
+    const { suffix, returnType, resolversToBuild, idFields, inputType } = buildResolversProps;
 
     const updateEntity = async (entity: any) => {
         try {
@@ -24,7 +24,7 @@ export function buildUpdateResolvers(buildResolversProps: IBuildResolversProps) 
         }
     };
 
-    const resolvers = resolverBuildProps.map((props) => {
+    const resolvers = resolversToBuild.map((props) => {
         const { middleware } = props;
 
         if (props.multiplicityType === Multiplicity.ONE) {
@@ -58,4 +58,6 @@ export function buildUpdateResolvers(buildResolversProps: IBuildResolversProps) 
     });
 
     return resolvers;
-}
+};
+
+export default buildUpdateResolvers;

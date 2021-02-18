@@ -5,10 +5,10 @@
 import { ResolverType, IBuildCrudProps, IOneResProps, IManyResProps, ICompleteCrudProps, Multiplicity, CrudBuilders } from './types';
 
 import CrudResolverBuilder from './crud-resolver-builder';
-import { buildCreateResolvers } from './build-create-resolvers';
-import { buildDeleteResolvers } from './build-delete-resolvers';
-import { buildUpdateResolvers } from './build-update-resolvers';
-import { buildGetResolvers } from './build-get-resolvers';
+import buildCreateResolvers from './build-create-resolvers';
+import buildDeleteResolvers from './build-delete-resolvers';
+import buildUpdateResolvers from './build-update-resolvers';
+import buildGetResolvers from './build-get-resolvers';
 
 const crudBuilders: CrudBuilders = {
     [ResolverType.CREATE]: buildCreateResolvers,

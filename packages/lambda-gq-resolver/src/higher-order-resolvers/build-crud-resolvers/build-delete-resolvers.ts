@@ -8,12 +8,12 @@ import { Arg, UseMiddleware, ID, Mutation, Resolver } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
 import { toArray } from 'src/utils/async-iterator';
-import { IBuildResolversProps, Multiplicity } from './types';
+import { IBuildResolverProps, Multiplicity } from './types';
 
-export function buildDeleteResolvers(buildResolversProps: IBuildResolversProps) {
-    const { suffix, returnType, resolverBuildProps, idFields, inputType } = buildResolversProps;
+const buildDeleteResolvers = (buildResolversProps: IBuildResolverProps) => {
+    const { suffix, returnType, resolversToBuild, idFields, inputType } = buildResolversProps;
 
-    const resolvers = resolverBuildProps.map((props) => {
+    const resolvers = resolversToBuild.map((props) => {
         const { middleware } = props;
 
         if (props.multiplicityType === Multiplicity.ONE) {
@@ -47,4 +47,6 @@ export function buildDeleteResolvers(buildResolversProps: IBuildResolversProps) 
     });
 
     return resolvers;
-}
+};
+
+export default buildDeleteResolvers;

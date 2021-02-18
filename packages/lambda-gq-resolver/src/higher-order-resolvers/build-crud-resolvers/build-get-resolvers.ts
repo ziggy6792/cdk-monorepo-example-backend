@@ -8,14 +8,14 @@ import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
 import { mapper } from 'src/utils/mapper';
 import { toArray } from 'src/utils/async-iterator';
 import pluralize from 'pluralize';
-import { IBuildResolversProps, Multiplicity } from './types';
+import { IBuildResolverProps, Multiplicity } from './types';
 
-export function buildGetResolvers(buildResolversProps: IBuildResolversProps) {
+const buildGetResolvers = (buildResolversProps: IBuildResolverProps) => {
     const retResolvers = [];
 
-    const { suffix, returnType, resolverBuildProps } = buildResolversProps;
+    const { suffix, returnType, resolversToBuild } = buildResolversProps;
 
-    const resolvers = resolverBuildProps.map((props) => {
+    const resolvers = resolversToBuild.map((props) => {
         const { middleware } = props;
 
         if (props.multiplicityType === Multiplicity.ONE) {
@@ -48,4 +48,6 @@ export function buildGetResolvers(buildResolversProps: IBuildResolversProps) {
     });
 
     return resolvers;
-}
+};
+
+export default buildGetResolvers;

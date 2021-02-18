@@ -24,7 +24,7 @@ export interface IManyResProps {
     many: IResProps | boolean;
 }
 
-export interface IResolverBuildProps extends IResProps {
+export interface IResolversToBuild extends IResProps {
     multiplicityType: Multiplicity;
 }
 
@@ -37,7 +37,7 @@ export interface ICrudProps {
 
 export interface IBuildCrudReolversProps {
     inputType: any;
-    resolvers: IResolverBuildProps[];
+    resolvers: IResolversToBuild[];
 }
 
 export interface IInputCrudProps extends ICrudProps {
@@ -58,12 +58,12 @@ export type IBuildCrudProps = IBaseCrudProps<IInputCrudProps, ICrudProps | IInpu
 
 export type ICompleteCrudProps = IBaseCrudProps<IBuildCrudReolversProps, IBuildCrudReolversProps>;
 
-export interface IBuildResolversProps {
+export interface IBuildResolverProps {
     suffix: string;
     returnType: any;
     idFields: string[];
     inputType?: any;
-    resolverBuildProps: IResolverBuildProps[];
+    resolversToBuild: IResolversToBuild[];
 }
 
-export type CrudBuilders = { [key in ResolverType]?: (buildResolverProps: IBuildResolversProps) => any[] };
+export type CrudBuilders = { [key in ResolverType]?: (buildResolverProps: IBuildResolverProps) => any[] };

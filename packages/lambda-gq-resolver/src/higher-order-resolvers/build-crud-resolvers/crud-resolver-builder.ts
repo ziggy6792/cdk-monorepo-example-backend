@@ -5,7 +5,7 @@
 /* eslint-disable class-methods-use-this */
 
 import _ from 'lodash';
-import { Multiplicity, IOneResProps, IManyResProps, IBuildResolversProps, ResolverType, CrudBuilders, ICompleteCrudProps, IBuildCrudProps } from './types';
+import { Multiplicity, IOneResProps, IManyResProps, IBuildResolverProps, ResolverType, CrudBuilders, ICompleteCrudProps, IBuildCrudProps } from './types';
 
 const defaultResolverProps = {
     middleware: [],
@@ -48,20 +48,18 @@ class CrudResolverBuilder {
     }
 
     public buildCrudResolvers(suffix: string, returnType: any, createCrudOptions: IBuildCrudProps): any[] {
-        // const completeOptions = applyDefaults(createCrudOptions);
-
         const completeCrudProps = buildCrudPropsToCompleteCrudProps(createCrudOptions);
 
-        const generateResolversProps = (resolverType: ResolverType): IBuildResolversProps | null => {
+        const generateBuildResolversProps = (resolverType: ResolverType): IBuildResolverProps | null => {
             if (!completeCrudProps.crudProps[resolverType]) {
                 return null;
             }
-            const ret: IBuildResolversProps = {
+            const ret: IBuildResolverProps = {
                 suffix,
                 returnType,
                 idFields: completeCrudProps.idFields,
                 inputType: completeCrudProps.crudProps[resolverType].inputType,
-                resolverBuildProps: completeCrudProps.crudProps[resolverType].resolvers,
+                resolversToBuild: completeCrudProps.crudProps[resolverType].resolvers,
             };
             return ret;
         };
@@ -69,11 +67,11 @@ class CrudResolverBuilder {
         let resolvers = [];
 
         Object.keys(completeCrudProps.crudProps).forEach((resolverType: ResolverType) => {
-            const crateResolverProps = generateResolversProps(resolverType);
+            const buildResolverProps = generateBuildResolversProps(resolverType);
 
-            if (crateResolverProps) {
-                const buildResolversFunstion = this.crudBuilders[resolverType];
-                resolvers = _.concat(resolvers, buildResolversFunstion(crateResolverProps));
+            if (buildResolverProps) {
+                const buildFunstion = this.crudBuilders[resolverType];
+                resolvers = _.concat(resolvers, buildFunstion(buildResolverProps));
             }
         });
 
