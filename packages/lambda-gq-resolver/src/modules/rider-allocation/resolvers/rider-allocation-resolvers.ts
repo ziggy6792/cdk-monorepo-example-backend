@@ -64,7 +64,7 @@ const addDefaultUserId: MiddlewareFn<IContext> = async ({ args, context: { ident
 
 const crudResolvers = buildCrudResolvers('RiderAllocation', RiderAllocation, {
     idFields: ['allocatableId', 'userId'],
-    resolvers: {
+    crudProps: {
         create: {
             inputType: CreateRiderAllocationInput,
             resolverProps: { one: { middleware: [isAuthUserOrRole, addDefaultUserId, isAllowedToCreateOne] }, many: { middleware: [isAuthRole] } },

@@ -6,7 +6,7 @@ export const buildIamAutorizer = async (): Promise<ExpressMiddleware> =>
     function (req, res, next): void {
         let identity: IIamIdentity = unauthenticatedUserPoolIdentity;
         if (req.headers['lambda-role']) {
-            console.log('using lambda role identity');
+            // console.log('using lambda role identity');
             identity = lambdaRoleIdentity;
         }
 

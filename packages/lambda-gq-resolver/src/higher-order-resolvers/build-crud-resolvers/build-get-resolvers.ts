@@ -13,7 +13,7 @@ import { IBuildResolversProps, Multiplicity } from './types';
 export function buildGetResolvers(buildResolversProps: IBuildResolversProps) {
     const retResolvers = [];
 
-    const { suffix, returnType, resolverProps } = buildResolversProps;
+    const { suffix, returnType, resolvers: resolverProps } = buildResolversProps;
 
     const resolvers = resolverProps.map((props) => {
         const { middleware } = props;

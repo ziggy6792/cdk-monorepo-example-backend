@@ -11,7 +11,7 @@ import { createNotExistsCondition, mapDbException } from 'src/utils/utility';
 import { IBuildResolversProps, Multiplicity } from './types';
 
 export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) {
-    const { suffix, returnType, resolverProps, idFields, inputType } = buildResolversProps;
+    const { suffix, returnType, resolvers: resolverProps, idFields, inputType } = buildResolversProps;
 
     const createEntity = async (entity: any) => {
         try {

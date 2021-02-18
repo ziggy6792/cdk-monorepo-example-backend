@@ -3,7 +3,7 @@ import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers'
 import Heat from 'src/domain/models/heat';
 
 const CrudResolvers = buildCrudResolvers('Heat', Heat, {
-    resolvers: { get: { resolverProps: { one: true, many: true } } },
+    crudProps: { get: { resolverProps: { one: { middleware: [] }, many: { middleware: [] } } } },
 });
 
 export default [...CrudResolvers];

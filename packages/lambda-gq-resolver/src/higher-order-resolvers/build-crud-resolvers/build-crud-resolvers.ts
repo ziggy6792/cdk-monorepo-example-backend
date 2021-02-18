@@ -2,7 +2,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
-import { ICreateCrudResolverOptions, CrudBuilders, ResolverType } from './types';
+import { ResolverType, IBuildCrudProps, IOneResProps, IManyResProps, ICompleteCrudProps, Multiplicity, CrudBuilders } from './types';
 
 import CrudResolverBuilder from './crud-resolver-builder';
 import { buildCreateResolvers } from './build-create-resolvers';
@@ -18,10 +18,33 @@ const crudBuilders: CrudBuilders = {
 };
 const crudResolverBuilder = new CrudResolverBuilder(crudBuilders);
 
-const buildCrudResolvers = (suffix: string, returnType: any, resolverOptions: ICreateCrudResolverOptions): any[] => {
-    const generatedCrudResolvers = crudResolverBuilder.buildCrudResolvers(suffix, returnType, resolverOptions);
+const initialCompleteCrudProps: ICompleteCrudProps = {
+    idFields: ['id'],
+    crudProps: {
+        create: {
+            inputType: null,
+            resolvers: [],
+        },
 
-    console.log('crudResolvers', generatedCrudResolvers);
+        get: {
+            inputType: null,
+            resolvers: [],
+        },
+        update: {
+            inputType: null,
+            resolvers: [],
+        },
+        delete: {
+            inputType: null,
+            resolvers: [],
+        },
+    },
+};
+
+const buildCrudResolvers = (suffix: string, returnType: any, buildCrudProps: IBuildCrudProps): any[] => {
+    const generatedCrudResolvers = crudResolverBuilder.buildCrudResolvers(suffix, returnType, buildCrudProps);
+
+    console.log('generatedCrudResolvers', generatedCrudResolvers);
 
     return generatedCrudResolvers;
 };

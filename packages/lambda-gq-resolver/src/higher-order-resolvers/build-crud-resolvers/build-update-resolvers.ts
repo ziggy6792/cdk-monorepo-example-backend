@@ -12,7 +12,7 @@ import _ from 'lodash';
 import { IBuildResolversProps, Multiplicity } from './types';
 
 export function buildUpdateResolvers(buildResolversProps: IBuildResolversProps) {
-    const { suffix, returnType, resolverProps, idFields, inputType } = buildResolversProps;
+    const { suffix, returnType, resolvers: resolverProps, idFields, inputType } = buildResolversProps;
 
     const updateEntity = async (entity: any) => {
         try {

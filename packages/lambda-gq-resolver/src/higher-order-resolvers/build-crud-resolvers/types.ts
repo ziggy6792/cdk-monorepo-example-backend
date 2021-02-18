@@ -1,7 +1,10 @@
 import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
 
-export interface IResProps {
-    middleware?: Middleware<any>[];
+export enum ResolverType {
+    CREATE = 'create',
+    UPDATE = 'update',
+    DELETE = 'delete',
+    GET = 'get',
 }
 
 export enum Multiplicity {
@@ -9,70 +12,60 @@ export enum Multiplicity {
     MANY = 'many',
 }
 
+export interface IResProps {
+    middleware?: Middleware<any>[];
+}
+
+export interface IOneResProps {
+    one: IResProps;
+}
+
+export interface IManyResProps {
+    many: IResProps;
+}
+
 export interface IMultiplicityResProps extends IResProps {
     multiplicityType: Multiplicity;
 }
 
-export type IOneAndOrManyProps<T> = IBaseOne<T> | IBaseMany<T> | (IBaseOne<T> & IBaseMany<T>);
+export type IOneAndOrManyResProps = IOneResProps | IManyResProps | (IOneResProps & IManyResProps);
 
-export interface IBaseOne<T> {
-    one: T;
+export interface ICrudProps {
+    inputType?: any;
+    resolverProps: IOneAndOrManyResProps;
 }
 
-export interface IBaseMany<T> {
-    many: T;
+export interface IBuildCrudReolversProps {
+    inputType: any;
+    resolvers: IMultiplicityResProps[];
 }
 
-export interface IResolverOptions<T> {
-    resolverProps: IOneAndOrManyProps<T>;
-}
-
-export interface IInputResolverOptions<T> extends IResolverOptions<T> {
+export interface IInputCrudProps extends ICrudProps {
     inputType: any;
 }
 
-export interface IBaseCrudResolverOptions<T> {
+export interface IBaseCrudProps<CreateUpdate, GetDelte> {
     idFields?: string[];
-    resolvers: {
-        create?: IInputResolverOptions<T>;
-        get?: IResolverOptions<T> | IInputResolverOptions<T>;
-        update?: IInputResolverOptions<T>;
-        delete?: IResolverOptions<T> | IInputResolverOptions<T>;
+    crudProps: {
+        create?: CreateUpdate;
+        get?: GetDelte;
+        update?: CreateUpdate;
+        delete?: GetDelte;
     };
 }
+
+export type IBuildCrudProps = IBaseCrudProps<ICrudProps | IInputCrudProps, ICrudProps>;
+
+export type ICompleteCrudProps = IBaseCrudProps<IBuildCrudReolversProps, IBuildCrudReolversProps>;
 
 export interface IBuildResolversProps {
     suffix: string;
     returnType: any;
     idFields: string[];
     inputType?: any;
-    resolverProps: IMultiplicityResProps[];
-}
-
-export type ICreateCrudResolverOptions = IBaseCrudResolverOptions<IResProps | boolean>;
-
-export interface IComplteResolverOptions {
-    resolverProps: IMultiplicityResProps[];
-    inputType: any;
-}
-
-export interface ICompleteCrudResolverOptions {
-    idFields?: string[];
-    resolvers: {
-        create?: IComplteResolverOptions;
-        get?: IComplteResolverOptions;
-        update?: IComplteResolverOptions;
-        delete?: IComplteResolverOptions;
-    };
+    resolvers: IMultiplicityResProps[];
 }
 
 // export type ResolverType = 'create' | 'update' | 'delete' | 'get';
-
-export enum ResolverType {
-    CREATE = 'create',
-    UPDATE = 'update',
-    DELETE = 'delete',
-    GET = 'get',
-}
 
 export type CrudBuilders = { [key in ResolverType]?: (buildResolverProps: IBuildResolversProps) => any[] };
