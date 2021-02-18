@@ -4,10 +4,10 @@ import { CreateEventInput, UpdateEventInput } from 'src/modules/event/inputs';
 
 const CrudResolvers = buildCrudResolvers('Event', Event, {
     crudProps: {
-        create: { inputType: CreateEventInput, resolverProps: { one: { middleware: [] } } },
-        update: { inputType: UpdateEventInput, resolverProps: { one: { middleware: [] } } },
-        get: { resolverProps: { one: { middleware: [] }, many: { middleware: [] } } },
-        delete: { resolverProps: { one: { middleware: [] } } },
+        create: { inputType: CreateEventInput, resolverProps: { one: true } },
+        update: { inputType: UpdateEventInput, resolverProps: { one: true } },
+        get: { resolverProps: { one: true, many: true } },
+        delete: { resolverProps: { one: true } },
     },
 });
 

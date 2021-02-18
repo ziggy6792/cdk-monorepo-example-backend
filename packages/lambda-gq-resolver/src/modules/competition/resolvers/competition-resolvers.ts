@@ -5,10 +5,10 @@ import { CreateCompetitionInput, UpdateCompetitionInput } from 'src/modules/comp
 
 const CrudResolvers = buildCrudResolvers('Competition', Competition, {
     crudProps: {
-        create: { inputType: CreateCompetitionInput, resolverProps: { one: { middleware: [] } } },
-        update: { inputType: UpdateCompetitionInput, resolverProps: { one: { middleware: [] } } },
-        get: { resolverProps: { one: { middleware: [] }, many: { middleware: [] } } },
-        delete: { resolverProps: { one: { middleware: [] } } },
+        create: { inputType: CreateCompetitionInput, resolverProps: { one: true } },
+        update: { inputType: UpdateCompetitionInput, resolverProps: { one: true } },
+        get: { resolverProps: { one: true, many: true } },
+        delete: { resolverProps: { one: true } },
     },
 });
 

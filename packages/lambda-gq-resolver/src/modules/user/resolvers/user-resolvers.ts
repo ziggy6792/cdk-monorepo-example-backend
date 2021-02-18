@@ -8,7 +8,7 @@ const CrudResolvers = buildCrudResolvers('User', User, {
     crudProps: {
         create: { inputType: CreateUserInput, resolverProps: { one: { middleware: [isAuthRole] } } },
         update: { inputType: UpdateUserInput, resolverProps: { one: { middleware: [isAuthRole] } } },
-        get: { resolverProps: { one: { middleware: [] }, many: { middleware: [] } } },
+        get: { resolverProps: { one: true, many: true } },
         delete: { resolverProps: { one: { middleware: [isAuthRole] } } },
     },
 });

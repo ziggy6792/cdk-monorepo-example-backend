@@ -4,7 +4,7 @@ import SeedSlot from 'src/domain/models/seed-slot';
 
 const CrudResolvers = buildCrudResolvers('SeedSlot', SeedSlot, {
     crudProps: {
-        get: { resolverProps: { one: { middleware: [] }, many: { middleware: [] } } },
+        get: { resolverProps: { one: true, many: true } },
     },
 });
 
