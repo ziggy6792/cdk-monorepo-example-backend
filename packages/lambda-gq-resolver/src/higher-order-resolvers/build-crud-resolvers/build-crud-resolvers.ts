@@ -18,28 +18,28 @@ const crudBuilders: CrudBuilders = {
 };
 const crudResolverBuilder = new CrudResolverBuilder(crudBuilders);
 
-const initialCompleteCrudProps: ICompleteCrudProps = {
-    idFields: ['id'],
-    crudProps: {
-        create: {
-            inputType: null,
-            resolvers: [],
-        },
+// const initialCompleteCrudProps: ICompleteCrudProps = {
+//     idFields: ['id'],
+//     crudProps: {
+//         create: {
+//             inputType: null,
+//             resolvers: [],
+//         },
 
-        get: {
-            inputType: null,
-            resolvers: [],
-        },
-        update: {
-            inputType: null,
-            resolvers: [],
-        },
-        delete: {
-            inputType: null,
-            resolvers: [],
-        },
-    },
-};
+//         get: {
+//             inputType: null,
+//             resolvers: [],
+//         },
+//         update: {
+//             inputType: null,
+//             resolvers: [],
+//         },
+//         delete: {
+//             inputType: null,
+//             resolvers: [],
+//         },
+//     },
+// };
 
 const buildCrudResolvers = (suffix: string, returnType: any, buildCrudProps: IBuildCrudProps): any[] => {
     const generatedCrudResolvers = crudResolverBuilder.buildCrudResolvers(suffix, returnType, buildCrudProps);

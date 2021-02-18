@@ -54,7 +54,7 @@ export interface IBaseCrudProps<CreateUpdate, GetDelte> {
     };
 }
 
-export type IBuildCrudProps = IBaseCrudProps<ICrudProps | IInputCrudProps, ICrudProps>;
+export type IBuildCrudProps = IBaseCrudProps<IInputCrudProps, ICrudProps | IInputCrudProps>;
 
 export type ICompleteCrudProps = IBaseCrudProps<IBuildCrudReolversProps, IBuildCrudReolversProps>;
 
@@ -65,7 +65,5 @@ export interface IBuildResolversProps {
     inputType?: any;
     resolvers: IMultiplicityResProps[];
 }
-
-// export type ResolverType = 'create' | 'update' | 'delete' | 'get';
 
 export type CrudBuilders = { [key in ResolverType]?: (buildResolverProps: IBuildResolversProps) => any[] };
