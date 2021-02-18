@@ -51,8 +51,6 @@ const isAllowedToUpdateMany: MiddlewareFn<IContext> = async ({ args, context: { 
         }
     });
 
-    console.log('events', events);
-
     return next();
 };
 

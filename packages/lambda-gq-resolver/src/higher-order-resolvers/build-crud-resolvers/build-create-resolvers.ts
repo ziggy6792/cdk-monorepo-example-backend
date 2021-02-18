@@ -8,11 +8,9 @@ import { mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
 import _ from 'lodash';
 import { createNotExistsCondition, mapDbException } from 'src/utils/utility';
-import { IBuildResolversProps } from './types';
+import { IBuildResolversProps, Multiplicity } from './types';
 
 export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) {
-    const retResolvers = [];
-
     const { suffix, returnType, resolverProps, idFields, inputType } = buildResolversProps;
 
     const createEntity = async (entity: any) => {
@@ -25,36 +23,38 @@ export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) 
         }
     };
 
-    if (resolverProps.one) {
-        const { middleware } = resolverProps.one;
-        @Resolver()
-        class CreateOneResolver {
-            @Mutation(() => returnType, { name: `create${suffix}` })
-            @UseMiddleware(...(middleware || []))
-            async create(@Arg('input', () => inputType) input: any) {
-                const entity = Object.assign(new returnType(), input);
-                const createdEntity = await createEntity(entity);
-                return createdEntity;
-            }
-        }
-        retResolvers.push(CreateOneResolver);
-    }
+    const resolvers = resolverProps.map((props) => {
+        const { middleware } = props;
 
-    if (resolverProps.many) {
-        const { middleware } = resolverProps.many;
-        @Resolver()
-        class CreateManyResolver {
-            @Mutation(() => [returnType], { name: `create${pluralize.plural(suffix)}` })
-            @UseMiddleware(...(middleware || []))
-            async create(@Arg('input', () => [inputType]) inputs: any[]) {
-                const entities = inputs.map((input) => Object.assign(new returnType(), input));
-                const createFns = entities.map((entity) => async () => createEntity(entity));
-                const createdEnties = await Promise.all(createFns.map((fn) => fn()));
-                return createdEnties;
+        if (props.multiplicityType === Multiplicity.ONE) {
+            @Resolver()
+            class CreateOneResolver {
+                @Mutation(() => returnType, { name: `create${suffix}` })
+                @UseMiddleware(...(middleware || []))
+                async create(@Arg('input', () => inputType) input: any) {
+                    const entity = Object.assign(new returnType(), input);
+                    const createdEntity = await createEntity(entity);
+                    return createdEntity;
+                }
             }
+            return CreateOneResolver;
         }
-        retResolvers.push(CreateManyResolver);
-    }
+        if (props.multiplicityType === Multiplicity.MANY) {
+            @Resolver()
+            class CreateManyResolver {
+                @Mutation(() => [returnType], { name: `create${pluralize.plural(suffix)}` })
+                @UseMiddleware(...(middleware || []))
+                async create(@Arg('input', () => [inputType]) inputs: any[]) {
+                    const entities = inputs.map((input) => Object.assign(new returnType(), input));
+                    const createFns = entities.map((entity) => async () => createEntity(entity));
+                    const createdEnties = await Promise.all(createFns.map((fn) => fn()));
+                    return createdEnties;
+                }
+            }
+            return CreateManyResolver;
+        }
+        throw new Error('This can never happen');
+    });
 
-    return retResolvers;
+    return resolvers;
 }

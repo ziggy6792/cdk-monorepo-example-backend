@@ -8,44 +8,43 @@ import { Arg, UseMiddleware, ID, Mutation, Resolver } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
 import { toArray } from 'src/utils/async-iterator';
-import { IBuildResolversProps } from './types';
+import { IBuildResolversProps, Multiplicity } from './types';
 
 export function buildDeleteResolvers(buildResolversProps: IBuildResolversProps) {
-    const retResolvers = [];
-
     const { suffix, returnType, resolverProps, idFields, inputType } = buildResolversProps;
 
-    if (resolverProps.one) {
-        const { middleware } = resolverProps.one;
+    const resolvers = resolverProps.map((props) => {
+        const { middleware } = props;
 
-        @Resolver()
-        class DeleteOneResolver {
-            @Mutation(() => returnType, { name: `delete${suffix}` })
-            @UseMiddleware(...(middleware || []))
-            async delete(@Arg('id', () => ID) id: string): Promise<any[]> {
-                const entity = Object.assign(new returnType(), { id });
-                const ret = await mapper.delete(entity);
-                return ret;
+        if (props.multiplicityType === Multiplicity.ONE) {
+            @Resolver()
+            class DeleteOneResolver {
+                @Mutation(() => returnType, { name: `delete${suffix}` })
+                @UseMiddleware(...(middleware || []))
+                async delete(@Arg('id', () => ID) id: string): Promise<any[]> {
+                    const entity = Object.assign(new returnType(), { id });
+                    const ret = await mapper.delete(entity);
+                    return ret;
+                }
             }
+            return DeleteOneResolver;
         }
-        retResolvers.push(DeleteOneResolver);
-    }
+        if (props.multiplicityType === Multiplicity.MANY) {
+            @Resolver()
+            class DeleteManyResolver {
+                @Mutation(() => [returnType], { name: `delete${pluralize.plural(suffix)}` })
+                @UseMiddleware(...(middleware || []))
+                async create(@Arg('input', () => [inputType]) inputs: any[]) {
+                    const entities = inputs.map((input) => Object.assign(new returnType(), input));
 
-    if (resolverProps.many) {
-        const { middleware } = resolverProps.many;
-        @Resolver()
-        class DeleteManyResolver {
-            @Mutation(() => [returnType], { name: `delete${pluralize.plural(suffix)}` })
-            @UseMiddleware(...(middleware || []))
-            async create(@Arg('input', () => [inputType]) inputs: any[]) {
-                const entities = inputs.map((input) => Object.assign(new returnType(), input));
-
-                const deletedEntities = toArray(mapper.batchDelete(entities));
-                return deletedEntities;
+                    const deletedEntities = toArray(mapper.batchDelete(entities));
+                    return deletedEntities;
+                }
             }
+            return DeleteManyResolver;
         }
-        retResolvers.push(DeleteManyResolver);
-    }
+        throw new Error('This can never happen');
+    });
 
-    return retResolvers;
+    return resolvers;
 }

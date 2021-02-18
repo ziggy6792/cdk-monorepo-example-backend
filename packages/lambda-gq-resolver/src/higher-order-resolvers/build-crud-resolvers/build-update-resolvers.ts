@@ -9,11 +9,9 @@ import pluralize from 'pluralize';
 import { createExistsCondition, mapDbException } from 'src/utils/utility';
 import _ from 'lodash';
 
-import { IBuildResolversProps } from './types';
+import { IBuildResolversProps, Multiplicity } from './types';
 
 export function buildUpdateResolvers(buildResolversProps: IBuildResolversProps) {
-    const retResolvers = [];
-
     const { suffix, returnType, resolverProps, idFields, inputType } = buildResolversProps;
 
     const updateEntity = async (entity: any) => {
@@ -26,37 +24,38 @@ export function buildUpdateResolvers(buildResolversProps: IBuildResolversProps) 
         }
     };
 
-    if (resolverProps.one) {
-        const { middleware } = resolverProps.one;
+    const resolvers = resolverProps.map((props) => {
+        const { middleware } = props;
 
-        @Resolver()
-        class UpdateOneResolver {
-            @Mutation(() => returnType, { name: `update${suffix}` })
-            @UseMiddleware(...(middleware || []))
-            async update(@Arg('input', () => inputType) input: any) {
-                const entity = Object.assign(new returnType(), input);
-                const createdEntity = updateEntity(entity);
-                return createdEntity;
+        if (props.multiplicityType === Multiplicity.ONE) {
+            @Resolver()
+            class UpdateOneResolver {
+                @Mutation(() => returnType, { name: `update${suffix}` })
+                @UseMiddleware(...(middleware || []))
+                async update(@Arg('input', () => inputType) input: any) {
+                    const entity = Object.assign(new returnType(), input);
+                    const createdEntity = updateEntity(entity);
+                    return createdEntity;
+                }
             }
+            return UpdateOneResolver;
         }
-        retResolvers.push(UpdateOneResolver);
-    }
-
-    if (resolverProps.many) {
-        const { middleware } = resolverProps.many;
-        @Resolver()
-        class DelteManyResolver {
-            @Mutation(() => [returnType], { name: `update${pluralize.plural(suffix)}` })
-            @UseMiddleware(...(middleware || []))
-            async create(@Arg('input', () => [inputType]) inputs: any[]) {
-                const entities = inputs.map((input) => Object.assign(new returnType(), input));
-                const updateFns = entities.map((entity) => async () => updateEntity(entity));
-                const updatedEntities = await Promise.all(updateFns.map((fn) => fn()));
-                return updatedEntities;
+        if (props.multiplicityType === Multiplicity.MANY) {
+            @Resolver()
+            class UpdateManyResolver {
+                @Mutation(() => [returnType], { name: `update${pluralize.plural(suffix)}` })
+                @UseMiddleware(...(middleware || []))
+                async create(@Arg('input', () => [inputType]) inputs: any[]) {
+                    const entities = inputs.map((input) => Object.assign(new returnType(), input));
+                    const updateFns = entities.map((entity) => async () => updateEntity(entity));
+                    const updatedEntities = await Promise.all(updateFns.map((fn) => fn()));
+                    return updatedEntities;
+                }
             }
+            return UpdateManyResolver;
         }
-        retResolvers.push(DelteManyResolver);
-    }
+        throw new Error('This can never happen');
+    });
 
-    return retResolvers;
+    return resolvers;
 }
