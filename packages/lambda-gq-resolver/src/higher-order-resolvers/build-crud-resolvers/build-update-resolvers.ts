@@ -12,7 +12,7 @@ import _ from 'lodash';
 import { IBuildResolversProps, Multiplicity } from './types';
 
 export function buildUpdateResolvers(buildResolversProps: IBuildResolversProps) {
-    const { suffix, returnType, resolvers: resolverProps, idFields, inputType } = buildResolversProps;
+    const { suffix, returnType, resolverBuildProps, idFields, inputType } = buildResolversProps;
 
     const updateEntity = async (entity: any) => {
         try {
@@ -24,7 +24,7 @@ export function buildUpdateResolvers(buildResolversProps: IBuildResolversProps) 
         }
     };
 
-    const resolvers = resolverProps.map((props) => {
+    const resolvers = resolverBuildProps.map((props) => {
         const { middleware } = props;
 
         if (props.multiplicityType === Multiplicity.ONE) {

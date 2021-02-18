@@ -13,9 +13,9 @@ import { IBuildResolversProps, Multiplicity } from './types';
 export function buildGetResolvers(buildResolversProps: IBuildResolversProps) {
     const retResolvers = [];
 
-    const { suffix, returnType, resolvers: resolverProps } = buildResolversProps;
+    const { suffix, returnType, resolverBuildProps } = buildResolversProps;
 
-    const resolvers = resolverProps.map((props) => {
+    const resolvers = resolverBuildProps.map((props) => {
         const { middleware } = props;
 
         if (props.multiplicityType === Multiplicity.ONE) {

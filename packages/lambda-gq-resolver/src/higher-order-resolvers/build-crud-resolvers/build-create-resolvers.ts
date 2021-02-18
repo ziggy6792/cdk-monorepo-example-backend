@@ -11,7 +11,7 @@ import { createNotExistsCondition, mapDbException } from 'src/utils/utility';
 import { IBuildResolversProps, Multiplicity } from './types';
 
 export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) {
-    const { suffix, returnType, resolvers: resolverProps, idFields, inputType } = buildResolversProps;
+    const { suffix, returnType, resolverBuildProps, idFields, inputType } = buildResolversProps;
 
     const createEntity = async (entity: any) => {
         try {
@@ -23,7 +23,7 @@ export function buildCreateResolvers(buildResolversProps: IBuildResolversProps) 
         }
     };
 
-    const resolvers = resolverProps.map((props) => {
+    const resolvers = resolverBuildProps.map((props) => {
         const { middleware } = props;
 
         if (props.multiplicityType === Multiplicity.ONE) {

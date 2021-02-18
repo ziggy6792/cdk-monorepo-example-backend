@@ -5,20 +5,7 @@
 /* eslint-disable class-methods-use-this */
 
 import _ from 'lodash';
-import {
-    IMultiplicityResProps,
-    Multiplicity,
-    IOneResProps,
-    IOneAndOrManyResProps,
-    IManyResProps,
-    ICrudProps,
-    IResProps,
-    IBuildResolversProps,
-    ResolverType,
-    CrudBuilders,
-    ICompleteCrudProps,
-    IBuildCrudProps,
-} from './types';
+import { Multiplicity, IOneResProps, IManyResProps, IBuildResolversProps, ResolverType, CrudBuilders, ICompleteCrudProps, IBuildCrudProps } from './types';
 
 const defaultResolverProps = {
     middleware: [],
@@ -41,40 +28,17 @@ const buildCrudPropsToCompleteCrudProps = (buildCrudProps: IBuildCrudProps): ICo
 
         const oneProps = resolverProps as IOneResProps;
         if (oneProps.one) {
-            console.log('one');
             const passedInProps = oneProps.one === true ? {} : oneProps.one;
             completeCrudProps.crudProps[resolverType].resolvers.push({ ...defaultResolverProps, ...passedInProps, multiplicityType: Multiplicity.ONE });
         }
         const manyProps = resolverProps as IManyResProps;
         if (manyProps.many) {
-            console.log('many');
             const passedInProps = manyProps.many === true ? {} : manyProps.many;
             completeCrudProps.crudProps[resolverType].resolvers.push({ ...defaultResolverProps, ...passedInProps, multiplicityType: Multiplicity.MANY });
         }
     });
     return completeCrudProps as ICompleteCrudProps;
 };
-
-// const applyDefaults = (crudOptions: ICreateCrudResolverOptions): ICompleteCrudResolverOptions => {
-//     const completeOptions: Partial<ICompleteCrudResolverOptions> = {};
-
-//     for (const [key, value] of Object.entries(crudOptions.resolvers)) {
-//         const resolverType = key as keyof typeof crudOptions.resolvers;
-//         const resolverOptions = value as ICrudProps<IResProps | boolean>;
-
-//         const resPropsAsList = getResolverPropsAsList(resolverOptions.resolverProps);
-
-//         completeOptions.idFields = crudOptions.idFields;
-//         completeOptions.resolvers = {};
-
-//         completeOptions.resolvers[resolverType] = { resolverProps: null, inputType: null };
-//         completeOptions.resolvers[resolverType].inputType = (crudOptions.resolvers[resolverType] as any).inputType;
-//         completeOptions.resolvers[resolverType].resolverProps = resPropsAsList;
-//     }
-//     crudOptions.idFields = crudOptions.idFields || ['id'];
-
-//     return completeOptions as ICompleteCrudResolverOptions;
-// };
 
 class CrudResolverBuilder {
     private crudBuilders: CrudBuilders;
@@ -92,12 +56,12 @@ class CrudResolverBuilder {
             if (!completeCrudProps.crudProps[resolverType]) {
                 return null;
             }
-            const ret = {
+            const ret: IBuildResolversProps = {
                 suffix,
                 returnType,
                 idFields: completeCrudProps.idFields,
                 inputType: completeCrudProps.crudProps[resolverType].inputType,
-                resolvers: completeCrudProps.crudProps[resolverType].resolvers,
+                resolverBuildProps: completeCrudProps.crudProps[resolverType].resolvers,
             };
             return ret;
         };
