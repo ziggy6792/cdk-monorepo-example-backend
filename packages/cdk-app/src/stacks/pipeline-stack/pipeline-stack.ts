@@ -35,7 +35,7 @@ class PipelineStack extends cdk.Stack {
                 // Replace these with your actual GitHub project info
                 owner: 'ziggy6792',
                 repo: 'cdk-monorepo-example-backend',
-                branch: 'master',
+                branch: 'update/use-aws-docker-gallery',
             }),
 
             synthAction: cdkPipeline.SimpleSynthAction.standardYarnSynth({
