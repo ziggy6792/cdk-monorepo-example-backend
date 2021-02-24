@@ -2,7 +2,7 @@ import { MiddlewareFn } from 'type-graphql';
 
 import { IContext, IdentityType } from 'src/types';
 
-const isAuthUser: MiddlewareFn<IContext> = async ({ context: { identity } }, next) => {
+const isAuthUserOrRole: MiddlewareFn<IContext> = async ({ context: { identity } }, next) => {
     if (identity.type !== IdentityType.USER && identity.type !== IdentityType.ROLE) {
         // Role can do anyting
         throw new Error('not authenticated');
@@ -11,4 +11,4 @@ const isAuthUser: MiddlewareFn<IContext> = async ({ context: { identity } }, nex
     return next();
 };
 
-export default isAuthUser;
+export default isAuthUserOrRole;

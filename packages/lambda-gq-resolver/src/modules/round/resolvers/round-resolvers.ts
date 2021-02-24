@@ -1,10 +1,9 @@
 import isAuthRole from 'src/middleware/is-auth-role';
-import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolvers';
+import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
 import Round from 'src/domain/models/round';
 
-const CrudResolvers = createCrudResolvers('Round', Round, {
-    list: true,
-    get: true,
+const CrudResolvers = buildCrudResolvers('Round', Round, {
+    crudProps: { get: { resolverProps: { one: true, many: true } } },
 });
 
 export default [...CrudResolvers];

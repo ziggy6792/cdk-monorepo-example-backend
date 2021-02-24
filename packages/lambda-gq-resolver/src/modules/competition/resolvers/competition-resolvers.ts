@@ -1,14 +1,15 @@
 import Competition from 'src/domain/models/competition';
 import isAuthRole from 'src/middleware/is-auth-role';
-import createCrudResolvers from 'src/higher-order-resolvers/create-crud-resolvers';
+import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
 import { CreateCompetitionInput, UpdateCompetitionInput } from 'src/modules/competition/inputs';
 
-const CrudResolvers = createCrudResolvers('Competition', Competition, {
-    create: { middleware: [isAuthRole], inputType: CreateCompetitionInput },
-    update: { middleware: [isAuthRole], inputType: UpdateCompetitionInput },
-    list: { middleware: [isAuthRole] },
-    get: { middleware: [isAuthRole] },
-    delete: { middleware: [isAuthRole] },
+const CrudResolvers = buildCrudResolvers('Competition', Competition, {
+    crudProps: {
+        create: { inputType: CreateCompetitionInput, resolverProps: { one: true } },
+        update: { inputType: UpdateCompetitionInput, resolverProps: { one: true } },
+        get: { resolverProps: { one: true, many: true } },
+        delete: { resolverProps: { one: true } },
+    },
 });
 
 export default [...CrudResolvers];

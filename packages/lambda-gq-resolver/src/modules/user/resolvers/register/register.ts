@@ -2,15 +2,15 @@
 
 import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql';
 import { IContext } from 'src/types';
-import { createUniqueCondition, mapper } from 'src/utils/mapper';
+import { mapper } from 'src/utils/mapper';
 import User from 'src/domain/models/user';
 import isAuthRole from 'src/middleware/is-auth-role';
+import { createExistsCondition } from 'src/utils/utility';
 import { RegisterInput } from './register-input';
 
 @Resolver()
 export default class RegisterResolver {
     @Query(() => String)
-    // @UseMiddleware(isAuthUser)
     async hello(@Ctx() ctx: IContext): Promise<string> {
         console.log('identity', ctx.identity);
 
@@ -31,7 +31,7 @@ export default class RegisterResolver {
         user.lastName = lastName;
         user.email = email;
 
-        const createdUser = await mapper.put(user, { condition: createUniqueCondition() });
+        const createdUser = await mapper.put(user, { condition: createExistsCondition() });
 
         return createdUser;
     }

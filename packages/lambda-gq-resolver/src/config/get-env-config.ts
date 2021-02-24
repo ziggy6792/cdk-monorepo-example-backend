@@ -8,7 +8,7 @@ export enum EnvType {
 }
 
 // Point to test (local) or staging (cloud)
-const localEnv: EnvType = EnvType.TEST;
+const localEnv: EnvType = EnvType.STAGING;
 
 const env = (process.env.ENV as EnvType) || localEnv;
 
@@ -18,7 +18,7 @@ const awsConfig: ServiceConfigurationOptions = {
 
 const envConfig = {
     env,
-    awsConfig: localEnv === EnvType.TEST ? localAwsConfig : awsConfig,
+    awsConfig: (localEnv as EnvType) === EnvType.TEST ? localAwsConfig : awsConfig,
 };
 
 const getEnvConfig = () => {

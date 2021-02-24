@@ -141,11 +141,6 @@ class Competition extends DataEntity {
     }
 
     async getRiderAllocations(): Promise<RiderAllocation[]> {
-        // const filter: ConditionExpression = {
-        //     subject: 'allocatableId',
-        //     ...equals(this.id),
-        // };
-        // // return toArray(mapper.scan(RiderAllocation, { filter }));
         return toArray(mapper.query(RiderAllocation, { allocatableId: this.id }, { indexName: 'byAllocatable' }));
     }
 
