@@ -29,7 +29,7 @@ AWSMock.mock('CognitoIdentityServiceProvider', 'adminAddUserToGroup', (params, c
     cb(null);
 });
 
-process.env.SSM_LAMBDA_CONFIG = '/cdk-monorepo-backend/staging/lambda-config';
+process.env.SSM_LAMBDA_CONFIG = '/alpaca-backend/staging/lambda-config';
 
 jest.spyOn(config, 'loadConfig').mockResolvedValue();
 

@@ -8,7 +8,7 @@ export enum EnvType {
 }
 
 // Point to test (local) or staging (cloud)
-const localEnv: EnvType = EnvType.STAGING;
+const localEnv: EnvType = EnvType.TEST;
 
 const env = (process.env.ENV as EnvType) || localEnv;
 

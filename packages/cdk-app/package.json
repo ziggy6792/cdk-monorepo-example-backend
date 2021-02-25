@@ -1,5 +1,5 @@
 {
-    "name": "@simonverhoeven/cdk-app",
+    "name": "@alpaca-backend/cdk-app",
     "version": "0.1.0",
     "bin": {
         "packages": "src/index.ts"
@@ -41,11 +41,11 @@
         "@aws-cdk/core": "1.87.0",
         "@aws-cdk/pipelines": "1.87.0",
         "@aws-solutions-constructs/core": "1.87.0",
-        "@simonverhoeven/common": "^1.0.0",
-        "@simonverhoeven/lambda-a": "^2.0.0",
-        "@simonverhoeven/lambda-b": "^2.0.0",
-        "@simonverhoeven/lambda-gq-resolver": "^2.0.0",
-        "@simonverhoeven/lambda-user-confirmed": "^2.0.0",
+        "@alpaca-backend/common": "^1.0.0",
+        "@alpaca-backend/lambda-a": "^2.0.0",
+        "@alpaca-backend/lambda-b": "^2.0.0",
+        "@alpaca-backend/lambda-gq-resolver": "^2.0.0",
+        "@alpaca-backend/lambda-user-confirmed": "^2.0.0",
         "aws-cdk": "1.87.0",
         "aws-cdk-local": "^1.65.3",
         "json-beautify": "^1.1.1",

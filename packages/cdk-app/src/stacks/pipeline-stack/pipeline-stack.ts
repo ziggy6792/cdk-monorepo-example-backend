@@ -1,3 +1,4 @@
+import { commonConfig } from '@alpaca-backend/common';
 /* eslint-disable import/prefer-default-export */
 import * as cdk from '@aws-cdk/core';
 
@@ -34,7 +35,7 @@ class PipelineStack extends cdk.Stack {
                 trigger: codepipelineActions.GitHubTrigger.POLL,
                 // Replace these with your actual GitHub project info
                 owner: 'ziggy6792',
-                repo: 'cdk-monorepo-example-backend',
+                repo: commonConfig.PROJECT_NAME,
                 branch: 'master',
             }),
 

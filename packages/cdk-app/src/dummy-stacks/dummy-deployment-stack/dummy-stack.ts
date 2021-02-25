@@ -3,7 +3,7 @@
 import { DEPLOYMENT_CONFIG } from 'src/config';
 import * as cdk from '@aws-cdk/core';
 import DeploymentStack from 'src/stacks/deployment-stack';
-import { commonConfig } from '@simonverhoeven/common';
+import { commonConfig } from '@alpaca-backend/common';
 
 const createDummyStack = (scope: cdk.Construct) => {
     const stageName = 'dummy';

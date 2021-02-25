@@ -11,7 +11,7 @@ import { RiderAllocationList, SeedSlotList } from 'src/domain/common-objects/lis
 import { DynamoDB } from 'aws-sdk';
 
 import getEnvConfig from 'src/config/get-env-config';
-import { commonConfig, commonUtils } from '@simonverhoeven/common';
+import { commonConfig, commonUtils } from '@alpaca-backend/common';
 import * as utils from 'src/utils/utility';
 import Round from './round';
 import SeedSlot from './seed-slot';

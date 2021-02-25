@@ -8,7 +8,7 @@ import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { mapper } from 'src/utils/mapper';
 import * as utils from 'src/utils/utility';
-import { commonConfig } from '@simonverhoeven/common';
+import { commonConfig } from '@alpaca-backend/common';
 import Heat from './heat';
 import Competition from './competition';
 import Creatable from './abstract/creatable';

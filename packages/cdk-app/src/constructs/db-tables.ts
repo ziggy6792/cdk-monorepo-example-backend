@@ -2,7 +2,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
 import * as utils from 'src/utils';
-import { commonConfig, IAttributeType, commonUtils } from '@simonverhoeven/common';
+import { commonConfig, IAttributeType, commonUtils } from '@alpaca-backend/common';
 
 interface DbTablesProps {
     stageName: string;

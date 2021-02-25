@@ -6,7 +6,7 @@ import { Field, ObjectType, ID, Int, Root } from 'type-graphql';
 import Identifiable from 'src/domain/models/abstract/identifiable';
 import { mapper } from 'src/utils/mapper';
 import * as utils from 'src/utils/utility';
-import { commonConfig } from '@simonverhoeven/common';
+import { commonConfig } from '@alpaca-backend/common';
 import RiderAllocation from './rider-allocation';
 import Heat from './heat';
 

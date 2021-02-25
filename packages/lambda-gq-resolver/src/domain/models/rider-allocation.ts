@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root, Float } from 'type-graphql';
 import Creatable from 'src/domain/models/abstract/creatable';
 import { mapper } from 'src/utils/mapper';
-import { commonConfig, commonUtils } from '@simonverhoeven/common';
+import { commonConfig, commonUtils } from '@alpaca-backend/common';
 import getEnvConfig from 'src/config/get-env-config';
 import * as utils from 'src/utils/utility';
 import User from './user';

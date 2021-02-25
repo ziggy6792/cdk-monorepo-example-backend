@@ -2,7 +2,7 @@
     "name": "cdk-lerna-example",
     "version": "1.0.0",
     "main": "index.js",
-    "author": "simonverhoeven",
+    "author": "alpaca-backend",
     "license": "MIT",
     "private": true,
     "workspaces": {
@@ -18,14 +18,14 @@
         "test:watch": "jest --watch --runInBand --colors",
         "test": "jest --coverage --runInBand --colors",
         "test:with:env": "yarn local:db:start:test:db && yarn test && yarn local:db:force:stop",
-        "local:db:start:test:db": "lerna run start:test:db --scope @simonverhoeven/local-test-server --stream",
-        "local:db:force:stop": "lerna run force:stop --scope @simonverhoeven/local-test-server --stream",
+        "local:db:start:test:db": "lerna run start:test:db --scope @alpaca-backend/local-test-server --stream",
+        "local:db:force:stop": "lerna run force:stop --scope @alpaca-backend/local-test-server --stream",
         "lint": "eslint './{utils,packages}/**/src/**/*.ts'",
         "start": "lerna run start --stream --parallel",
         "force:stop": "lerna run force:stop --stream --parallel",
         "nodemon": "nodemon",
         "build": "lerna run build",
-        "cdk:synth": "lerna run synth --scope @simonverhoeven/cdk-app && rm -rf cdk.out && cp -r packages/cdk-app/cdk.out cdk.out"
+        "cdk:synth": "lerna run synth --scope @alpaca-backend/cdk-app && rm -rf cdk.out && cp -r packages/cdk-app/cdk.out cdk.out"
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.59",

@@ -1,4 +1,4 @@
-import { commonConfig } from '@simonverhoeven/common';
+import { commonConfig } from '@alpaca-backend/common';
 
 const ssmSep = '/';
 const conSep = '-';

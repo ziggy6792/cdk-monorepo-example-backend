@@ -1,4 +1,4 @@
-import { commonUtils, commonConfig } from '@simonverhoeven/common';
+import { commonUtils, commonConfig } from '@alpaca-backend/common';
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';

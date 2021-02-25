@@ -48,7 +48,7 @@ class DeploymentStack extends cdk.Stack {
                 timeout: cdk.Duration.seconds(30),
                 runtime: lambda.Runtime.NODEJS_12_X,
                 handler: 'index.handler',
-                code: lambda.Code.fromAsset(path.join(require.resolve('@simonverhoeven/lambda-gq-resolver'), '..')),
+                code: lambda.Code.fromAsset(path.join(require.resolve('@alpaca-backend/lambda-gq-resolver'), '..')),
                 environment: lambdaGqResolverEnv,
             },
             apiGatewayProps: {
@@ -166,7 +166,7 @@ class DeploymentStack extends cdk.Stack {
             timeout: cdk.Duration.seconds(30),
             runtime: lambda.Runtime.NODEJS_12_X,
             handler: 'index.handler',
-            code: lambda.Code.fromAsset(path.join(require.resolve('@simonverhoeven/lambda-user-confirmed'), '..')),
+            code: lambda.Code.fromAsset(path.join(require.resolve('@alpaca-backend/lambda-user-confirmed'), '..')),
             environment: {
                 SSM_LAMBDA_CONFIG: lambdaConfigParam.name,
             },
