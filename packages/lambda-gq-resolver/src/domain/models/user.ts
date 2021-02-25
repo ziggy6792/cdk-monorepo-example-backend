@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { Field, ObjectType, Root } from 'type-graphql';
 import Identifiable from 'src/domain/models/abstract/identifiable';
 import * as utils from 'src/utils/utility';
-import { commonConfig } from '@simonverhoeven/common';
+import { commonConfig } from '@alpaca-backend/common';
 
 // interface Deleteable {
 //     deleteChildren: () => Promise<void>;

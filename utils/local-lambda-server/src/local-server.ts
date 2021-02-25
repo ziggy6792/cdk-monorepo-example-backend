@@ -2,7 +2,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import path from 'path';
 import express from 'express';
-import { createApolloServer } from '@simonverhoeven/lambda-gq-resolver';
+import { createApolloServer } from '@alpaca-backend/lambda-gq-resolver';
 import config from 'src/config';
 import buildCognitoAutorizer from './mock-gateway/cognito-authorizer';
 
@@ -36,7 +36,7 @@ const buildLocalServer = async () => {
 
     app.use('/lambda-user-confirmed', async (req, res) => {
         const result = await lambdaLocal.execute({
-            lambdaPath: require.resolve('@simonverhoeven/lambda-user-confirmed'),
+            lambdaPath: require.resolve('@alpaca-backend/lambda-user-confirmed'),
             lambdaHandler: 'handler',
             envfile: path.join(__dirname, '.env-local'),
             event: {
@@ -52,7 +52,7 @@ const buildLocalServer = async () => {
 
     app.use('/lambda-a', async (req, res) => {
         const result = await lambdaLocal.execute({
-            lambdaPath: require.resolve('@simonverhoeven/lambda-a'),
+            lambdaPath: require.resolve('@alpaca-backend/lambda-a'),
             lambdaHandler: 'handler',
             envfile: path.join(__dirname, '.env-lambda'),
             event: {
@@ -68,7 +68,7 @@ const buildLocalServer = async () => {
 
     app.use('/lambda-b', async (req, res) => {
         const result = await lambdaLocal.execute({
-            lambdaPath: require.resolve('@simonverhoeven/lambda-b'),
+            lambdaPath: require.resolve('@alpaca-backend/lambda-b'),
             lambdaHandler: 'handler',
             envfile: path.join(__dirname, '.env-lambda'),
             event: {

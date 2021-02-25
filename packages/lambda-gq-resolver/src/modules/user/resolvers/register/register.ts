@@ -5,7 +5,7 @@ import { IContext } from 'src/types';
 import { mapper } from 'src/utils/mapper';
 import User from 'src/domain/models/user';
 import isAuthRole from 'src/middleware/is-auth-role';
-import { createExistsCondition } from 'src/utils/utility';
+import { createNotExistsCondition } from 'src/utils/utility';
 import { RegisterInput } from './register-input';
 
 @Resolver()
@@ -31,7 +31,7 @@ export default class RegisterResolver {
         user.lastName = lastName;
         user.email = email;
 
-        const createdUser = await mapper.put(user, { condition: createExistsCondition() });
+        const createdUser = await mapper.put(user, { condition: createNotExistsCondition() });
 
         return createdUser;
     }

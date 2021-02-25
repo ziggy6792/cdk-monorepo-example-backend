@@ -2,7 +2,7 @@
 import * as cdk from '@aws-cdk/core';
 
 import { DEPLOYMENT_CONFIG } from 'src/config';
-import { commonConfig } from '@simonverhoeven/common';
+import { commonConfig } from '@alpaca-backend/common';
 
 import DeploymentStack from 'src/stacks/deployment-stack';
 

@@ -69,7 +69,7 @@ read https://steveholgado.com/aws-lambda-local-development/ for more information
 ## Adding a lambda to cdk
 
 1. create your new lambda in packages directory
-2. run `lerna add {new lambda package name} --scope @simonverhoeven/cdk-app` this will add the new lambda to your cdk project. This isnt required but it make referencing the lambda folder directory easier in the following step
+2. run `lerna add {new lambda package name} --scope @alpaca-backend/cdk-app` this will add the new lambda to your cdk project. This isnt required but it make referencing the lambda folder directory easier in the following step
 3. add your lambda to your cdk stack as per usual, the important part to change is where to reference the lambda code:
 
 ```
@@ -80,7 +80,7 @@ new lambda.Function(this, 'lambda-a', {
 	handler: 'index.handler',
 	code: lambda.Code.fromAsset(
 		path.join(
-			require.resolve('@simonverhoeven/lambda-a'),
+			require.resolve('@alpaca-backend/lambda-a'),
 			'..'
 		)
 	),
@@ -98,9 +98,9 @@ new lambda.Function(this, 'lambda-a', {
 
 ## Useful commands
 
-`lerna run build --scope @simonverhoeven/lambda-a` can run this anywhere inside of project to build only one lambda, useful if only building and deploying an update to one lambda so that you dont have to build all other lambdas before dpeloy as project grows
+`lerna run build --scope @alpaca-backend/lambda-a` can run this anywhere inside of project to build only one lambda, useful if only building and deploying an update to one lambda so that you dont have to build all other lambdas before dpeloy as project grows
 
-`lerna add @simonverhoeven/common-lambda-lib --scope @simonverhoeven/lambda-a` - if you need to ever add one of your local packages (common-lambda-lib) to another local package (lambda-a), this will do the trick and update lambda-a's package.json to add the dependency
+`lerna add @alpaca-backend/common-lambda-lib --scope @alpaca-backend/lambda-a` - if you need to ever add one of your local packages (common-lambda-lib) to another local package (lambda-a), this will do the trick and update lambda-a's package.json to add the dependency
 
 ## Gotcha's
 

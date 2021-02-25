@@ -26,12 +26,18 @@ const addUserToModel = async (
 
     console.log('User', user);
 
-    const sucuess = await api.registerUser(user);
+    try {
+        const sucuess = await api.registerUser(user);
 
-    if (!sucuess) {
-        callback('Error calling api');
+        if (!sucuess) {
+            callback('Error calling api');
+        }
+    } catch (err) {
+        console.log('err', err);
+        callback(err);
     }
 
+    console.log('return event');
     return event;
 };
 

@@ -1,21 +1,22 @@
+import { commonConfig } from '@alpaca-backend/common';
 /* eslint-disable import/prefer-default-export */
 export const AWS_REGION = 'ap-southeast-1';
 export const AWS_ACCOUNT_ID = '932244219675';
 
 export const DEPLOYMENT_CONFIG = {
     staging: {
-        domainPrefix: `monorepo-staging`,
-        facebookClientId: '2655230284789320',
-        facebookClientSecret: '735671e92e39d55958f27e3def6e6e65',
+        domainPrefix: `${commonConfig.PROJECT_NAME}-staging`,
+        facebookClientId: '401988904382290',
+        facebookClientSecret: '56dc78be341d68d0f0e3229a6ee37723',
     },
     prod: {
-        domainPrefix: `monorepo-prod`,
-        facebookClientId: '153415723229752',
-        facebookClientSecret: '8d373404c59caf111fe055f6e9deeb15',
+        domainPrefix: `${commonConfig.PROJECT_NAME}-prod`,
+        facebookClientId: '436274460940204',
+        facebookClientSecret: '179eed5d79443650d23853c779ad6c11',
     },
     dummy: {
-        domainPrefix: `monorepo-dummy`,
-        facebookClientId: '153415723229752',
-        facebookClientSecret: '8d373404c59caf111fe055f6e9deeb15',
+        domainPrefix: `${commonConfig.PROJECT_NAME}-dummy`,
+        facebookClientId: '401988904382290',
+        facebookClientSecret: '56dc78be341d68d0f0e3229a6ee37723',
     },
 };

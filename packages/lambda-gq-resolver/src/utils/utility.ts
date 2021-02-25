@@ -1,7 +1,7 @@
 import { FunctionExpression, AttributePath, ConditionExpression } from '@aws/dynamodb-expressions';
 
 import getEnvConfig from 'src/config/get-env-config';
-import { commonUtils } from '@simonverhoeven/common';
+import { commonUtils } from '@alpaca-backend/common';
 
 const envConig = getEnvConfig();
 
