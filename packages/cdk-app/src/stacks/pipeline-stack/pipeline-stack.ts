@@ -36,7 +36,7 @@ class PipelineStack extends cdk.Stack {
                 // Replace these with your actual GitHub project info
                 owner: 'waketools',
                 repo: commonConfig.PROJECT_NAME,
-                branch: 'refactor/rename-project',
+                branch: 'master',
             }),
 
             synthAction: cdkPipeline.SimpleSynthAction.standardYarnSynth({
