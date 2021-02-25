@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 import { apolloClient } from 'src/utils/apollo-client';
 
 const REGISTER = gql`
-    mutation register($input: RegisterInput!) {
-        register(input: $input) {
+    mutation createUser($input: CreateUserInput!) {
+        createUser(input: $input) {
             id
         }
     }
