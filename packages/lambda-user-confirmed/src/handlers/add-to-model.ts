@@ -33,9 +33,11 @@ const addUserToModel = async (
             callback('Error calling api');
         }
     } catch (err) {
+        console.log('err', err);
         callback(err);
     }
 
+    console.log('return event');
     return event;
 };
 
