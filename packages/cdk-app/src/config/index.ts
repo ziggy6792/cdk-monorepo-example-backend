@@ -11,8 +11,8 @@ export const DEPLOYMENT_CONFIG = {
     },
     prod: {
         domainPrefix: `${commonConfig.PROJECT_NAME}-prod`,
-        facebookClientId: '153415723229752',
-        facebookClientSecret: '8d373404c59caf111fe055f6e9deeb15',
+        facebookClientId: '436274460940204',
+        facebookClientSecret: '179eed5d79443650d23853c779ad6c11',
     },
     dummy: {
         domainPrefix: `${commonConfig.PROJECT_NAME}-dummy`,
