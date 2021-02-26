@@ -24,8 +24,6 @@ export default class BuildCompetition {
 
         const prevCompDescendants = await competition.getDescendants();
 
-        console.log('no of children', prevCompDescendants.length);
-
         params.rounds = _.orderBy(params.rounds, ['roundNo', 'type'], ['asc', 'asc']);
 
         const roundsToCreate: Round[] = [];
@@ -71,10 +69,6 @@ export default class BuildCompetition {
             seedsHolder[seedSlot.seed] = seedSlot; // Now keep track of this one
         });
 
-        console.log('Running buildCompetition resolver');
-        console.log(id);
-        console.log(JSON.stringify(params));
-
         await Promise.all([
             toArray(mapper.batchDelete(prevCompDescendants)),
             toArray(mapper.batchPut(seedSlotsToCreate)),
@@ -89,20 +83,3 @@ export default class BuildCompetition {
         return competition;
     }
 }
-
-// let orderedPutOperations = [];
-
-// const generatePutOperations = (items: Creatable[]) => items.map((item) => async () => mapper.put(item));
-
-// heatsToCreate.forEach((heat) => {
-//     console.log(heat.name);
-// });
-
-// orderedPutOperations = _.concat(orderedPutOperations, generatePutOperations(seedSlotsToCreate));
-// orderedPutOperations = _.concat(orderedPutOperations, generatePutOperations(heatsToCreate));
-// orderedPutOperations = _.concat(orderedPutOperations, generatePutOperations(roundsToCreate));
-
-// for (let i = 0; i < orderedPutOperations.length; i++) {
-//     // eslint-disable-next-line no-await-in-loop
-//     // await orderedPutOperations[i]();
-// }

@@ -1,14 +1,8 @@
-import { MiddlewareFn } from 'type-graphql';
+import { IdentityType } from 'src/types';
+import { createOrAuthMiddleware, AuthCheck } from './create-auth-middleware';
 
-import { IContext, IdentityType } from 'src/types';
+export const isAuthRole: AuthCheck = async ({ context: { identity } }) => [IdentityType.ROLE].includes(identity.type);
 
-const isAuthRole: MiddlewareFn<IContext> = async ({ context: { identity } }, next) => {
-    // No auth is treated as role for development
-    if (![IdentityType.ROLE, IdentityType.NONE].includes(identity.type)) {
-        throw new Error('not authenticated');
-    }
+const isAuthRoleMiddleware = createOrAuthMiddleware([isAuthRole]);
 
-    return next();
-};
-
-export default isAuthRole;
+export default isAuthRoleMiddleware;

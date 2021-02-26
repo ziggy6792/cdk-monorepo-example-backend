@@ -1,4 +1,4 @@
-import isAuthRole from 'src/middleware/is-auth-role';
+import isAuthRoleMiddleware, { isAuthRole } from 'src/middleware/is-auth-role';
 import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
@@ -11,27 +11,26 @@ import errorMessage from 'src/config/error-message';
 import Competition from 'src/domain/models/competition';
 import Event from 'src/domain/models/event';
 import { toArray } from 'src/utils/async-iterator';
-import isAuthUserOrRole from 'src/middleware/is-auth-user-or-role';
 import _ from 'lodash';
+import { createOrAuthMiddleware, AuthCheck } from 'src/middleware/create-auth-middleware';
 
-const isAllowedToCreateOne: MiddlewareFn<IContext> = async ({ args, context: { identity } }, next) => {
-    if (identity.type === IdentityType.ROLE) {
-        return next();
+const isUserAllowedToCreateOne: AuthCheck = async ({ args, context: { identity } }) => {
+    if (identity.type !== IdentityType.USER) {
+        throw new Error(errorMessage.authTypeNotUser);
     }
-
     const input = args.input as CreateRiderAllocationInput;
 
-    if (identity.user?.username !== input.userId) {
-        throw new Error(errorMessage.notAuthenticated);
+    if (identity.user?.username === input.userId) {
+        return true;
     }
 
-    return next();
+    throw new Error(errorMessage.notAuthenticated);
 };
 
-const isAllowedToUpdateMany: MiddlewareFn<IContext> = async ({ args, context: { identity } }, next) => {
-    console.log('isAllowedToUpdateMany middleware');
-    if (identity.type === IdentityType.ROLE) {
-        return next();
+const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity } }) => {
+    console.log('isAllowedToUpdateMany identity', identity);
+    if (identity.type !== IdentityType.USER) {
+        throw new Error(errorMessage.authTypeNotUser);
     }
 
     const riderAllocations = args.input as UpdateRiderAllocationInput[];
@@ -59,7 +58,7 @@ const isAllowedToUpdateMany: MiddlewareFn<IContext> = async ({ args, context: { 
         }
     });
 
-    return next();
+    return true;
 };
 
 const addDefaultUserId: MiddlewareFn<IContext> = async ({ args, context: { identity } }, next) => {
@@ -75,9 +74,15 @@ const crudResolvers = buildCrudResolvers('RiderAllocation', RiderAllocation, {
     crudProps: {
         create: {
             inputType: CreateRiderAllocationInput,
-            resolverProps: { one: { middleware: [isAuthUserOrRole, addDefaultUserId, isAllowedToCreateOne] }, many: { middleware: [isAuthRole] } },
+            resolverProps: {
+                one: { middleware: [addDefaultUserId, createOrAuthMiddleware([isAuthRole, isUserAllowedToCreateOne])] },
+                many: { middleware: [isAuthRoleMiddleware] },
+            },
         },
-        update: { inputType: UpdateRiderAllocationInput, resolverProps: { many: { middleware: [isAuthUserOrRole, isAllowedToUpdateMany] } } },
+        update: {
+            inputType: UpdateRiderAllocationInput,
+            resolverProps: { many: { middleware: [createOrAuthMiddleware([isAuthRole, isUserAllowedToUpdateMany])] } },
+        },
     },
 });
 

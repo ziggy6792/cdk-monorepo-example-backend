@@ -16,8 +16,6 @@ import Heat from 'src/domain/models/heat';
 class GetDataEntityResolver {
     @Query(() => DataEntity, { nullable: true })
     async getDataEntity(@Arg('id', () => ID) id: string): Promise<DataEntity> {
-        console.log(`Id is ${id}`);
-
         const getFromDb = async (returnType: any) => {
             const entity = Object.assign(new returnType(), { id });
             const ret = await mapper.get(entity);
