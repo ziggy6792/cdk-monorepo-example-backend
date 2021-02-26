@@ -12,6 +12,7 @@ import Competition from 'src/domain/models/competition';
 import Event from 'src/domain/models/event';
 import { toArray } from 'src/utils/async-iterator';
 import isAuthUserOrRole from 'src/middleware/is-auth-user-or-role';
+import _ from 'lodash';
 
 const isAllowedToCreateOne: MiddlewareFn<IContext> = async ({ args, context: { identity } }, next) => {
     if (identity.type === IdentityType.ROLE) {
@@ -28,18 +29,25 @@ const isAllowedToCreateOne: MiddlewareFn<IContext> = async ({ args, context: { i
 };
 
 const isAllowedToUpdateMany: MiddlewareFn<IContext> = async ({ args, context: { identity } }, next) => {
+    console.log('isAllowedToUpdateMany middleware');
     if (identity.type === IdentityType.ROLE) {
         return next();
     }
 
     const riderAllocations = args.input as UpdateRiderAllocationInput[];
 
-    const competitionIds = riderAllocations.map((input) => Object.assign(new Competition(), { id: input.allocatableId }));
+    const competitionIds = _.uniqWith(
+        riderAllocations.map((input) => Object.assign(new Competition(), { id: input.allocatableId })),
+        _.isEqual
+    );
 
     // Get rider allocation competitions
     const competitions = await toArray(mapper.batchGet(competitionIds));
 
-    const eventIds = competitions.map((competition) => Object.assign(new Event(), { id: competition.eventId }));
+    const eventIds = _.uniqWith(
+        competitions.map((competition) => Object.assign(new Event(), { id: competition.eventId })),
+        _.isEqual
+    );
 
     // Get competition events
     const events = await toArray(mapper.batchGet(eventIds));
