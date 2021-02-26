@@ -1,4 +1,4 @@
-import isAuthRole from 'src/middleware/is-auth-role';
+import isAuthRole, { getIsAuthRole } from 'src/middleware/is-auth-role';
 import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
@@ -6,7 +6,7 @@ import { CreateRiderAllocationInput, UpdateRiderAllocationInput } from 'src/modu
 
 import { MiddlewareFn } from 'type-graphql';
 
-import { IContext, IdentityType } from 'src/types';
+import { IContext } from 'src/types';
 import errorMessage from 'src/config/error-message';
 import Competition from 'src/domain/models/competition';
 import Event from 'src/domain/models/event';
@@ -14,23 +14,33 @@ import { toArray } from 'src/utils/async-iterator';
 import isAuthUserOrRole from 'src/middleware/is-auth-user-or-role';
 import _ from 'lodash';
 
-const isAllowedToCreateOne: MiddlewareFn<IContext> = async ({ args, context: { identity } }, next) => {
-    if (identity.type === IdentityType.ROLE) {
+const isAllowedToCreateOne: MiddlewareFn<IContext> = async (action, next) => {
+    const {
+        args,
+        context: { identity },
+    } = action;
+
+    if (getIsAuthRole(action)) {
         return next();
     }
 
     const input = args.input as CreateRiderAllocationInput;
 
-    if (identity.user?.username !== input.userId) {
-        throw new Error(errorMessage.notAuthenticated);
+    if (identity.user?.username === input.userId) {
+        return next();
     }
 
-    return next();
+    throw new Error(errorMessage.notAuthenticated);
 };
 
-const isAllowedToUpdateMany: MiddlewareFn<IContext> = async ({ args, context: { identity } }, next) => {
-    console.log('isAllowedToUpdateMany middleware');
-    if (identity.type === IdentityType.ROLE) {
+const isAllowedToUpdateMany: MiddlewareFn<IContext> = async (action, next) => {
+    const {
+        args,
+        context: { identity },
+    } = action;
+    console.log('isAllowedToUpdateMany identity', identity);
+
+    if (getIsAuthRole(action)) {
         return next();
     }
 

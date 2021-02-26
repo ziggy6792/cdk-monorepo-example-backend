@@ -1,11 +1,19 @@
-import { MiddlewareFn } from 'type-graphql';
+import { MiddlewareFn, ResolverData } from 'type-graphql';
 
 import { IContext, IdentityType } from 'src/types';
+import errorMessage from 'src/config/error-message';
+import { getIsAuthRole } from './is-auth-role';
 
-const isAuthUserOrRole: MiddlewareFn<IContext> = async ({ context: { identity } }, next) => {
-    if (identity.type !== IdentityType.USER && identity.type !== IdentityType.ROLE) {
-        // Role can do anyting
-        throw new Error('not authenticated');
+export const getIsAuthUserOrRole = (action: ResolverData<IContext>): boolean => {
+    const {
+        context: { identity },
+    } = action;
+    return getIsAuthRole(action) || identity.type === IdentityType.USER;
+};
+
+const isAuthUserOrRole: MiddlewareFn<IContext> = async (action, next) => {
+    if (!getIsAuthUserOrRole(action)) {
+        throw new Error(errorMessage.notAuthenticated);
     }
 
     return next();
