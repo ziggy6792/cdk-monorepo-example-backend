@@ -42,7 +42,6 @@ const getKeys = async (tableName: string) => {
 };
 
 const deleteItem = async (tableName: string, key: any) => {
-    console.log('deleting item', key);
     dynamodb.deleteItem({ TableName: tableName, Key: key }).promise();
 };
 
@@ -50,8 +49,6 @@ const purgeTable = async function (tableName: string) {
     const keys = await getKeys(tableName);
 
     const deleteAllRecords = async function () {
-        // console.log('records', records);
-
         const records = await getRecordKeys(tableName, keys);
 
         const deleteFns = records.Items.map((item) => async () => deleteItem(tableName, item));
@@ -81,13 +78,7 @@ const clearDb = async (): Promise<void> => {
         return;
     }
     const deleteTableFns = tables.TableNames.map((TableName) => async () => {
-        // console.log(`Deleting ${TableName}`);
         try {
-            // await dynamodb
-            //     .deleteTable({
-            //         TableName,
-            //     })
-            //     .promise();
             await purgeTable(TableName);
         } catch (err) {
             console.log(err);

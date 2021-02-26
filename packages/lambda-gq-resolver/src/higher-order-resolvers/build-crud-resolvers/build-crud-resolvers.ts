@@ -21,8 +21,6 @@ const crudResolverBuilder = new CrudResolverBuilder(crudBuilders);
 const buildCrudResolvers = (suffix: string, returnType: any, buildCrudProps: IBuildCrudProps): any[] => {
     const generatedCrudResolvers = crudResolverBuilder.buildCrudResolvers(suffix, returnType, buildCrudProps);
 
-    console.log('generatedCrudResolvers', generatedCrudResolvers);
-
     return generatedCrudResolvers;
 };
 

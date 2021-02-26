@@ -6,11 +6,9 @@ import testConn from 'src/test-utils/test-conn';
 
 beforeAll(async () => {
     await testConn();
-    console.log('finished setup');
 });
 
 afterAll(async () => {
-    console.log('finished!');
     // AWS.DynamoDB
 });
 

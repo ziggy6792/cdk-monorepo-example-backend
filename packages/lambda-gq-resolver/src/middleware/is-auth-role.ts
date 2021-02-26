@@ -1,8 +1,8 @@
 import { IdentityType } from 'src/types';
-import createAuthMiddleware, { AuthCheck } from './create-auth-middleware';
+import { createOrAuthMiddleware, AuthCheck } from './create-auth-middleware';
 
-export const getIsAuthRole: AuthCheck = async ({ context: { identity } }) => [IdentityType.ROLE].includes(identity.type);
+export const isAuthRole: AuthCheck = async ({ context: { identity } }) => [IdentityType.ROLE].includes(identity.type);
 
-const isAuthRoleMiddleware = createAuthMiddleware([getIsAuthRole]);
+const isAuthRoleMiddleware = createOrAuthMiddleware([isAuthRole]);
 
 export default isAuthRoleMiddleware;

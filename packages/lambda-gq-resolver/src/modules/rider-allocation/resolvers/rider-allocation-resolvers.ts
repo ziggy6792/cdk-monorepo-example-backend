@@ -1,4 +1,4 @@
-import isAuthRole, { getIsAuthRole } from 'src/middleware/is-auth-role';
+import isAuthRoleMiddleware, { isAuthRole } from 'src/middleware/is-auth-role';
 import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
@@ -6,20 +6,18 @@ import { CreateRiderAllocationInput, UpdateRiderAllocationInput } from 'src/modu
 
 import { MiddlewareFn } from 'type-graphql';
 
-import { IContext } from 'src/types';
+import { IContext, IdentityType } from 'src/types';
 import errorMessage from 'src/config/error-message';
 import Competition from 'src/domain/models/competition';
 import Event from 'src/domain/models/event';
 import { toArray } from 'src/utils/async-iterator';
 import _ from 'lodash';
-import createAuthMiddleware, { AuthCheck } from 'src/middleware/create-auth-middleware';
+import { createOrAuthMiddleware, AuthCheck } from 'src/middleware/create-auth-middleware';
 
-const isAllowedToCreateOne: AuthCheck = async (action) => {
-    const {
-        args,
-        context: { identity },
-    } = action;
-
+const isUserAllowedToCreateOne: AuthCheck = async ({ args, context: { identity } }) => {
+    if (identity.type !== IdentityType.USER) {
+        throw new Error(errorMessage.authTypeNotUser);
+    }
     const input = args.input as CreateRiderAllocationInput;
 
     if (identity.user?.username === input.userId) {
@@ -29,12 +27,11 @@ const isAllowedToCreateOne: AuthCheck = async (action) => {
     throw new Error(errorMessage.notAuthenticated);
 };
 
-const isAllowedToUpdateMany: AuthCheck = async (action) => {
-    const {
-        args,
-        context: { identity },
-    } = action;
+const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity } }) => {
     console.log('isAllowedToUpdateMany identity', identity);
+    if (identity.type !== IdentityType.USER) {
+        throw new Error(errorMessage.authTypeNotUser);
+    }
 
     const riderAllocations = args.input as UpdateRiderAllocationInput[];
 
@@ -78,13 +75,13 @@ const crudResolvers = buildCrudResolvers('RiderAllocation', RiderAllocation, {
         create: {
             inputType: CreateRiderAllocationInput,
             resolverProps: {
-                one: { middleware: [addDefaultUserId, createAuthMiddleware([getIsAuthRole, isAllowedToCreateOne])] },
-                many: { middleware: [isAuthRole] },
+                one: { middleware: [addDefaultUserId, createOrAuthMiddleware([isAuthRole, isUserAllowedToCreateOne])] },
+                many: { middleware: [isAuthRoleMiddleware] },
             },
         },
         update: {
             inputType: UpdateRiderAllocationInput,
-            resolverProps: { many: { middleware: [createAuthMiddleware([getIsAuthRole, isAllowedToUpdateMany])] } },
+            resolverProps: { many: { middleware: [createOrAuthMiddleware([isAuthRole, isUserAllowedToUpdateMany])] } },
         },
     },
 });

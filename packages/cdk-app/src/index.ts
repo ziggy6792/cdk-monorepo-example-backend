@@ -12,9 +12,6 @@ const app = new cdk.App();
 
 const context = JSON.parse(process.env.CDK_CONTEXT_JSON);
 
-// console.log(context);
-// console.log(context.env);
-
 enum EnvType {
     PIPELINE = 'pipeline',
     TEST = 'test',
