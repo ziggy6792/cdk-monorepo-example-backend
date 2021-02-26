@@ -1,16 +1,8 @@
-import { MiddlewareFn, ResolverData } from 'type-graphql';
+import { IdentityType } from 'src/types';
+import createAuthMiddleware, { AuthCheck } from './create-auth-middleware';
 
-import { IContext, IdentityType } from 'src/types';
-import errorMessage from 'src/config/error-message';
+export const getIsAuthRole: AuthCheck = async ({ context: { identity } }) => [IdentityType.ROLE].includes(identity.type);
 
-export const getIsAuthRole = ({ context: { identity } }: ResolverData<IContext>): boolean => [IdentityType.ROLE].includes(identity.type);
+const isAuthRoleMiddleware = createAuthMiddleware([getIsAuthRole]);
 
-const isAuthRole: MiddlewareFn<IContext> = async (action, next) => {
-    if (!getIsAuthRole(action)) {
-        throw new Error(errorMessage.notAuthenticated);
-    }
-
-    return next();
-};
-
-export default isAuthRole;
+export default isAuthRoleMiddleware;
