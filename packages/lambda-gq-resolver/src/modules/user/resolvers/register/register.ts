@@ -4,7 +4,7 @@ import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql
 import { IContext } from 'src/types';
 import { mapper } from 'src/utils/mapper';
 import User from 'src/domain/models/user';
-import isAuthRoleMiddleware from 'src/middleware/is-auth-role';
+import isAuthRoleMiddleware from 'src/middleware/is-auth-role-middleware';
 import { createNotExistsCondition } from 'src/utils/utility';
 import { RegisterInput } from './register-input';
 

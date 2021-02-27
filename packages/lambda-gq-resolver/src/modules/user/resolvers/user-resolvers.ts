@@ -1,6 +1,6 @@
 import User from 'src/domain/models/user';
 import { CreateUserInput, UpdateUserInput } from 'src/modules/user/inputs';
-import isAuthRoleMiddleware from 'src/middleware/is-auth-role';
+import isAuthRoleMiddleware from 'src/middleware/is-auth-role-middleware';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
 import GetMeResolver from 'src/modules/user/resolvers/get-me';
 

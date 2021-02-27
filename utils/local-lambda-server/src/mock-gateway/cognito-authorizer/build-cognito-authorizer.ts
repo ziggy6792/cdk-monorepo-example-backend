@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/prefer-default-export */
-import express from 'express';
 import buildIamAuthorizedEvent from 'src/mock-gateway/build-authd-event';
 import { ICognitoIdentity, ExpressMiddleware } from 'src/mock-gateway/types';
 import getJwk from './services/get-jwk';
@@ -17,7 +16,6 @@ export const buildCognitoAutorizer = async (userPoolId: string | null, region = 
 
         console.log('token', jwtToken);
         console.log('COGNITO_USER_POOL_ID', userPoolId);
-        console.log('REGION', region);
 
         let identity: ICognitoIdentity | null = null;
 

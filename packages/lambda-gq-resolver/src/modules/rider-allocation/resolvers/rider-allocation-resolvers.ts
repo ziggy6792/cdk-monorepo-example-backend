@@ -1,18 +1,18 @@
-import isAuthRoleMiddleware, { isAuthRole } from 'src/middleware/is-auth-role';
+import isAuthRoleMiddleware from 'src/middleware/is-auth-role-middleware';
 import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
 import { CreateRiderAllocationInput, UpdateRiderAllocationInput } from 'src/modules/rider-allocation/inputs';
-
 import { MiddlewareFn } from 'type-graphql';
-
 import { IContext, IdentityType } from 'src/types';
 import errorMessage from 'src/config/error-message';
 import Competition from 'src/domain/models/competition';
 import Event from 'src/domain/models/event';
 import { toArray } from 'src/utils/async-iterator';
 import _ from 'lodash';
-import { createOrAuthMiddleware, AuthCheck } from 'src/middleware/create-auth-middleware';
+import createAuthMiddleware from 'src/middleware/create-auth-middleware';
+import { AuthCheck } from 'src/middleware/auth-check/types';
+import isAuthRole from 'src/middleware/auth-check/is-auth-role';
 
 const isUserAllowedToCreateOne: AuthCheck = async ({ args, context: { identity } }) => {
     if (identity.type !== IdentityType.USER) {
@@ -74,13 +74,13 @@ const crudResolvers = buildCrudResolvers('RiderAllocation', RiderAllocation, {
         create: {
             inputType: CreateRiderAllocationInput,
             resolverProps: {
-                one: { middleware: [addDefaultUserId, createOrAuthMiddleware([isAuthRole, isUserAllowedToCreateOne])] },
+                one: { middleware: [addDefaultUserId, createAuthMiddleware([isAuthRole, isUserAllowedToCreateOne])] },
                 many: { middleware: [isAuthRoleMiddleware] },
             },
         },
         update: {
             inputType: UpdateRiderAllocationInput,
-            resolverProps: { many: { middleware: [createOrAuthMiddleware([isAuthRole, isUserAllowedToUpdateMany])] } },
+            resolverProps: { many: { middleware: [createAuthMiddleware([isAuthRole, isUserAllowedToUpdateMany])] } },
         },
     },
 });
