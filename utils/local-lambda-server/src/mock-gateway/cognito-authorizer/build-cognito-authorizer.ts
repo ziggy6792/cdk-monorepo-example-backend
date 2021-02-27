@@ -21,14 +21,19 @@ export const buildCognitoAutorizer = async (userPoolId: string | null, region = 
 
         let identity: ICognitoIdentity | null = null;
 
+        if (req.method === 'POST' && !jwtToken) {
+            throw new Error('Local Cognito Authorizer: no authozation header provided');
+        }
+
         if (jwtToken) {
             identity = userPoolId ? jwtUtil.verifyJwt(jwk, jwtToken) : jwtUtil.decodeJwt(jwtToken);
 
             console.log('identity', identity);
+            if (!identity) {
+                throw new Error('Local Cognito Authorizer: could not authenticate');
+            }
         }
-        if (!identity) {
-            throw new Error('Local Cognito authorizer could not authenticate');
-        }
+
         const event = buildIamAuthorizedEvent(identity);
 
         req.headers['x-apigateway-event'] = encodeURIComponent(JSON.stringify(event));

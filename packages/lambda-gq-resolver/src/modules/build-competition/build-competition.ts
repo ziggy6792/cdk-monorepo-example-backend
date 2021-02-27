@@ -1,26 +1,43 @@
 /* eslint-disable class-methods-use-this */
 
-import { Resolver, Mutation, Arg, ID } from 'type-graphql';
+import { Resolver, Mutation, Arg, ID, UseMiddleware } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
-import CompetitionModel from 'src/domain/models/competition';
 import _ from 'lodash';
 import SeedSlot from 'src/domain/models/seed-slot';
 import Round from 'src/domain/models/round';
 import Heat from 'src/domain/models/heat';
 import { valueIsNull } from 'src/utils/utility';
 import { toArray } from 'src/utils/async-iterator';
+import { AuthCheck, createOrAuthMiddleware } from 'src/middleware/create-auth-middleware';
+import { IdentityType } from 'src/types';
+import errorMessage from 'src/config/error-message';
+import Competition from 'src/domain/models/competition';
+import { isAuthRole } from 'src/middleware/is-auth-role';
 import { CompetitionParamsInput } from './inputs';
+
+const isUserAllowedToBuildComp: AuthCheck = async ({ args, context: { identity } }) => {
+    if (identity.type !== IdentityType.USER) {
+        throw new Error(errorMessage.authTypeNotUser);
+    }
+    const competitionId = args.id as string;
+
+    const competition = await mapper.get(Object.assign(new Competition(), { id: competitionId }));
+    const event = await competition.getEvent();
+    if (event.adminUserId === identity.user?.username) {
+        return true;
+    }
+
+    throw new Error(errorMessage.notAuthenticated);
+};
 
 @Resolver()
 export default class BuildCompetition {
-    @Mutation(() => CompetitionModel, { nullable: true })
-    async buildCompetition(
-        @Arg('id', () => ID) id: string,
-        @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput
-    ): Promise<CompetitionModel> {
+    @Mutation(() => Competition, { nullable: true })
+    @UseMiddleware([createOrAuthMiddleware([isAuthRole, isUserAllowedToBuildComp])])
+    async buildCompetition(@Arg('id', () => ID) id: string, @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput): Promise<Competition> {
         const start = new Date().getTime();
 
-        const competition = await mapper.get(Object.assign(new CompetitionModel(), { id }));
+        const competition = await mapper.get(Object.assign(new Competition(), { id }));
 
         const prevCompDescendants = await competition.getDescendants();
 
