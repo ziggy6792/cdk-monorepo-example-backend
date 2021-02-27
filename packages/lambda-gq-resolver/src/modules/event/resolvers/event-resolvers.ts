@@ -37,9 +37,9 @@ const isAllowedToEditEvent: AuthCheck = async ({ args, context: { identity } }) 
 const CrudResolvers = buildCrudResolvers('Event', Event, {
     crudProps: {
         create: { inputType: CreateEventInput, resolverProps: { one: { middleware: [addDefaultUserId] } } },
-        update: { inputType: UpdateEventInput, resolverProps: { one: { middleware: [createAuthMiddleware([isAuthRole, isAllowedToEditEvent])] } } },
+        update: { inputType: UpdateEventInput, resolverProps: { one: { middleware: [createAuthMiddleware([isAllowedToEditEvent])] } } },
         get: { resolverProps: { one: true, many: true } },
-        delete: { resolverProps: { one: { middleware: [createAuthMiddleware([isAuthRole, isAllowedToEditEvent])] } } },
+        delete: { resolverProps: { one: { middleware: [createAuthMiddleware([isAllowedToEditEvent])] } } },
     },
 });
 

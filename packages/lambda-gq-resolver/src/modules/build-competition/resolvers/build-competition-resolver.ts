@@ -17,7 +17,7 @@ import { CompetitionParamsInput } from 'src/modules/build-competition/inputs';
 @Resolver()
 export default class BuildCompetition {
     @Mutation(() => Competition, { nullable: true })
-    @UseMiddleware([createAuthMiddleware([isAuthRole, isCompetitionAdmin])])
+    @UseMiddleware([createAuthMiddleware([isCompetitionAdmin])])
     async buildCompetition(@Arg('id', () => ID) id: string, @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput): Promise<Competition> {
         const start = new Date().getTime();
 

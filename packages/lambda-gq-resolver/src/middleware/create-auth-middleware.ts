@@ -3,6 +3,9 @@ import { MiddlewareFn, ResolverData } from 'type-graphql';
 import { IContext } from 'src/types';
 import errorMessage from 'src/config/error-message';
 import { AuthCheck } from './auth-check/types';
+import isAuthRole from './auth-check/is-auth-role';
+
+const defaultAuthChecks = [isAuthRole];
 
 const checkAuth = async (authChecks: AuthCheck[], action: ResolverData<IContext>): Promise<boolean> => {
     const errors = [];
@@ -17,7 +20,7 @@ const checkAuth = async (authChecks: AuthCheck[], action: ResolverData<IContext>
             console.log('auth check returned error', err);
         }
     }
-    if (errors) {
+    if (errors.length > 0) {
         throw new Error(`Authentication Errors: ${errors.map((err) => err.message).join('\n')}`);
     }
 
@@ -25,9 +28,11 @@ const checkAuth = async (authChecks: AuthCheck[], action: ResolverData<IContext>
 };
 
 // Does an or on all auth checks returns false if no auth checks pass
-const createAuthMiddleware = (authChecks: AuthCheck[]): MiddlewareFn<IContext> => {
+const createAuthMiddleware = (authChecks: AuthCheck[], addDefaultAuthChecks = true): MiddlewareFn<IContext> => {
+    const additionalChecks = addDefaultAuthChecks ? defaultAuthChecks : [];
+    const mergedAuthChecks = [...additionalChecks, ...authChecks];
     const retMiddleware: MiddlewareFn<IContext> = async (action, next) => {
-        const isAuthorized = await checkAuth(authChecks, action);
+        const isAuthorized = await checkAuth(mergedAuthChecks, action);
         if (!isAuthorized) {
             throw new Error(errorMessage.notAuthenticated);
         }

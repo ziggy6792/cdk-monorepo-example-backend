@@ -1,4 +1,4 @@
-import isAuthRoleMiddleware from 'src/middleware/is-auth-role-middleware';
+import deafultAuthMiddleware from 'src/middleware/default-auth-middleware';
 import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
@@ -12,7 +12,6 @@ import { toArray } from 'src/utils/async-iterator';
 import _ from 'lodash';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import { AuthCheck } from 'src/middleware/auth-check/types';
-import isAuthRole from 'src/middleware/auth-check/is-auth-role';
 
 const isUserAllowedToCreateOne: AuthCheck = async ({ args, context: { identity } }) => {
     if (identity.type !== IdentityType.USER) {
@@ -28,6 +27,7 @@ const isUserAllowedToCreateOne: AuthCheck = async ({ args, context: { identity }
 };
 
 const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity } }) => {
+    console.log('running isUserAllowedToUpdateMany');
     if (identity.type !== IdentityType.USER) {
         throw new Error(errorMessage.authTypeNotUser);
     }
@@ -53,7 +53,7 @@ const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity 
     // Check that user is admin of those events
     events.forEach((event) => {
         if (event.adminUserId !== identity.user?.username) {
-            throw new Error(errorMessage.notAuthenticated);
+            throw new Error(errorMessage.notCompetitionAdmin);
         }
     });
 
@@ -75,13 +75,13 @@ const crudResolvers = buildCrudResolvers('RiderAllocation', RiderAllocation, {
         create: {
             inputType: CreateRiderAllocationInput,
             resolverProps: {
-                one: { middleware: [addDefaultUserId, createAuthMiddleware([isAuthRole, isUserAllowedToCreateOne])] },
-                many: { middleware: [isAuthRoleMiddleware] },
+                one: { middleware: [addDefaultUserId, createAuthMiddleware([isUserAllowedToCreateOne])] },
+                many: { middleware: [deafultAuthMiddleware] },
             },
         },
         update: {
             inputType: UpdateRiderAllocationInput,
-            resolverProps: { many: { middleware: [createAuthMiddleware([isAuthRole, isUserAllowedToUpdateMany])] } },
+            resolverProps: { many: { middleware: [createAuthMiddleware([isUserAllowedToUpdateMany])] } },
         },
     },
 });

@@ -31,9 +31,7 @@ const isAllowedToEditComp: AuthCheck = async ({ args, context: { identity } }) =
     const input = args.input as UpdateCompetitionInput;
 
     const competition = await mapper.get(Object.assign(new Competition(), { id: input.id }));
-    console.log('competition', competition);
     const event = await competition.getEvent();
-    console.log('event', event);
 
     if (event.adminUserId === identity.user?.username) {
         return true;
@@ -42,8 +40,8 @@ const isAllowedToEditComp: AuthCheck = async ({ args, context: { identity } }) =
     throw new Error(errorMessage.notCompetitionAdmin);
 };
 
-const createCompMiddleware = [createAuthMiddleware([isAuthRole, isAllowedToCreateComp])];
-const editCompMiddleware = [createAuthMiddleware([isAuthRole, isAllowedToEditComp])];
+const createCompMiddleware = [createAuthMiddleware([isAllowedToCreateComp])];
+const editCompMiddleware = [createAuthMiddleware([isAllowedToEditComp])];
 
 const CrudResolvers = buildCrudResolvers('Competition', Competition, {
     crudProps: {
