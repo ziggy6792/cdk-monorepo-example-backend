@@ -9,7 +9,7 @@ import errorMessage from 'src/config/error-message';
 import { mapper } from 'src/utils/mapper';
 import Event from 'src/domain/models/event';
 
-const isAllowedToCreateEvent: AuthCheck = async ({ args, context: { identity } }) => {
+const isAllowedToCreateComp: AuthCheck = async ({ args, context: { identity } }) => {
     if (identity.type !== IdentityType.USER) {
         throw new Error(errorMessage.authTypeNotUser);
     }
@@ -42,7 +42,7 @@ const isAllowedToEditComp: AuthCheck = async ({ args, context: { identity } }) =
     throw new Error(errorMessage.notCompetitionAdmin);
 };
 
-const createCompMiddleware = [createAuthMiddleware([isAuthRole, isAllowedToCreateEvent])];
+const createCompMiddleware = [createAuthMiddleware([isAuthRole, isAllowedToCreateComp])];
 const editCompMiddleware = [createAuthMiddleware([isAuthRole, isAllowedToEditComp])];
 
 const CrudResolvers = buildCrudResolvers('Competition', Competition, {
