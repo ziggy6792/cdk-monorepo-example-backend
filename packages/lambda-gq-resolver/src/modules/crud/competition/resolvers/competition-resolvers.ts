@@ -1,6 +1,6 @@
 import Competition from 'src/domain/models/competition';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
-import { CreateCompetitionInput, UpdateCompetitionInput } from 'src/modules/domain/competition/inputs';
+import { CreateCompetitionInput, UpdateCompetitionInput } from 'src/modules/crud/competition/inputs';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import isAuthRole from 'src/middleware/auth-check/is-auth-role';
 import { AuthCheck } from 'src/middleware/auth-check/types';
