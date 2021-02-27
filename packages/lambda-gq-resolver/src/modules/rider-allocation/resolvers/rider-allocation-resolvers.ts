@@ -61,8 +61,9 @@ const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity 
 };
 
 const addDefaultUserId: MiddlewareFn<IContext> = async ({ args, context: { identity } }, next) => {
-    args.input.userId = args.input.userId || identity.user?.username;
-    if (!args.input.userId) {
+    const input = args.input as CreateRiderAllocationInput;
+    input.userId = input.userId || identity.user?.username;
+    if (!input.userId) {
         throw new Error(errorMessage.noUserId);
     }
     return next();
