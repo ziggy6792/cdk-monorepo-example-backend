@@ -2,7 +2,7 @@ import deafultAuthMiddleware from 'src/middleware/default-auth-middleware';
 import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
-import { CreateRiderAllocationInput, UpdateRiderAllocationInput } from 'src/modules/rider-allocation/inputs';
+import { CreateRiderAllocationInput, UpdateRiderAllocationInput } from 'src/modules/domain/rider-allocation/inputs';
 import { MiddlewareFn } from 'type-graphql';
 import { IContext, IdentityType } from 'src/types';
 import errorMessage from 'src/config/error-message';

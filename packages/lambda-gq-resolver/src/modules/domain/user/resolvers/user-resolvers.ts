@@ -1,8 +1,8 @@
 import User from 'src/domain/models/user';
-import { CreateUserInput, UpdateUserInput } from 'src/modules/user/inputs';
+import { CreateUserInput, UpdateUserInput } from 'src/modules/domain/user/inputs';
 import deafultAuthMiddleware from 'src/middleware/default-auth-middleware';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
-import GetMeResolver from 'src/modules/user/resolvers/get-me';
+import GetMeResolver from 'src/modules/domain/user/resolvers/get-me';
 import { AuthCheck } from 'src/middleware/auth-check/types';
 import { IdentityType } from 'src/types';
 import errorMessage from 'src/config/error-message';

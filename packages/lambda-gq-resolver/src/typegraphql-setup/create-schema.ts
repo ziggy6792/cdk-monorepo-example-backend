@@ -1,15 +1,15 @@
 import { GraphQLSchema } from 'graphql';
 import 'reflect-metadata';
 import { buildSchemaSync } from 'type-graphql';
-import UserResolvers from 'src/modules/user/resolvers';
-import EventResolvers from 'src/modules/event/resolvers';
-import CompetitionResolvers from 'src/modules/competition/resolvers';
-import HeatResolvers from 'src/modules/heat/resolvers';
-import RoundResolvers from 'src/modules/round/resolvers';
-import SeedSlotResolvers from 'src/modules/seed-slot/resolvers';
-import RiderAllocationResolvers from 'src/modules/rider-allocation/resolvers';
+import UserResolvers from 'src/modules/domain/user/resolvers';
+import EventResolvers from 'src/modules/domain/event/resolvers';
+import CompetitionResolvers from 'src/modules/domain/competition/resolvers';
+import HeatResolvers from 'src/modules/domain/heat/resolvers';
+import RoundResolvers from 'src/modules/domain/round/resolvers';
+import SeedSlotResolvers from 'src/modules/domain/seed-slot/resolvers';
+import RiderAllocationResolvers from 'src/modules/domain/rider-allocation/resolvers';
 import GetDataEntityResolver from 'src/modules/get-data-entity/resolvers';
-import RegisterResolver from 'src/modules/user/resolvers/register';
+import RegisterResolver from 'src/modules/domain/user/resolvers/register';
 import BuildCompetition from 'src/modules/build-competition/resolvers';
 
 console.log('buildSchemaSync');
