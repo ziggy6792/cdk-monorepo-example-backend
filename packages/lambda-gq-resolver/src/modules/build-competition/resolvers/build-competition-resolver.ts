@@ -9,12 +9,10 @@ import Heat from 'src/domain/models/heat';
 import { valueIsNull } from 'src/utils/utility';
 import { toArray } from 'src/utils/async-iterator';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
-import { IdentityType } from 'src/types';
-import errorMessage from 'src/config/error-message';
 import Competition from 'src/domain/models/competition';
 import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
 import isAuthRole from 'src/middleware/auth-check/is-auth-role';
-import { CompetitionParamsInput } from './inputs';
+import { CompetitionParamsInput } from 'src/modules/build-competition/inputs';
 
 @Resolver()
 export default class BuildCompetition {

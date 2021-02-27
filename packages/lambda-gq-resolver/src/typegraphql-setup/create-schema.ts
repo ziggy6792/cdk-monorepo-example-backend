@@ -8,9 +8,9 @@ import HeatResolvers from 'src/modules/heat/resolvers';
 import RoundResolvers from 'src/modules/round/resolvers';
 import SeedSlotResolvers from 'src/modules/seed-slot/resolvers';
 import RiderAllocationResolvers from 'src/modules/rider-allocation/resolvers';
-import GetDataEntityResolver from 'src/modules/get-data-entity';
+import GetDataEntityResolver from 'src/modules/get-data-entity/resolvers';
 import RegisterResolver from 'src/modules/user/resolvers/register';
-import BuildCompetition from 'src/modules/build-competition';
+import BuildCompetition from 'src/modules/build-competition/resolvers';
 
 console.log('buildSchemaSync');
 const schema = buildSchemaSync({

@@ -8,10 +8,6 @@ import DataEntity from 'src/domain/models/abstract/data-entity';
 import Competition from 'src/domain/models/competition';
 import Heat from 'src/domain/models/heat';
 
-// const doNotFail = async (fu: ()=> Promise<any>) => {
-//     await fn()
-// }
-
 @Resolver()
 class GetDataEntityResolver {
     @Query(() => DataEntity, { nullable: true })
