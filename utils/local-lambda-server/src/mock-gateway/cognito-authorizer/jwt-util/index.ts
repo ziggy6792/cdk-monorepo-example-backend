@@ -26,7 +26,17 @@ export interface IHeader {
     alg: string;
 }
 
-const verifyJwt = (jwk: IJwk, token: string): ICognitoIdentity | null => {
+export const decodeJwt = (token: string): ICognitoIdentity | null => {
+    try {
+        const decodedJwt = jwt.decode(token, { complete: true }) as IDecodedJWT;
+        return decodedJwt.payload;
+    } catch (err) {
+        console.log('ERROR', err);
+    }
+    return null;
+};
+
+export const verifyJwt = (jwk: IJwk, token: string): ICognitoIdentity | null => {
     try {
         const pems = {};
         const { keys } = jwk;
@@ -41,8 +51,9 @@ const verifyJwt = (jwk: IJwk, token: string): ICognitoIdentity | null => {
         }
 
         const decodedJwt = jwt.decode(token, { complete: true }) as IDecodedJWT;
+        console.log('decodedJwt', decodedJwt);
         if (!decodedJwt) {
-            console.log('Not a valid JWT token lol');
+            console.log('Not a valid JWT token');
         } else {
             const { kid } = decodedJwt.header;
             const pem = pems[kid];
@@ -56,8 +67,12 @@ const verifyJwt = (jwk: IJwk, token: string): ICognitoIdentity | null => {
     } catch (err) {
         console.log('ERROR', err);
     }
-    console.log('End successully');
     return null;
 };
 
-export default verifyJwt;
+const jwtUtil = {
+    decodeJwt,
+    verifyJwt,
+};
+
+export default jwtUtil;

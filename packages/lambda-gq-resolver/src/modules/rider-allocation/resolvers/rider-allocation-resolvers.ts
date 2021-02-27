@@ -28,7 +28,6 @@ const isUserAllowedToCreateOne: AuthCheck = async ({ args, context: { identity }
 };
 
 const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity } }) => {
-    console.log('isAllowedToUpdateMany identity', identity);
     if (identity.type !== IdentityType.USER) {
         throw new Error(errorMessage.authTypeNotUser);
     }

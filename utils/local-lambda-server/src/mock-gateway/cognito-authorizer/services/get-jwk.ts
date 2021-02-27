@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import Axios, { AxiosResponse } from 'axios';
-import { IJwk } from 'src/mock-gateway/cognito-authorizer/verify-jwt';
+import { IJwk } from 'src/mock-gateway/cognito-authorizer/jwt-util';
 
 const getJwk = async (poolRegion: string, poolId: string): Promise<IJwk> => {
     console.log('Fetch JWK');

@@ -4,17 +4,14 @@ import express from 'express';
 import buildIamAuthorizedEvent from 'src/mock-gateway/build-authd-event';
 import { ICognitoIdentity, ExpressMiddleware } from 'src/mock-gateway/types';
 import getJwk from './services/get-jwk';
-import verifyJwt, { IJwk } from './verify-jwt';
+import jwtUtil from './jwt-util';
 
 // let jwk: IJwk;
 
-export const buildCognitoAutorizer = async (userPoolId: string, region = 'ap-southeast-1'): Promise<ExpressMiddleware> => {
-    const jwk = await getJwk(region, userPoolId);
+export const buildCognitoAutorizer = async (userPoolId: string | null, region = 'ap-southeast-1'): Promise<ExpressMiddleware> => {
+    const jwk = userPoolId ? await getJwk(region, userPoolId) : null;
+
     return function (req, res, next): void {
-        // console.log('Headers', JSON.stringify(req.headers));
-
-        console.log('');
-
         console.log('Authorization', req.headers.authorization);
 
         const { headers } = req;
@@ -27,7 +24,7 @@ export const buildCognitoAutorizer = async (userPoolId: string, region = 'ap-sou
         let identity: ICognitoIdentity | null = null;
 
         if (jwtToken) {
-            identity = verifyJwt(jwk, jwtToken);
+            identity = userPoolId ? jwtUtil.verifyJwt(jwk, jwtToken) : jwtUtil.decodeJwt(jwtToken);
 
             console.log('identity', identity);
         }
