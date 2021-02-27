@@ -16,7 +16,7 @@ const buildUpdateResolvers = (buildResolversProps: IBuildResolverProps) => {
 
     const updateEntity = async (entity: any) => {
         try {
-            const createdEntity = await mapper.update(entity, { condition: createExistsCondition(idFields) });
+            const createdEntity = await mapper.update(entity, { condition: createExistsCondition(idFields), onMissing: 'skip' });
             return createdEntity;
         } catch (err) {
             const keys = _.pickBy(entity, (value, key) => idFields.includes(key));
