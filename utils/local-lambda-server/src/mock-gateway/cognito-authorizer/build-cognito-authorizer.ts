@@ -12,8 +12,6 @@ export const buildCognitoAutorizer = async (userPoolId: string | null, region = 
     const jwk = userPoolId ? await getJwk(region, userPoolId) : null;
 
     return function (req, res, next): void {
-        console.log('Authorization', req.headers.authorization);
-
         const { headers } = req;
         const jwtToken = headers.authorization;
 
@@ -27,6 +25,9 @@ export const buildCognitoAutorizer = async (userPoolId: string | null, region = 
             identity = userPoolId ? jwtUtil.verifyJwt(jwk, jwtToken) : jwtUtil.decodeJwt(jwtToken);
 
             console.log('identity', identity);
+        }
+        if (!identity) {
+            throw new Error('Local Cognito authorizer could not authenticate');
         }
         const event = buildIamAuthorizedEvent(identity);
 

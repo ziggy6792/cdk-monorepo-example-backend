@@ -51,6 +51,8 @@ const context = async (recieved: any): Promise<IContext> => {
             break;
     }
 
+    // console.log('identity', identity);
+
     return { req, identity };
 };
 
