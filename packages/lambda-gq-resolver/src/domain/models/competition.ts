@@ -129,8 +129,8 @@ class Competition extends DataEntity {
         return mapper.get(Object.assign(new Event(), { id: this.eventId }));
     }
 
-    async getRounds(): Promise<Round[]> {
-        return toArray(mapper.query(Round, { competitionId: this.id }, { indexName: 'byCompetition' }));
+    async getRounds(filter: ConditionExpression = undefined): Promise<Round[]> {
+        return toArray(mapper.query(Round, { competitionId: this.id }, { indexName: 'byCompetition', filter }));
     }
 
     @Field(() => RoundList)

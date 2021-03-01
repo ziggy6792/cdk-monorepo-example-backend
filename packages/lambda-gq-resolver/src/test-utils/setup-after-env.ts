@@ -6,3 +6,5 @@ jest.spyOn(envConfig, 'default').mockReturnValue({
     env: envConfig.EnvType.TEST,
     awsConfig: localAwsConfig,
 });
+
+jest.setTimeout(30000);

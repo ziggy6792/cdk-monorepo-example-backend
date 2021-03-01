@@ -1,16 +1,17 @@
 import { GraphQLSchema } from 'graphql';
 import 'reflect-metadata';
 import { buildSchemaSync } from 'type-graphql';
-import UserResolvers from 'src/modules/user/resolvers';
-import EventResolvers from 'src/modules/event/resolvers';
-import CompetitionResolvers from 'src/modules/competition/resolvers';
-import HeatResolvers from 'src/modules/heat/resolvers';
-import RoundResolvers from 'src/modules/round/resolvers';
-import SeedSlotResolvers from 'src/modules/seed-slot/resolvers';
-import RiderAllocationResolvers from 'src/modules/rider-allocation/resolvers';
-import GetDataEntityResolver from 'src/modules/get-data-entity';
-import RegisterResolver from 'src/modules/user/resolvers/register';
-import BuildCompetition from 'src/modules/build-competition';
+import UserResolvers from 'src/modules/crud/user/resolvers';
+import EventResolvers from 'src/modules/crud/event/resolvers';
+import CompetitionResolvers from 'src/modules/crud/competition/resolvers';
+import HeatResolvers from 'src/modules/crud/heat/resolvers';
+import RoundResolvers from 'src/modules/crud/round/resolvers';
+import SeedSlotResolvers from 'src/modules/crud/seed-slot/resolvers';
+import RiderAllocationResolvers from 'src/modules/crud/rider-allocation/resolvers';
+import GetDataEntityResolver from 'src/modules/get-data-entity/resolvers';
+import RegisterResolver from 'src/modules/crud/user/resolvers/register';
+import BuildCompetition from 'src/modules/build-competition/resolvers';
+import AllocateRiders from 'src/modules/allocate-riders/resolvers';
 
 console.log('buildSchemaSync');
 const schema = buildSchemaSync({
@@ -25,6 +26,7 @@ const schema = buildSchemaSync({
         GetDataEntityResolver,
         RegisterResolver,
         BuildCompetition,
+        AllocateRiders,
     ] as any,
 });
 
