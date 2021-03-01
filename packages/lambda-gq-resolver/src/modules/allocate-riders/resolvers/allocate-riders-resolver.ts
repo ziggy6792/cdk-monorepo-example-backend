@@ -19,14 +19,11 @@ export default class AllocateRiders {
     @Mutation(() => Competition, { nullable: true })
     @UseMiddleware([createAuthMiddleware([isCompetitionAdmin])])
     async allocateRiders(@Arg('id', () => ID) id: string): Promise<Competition> {
-        // console.log(`Allocate riders for competition ${id}`);
-
         const competition = await mapper.get(Object.assign(new Competition(), { id }));
         const rounds = await competition.getRounds({
             subject: 'roundNo',
             ...equals(1),
         });
-        console.log('rounds', JSON.stringify(rounds));
         if (rounds.length !== 1) {
             throw new Error(errorMessage.canNotFindRound1);
         }

@@ -12,7 +12,7 @@ afterAll(async () => {
     // AWS.DynamoDB
 });
 
-const registerMutation = `mutation CreateUser($input: CreateUserInput!) {
+const createUserMutation = `mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {
     id
     email
@@ -27,7 +27,7 @@ describe('User', () => {
         const user = { firstName: 'Test Firstname', lastName: 'Test Lastname', email: 'testy@test.com' };
 
         const response = await gCall({
-            source: registerMutation,
+            source: createUserMutation,
             variableValues: { input: user },
         });
         console.log('response', response);
