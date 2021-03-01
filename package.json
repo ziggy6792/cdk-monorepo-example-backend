@@ -72,7 +72,7 @@
     "lint-staged": {
         "{packages,utils}/*/src/**/*.{ts,tsx}": [
             "eslint --fix --config ./.eslintrc.js",
-            "jest --bail --findRelatedTests"
+            "jest --bail --runInBand --findRelatedTests"
         ],
         "{packages,utils}/*/src/**/*.{json,ts,tsx,html,css,scss}": [
             "prettier --write --config ./.prettierrc"

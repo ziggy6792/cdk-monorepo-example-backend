@@ -1,9 +1,8 @@
 /* eslint-disable no-return-await */
-import { mapper } from 'src/utils/mapper';
 import { gCall } from 'src/test-utils/g-call';
 import testConn from 'src/test-utils/test-conn';
-import Event from 'src/domain/models/event';
-import Competition from 'src/domain/models/competition';
+import * as mockDb from '@test-utils/mock-db/db';
+import mockDbUtils from '@test-utils/mock-db/mock-db-utils';
 
 beforeAll(async () => {
     await testConn();
@@ -430,22 +429,12 @@ const expectedResponse = {
 };
 describe('BuildCompetition', () => {
     it('buildCompetiton', async () => {
-        const event = new Event();
-        event.id = 'testEvent';
-        event.name = 'Test Event';
-        event.adminUserId = 'testUser';
-        event.when = 'now';
-        await mapper.put(event);
-        //
-        const competition = new Competition();
-        competition.eventId = event.id;
-        competition.id = 'testCompetition';
-        competition.name = 'Test Competition';
-        await mapper.put(competition);
+        await mockDbUtils.populateDb(mockDb.competitionEmpty);
+
         const response = await gCall({
             source: buildMutation,
             variableValues: {
-                id: 'testCompetition',
+                id: mockDb.competitionEmpty.competitions[0].id,
                 params: testCompParams,
             },
         });
