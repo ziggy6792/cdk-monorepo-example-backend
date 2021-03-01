@@ -34,7 +34,7 @@ const createAuthMiddleware = (authChecks: AuthCheck[], addDefaultAuthChecks = tr
     const retMiddleware: MiddlewareFn<IContext> = async (action, next) => {
         const isAuthorized = await checkAuth(mergedAuthChecks, action);
         if (!isAuthorized) {
-            throw new Error(errorMessage.notAuthenticated);
+            throw new Error(errorMessage.auth.notAuthenticated);
         }
 
         return next();

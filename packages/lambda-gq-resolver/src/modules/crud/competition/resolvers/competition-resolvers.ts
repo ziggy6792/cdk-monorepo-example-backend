@@ -11,7 +11,7 @@ import Event from 'src/domain/models/event';
 
 const isAllowedToCreateComp: AuthCheck = async ({ args, context: { identity } }) => {
     if (identity.type !== IdentityType.USER) {
-        throw new Error(errorMessage.authTypeNotUser);
+        throw new Error(errorMessage.auth.authTypeNotUser);
     }
     const input = args.input as CreateCompetitionInput;
 
@@ -21,12 +21,12 @@ const isAllowedToCreateComp: AuthCheck = async ({ args, context: { identity } })
         return true;
     }
 
-    throw new Error(errorMessage.notCompetitionAdmin);
+    throw new Error(errorMessage.auth.notCompetitionAdmin);
 };
 
 const isAllowedToEditComp: AuthCheck = async ({ args, context: { identity } }) => {
     if (identity.type !== IdentityType.USER) {
-        throw new Error(errorMessage.authTypeNotUser);
+        throw new Error(errorMessage.auth.authTypeNotUser);
     }
     const input = args.input as UpdateCompetitionInput;
 
@@ -37,7 +37,7 @@ const isAllowedToEditComp: AuthCheck = async ({ args, context: { identity } }) =
         return true;
     }
 
-    throw new Error(errorMessage.notCompetitionAdmin);
+    throw new Error(errorMessage.auth.notCompetitionAdmin);
 };
 
 const createCompMiddleware = [createAuthMiddleware([isAllowedToCreateComp])];

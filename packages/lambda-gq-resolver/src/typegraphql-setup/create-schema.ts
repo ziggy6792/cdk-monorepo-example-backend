@@ -11,6 +11,7 @@ import RiderAllocationResolvers from 'src/modules/crud/rider-allocation/resolver
 import GetDataEntityResolver from 'src/modules/get-data-entity/resolvers';
 import RegisterResolver from 'src/modules/crud/user/resolvers/register';
 import BuildCompetition from 'src/modules/build-competition/resolvers';
+import AllocateRiders from 'src/modules/allocate-riders/resolvers';
 
 console.log('buildSchemaSync');
 const schema = buildSchemaSync({
@@ -25,6 +26,7 @@ const schema = buildSchemaSync({
         GetDataEntityResolver,
         RegisterResolver,
         BuildCompetition,
+        AllocateRiders,
     ] as any,
 });
 

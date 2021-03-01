@@ -15,7 +15,7 @@ import { AuthCheck } from 'src/middleware/auth-check/types';
 
 const isUserAllowedToCreateOne: AuthCheck = async ({ args, context: { identity } }) => {
     if (identity.type !== IdentityType.USER) {
-        throw new Error(errorMessage.authTypeNotUser);
+        throw new Error(errorMessage.auth.authTypeNotUser);
     }
     const input = args.input as CreateRiderAllocationInput;
 
@@ -23,13 +23,13 @@ const isUserAllowedToCreateOne: AuthCheck = async ({ args, context: { identity }
         return true;
     }
 
-    throw new Error(errorMessage.notAuthenticated);
+    throw new Error(errorMessage.auth.notAuthenticated);
 };
 
 const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity } }) => {
     console.log('running isUserAllowedToUpdateMany');
     if (identity.type !== IdentityType.USER) {
-        throw new Error(errorMessage.authTypeNotUser);
+        throw new Error(errorMessage.auth.authTypeNotUser);
     }
 
     const riderAllocations = args.input as UpdateRiderAllocationInput[];
@@ -53,7 +53,7 @@ const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity 
     // Check that user is admin of those events
     events.forEach((event) => {
         if (event.adminUserId !== identity.user?.username) {
-            throw new Error(errorMessage.notCompetitionAdmin);
+            throw new Error(errorMessage.auth.notCompetitionAdmin);
         }
     });
 
@@ -64,7 +64,7 @@ const addDefaultUserId: MiddlewareFn<IContext> = async ({ args, context: { ident
     const input = args.input as CreateRiderAllocationInput;
     input.userId = input.userId || identity.user?.username;
     if (!input.userId) {
-        throw new Error(errorMessage.noUserId);
+        throw new Error(errorMessage.auth.noUserId);
     }
     return next();
 };

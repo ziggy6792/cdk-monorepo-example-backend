@@ -14,14 +14,14 @@ const addDefaultUserId: MiddlewareFn<IContext> = async ({ args, context: { ident
     const input = args.input as CreateEventInput;
     input.adminUserId = input.adminUserId || identity.user?.username;
     if (!input.adminUserId) {
-        throw new Error(errorMessage.noUserId);
+        throw new Error(errorMessage.auth.noUserId);
     }
     return next();
 };
 
 const isAllowedToEditEvent: AuthCheck = async ({ args, context: { identity } }) => {
     if (identity.type !== IdentityType.USER) {
-        throw new Error(errorMessage.authTypeNotUser);
+        throw new Error(errorMessage.auth.authTypeNotUser);
     }
     const input = args.input as UpdateEventInput;
 
@@ -31,7 +31,7 @@ const isAllowedToEditEvent: AuthCheck = async ({ args, context: { identity } }) 
         return true;
     }
 
-    throw new Error(errorMessage.notEventAdmin);
+    throw new Error(errorMessage.auth.notEventAdmin);
 };
 
 const CrudResolvers = buildCrudResolvers('Event', Event, {

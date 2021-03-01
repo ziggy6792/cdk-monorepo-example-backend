@@ -12,7 +12,7 @@ import isAuthRole from 'src/middleware/auth-check/is-auth-role';
 
 const isAllowedToEditUser: AuthCheck = async ({ args, context: { identity } }) => {
     if (identity.type !== IdentityType.USER) {
-        throw new Error(errorMessage.authTypeNotUser);
+        throw new Error(errorMessage.auth.authTypeNotUser);
     }
     const input = args.input as UpdateUserInput;
 
@@ -22,7 +22,7 @@ const isAllowedToEditUser: AuthCheck = async ({ args, context: { identity } }) =
         return true;
     }
 
-    throw new Error(errorMessage.notYou);
+    throw new Error(errorMessage.auth.notYou);
 };
 
 const CrudResolvers = buildCrudResolvers('User', User, {
