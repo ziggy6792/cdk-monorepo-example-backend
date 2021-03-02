@@ -5,6 +5,7 @@ import Competition from 'src/domain/models/competition';
 import _ from 'lodash';
 import Heat from 'src/domain/models/heat';
 import { ScorRunInput } from 'src/modules/score-run/inputs/score-run-inputs';
+import { mapper } from 'src/utils/mapper';
 
 @Resolver()
 export default class ScoreRun {
@@ -12,6 +13,8 @@ export default class ScoreRun {
     // @UseMiddleware([createAuthMiddleware([isCompetitionAdmin])])
     async scoreRun(@Arg('input', () => ScorRunInput) input: ScorRunInput): Promise<Competition> {
         console.log('input', JSON.stringify(input));
+
+        const heat = await mapper.get(Object.assign(new Heat(), { id: input.allocatableId }));
 
         return null;
     }
