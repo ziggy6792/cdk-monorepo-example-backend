@@ -1,14 +1,11 @@
 /* eslint-disable class-methods-use-this */
 
 import { Resolver, Mutation, Arg } from 'type-graphql';
-import Competition from 'src/domain/models/competition';
 import _ from 'lodash';
 import Heat from 'src/domain/models/heat';
 import { ScorRunInput } from 'src/modules/score-run/inputs/score-run-inputs';
 import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
-import { toArray } from 'src/utils/async-iterator';
-import SeedSlot from 'src/domain/models/seed-slot';
 import errorMessage from 'src/config/error-message';
 
 @Resolver()
@@ -16,8 +13,6 @@ export default class ScoreRun {
     @Mutation(() => Heat)
     // @UseMiddleware([createAuthMiddleware([isCompetitionAdmin])])
     async scoreRun(@Arg('input', () => ScorRunInput) input: ScorRunInput): Promise<Heat> {
-        console.log('input', JSON.stringify(input));
-
         const heat = await mapper.get(Object.assign(new Heat(), { id: input.allocatableId }));
 
         const seedSlots = await heat.getSeedSlots();

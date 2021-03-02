@@ -5,7 +5,7 @@ export enum IAttributeType {
 }
 
 export interface IAttribute {
-    tpye: IAttributeType;
+    type: IAttributeType;
     name: string;
 }
 

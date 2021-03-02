@@ -13,6 +13,7 @@ const buildMutation = `mutation buildCompetition($params: CompetitionParamsInput
       id
       rounds {
         items {
+          type
           heats {
             items {          
               name
@@ -281,6 +282,7 @@ const expectedResponse = {
         rounds: {
             items: [
                 {
+                    type: 'UPPER',
                     heats: {
                         items: [
                             {
@@ -339,6 +341,7 @@ const expectedResponse = {
                     },
                 },
                 {
+                    type: 'LOWER',
                     heats: {
                         items: [
                             {
@@ -375,6 +378,7 @@ const expectedResponse = {
                     },
                 },
                 {
+                    type: 'UPPER',
                     heats: {
                         items: [
                             {
@@ -405,6 +409,7 @@ const expectedResponse = {
                     },
                 },
                 {
+                    type: 'UPPER',
                     heats: {
                         items: [
                             {

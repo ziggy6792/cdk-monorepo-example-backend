@@ -6,10 +6,10 @@ export const competitionEmpty = { events: [testEvent], competitions: [testCompet
 export const competitionPreRiderAllocation = {
     ...competitionEmpty,
     rounds: [
-        { createdAt: '2021-03-01T05:51:02.170Z', id: 'round3', roundNo: 3, competitionId: 'testCompetition' },
-        { createdAt: '2021-03-01T05:51:02.138Z', id: 'round2Lower', roundNo: 2, competitionId: 'testCompetition' },
-        { createdAt: '2021-03-01T05:51:02.157Z', id: 'round2Upper', roundNo: 2, competitionId: 'testCompetition' },
-        { createdAt: '2021-03-01T05:51:02.109Z', id: 'round1', roundNo: 1, competitionId: 'testCompetition' },
+        { createdAt: '2021-03-01T05:51:02.170Z', id: 'round3', type: 'UPPER', roundNo: 3, competitionId: 'testCompetition' },
+        { createdAt: '2021-03-01T05:51:02.138Z', id: 'round2Lower', type: 'LOWER', roundNo: 2, competitionId: 'testCompetition' },
+        { createdAt: '2021-03-01T05:51:02.157Z', id: 'round2Upper', type: 'UPPER', roundNo: 2, competitionId: 'testCompetition' },
+        { createdAt: '2021-03-01T05:51:02.109Z', id: 'round1', type: 'UPPER', roundNo: 1, competitionId: 'testCompetition' },
     ],
     heats: [
         { createdAt: '2021-03-01T05:51:02.158Z', id: 'sf1', name: 'SF1', roundId: 'round2Upper' },

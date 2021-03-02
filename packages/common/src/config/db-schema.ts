@@ -3,7 +3,7 @@
 
 import { ITableSchema, IDbSchemaConfig, IAttributeType } from './types';
 
-const idPartitionKey = { name: 'id', tpye: IAttributeType.STRING };
+const idPartitionKey = { name: 'id', type: IAttributeType.STRING };
 
 const DB_SCHEMA_CONFIG = {
     User: { partitionKey: idPartitionKey },
@@ -12,8 +12,8 @@ const DB_SCHEMA_CONFIG = {
         globalSecondaryIndexes: [
             {
                 indexName: 'byHeat',
-                partitionKey: { name: 'heatId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'seed', tpye: IAttributeType.NUMBER },
+                partitionKey: { name: 'heatId', type: IAttributeType.STRING },
+                sortKey: { name: 'seed', type: IAttributeType.NUMBER },
             },
         ],
     },
@@ -22,19 +22,19 @@ const DB_SCHEMA_CONFIG = {
         globalSecondaryIndexes: [
             {
                 indexName: 'byCompetition',
-                partitionKey: { name: 'competitionId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'createdAt', tpye: IAttributeType.STRING },
+                partitionKey: { name: 'competitionId', type: IAttributeType.STRING },
+                sortKey: { name: 'createdAt', type: IAttributeType.STRING },
             },
         ],
     },
     RiderAllocation: {
-        partitionKey: { name: 'allocatableId', tpye: IAttributeType.STRING },
-        sortKey: { name: 'userId', tpye: IAttributeType.STRING },
+        partitionKey: { name: 'allocatableId', type: IAttributeType.STRING },
+        sortKey: { name: 'userId', type: IAttributeType.STRING },
         globalSecondaryIndexes: [
             {
                 indexName: 'byAllocatable',
-                partitionKey: { name: 'allocatableId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'createdAt', tpye: IAttributeType.STRING },
+                partitionKey: { name: 'allocatableId', type: IAttributeType.STRING },
+                sortKey: { name: 'createdAt', type: IAttributeType.STRING },
             },
         ],
     },
@@ -43,8 +43,8 @@ const DB_SCHEMA_CONFIG = {
         globalSecondaryIndexes: [
             {
                 indexName: 'byRound',
-                partitionKey: { name: 'roundId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'createdAt', tpye: IAttributeType.STRING },
+                partitionKey: { name: 'roundId', type: IAttributeType.STRING },
+                sortKey: { name: 'createdAt', type: IAttributeType.STRING },
             },
         ],
     },
@@ -54,8 +54,8 @@ const DB_SCHEMA_CONFIG = {
         globalSecondaryIndexes: [
             {
                 indexName: 'byEvent',
-                partitionKey: { name: 'eventId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'createdAt', tpye: IAttributeType.STRING },
+                partitionKey: { name: 'eventId', type: IAttributeType.STRING },
+                sortKey: { name: 'createdAt', type: IAttributeType.STRING },
             },
         ],
     },

@@ -35,6 +35,7 @@ export default class BuildCompetition {
             const { heats: heatParams, ...roundInput } = roundParam;
             const round = Object.assign(new Round(), roundInput);
             round.setDefaults();
+            console.log('round', round);
             roundsToCreate.push(round);
             heatParams.forEach((heatParam) => {
                 const { seedSlots: seedSlotParams, ...heatInput } = heatParam;

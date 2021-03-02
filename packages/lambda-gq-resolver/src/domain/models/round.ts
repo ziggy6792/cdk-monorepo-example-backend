@@ -32,7 +32,7 @@ class Round extends Identifiable {
 
     @Field(() => RoundType)
     @attribute()
-    tpye: RoundType;
+    type: RoundType;
 
     @Field(() => ID)
     @attribute()
