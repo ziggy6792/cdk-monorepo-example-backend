@@ -26,8 +26,8 @@ class SeedSlot extends Identifiable {
     @attribute()
     seed: number;
 
-    @Field(() => Int, { name: 'position' })
-    async getPosition(@Root() parent: SeedSlot, @Ctx() context: IContext): Promise<number> {
+    @Field(() => Int, { name: 'position', nullable: true })
+    async getPosition(@Root() parent: SeedSlot, @Ctx() context: IContext): Promise<number | null> {
         const result = await context.dataLoaders.seedSlotPosition.load(parent.id);
         return result;
     }
