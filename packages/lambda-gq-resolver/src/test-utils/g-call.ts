@@ -3,6 +3,7 @@ import { ExecutionResult, graphql } from 'graphql';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { IContext, IdentityType } from 'src/types';
 import createSchema from 'src/typegraphql-setup/create-schema';
+import { contextInitialState } from 'src/typegraphql-setup/context';
 
 interface IOptions {
     source: string;
@@ -14,5 +15,5 @@ export const gCall = async ({ source, variableValues }: IOptions): Promise<Execu
         schema: createSchema(),
         source,
         variableValues,
-        contextValue: { req: null, identity: { type: IdentityType.ROLE } } as IContext,
+        contextValue: { ...contextInitialState, identity: { type: IdentityType.ROLE } } as IContext,
     });

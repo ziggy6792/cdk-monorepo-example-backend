@@ -13,12 +13,12 @@
         "precommit": "yarn run typecheck"
     },
     "dependencies": {
+        "@alpaca-backend/common": "^1.0.0",
+        "@alpaca-backend/common-lambda-lib": "^1.0.0",
         "@aws-solutions-constructs/core": "^1.75.0",
         "@aws/dynamodb-data-mapper": "^0.7.3",
         "@aws/dynamodb-data-mapper-annotations": "^0.7.3",
         "@aws/dynamodb-expressions": "^0.7.3",
-        "@alpaca-backend/common": "^1.0.0",
-        "@alpaca-backend/common-lambda-lib": "^1.0.0",
         "@types/aws-serverless-express": "^3.3.3",
         "@types/jsonwebtoken": "^8.5.0",
         "@types/jwk-to-pem": "^2.0.0",
@@ -30,6 +30,7 @@
         "aws-serverless-express": "^3.4.0",
         "class-validator": "^0.12.2",
         "cors": "^2.8.5",
+        "dataloader": "^2.0.0",
         "express": "^4.17.1",
         "graphql": "^15.4.0",
         "lodash": "^4.17.20",

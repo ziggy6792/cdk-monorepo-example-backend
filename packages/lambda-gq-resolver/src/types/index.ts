@@ -1,5 +1,8 @@
 /* eslint-disable camelcase */
 
+import DataLoader from 'dataloader';
+import SeedSlot from 'src/domain/models/seed-slot';
+
 export enum IdentityType {
     ROLE = 'role',
     USER = 'user',
@@ -57,4 +60,7 @@ export interface IEvent {
 export interface IContext {
     req: any | null;
     identity: IIdentity;
+    dataLoaders: {
+        seedSlotPosition: DataLoader<unknown, number, unknown>;
+    };
 }
