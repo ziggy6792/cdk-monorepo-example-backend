@@ -10,7 +10,7 @@ import * as utils from 'src/utils/utility';
 import User from './user';
 
 @ObjectType()
-class Run {
+export class Run {
     @Field(() => Float, { nullable: true })
     @attribute()
     score: number;
