@@ -3,7 +3,7 @@
 import config from 'src/config';
 
 const getTableName = (tableName: string, stage?: string): string => {
-    const contItems = [config.PROJECT_NAME, stage, 'v2', tableName].filter((v) => v != null);
+    const contItems = [config.PROJECT_NAME, stage, tableName].filter((v) => v != null);
     return contItems.join('-');
 };
 
