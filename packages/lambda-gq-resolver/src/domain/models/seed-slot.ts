@@ -2,11 +2,12 @@
 /* eslint-disable max-classes-per-file */
 import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
-import { Field, ObjectType, ID, Int, Root } from 'type-graphql';
+import { Field, ObjectType, ID, Int, Root, Ctx } from 'type-graphql';
 import Identifiable from 'src/domain/models/abstract/identifiable';
 import { mapper } from 'src/utils/mapper';
 import * as utils from 'src/utils/utility';
 import { commonConfig } from '@alpaca-backend/common';
+import { IContext } from 'src/types';
 import RiderAllocation from './rider-allocation';
 import Heat from './heat';
 
@@ -25,9 +26,10 @@ class SeedSlot extends Identifiable {
     @attribute()
     seed: number;
 
-    @Field()
-    position(@Root() parent: SeedSlot): number {
-        return parent.getPosition();
+    @Field(() => Int, { name: 'position' })
+    async getPosition(@Root() parent: SeedSlot, @Ctx() context: IContext): Promise<number> {
+        const result = await context.dataLoaders.seedSlotPosition.load(parent.id);
+        return result;
     }
 
     @Field(() => ID, { nullable: true })
@@ -55,9 +57,9 @@ class SeedSlot extends Identifiable {
         return mapper.get(Object.assign(new Heat(), { id: this.heatId }));
     }
 
-    private getPosition(): number {
-        return 1;
-    }
+    // private getPosition(): number {
+    //     return 1;
+    // }
 }
 
 export default SeedSlot;

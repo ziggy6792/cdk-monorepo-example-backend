@@ -13,7 +13,7 @@ const DB_SCHEMA_CONFIG = {
             {
                 indexName: 'byHeat',
                 partitionKey: { name: 'heatId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'createdAt', tpye: IAttributeType.STRING },
+                sortKey: { name: 'seed', tpye: IAttributeType.NUMBER },
             },
         ],
     },
