@@ -52,6 +52,11 @@ class RiderAllocation extends Creatable {
         return 1;
     }
 
+    getBestScore(): number {
+        const bestRun = _.maxBy(this.runs, 'score');
+        return bestRun ? bestRun.score : -1;
+    }
+
     @Field(() => User, { name: 'user' })
     async getUser(): Promise<User> {
         return mapper.get(Object.assign(new User(), { id: this.userId }));
