@@ -54,7 +54,9 @@ class RiderAllocation extends Creatable {
 
     getBestScore(): number {
         const bestRun = _.maxBy(this.runs, 'score');
-        return bestRun ? bestRun.score : -1;
+        const ret = bestRun ? bestRun.score : -1;
+        console.log(`best score ${this.userId} ${ret}`);
+        return ret;
     }
 
     @Field(() => User, { name: 'user' })
