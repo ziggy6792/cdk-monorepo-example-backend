@@ -1,5 +1,11 @@
-const testEvent = { createdAt: '2021-03-01T05:51:01.844Z', id: 'testEvent', name: 'Test Event', when: 'now', adminUserId: 'testUser' };
-const testCompetition = { createdAt: '2021-03-01T05:51:01.844Z', id: 'testCompetition', name: 'Test Event', when: 'now', adminUserId: 'testUser' };
+const testEvent = { createdAt: '2021-03-01T05:51:01.844Z', id: 'testEvent', name: 'Test Event', when: 'now', adminUserId: 'Facebook_10224795420532374' };
+const testCompetition = {
+    createdAt: '2021-03-01T05:51:01.844Z',
+    id: 'testCompetition',
+    name: 'Test Compettion',
+    judgeUserId: 'babbbafe-f229-4a30-9dd4-b1bc55b4ed9a',
+    eventId: 'testEvent',
+};
 
 export const competitionEmpty = { events: [testEvent], competitions: [testCompetition] };
 

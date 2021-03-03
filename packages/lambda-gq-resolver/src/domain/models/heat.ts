@@ -48,8 +48,8 @@ class Heat extends DataEntity {
     @attribute()
     progressionsPerHeat: number;
 
-    @Field(() => Round, { name: 'selectedHeat' })
-    async getSelectedHeat(): Promise<Round> {
+    @Field(() => Round, { name: 'round' })
+    async getRound(): Promise<Round> {
         return mapper.get(Object.assign(new Round(), { id: this.roundId }));
     }
 

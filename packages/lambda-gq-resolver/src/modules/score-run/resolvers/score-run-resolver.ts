@@ -1,17 +1,19 @@
 /* eslint-disable class-methods-use-this */
 
-import { Resolver, Mutation, Arg } from 'type-graphql';
+import { Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
 import _ from 'lodash';
 import Heat from 'src/domain/models/heat';
 import { ScorRunInput } from 'src/modules/score-run/inputs/score-run-inputs';
 import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import errorMessage from 'src/config/error-message';
+import createAuthMiddleware from 'src/middleware/create-auth-middleware';
+import isHeatJudge from 'src/middleware/auth-check/is-heat-judge';
 
 @Resolver()
 export default class ScoreRun {
     @Mutation(() => Heat)
-    // @UseMiddleware([createAuthMiddleware([isCompetitionAdmin])])
+    @UseMiddleware([createAuthMiddleware([isHeatJudge])])
     async scoreRun(@Arg('input', () => ScorRunInput) input: ScorRunInput): Promise<Heat> {
         const heat = await mapper.get(Object.assign(new Heat(), { id: input.allocatableId }));
 

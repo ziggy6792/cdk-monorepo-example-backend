@@ -154,6 +154,18 @@ class Competition extends DataEntity {
     async getChildren(): Promise<Creatable[]> {
         return this.getRounds();
     }
+
+    async isUserAllowedToJudge(userId: string): Promise<boolean> {
+        if (!userId) {
+            return false;
+        }
+        if (userId === this.judgeUserId) {
+            return true;
+        }
+
+        const event = await this.getEvent();
+        return event.adminUserId === userId;
+    }
 }
 
 // scheduleItems: [ScheduleItem] @connection(keyName: "bySchedule", fields: ["id"])

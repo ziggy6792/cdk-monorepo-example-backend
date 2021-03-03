@@ -19,7 +19,7 @@ class CompetitionInput {
     @Field({ nullable: true })
     category: string;
 
-    @Field(() => ID, { nullable: true })
+    @Field(() => ID)
     judgeUserId: string;
 
     @Field({ nullable: true })
