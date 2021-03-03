@@ -15,7 +15,7 @@ export default class ScoreRun {
     @Mutation(() => Heat)
     @UseMiddleware([createAuthMiddleware([isHeatJudge])])
     async scoreRun(@Arg('input', () => ScorRunInput) input: ScorRunInput): Promise<Heat> {
-        const heat = await mapper.get(Object.assign(new Heat(), { id: input.allocatableId }));
+        const heat = await mapper.get(Object.assign(new Heat(), { id: input.heatId }));
 
         const seedSlots = await heat.getSeedSlots();
         const orderedSeedSlots = _.orderBy(seedSlots, (seedSlot) => seedSlot.seed, 'asc');

@@ -14,7 +14,7 @@ const isHeatJudge: AuthCheck = async ({ args, context: { identity } }) => {
     }
     const input = args.input as ScorRunInput;
 
-    const heatId = input.allocatableId;
+    const { heatId } = input;
 
     const heat = await mapper.get(Object.assign(new Heat(), { id: heatId }));
     const round = await heat.getRound();

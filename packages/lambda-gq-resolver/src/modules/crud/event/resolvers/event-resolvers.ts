@@ -8,7 +8,6 @@ import { IContext, IdentityType } from 'src/types';
 import { mapper } from 'src/utils/mapper';
 import { AuthCheck } from 'src/middleware/auth-check/types';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
-import isAuthRole from 'src/middleware/auth-check/is-auth-role';
 
 const addDefaultUserId: MiddlewareFn<IContext> = async ({ args, context: { identity } }, next) => {
     const input = args.input as CreateEventInput;

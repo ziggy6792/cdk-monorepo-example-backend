@@ -1,8 +1,6 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable import/prefer-default-export */
-import { Field, InputType, ID, Int, Float } from 'type-graphql';
-import { UpdateRiderAllocationInput } from 'src/modules/crud/rider-allocation/inputs/rider-allocation-inputs';
-import { Run } from 'src/domain/models/rider-allocation';
+import { Field, InputType, ID, Float } from 'type-graphql';
 
 @InputType()
 export class RunInput {
@@ -16,7 +14,7 @@ export class RunInput {
 @InputType()
 export class ScorRunInput {
     @Field(() => ID)
-    allocatableId: string;
+    heatId: string;
 
     @Field(() => ID)
     userId: string;
