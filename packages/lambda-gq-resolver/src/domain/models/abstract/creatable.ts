@@ -4,26 +4,29 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
-import { Field, ID, ObjectType } from 'type-graphql';
+import { ObjectType } from 'type-graphql';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
 
-const getTimestamp = (): string => getUniqueTimestamp().toString();
 @ObjectType({ isAbstract: true })
 abstract class Creatable {
     createdAt: string;
 
     modifiedAt: string;
 
+    static getTimestamp(): string {
+        return getUniqueTimestamp().toString();
+    }
+
     constructor() {
-        this.createdAt = getTimestamp();
+        this.createdAt = Creatable.getTimestamp();
     }
 
     setDefaults(): void {
-        this.createdAt = getTimestamp();
+        this.createdAt = Creatable.getTimestamp();
     }
 
     setModifiedAt(): void {
-        this.modifiedAt = getTimestamp();
+        this.modifiedAt = Creatable.getTimestamp();
     }
 
     async getChildren(): Promise<Creatable[]> {
