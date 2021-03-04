@@ -29,6 +29,7 @@ const schema = buildSchemaSync({
         BuildCompetition,
         AllocateRiders,
         ScoreRun,
+        RegisterResolver,
     ] as any,
 });
 

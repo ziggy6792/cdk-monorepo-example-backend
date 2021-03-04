@@ -3,25 +3,27 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ID, ObjectType } from 'type-graphql';
-import moment from 'src/utils/moment';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
-import { mapper } from 'src/utils/mapper';
-import { toArray } from 'src/utils/async-iterator';
-import Heat from 'src/domain/models/heat';
-import Round from 'src/domain/models/round';
 
-const getCreatedAt = (): string => getUniqueTimestamp().toString();
+const getTimestamp = (): string => getUniqueTimestamp().toString();
 @ObjectType({ isAbstract: true })
 abstract class Creatable {
-    @Field(() => ID, { nullable: true })
-    @attribute({ defaultProvider: () => getCreatedAt() })
     createdAt: string;
 
+    modifiedAt: string;
+
+    constructor() {
+        this.createdAt = getTimestamp();
+    }
+
     setDefaults(): void {
-        this.createdAt = getCreatedAt();
+        this.createdAt = getTimestamp();
+    }
+
+    setModifiedAt(): void {
+        this.modifiedAt = getTimestamp();
     }
 
     async getChildren(): Promise<Creatable[]> {

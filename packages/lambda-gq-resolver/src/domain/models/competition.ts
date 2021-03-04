@@ -2,7 +2,7 @@
 /* eslint-disable max-classes-per-file */
 import { commonConfig, commonUtils } from '@alpaca-backend/common';
 
-import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
+// import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
@@ -11,6 +11,7 @@ import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
 import * as utils from 'src/utils/utility';
+import { Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 import User from './user';
 import Event from './event';
 import Round from './round';
@@ -65,58 +66,45 @@ registerEnumType(Level, {
 @ObjectType()
 class CompetitionParams {
     @Field()
-    @attribute()
     name: string;
 }
 @ObjectType()
-@table(utils.getTableName(commonConfig.DB_SCHEMA.Competition.tableName))
+@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.Competition.tableName) })
 class Competition extends DataEntity {
     @Field()
-    @attribute()
     description: string;
 
     @Field()
-    @attribute()
     category: string;
 
     @Field(() => ID)
-    @attribute()
     eventId: string;
 
     @Field(() => ID)
-    @attribute()
     judgeUserId: string;
 
     @Field()
-    @attribute()
     when: string;
 
     @Field(() => CompetitionStatus)
-    @attribute()
     status: CompetitionStatus;
 
     @Field(() => CompetitionParams)
-    @attribute()
     params: CompetitionParams;
 
     @Field()
-    @attribute()
     selectedHeatId: string;
 
     @Field(() => Int)
-    @attribute()
     maxRiders: string;
 
     @Field(() => Gender)
-    @attribute()
     gender: Gender;
 
     @Field(() => Sport)
-    @attribute()
     sport: Sport;
 
     @Field(() => Level)
-    @attribute()
     level: Level;
 
     @Field(() => User, { name: 'judgeUser' })
