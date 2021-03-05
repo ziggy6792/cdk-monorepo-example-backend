@@ -1,13 +1,17 @@
-import { DynamoStore as EasyDynamoStore, ModelConstructor, PutRequest, UpdateRequest } from '@shiftcoders/dynamo-easy';
+import { DynamoStore as EasyDynamoStore, GetRequest, ModelConstructor, PutRequest, UpdateRequest } from '@shiftcoders/dynamo-easy';
 import { DynamoDB } from 'aws-sdk';
 import getEnvConfig from 'src/config/get-env-config';
 import Creatable from 'src/domain/models/abstract/creatable';
+import _ from 'lodash';
 
 const { awsConfig } = getEnvConfig();
 
 class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
+    private myModelClazz: ModelConstructor<T>;
+
     constructor(modelClazz: ModelConstructor<T>) {
         super(modelClazz, new DynamoDB(awsConfig));
+        this.myModelClazz = modelClazz;
     }
 
     put(item: T): PutRequest<T> {
@@ -18,6 +22,18 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
 
     update(partitionKey: any, sortKey?: any): UpdateRequest<T> {
         return super.update(partitionKey, sortKey).updateAttribute('modifiedAt').set(Creatable.getTimestamp());
+    }
+
+    async loadOne(partitionKey: any, sortKey?: any): Promise<T> {
+        const getRequest = this.get(partitionKey, sortKey);
+
+        getRequest.exec = () => {
+            console.log('got');
+        };
+        const loadedValues = await getRequest.exec();
+        if (!loadedValues) throw new Error(`Item not found ${JSON.stringify(getRequest.params)}`);
+        // console.log('myModelClazz', new (this.myModelClazz as any)());
+        return _.merge(new (this.myModelClazz as any)(), loadedValues);
     }
 }
 
