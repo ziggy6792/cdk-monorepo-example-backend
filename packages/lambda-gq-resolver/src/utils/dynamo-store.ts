@@ -24,16 +24,22 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
         return super.update(partitionKey, sortKey).updateAttribute('modifiedAt').set(Creatable.getTimestamp());
     }
 
-    async loadOne(partitionKey: any, sortKey?: any): Promise<T> {
+    loadOne(partitionKey: any, sortKey?: any): GetRequest<T> {
         const getRequest = this.get(partitionKey, sortKey);
 
-        getRequest.exec = () => {
-            console.log('got');
+        getRequest.exec = async (): Promise<T> => {
+            const loadedValues = await this.get(partitionKey, sortKey).exec();
+            if (!loadedValues) {
+                return null;
+            }
+            // console.log('myModelClazz', new (this.myModelClazz as any)());
+            return _.merge(new (this.myModelClazz as any)(), loadedValues);
         };
-        const loadedValues = await getRequest.exec();
-        if (!loadedValues) throw new Error(`Item not found ${JSON.stringify(getRequest.params)}`);
-        // console.log('myModelClazz', new (this.myModelClazz as any)());
-        return _.merge(new (this.myModelClazz as any)(), loadedValues);
+
+        // const loadedValues = await getRequest.exec();
+        // if (!loadedValues) throw new Error(`Item not found ${JSON.stringify(getRequest.params)}`);
+        // // console.log('myModelClazz', new (this.myModelClazz as any)());
+        return getRequest;
     }
 }
 

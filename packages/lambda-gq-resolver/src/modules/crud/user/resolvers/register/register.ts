@@ -57,11 +57,11 @@ export default class RegisterResolver {
 
         await Competition.store.put(competition).ifNotExists().exec();
 
-        const loadedComp = await Competition.store.loadOne(competition.id);
+        const loadedComp = await Competition.store.loadOne(competition.id).exec();
 
         console.log('loadedComp params', loadedComp.params);
-        loadedComp.myFunc();
-        loadedComp.params.mySubFunc();
+        // loadedComp.myFunc();
+        // loadedComp.params.mySubFunc();
 
         return user;
     }
