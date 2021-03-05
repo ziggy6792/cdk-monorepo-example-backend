@@ -19,13 +19,16 @@ abstract class Creatable {
 
     modifiedAt: string;
 
-    static Load<T extends Creatable>(initalValues: T): T {
-        return _.merge(new (this as any)(), initalValues);
+    static async Load<T extends Promise<Creatable>>(loadedValues: T): Promise<T> {
+        const l = await loadedValues;
+        return _.merge(new (this as any)(), l);
     }
 
     static getTimestamp(): string {
         return getUniqueTimestamp().toString();
     }
+
+    static store: DynamoStore<any>;
 
     setDefaults(): void {
         this.createdAt = Creatable.getTimestamp();

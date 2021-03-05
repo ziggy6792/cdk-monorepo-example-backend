@@ -12,6 +12,7 @@ import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
 import * as utils from 'src/utils/utility';
 import { CollectionProperty, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
+import DynamoStore from 'src/utils/dynamo-store';
 import User from './user';
 import Event from './event';
 import Round from './round';
@@ -79,6 +80,8 @@ class Competition extends DataEntity {
         super();
         this.params = new CompetitionParams();
     }
+
+    static DynamoStore: DynamoStore<Competition>;
 
     // static Load(initalValues: Competition): Competition {
     //     return _.merge(new Competition(), initalValues);
@@ -169,10 +172,12 @@ class Competition extends DataEntity {
     }
 
     myFunc(): void {
-        console.log('running my func');
+        console.log('running my func', Competition.DynamoStore);
     }
 }
 
 // scheduleItems: [ScheduleItem] @connection(keyName: "bySchedule", fields: ["id"])
+
+Competition.DynamoStore = new DynamoStore(Competition);
 
 export default Competition;

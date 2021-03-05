@@ -53,11 +53,11 @@ export default class RegisterResolver {
 
         competition.params.name = 'param name';
 
-        const competitionStore = new DynamoStore(Competition);
+        // const competitionStore = new DynamoStore(Competition);
 
-        await competitionStore.put(competition).ifNotExists().exec();
+        await Competition.DynamoStore.put(competition).ifNotExists().exec();
 
-        const loadedComp = Competition.Load(await competitionStore.get(competition.id).exec());
+        const loadedComp = await Competition.Load(Competition.DynamoStore.get(competition.id).exec());
 
         console.log('loadedComp params', loadedComp.params);
         loadedComp.myFunc();
