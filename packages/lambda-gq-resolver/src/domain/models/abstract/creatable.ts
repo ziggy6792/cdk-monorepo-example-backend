@@ -17,9 +17,13 @@ import DynamoService from 'src/utils/dynamo-service';
 //         super(modelClazz, new DynamoDB(awsConfig));
 //     }
 abstract class Creatable {
-    // createdAt: string;
+    createdAt: string;
 
     modifiedAt: string;
+
+    constructor() {
+        this.setDefaults();
+    }
 
     static getTimestamp(): string {
         return getUniqueTimestamp().toString();
@@ -28,7 +32,7 @@ abstract class Creatable {
     static store: DynamoService<any>;
 
     setDefaults(): void {
-        // this.createdAt = Creatable.getTimestamp();
+        this.createdAt = Creatable.getTimestamp();
     }
 
     setModifiedAt(): void {
