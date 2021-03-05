@@ -11,7 +11,7 @@ import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
 import * as utils from 'src/utils/utility';
-import { Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
+import { CollectionProperty, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 import User from './user';
 import Event from './event';
 import Round from './round';
@@ -64,13 +64,26 @@ registerEnumType(Level, {
 });
 
 @ObjectType()
-class CompetitionParams {
+export class CompetitionParams {
     @Field()
     name: string;
+
+    mySubFunc(): void {
+        console.log('running my sub func');
+    }
 }
 @ObjectType()
 @Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.Competition.tableName) })
 class Competition extends DataEntity {
+    constructor() {
+        super();
+        this.params = new CompetitionParams();
+    }
+
+    // static Load(initalValues: Competition): Competition {
+    //     return _.merge(new Competition(), initalValues);
+    // }
+
     @Field()
     description: string;
 
@@ -153,6 +166,10 @@ class Competition extends DataEntity {
 
         const event = await this.getEvent();
         return event.adminUserId === userId;
+    }
+
+    myFunc(): void {
+        console.log('running my func');
     }
 }
 

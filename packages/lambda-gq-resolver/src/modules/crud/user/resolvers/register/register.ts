@@ -1,20 +1,13 @@
 /* eslint-disable class-methods-use-this */
 
-import { Resolver, Query, Mutation, Arg, Ctx, UseMiddleware } from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
 import { IContext } from 'src/types';
-import { mapper } from 'src/utils/mapper';
 import User from 'src/domain/models/user';
-import deafultAuthMiddleware from 'src/middleware/default-auth-middleware';
-import { createNotExistsCondition } from 'src/utils/utility';
-import util from 'util';
-import promisify from 'js-promisify';
-import getEnvConfig from 'src/config/get-env-config';
-import { DynamoDB } from 'aws-sdk';
-import { v4 as uuidv4 } from 'uuid';
-import DynamoStore from 'src/utils/dynamo-store';
-import { RegisterInput } from './register-input';
 
-const { awsConfig } = getEnvConfig();
+import DynamoStore from 'src/utils/dynamo-store';
+import Competition, { CompetitionParams } from 'src/domain/models/competition';
+import { update, UpdateExpressionDefinitionFunction } from '@shiftcoders/dynamo-easy';
+import { RegisterInput } from './register-input';
 
 @Resolver()
 export default class RegisterResolver {
@@ -32,15 +25,13 @@ export default class RegisterResolver {
 
         const userStore = new DynamoStore(User);
 
-        const { id, firstName, lastName, email } = input;
+        const { firstName, lastName, email } = input;
 
         const user = new User();
 
         user.firstName = firstName;
         user.lastName = lastName;
         user.email = email;
-
-        const response = await userStore.put(user).ifNotExists().exec();
 
         const userUpdate = new User();
         userUpdate.id = user.id;
@@ -53,6 +44,44 @@ export default class RegisterResolver {
 
         console.log('updateResponse', updateResponse);
 
+        const competition = new Competition();
+
+        competition.eventId = 'eventId';
+        competition.judgeUserId = 'userId';
+
+        competition.params = new CompetitionParams();
+
+        competition.params.name = 'param name';
+
+        const competitionStore = new DynamoStore(Competition);
+
+        await competitionStore.put(competition).ifNotExists().exec();
+
+        const loadedComp = Competition.Load(await competitionStore.get(competition.id).exec());
+
+        console.log('loadedComp params', loadedComp.params);
+        loadedComp.myFunc();
+        loadedComp.params.mySubFunc();
+
         return user;
+    }
+
+    @Mutation(() => User)
+    async updateRegister(@Arg('input') input: RegisterInput, @Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
+
+        const userStore = new DynamoStore(User);
+
+        const { id, ...updates } = input;
+
+        const updateOperations = Object.keys(updates).map((key) => update(key).set(input[key]));
+
+        const updateResponse = await userStore
+            .update(id)
+            .operations(...updateOperations)
+            .returnValues('ALL_NEW')
+            .exec();
+
+        return updateResponse;
     }
 }

@@ -4,21 +4,27 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
-import { ObjectType } from 'type-graphql';
+import { ClassType, ObjectType } from 'type-graphql';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
+import DynamoStore from 'src/utils/dynamo-store';
 
 @ObjectType({ isAbstract: true })
+
+// <T extends Creatable> extends EasyDynamoStore<T> {
+//     constructor(modelClazz: ModelConstructor<T>) {
+//         super(modelClazz, new DynamoDB(awsConfig));
+//     }
 abstract class Creatable {
     createdAt: string;
 
     modifiedAt: string;
 
-    static getTimestamp(): string {
-        return getUniqueTimestamp().toString();
+    static Load<T extends Creatable>(initalValues: T): T {
+        return _.merge(new (this as any)(), initalValues);
     }
 
-    constructor() {
-        this.createdAt = Creatable.getTimestamp();
+    static getTimestamp(): string {
+        return getUniqueTimestamp().toString();
     }
 
     setDefaults(): void {
