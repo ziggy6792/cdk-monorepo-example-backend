@@ -46,6 +46,8 @@ export default class RegisterResolver {
 
         const competition = new Competition();
 
+        competition.createdAt = 'now';
+
         competition.eventId = 'eventId';
         competition.judgeUserId = 'userId';
 
@@ -59,9 +61,28 @@ export default class RegisterResolver {
 
         const loadedComp = await Competition.store.loadOne(competition.id).exec();
 
-        console.log('loadedComp params', loadedComp.params);
-        loadedComp.myFunc();
-        loadedComp.params.mySubFunc();
+        const findComps = await Competition.store.store.query().wherePartitionKey('04591721-fa3b-4aed-8aa2-947693ead6cb').execFetchAll();
+
+        const request = Competition.store.store.query().index('byEvent').wherePartitionKey('bla');
+
+        console.log('REQUEST', request.params);
+
+        const findCompsByEvent = await Competition.store.store
+            .query()
+            .index('byEvent')
+            .wherePartitionKey('eventId')
+
+            // .wherePartitionKey('eventId')
+            .execFetchAll();
+
+        console.log('findComps', findComps);
+        console.log('findCompsByEvent', findCompsByEvent);
+
+        // return toArray(mapper.query(Competition, { eventId: this.id }, { indexName: 'byEvent' }));
+
+        // console.log('loadedComp params', loadedComp.params);
+        // loadedComp.myFunc();
+        // loadedComp.params.mySubFunc();
 
         return user;
     }

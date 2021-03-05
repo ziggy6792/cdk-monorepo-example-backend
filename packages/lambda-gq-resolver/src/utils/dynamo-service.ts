@@ -15,7 +15,7 @@ class DynamoService<T extends Creatable> {
 
     constructor(modelClazz: ModelConstructor<T>) {
         const dynamoDB = new DynamoDB(awsConfig);
-        this.store = new DynamoStore<T>(modelClazz);
+        this.store = new DynamoStore<T>(modelClazz, dynamoDB);
 
         this.myDynamoDBWrapper = new DynamoDbWrapper(dynamoDB);
         this.myModelClazz = modelClazz;

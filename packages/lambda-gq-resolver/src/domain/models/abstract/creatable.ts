@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { ClassType, ObjectType } from 'type-graphql';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
 import DynamoStore from 'src/utils/dynamo-store';
-import { GetRequest } from '@shiftcoders/dynamo-easy';
+import { GetRequest, GSISortKey } from '@shiftcoders/dynamo-easy';
 import DynamoService from 'src/utils/dynamo-service';
 
 @ObjectType({ isAbstract: true })
@@ -17,7 +17,7 @@ import DynamoService from 'src/utils/dynamo-service';
 //         super(modelClazz, new DynamoDB(awsConfig));
 //     }
 abstract class Creatable {
-    createdAt: string;
+    // createdAt: string;
 
     modifiedAt: string;
 
@@ -28,7 +28,7 @@ abstract class Creatable {
     static store: DynamoService<any>;
 
     setDefaults(): void {
-        this.createdAt = Creatable.getTimestamp();
+        // this.createdAt = Creatable.getTimestamp();
     }
 
     setModifiedAt(): void {

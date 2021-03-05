@@ -11,7 +11,7 @@ import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
 import * as utils from 'src/utils/utility';
-import { CollectionProperty, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
+import { CollectionProperty, GSIPartitionKey, GSISortKey, Model, PartitionKey, Property, SortKey } from '@shiftcoders/dynamo-easy';
 import DynamoStore from 'src/utils/dynamo-store';
 import DynamoService from 'src/utils/dynamo-service';
 import User from './user';
@@ -95,7 +95,14 @@ class Competition extends DataEntity {
     category: string;
 
     @Field(() => ID)
+    @Property()
+    @GSIPartitionKey('byEvent')
     eventId: string;
+
+    @Field(() => ID)
+    @Property()
+    @GSISortKey('byEvent')
+    createdAt: string;
 
     @Field(() => ID)
     judgeUserId: string;
