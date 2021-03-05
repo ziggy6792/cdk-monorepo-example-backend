@@ -7,6 +7,7 @@ import _ from 'lodash';
 import { ClassType, ObjectType } from 'type-graphql';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
 import DynamoStore from 'src/utils/dynamo-store';
+import { GetRequest } from '@shiftcoders/dynamo-easy';
 
 @ObjectType({ isAbstract: true })
 
@@ -19,9 +20,10 @@ abstract class Creatable {
 
     modifiedAt: string;
 
-    static async Load<T extends Promise<Creatable>>(loadedValues: T): Promise<T> {
-        const l = await loadedValues;
-        return _.merge(new (this as any)(), l);
+    static async Load<T extends Creatable>(getRequest: GetRequest<T>): Promise<T> {
+        const loadedValues = await getRequest.exec();
+        if (!loadedValues) throw new Error(`Item not found ${JSON.stringify(getRequest.params)}`);
+        return _.merge(new (this as any)(), loadedValues);
     }
 
     static getTimestamp(): string {

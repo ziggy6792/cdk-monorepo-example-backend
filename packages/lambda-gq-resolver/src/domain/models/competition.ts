@@ -81,7 +81,7 @@ class Competition extends DataEntity {
         this.params = new CompetitionParams();
     }
 
-    static DynamoStore: DynamoStore<Competition>;
+    static store: DynamoStore<Competition>;
 
     // static Load(initalValues: Competition): Competition {
     //     return _.merge(new Competition(), initalValues);
@@ -171,13 +171,14 @@ class Competition extends DataEntity {
         return event.adminUserId === userId;
     }
 
-    myFunc(): void {
-        console.log('running my func', Competition.DynamoStore);
+    async myFunc(): Promise<void> {
+        const comp = await Competition.Load(Competition.store.get('hello'));
+        console.log('running my func', comp);
     }
 }
 
 // scheduleItems: [ScheduleItem] @connection(keyName: "bySchedule", fields: ["id"])
 
-Competition.DynamoStore = new DynamoStore(Competition);
+Competition.store = new DynamoStore(Competition);
 
 export default Competition;
