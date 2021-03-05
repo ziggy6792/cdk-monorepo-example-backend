@@ -180,7 +180,7 @@ class Competition extends DataEntity {
     }
 
     async myFunc(): Promise<void> {
-        const comp = await Competition.store.loadOne('5f192e64-7734-4ab0-9405-f015b1fbabef').exec();
+        const comp = await Competition.store.get('993a584c-3759-44e8-a7a8-16e5cc1e4ede').exec();
         console.log('running my func', comp);
     }
 }

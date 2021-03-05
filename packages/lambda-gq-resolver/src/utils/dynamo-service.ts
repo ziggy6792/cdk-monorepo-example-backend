@@ -1,4 +1,6 @@
-import { DynamoDbWrapper, DynamoStore, GetRequest, ModelConstructor, PutRequest, UpdateRequest } from '@shiftcoders/dynamo-easy';
+/* eslint-disable new-cap */
+/* eslint-disable max-classes-per-file */
+import { DynamoDbWrapper, DynamoStore, GetRequest, ModelConstructor, PutRequest, QueryRequest, UpdateRequest } from '@shiftcoders/dynamo-easy';
 import { DynamoDB } from 'aws-sdk';
 import getEnvConfig from 'src/config/get-env-config';
 import Creatable from 'src/domain/models/abstract/creatable';
@@ -31,21 +33,50 @@ class DynamoService<T extends Creatable> {
         return this.store.update(partitionKey, sortKey).updateAttribute('modifiedAt').set(Creatable.getTimestamp());
     }
 
-    loadOne(partitionKey: any, sortKey?: any): GetRequest<T> {
-        const getRequest = new GetRequest(this.myDynamoDBWrapper, this.myModelClazz, partitionKey, sortKey);
-
-        // Overwite the exec request to add revieced attributes to new instance of class
-        getRequest.exec = async (): Promise<T> => {
-            const loadedValues = await this.store.get(partitionKey, sortKey).exec();
-            // if (!loadedValues) {
-            //     return null;
-            // }
-            if (!loadedValues) throw new Error(`Item not found ${JSON.stringify(getRequest.params)}`);
-            // console.log('myModelClazz', new (this.myModelClazz as any)());
-            return _.merge(new (this.myModelClazz as any)(), loadedValues);
-        };
+    get(partitionKey: any, sortKey?: any): GetRequest<T> {
+        const getRequest = new MyGetRequest(this.myDynamoDBWrapper, this.myModelClazz, partitionKey, sortKey);
 
         return getRequest;
+    }
+
+    query(): MyQueryRequest<T> {
+        const queryRequest = new MyQueryRequest(this.myDynamoDBWrapper, this.myModelClazz);
+
+        return queryRequest;
+    }
+}
+
+const mapCreatible = <T extends Creatable>(loadedValues: T, clazzType: any): T => _.merge(new clazzType(), loadedValues);
+
+class MyQueryRequest<T extends Creatable> extends QueryRequest<T> {
+    private myModelClazz: ModelConstructor<T>;
+
+    constructor(wrapper: DynamoDbWrapper, modelClazz: ModelConstructor<T>) {
+        super(wrapper, modelClazz);
+        this.myModelClazz = modelClazz;
+    }
+
+    async execFetchAll(): Promise<T[]> {
+        const response = await super.execFetchAll();
+        const mappedResponse = response.map((loadedValues) => mapCreatible(loadedValues, this.myModelClazz));
+        return mappedResponse;
+    }
+}
+
+class MyGetRequest<T extends Creatable> extends GetRequest<T> {
+    private myModelClazz: ModelConstructor<T>;
+
+    constructor(wrapper: DynamoDbWrapper, modelClazz: ModelConstructor<T>, partitionKey, sortKey) {
+        super(wrapper, modelClazz, partitionKey, sortKey);
+        this.myModelClazz = modelClazz;
+    }
+
+    async exec(): Promise<T> {
+        const loadedValues = await super.exec();
+
+        if (!loadedValues) throw new Error(`Item not found ${JSON.stringify(this.params)}`);
+        // console.log('myModelClazz', new (this.myModelClazz as any)());
+        return mapCreatible(loadedValues, this.myModelClazz);
     }
 }
 

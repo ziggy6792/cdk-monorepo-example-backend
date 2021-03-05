@@ -57,16 +57,20 @@ export default class RegisterResolver {
 
         await Competition.store.put(competition).ifNotExists().exec();
 
-        const loadedComp = await Competition.store.loadOne(competition.id).exec();
+        const loadedComp = await Competition.store.get(competition.id).exec();
 
         const findComps = await Competition.store.store.query().wherePartitionKey('c3cd8e65-3f95-491a-9bba-beeaa0841c41').execFetchAll();
 
         const request = Competition.store.store.query().index('byEvent').wherePartitionKey('bla');
 
-        const findCompsByEvent = await Competition.store.store.query().index('byEvent').wherePartitionKey('eventId').execFetchAll();
+        const findCompsByEvent = await Competition.store.query().index('byEvent').wherePartitionKey('eventId').execFetchAll();
 
-        console.log('findComps', findComps);
-        console.log('findCompsByEvent', findCompsByEvent);
+        // console.log('findComps', findComps);
+        // console.log('findCompsByEvent', findCompsByEvent);
+
+        findCompsByEvent.forEach((competition) => {
+            competition.myFunc();
+        });
 
         // return toArray(mapper.query(Competition, { eventId: this.id }, { indexName: 'byEvent' }));
 
