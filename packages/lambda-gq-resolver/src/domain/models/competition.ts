@@ -13,6 +13,7 @@ import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists'
 import * as utils from 'src/utils/utility';
 import { CollectionProperty, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 import DynamoStore from 'src/utils/dynamo-store';
+import DynamoService from 'src/utils/dynamo-service';
 import User from './user';
 import Event from './event';
 import Round from './round';
@@ -81,7 +82,7 @@ class Competition extends DataEntity {
         this.params = new CompetitionParams();
     }
 
-    static store: DynamoStore<Competition>;
+    static store: DynamoService<Competition>;
 
     // static Load(initalValues: Competition): Competition {
     //     return _.merge(new Competition(), initalValues);
@@ -179,6 +180,6 @@ class Competition extends DataEntity {
 
 // scheduleItems: [ScheduleItem] @connection(keyName: "bySchedule", fields: ["id"])
 
-Competition.store = new DynamoStore(Competition);
+Competition.store = new DynamoService(Competition);
 
 export default Competition;
