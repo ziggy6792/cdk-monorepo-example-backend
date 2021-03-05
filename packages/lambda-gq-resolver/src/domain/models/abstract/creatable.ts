@@ -20,12 +20,6 @@ abstract class Creatable {
 
     modifiedAt: string;
 
-    static async Load<T extends Creatable>(getRequest: GetRequest<T>): Promise<T> {
-        const loadedValues = await getRequest.exec();
-        if (!loadedValues) throw new Error(`Item not found ${JSON.stringify(getRequest.params)}`);
-        return _.merge(new (this as any)(), loadedValues);
-    }
-
     static getTimestamp(): string {
         return getUniqueTimestamp().toString();
     }
