@@ -28,7 +28,7 @@ class User extends Identifiable {
         return parent.getFullName();
     }
 
-    private getFullName(): string {
+    public getFullName(): string {
         const { firstName, lastName } = this;
         return `${firstName}${lastName ? ` ${lastName}` : ''}`;
     }

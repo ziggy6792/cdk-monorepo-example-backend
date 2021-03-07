@@ -34,8 +34,12 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
         return super.put(item);
     }
 
-    update(partitionKey: any, sortKey?: any): UpdateRequest<T> {
-        return super.update(partitionKey, sortKey).updateAttribute('modifiedAt').set(Creatable.getTimestamp());
+    update(partitionKey: any, sortKey?: any): MyUpdateRequest<T> {
+        const updateRequest = new MyUpdateRequest(this.myDynamoDBWrapper, this.myModelClazz, partitionKey, sortKey);
+
+        return updateRequest;
+
+        // return super.update(partitionKey, sortKey).updateAttribute('modifiedAt').set(Creatable.getTimestamp());
     }
 
     get(partitionKey: any, sortKey?: any): GetRequest<T> {
@@ -105,6 +109,28 @@ class MyBatchGetSingleTableRequest<T extends Creatable, T2 = T> extends BatchGet
         const response = await super.exec();
         const mappedResponse = response.map((loadedValues) => mapCreatible(loadedValues, this.myModelClazz));
         return mappedResponse;
+    }
+}
+
+class MyUpdateRequest<T extends Creatable, T2 extends Creatable | void = void> extends UpdateRequest<T, T2> {
+    private myModelClazz: ModelConstructor<T>;
+
+    constructor(wrapper: DynamoDbWrapper, modelClazz: ModelConstructor<T>, partitionKey, sortKey) {
+        super(wrapper, modelClazz, partitionKey, sortKey);
+        this.myModelClazz = modelClazz;
+    }
+
+    // exec(): Promise<T>;
+
+    async exec(): Promise<T2> {
+        const loadedValues = await super.exec();
+        console.log('RUNNING UPDATE EXEC');
+
+        // console.log('myModelClazz', new (this.myModelClazz as any)());
+        if (loadedValues) {
+            return (mapCreatible((loadedValues as unknown) as T, this.myModelClazz) as unknown) as T2;
+        }
+        return null;
     }
 }
 

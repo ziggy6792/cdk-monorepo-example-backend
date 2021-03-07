@@ -104,6 +104,8 @@ export default class RegisterResolver {
             .returnValues('ALL_NEW')
             .exec();
 
+        console.log('Full name', updateResponse.getFullName());
+
         return updateResponse;
     }
 }
