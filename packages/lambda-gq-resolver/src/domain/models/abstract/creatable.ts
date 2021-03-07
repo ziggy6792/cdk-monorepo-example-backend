@@ -25,11 +25,15 @@ abstract class Creatable {
         this.setDefaults();
     }
 
+    mapIn(loadedValues: any): void {
+        _.merge(this, loadedValues);
+    }
+
     static getTimestamp(): string {
         return getUniqueTimestamp().toString();
     }
 
-    static store: DynamoService<any>;
+    static store: DynamoStore<any>;
 
     setDefaults(): void {
         this.createdAt = Creatable.getTimestamp();

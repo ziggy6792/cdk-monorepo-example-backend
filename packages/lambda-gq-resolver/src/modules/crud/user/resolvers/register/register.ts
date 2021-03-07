@@ -6,7 +6,7 @@ import User from 'src/domain/models/user';
 
 import DynamoStore from 'src/utils/dynamo-store';
 import Competition, { CompetitionParams } from 'src/domain/models/competition';
-import { update, UpdateExpressionDefinitionFunction } from '@shiftcoders/dynamo-easy';
+import { BatchGetRequest, update, UpdateExpressionDefinitionFunction } from '@shiftcoders/dynamo-easy';
 import { RegisterInput } from './register-input';
 
 @Resolver()
@@ -59,18 +59,25 @@ export default class RegisterResolver {
 
         const loadedComp = await Competition.store.get(competition.id).exec();
 
-        const findComps = await Competition.store.store.query().wherePartitionKey('c3cd8e65-3f95-491a-9bba-beeaa0841c41').execFetchAll();
+        const findComps = await Competition.store.query().wherePartitionKey('c3cd8e65-3f95-491a-9bba-beeaa0841c41').execFetchAll();
 
-        const request = Competition.store.store.query().index('byEvent').wherePartitionKey('bla');
+        const request = Competition.store.query().index('byEvent').wherePartitionKey('bla');
 
         const findCompsByEvent = await Competition.store.query().index('byEvent').wherePartitionKey('eventId').execFetchAll();
 
         // console.log('findComps', findComps);
         // console.log('findCompsByEvent', findCompsByEvent);
 
-        findCompsByEvent.forEach((competition) => {
-            competition.myFunc();
-        });
+        // findCompsByEvent.forEach((competition) => {
+        //     competition.myFunc();
+        // });
+        const keysToFetch: Array<Partial<Competition>> = [{ id: 'd187bf62-1da8-4981-91dc-20adbf2f2df6' }, { id: '8683b7a8-f38d-4a82-bbf4-1939322a574b' }];
+
+        const batchGetComps = await Competition.store.batchGet(keysToFetch).exec();
+
+        console.log('batchGetComps', batchGetComps);
+
+        await batchGetComps[0].myFunc();
 
         // return toArray(mapper.query(Competition, { eventId: this.id }, { indexName: 'byEvent' }));
 
