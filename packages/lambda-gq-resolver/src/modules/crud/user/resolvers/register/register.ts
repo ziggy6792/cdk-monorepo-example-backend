@@ -96,13 +96,7 @@ export default class RegisterResolver {
 
         const { id, ...updates } = input;
 
-        const updateOperations = Object.keys(updates).map((key) => update(key).set(input[key]));
-
-        const updateResponse = await userStore
-            .update(id)
-            .operations(...updateOperations)
-            .returnValues('ALL_NEW')
-            .exec();
+        const updateResponse = await userStore.update(id).values(updates).returnValues('ALL_NEW').exec();
 
         console.log('Full name', updateResponse.getFullName());
 

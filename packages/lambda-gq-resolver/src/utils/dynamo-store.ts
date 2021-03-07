@@ -9,6 +9,7 @@ import {
     PutRequest,
     QueryRequest,
     UpdateRequest,
+    update,
 } from '@shiftcoders/dynamo-easy';
 import { DynamoDB } from 'aws-sdk';
 import getEnvConfig from 'src/config/get-env-config';
@@ -36,6 +37,7 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
 
     update(partitionKey: any, sortKey?: any): MyUpdateRequest<T> {
         const updateRequest = new MyUpdateRequest(this.myDynamoDBWrapper, this.myModelClazz, partitionKey, sortKey);
+        updateRequest.updateAttribute('modifiedAt').set(Creatable.getTimestamp());
 
         return updateRequest;
 
@@ -120,17 +122,18 @@ class MyUpdateRequest<T extends Creatable, T2 extends Creatable | void = void> e
         this.myModelClazz = modelClazz;
     }
 
-    // exec(): Promise<T>;
-
     async exec(): Promise<T2> {
         const loadedValues = await super.exec();
-        console.log('RUNNING UPDATE EXEC');
 
-        // console.log('myModelClazz', new (this.myModelClazz as any)());
         if (loadedValues) {
             return (mapCreatible((loadedValues as unknown) as T, this.myModelClazz) as unknown) as T2;
         }
         return null;
+    }
+
+    values(values: Partial<T>): this {
+        const updateOperations = Object.keys(values).map((key) => update(key).set(values[key]));
+        return this.operations(...updateOperations);
     }
 }
 
