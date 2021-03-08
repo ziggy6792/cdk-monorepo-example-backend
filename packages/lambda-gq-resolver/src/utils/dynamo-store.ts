@@ -13,6 +13,9 @@ import {
     UpdateRequest,
     update,
     DeleteRequest,
+    attribute,
+    Metadata,
+    metadataForModel,
 } from '@shiftcoders/dynamo-easy';
 import { DynamoDB } from 'aws-sdk';
 import getEnvConfig from 'src/config/get-env-config';
@@ -28,10 +31,13 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
 
     private readonly myDynamoDBWrapper: DynamoDbWrapper;
 
+    private readonly metaData: Metadata<T>;
+
     constructor(modelClazz: ModelConstructor<T>) {
         super(modelClazz, new DynamoDB(awsConfig));
         this.myDynamoDBWrapper = new DynamoDbWrapper(this.dynamoDB);
         this.myModelClazz = modelClazz;
+        this.metaData = metadataForModel(this.myModelClazz);
     }
 
     put(item: T): PutRequest<T> {
@@ -45,8 +51,28 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
         updateRequest.updateAttribute('modifiedAt').set(Creatable.getTimestamp());
 
         return updateRequest;
+    }
 
-        // return super.update(partitionKey, sortKey).updateAttribute('modifiedAt').set(Creatable.getTimestamp());
+    updateItem(item: Partial<T>): MyUpdateRequest<T> {
+        const partitionKey = this.metaData.getPartitionKey();
+        const sortKey = this.metaData.getSortKey();
+
+        const updateValues = _.omit(
+            item,
+            [partitionKey, sortKey].filter((v) => !!v)
+        );
+
+        if (!item[partitionKey]) {
+            throw new Error(`Partition key not included in ${JSON.stringify(item)}`);
+        }
+
+        if (sortKey && !item[sortKey]) {
+            throw new Error(`Sort key not included in ${JSON.stringify(item)}`);
+        }
+
+        return this.update(item[partitionKey], item[sortKey])
+            .ifExists()
+            .values(updateValues as any);
     }
 
     get(partitionKey: any, sortKey?: any): GetRequest<T> {
@@ -192,6 +218,16 @@ class MyUpdateRequest<T extends Creatable, T2 extends Creatable | void = void> e
     values(values: Partial<T>): this {
         const updateOperations = Object.keys(values).map((key) => update(key).set(values[key]));
         return this.operations(...updateOperations);
+    }
+
+    ifExists() {
+        const partitionKey = this.metadata.getPartitionKey();
+        let returnContition = this.onlyIf(attribute(partitionKey).attributeExists());
+        const sortKey = this.metadata.getSortKey();
+        if (sortKey) {
+            returnContition = returnContition.onlyIf(attribute(sortKey).attributeExists());
+        }
+        return returnContition;
     }
 }
 

@@ -101,7 +101,11 @@ export default class RegisterResolver {
 
         await Competition.store.myBatchWrite().put(batchPutCompetitions).exec();
 
+        // Competition.store.
+
         console.log('batchPut', batchPutCompetitions);
+
+        console.log('metadata', Competition.store);
 
         // return toArray(mapper.query(Competition, { eventId: this.id }, { indexName: 'byEvent' }));
 
@@ -118,9 +122,7 @@ export default class RegisterResolver {
 
         const userStore = new DynamoStore(User);
 
-        const { id, ...updates } = input;
-
-        const updateResponse = await userStore.update(id).onlyIf(attribute('id').attributeExists()).values(updates).returnValues('ALL_NEW').exec();
+        const updateResponse = await userStore.updateItem(input).returnValues('ALL_NEW').exec();
 
         console.log('Full name', updateResponse.getFullName());
 
