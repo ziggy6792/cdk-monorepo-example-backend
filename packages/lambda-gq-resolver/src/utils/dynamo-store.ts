@@ -10,11 +10,13 @@ import {
     QueryRequest,
     UpdateRequest,
     update,
+    DeleteRequest,
 } from '@shiftcoders/dynamo-easy';
 import { DynamoDB } from 'aws-sdk';
 import getEnvConfig from 'src/config/get-env-config';
 import Creatable from 'src/domain/models/abstract/creatable';
 import _ from 'lodash';
+// import { BatchWriteSingleTableRequest } from '@shiftcoders/dynamo-easy/dist/_types/dynamo/request/batchwritesingletable/batch-write-single-table.request';
 
 const { awsConfig } = getEnvConfig();
 
@@ -60,6 +62,22 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
         const request = new MyBatchGetSingleTableRequest(this.myDynamoDBWrapper, this.myModelClazz, keys);
         return request;
     }
+
+    myBatchWrite() {
+        return super.batchWrite();
+    }
+
+    // batchPut(keys: Array<Partial<T>>): BatchWriteSingleTableRequest {
+    //     // const request = new MyBatchWriteSingleTableRequest(this.myDynamoDBWrapper, this.myModelClazz);
+    //     super.batchWrite()
+    //     // return request;
+    // }
+
+    getAndDelete(partitionKey: any, sortKey?: any): MyGetAndDeleteRequest<T> {
+        const getRequest = new MyGetAndDeleteRequest(this.myDynamoDBWrapper, this.myModelClazz, partitionKey, sortKey);
+
+        return getRequest;
+    }
 }
 const mapCreatible = <T extends Creatable>(loadedValues: T, clazzType: any): T => {
     const creatable: T = new clazzType();
@@ -83,11 +101,17 @@ class MyQueryRequest<T extends Creatable> extends QueryRequest<T> {
 }
 
 class MyGetRequest<T extends Creatable> extends GetRequest<T> {
-    private myModelClazz: ModelConstructor<T>;
+    protected myModelClazz: ModelConstructor<T>;
+
+    protected myPartitionKey: any;
+
+    protected mySortKey: any;
 
     constructor(wrapper: DynamoDbWrapper, modelClazz: ModelConstructor<T>, partitionKey, sortKey) {
         super(wrapper, modelClazz, partitionKey, sortKey);
         this.myModelClazz = modelClazz;
+        this.myPartitionKey = partitionKey;
+        this.mySortKey = sortKey;
     }
 
     async exec(): Promise<T> {
@@ -96,6 +120,15 @@ class MyGetRequest<T extends Creatable> extends GetRequest<T> {
         if (!loadedValues) throw new Error(`Item not found ${JSON.stringify(this.params)}`);
         // console.log('myModelClazz', new (this.myModelClazz as any)());
         return mapCreatible(loadedValues, this.myModelClazz);
+    }
+}
+
+class MyGetAndDeleteRequest<T extends Creatable> extends MyGetRequest<T> {
+    async exec(): Promise<T> {
+        const loadedValues = await super.exec();
+        const deleteRequerst = new DeleteRequest(this.dynamoDBWrapper, this.modelClazz, this.myPartitionKey, this.mySortKey);
+        await deleteRequerst.exec();
+        return loadedValues;
     }
 }
 
@@ -114,6 +147,21 @@ class MyBatchGetSingleTableRequest<T extends Creatable, T2 = T> extends BatchGet
     }
 }
 
+// class MyBatchWriteSingleTableRequest<T extends Creatable, T2 = T> extends BatchWriteSingleTableRequest<T> {
+//     private myModelClazz: ModelConstructor<T>;
+
+//     constructor(dynamoDBWrapper: DynamoDbWrapper, modelClazz: ModelConstructor<T>) {
+//         super(dynamoDBWrapper, modelClazz);
+//         this.myModelClazz = modelClazz;
+//     }
+
+//     async exec(): Promise<void> {
+//         const response = await super.exec();
+//         // const mappedResponse = response.map((loadedValues) => mapCreatible(loadedValues, this.myModelClazz));
+//         // return response;
+//     }
+// }
+
 class MyUpdateRequest<T extends Creatable, T2 extends Creatable | void = void> extends UpdateRequest<T, T2> {
     private myModelClazz: ModelConstructor<T>;
 
@@ -125,7 +173,7 @@ class MyUpdateRequest<T extends Creatable, T2 extends Creatable | void = void> e
     async exec(): Promise<T2> {
         const loadedValues = await super.exec();
 
-        if (loadedValues) {
+        if (typeof loadedValues === 'object' && loadedValues !== null) {
             return (mapCreatible((loadedValues as unknown) as T, this.myModelClazz) as unknown) as T2;
         }
         return null;

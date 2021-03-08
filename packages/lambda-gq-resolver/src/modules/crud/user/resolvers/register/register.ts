@@ -77,7 +77,22 @@ export default class RegisterResolver {
 
         console.log('batchGetComps', batchGetComps);
 
-        await batchGetComps[0].myFunc();
+        // await batchGetComps[0].myFunc();
+
+        const competition2 = new Competition();
+
+        competition2.eventId = 'eventId';
+        competition2.judgeUserId = 'userId';
+
+        competition2.params = new CompetitionParams();
+
+        competition2.params.name = 'param name';
+
+        const batchPutCompetitions = [competition2];
+
+        await Competition.store.batchWrite().put(batchPutCompetitions).exec();
+
+        console.log('batchPut', batchPutCompetitions);
 
         // return toArray(mapper.query(Competition, { eventId: this.id }, { indexName: 'byEvent' }));
 
