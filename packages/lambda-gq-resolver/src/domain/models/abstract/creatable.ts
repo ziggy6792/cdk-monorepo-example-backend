@@ -40,7 +40,7 @@ abstract class Creatable {
     }
 
     setModifiedAt(): void {
-        this.modifiedAt = Creatable.getTimestamp();
+        this.modifiedAt = this.modifiedAt ? Creatable.getTimestamp() : this.createdAt;
     }
 
     async getChildren(): Promise<Creatable[]> {

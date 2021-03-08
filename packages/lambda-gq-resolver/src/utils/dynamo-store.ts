@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable class-methods-use-this */
 /* eslint-disable new-cap */
 /* eslint-disable max-classes-per-file */
 import {
@@ -16,6 +18,7 @@ import { DynamoDB } from 'aws-sdk';
 import getEnvConfig from 'src/config/get-env-config';
 import Creatable from 'src/domain/models/abstract/creatable';
 import _ from 'lodash';
+import { BaseRequest } from '@shiftcoders/dynamo-easy/dist/_types/dynamo/request/base.request';
 // import { BatchWriteSingleTableRequest } from '@shiftcoders/dynamo-easy/dist/_types/dynamo/request/batchwritesingletable/batch-write-single-table.request';
 
 const { awsConfig } = getEnvConfig();
@@ -63,20 +66,27 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
         return request;
     }
 
-    myBatchWrite() {
-        return super.batchWrite();
-    }
-
-    // batchPut(keys: Array<Partial<T>>): BatchWriteSingleTableRequest {
-    //     // const request = new MyBatchWriteSingleTableRequest(this.myDynamoDBWrapper, this.myModelClazz);
-    //     super.batchWrite()
-    //     // return request;
-    // }
-
     getAndDelete(partitionKey: any, sortKey?: any): MyGetAndDeleteRequest<T> {
         const getRequest = new MyGetAndDeleteRequest(this.myDynamoDBWrapper, this.myModelClazz, partitionKey, sortKey);
 
         return getRequest;
+    }
+
+    // Had to hack this as BatchWriteSingleTableRequest is not properly exported from dynamo-easy
+    myBatchWrite() {
+        const request = super.batchWrite();
+
+        class MyBatchWriteSingleTableRequest<T extends Creatable> {
+            put(items: T[]): typeof request {
+                items.forEach((item) => {
+                    item.setModifiedAt();
+                });
+
+                return request.put(items as any[]);
+            }
+        }
+
+        return new MyBatchWriteSingleTableRequest();
     }
 }
 const mapCreatible = <T extends Creatable>(loadedValues: T, clazzType: any): T => {

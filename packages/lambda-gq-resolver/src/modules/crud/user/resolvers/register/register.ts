@@ -6,7 +6,7 @@ import User from 'src/domain/models/user';
 
 import DynamoStore from 'src/utils/dynamo-store';
 import Competition, { CompetitionParams } from 'src/domain/models/competition';
-import { BatchGetRequest, update, UpdateExpressionDefinitionFunction } from '@shiftcoders/dynamo-easy';
+import { attribute, BatchGetRequest, update, UpdateExpressionDefinitionFunction } from '@shiftcoders/dynamo-easy';
 import { RegisterInput } from './register-input';
 
 @Resolver()
@@ -27,13 +27,20 @@ export default class RegisterResolver {
 
         const { firstName, lastName, email } = input;
 
+        // PUT
         const user = new User();
 
         user.firstName = firstName;
         user.lastName = lastName;
         user.email = email;
 
+        await userStore.put(user).exec();
+
+        console.log('Put user', user);
+
+        // UPDATE
         const userUpdate = new User();
+
         userUpdate.id = user.id;
 
         userUpdate.email = 'new email';
@@ -43,6 +50,8 @@ export default class RegisterResolver {
         const updateResponse = await userStore.update(userUpdate.id).updateAttribute('email').set('newValue').returnValues('ALL_NEW').exec();
 
         console.log('updateResponse', updateResponse);
+
+        // QUERY
 
         const competition = new Competition();
 
@@ -90,7 +99,7 @@ export default class RegisterResolver {
 
         const batchPutCompetitions = [competition2];
 
-        await Competition.store.batchWrite().put(batchPutCompetitions).exec();
+        await Competition.store.myBatchWrite().put(batchPutCompetitions).exec();
 
         console.log('batchPut', batchPutCompetitions);
 
@@ -111,7 +120,7 @@ export default class RegisterResolver {
 
         const { id, ...updates } = input;
 
-        const updateResponse = await userStore.update(id).values(updates).returnValues('ALL_NEW').exec();
+        const updateResponse = await userStore.update(id).onlyIf(attribute('id').attributeExists()).values(updates).returnValues('ALL_NEW').exec();
 
         console.log('Full name', updateResponse.getFullName());
 
