@@ -21,11 +21,10 @@ const buildDeleteResolvers = (buildResolversProps: IBuildResolverProps) => {
             class DeleteOneResolver {
                 @Mutation(() => returnType, { name: `delete${suffix}` })
                 @UseMiddleware(...(middleware || []))
-                async delete(@Arg('id', () => ID) id: string): Promise<any[]> {
+                async delete(@Arg('id', () => ID) id: string): Promise<any> {
                     const entity = await returnType.store.getAndDelete(id).exec();
 
-                    const ret = await mapper.delete(entity);
-                    return ret;
+                    return entity;
                 }
             }
             return DeleteOneResolver;
@@ -35,7 +34,7 @@ const buildDeleteResolvers = (buildResolversProps: IBuildResolverProps) => {
             class DeleteManyResolver {
                 @Mutation(() => [returnType], { name: `delete${pluralize.plural(suffix)}` })
                 @UseMiddleware(...(middleware || []))
-                async create(@Arg('input', () => [inputType]) inputs: any[]) {
+                async delete(@Arg('input', () => [inputType]) inputs: any[]) {
                     // const entities = inputs.map((input) => Object.assign(new returnType(), input));
 
                     // const deletedEntities = toArray(mapper.batchDelete(entities));

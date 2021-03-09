@@ -66,6 +66,7 @@ export type IBuildCrudProps = IBaseCrudProps<IInputCrudProps, ICrudProps | IInpu
 export type ICompleteCrudProps = IBaseCrudProps<IBuildCrudReolversProps, IBuildCrudReolversProps>;
 
 export type CreatableClassType = typeof Competition | typeof Event | typeof Heat | typeof RiderAllocation | typeof Round | typeof SeedSlot | typeof User;
+// export type CreatableClassType = (new (...args: any[]) => Creatable) & typeof Creatable;
 
 export interface IBuildResolverProps {
     suffix: string;

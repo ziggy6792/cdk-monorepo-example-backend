@@ -6,10 +6,13 @@ import Identifiable from 'src/domain/models/abstract/identifiable';
 import * as utils from 'src/utils/utility';
 import { commonConfig } from '@alpaca-backend/common';
 import { Model } from '@shiftcoders/dynamo-easy';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 
 @ObjectType()
 @Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.User.tableName) })
 class User extends Identifiable {
+    static store: DynamoStore<User>;
+
     @Field()
     email: string;
 
@@ -29,5 +32,7 @@ class User extends Identifiable {
         return `${firstName}${lastName ? ` ${lastName}` : ''}`;
     }
 }
+
+User.store = new DynamoStore(User);
 
 export default User;

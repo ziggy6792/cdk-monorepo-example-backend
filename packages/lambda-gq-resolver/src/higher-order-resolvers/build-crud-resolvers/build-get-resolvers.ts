@@ -23,7 +23,7 @@ const buildGetResolvers = (buildResolversProps: IBuildResolverProps) => {
             class GetOneResolver {
                 @Query(() => returnType, { name: `get${suffix}` })
                 @UseMiddleware(...(middleware || []))
-                async get(@Arg('id', () => ID) id: string): Promise<any[]> {
+                async get(@Arg('id', () => ID) id: string): Promise<any> {
                     const entity = await returnType.store.get(id).exec();
                     return entity;
                 }
