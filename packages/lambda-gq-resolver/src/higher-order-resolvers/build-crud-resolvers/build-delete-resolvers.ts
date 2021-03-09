@@ -5,9 +5,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { Arg, UseMiddleware, ID, Mutation, Resolver } from 'type-graphql';
-import { mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
-import { toArray } from 'src/utils/async-iterator';
 import { IBuildResolverProps, Multiplicity } from './types';
 
 const buildDeleteResolvers = (buildResolversProps: IBuildResolverProps) => {

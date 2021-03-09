@@ -3,10 +3,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
-import { Resolver, Mutation, Arg, ClassType, UseMiddleware, Int, Query, ID } from 'type-graphql';
-import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
-import { mapper } from 'src/utils/mapper';
-import { toArray } from 'src/utils/async-iterator';
+import { Resolver, Arg, UseMiddleware, Int, Query, ID } from 'type-graphql';
 import pluralize from 'pluralize';
 import { IBuildResolverProps, Multiplicity } from './types';
 

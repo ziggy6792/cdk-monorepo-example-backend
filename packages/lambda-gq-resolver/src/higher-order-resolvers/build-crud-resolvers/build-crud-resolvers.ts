@@ -2,8 +2,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
-import Creatable from 'src/domain/models/abstract/creatable';
-import { ResolverType, IBuildCrudProps, IOneResProps, IManyResProps, ICompleteCrudProps, Multiplicity, CrudBuilders, CreatableClassType } from './types';
+import { ResolverType, IBuildCrudProps, CrudBuilders, CreatableClassType } from './types';
 
 import CrudResolverBuilder from './crud-resolver-builder';
 import buildCreateResolvers from './build-create-resolvers';
