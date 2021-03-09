@@ -17,8 +17,6 @@ import {
     Metadata,
     metadataForModel,
 } from '@shiftcoders/dynamo-easy';
-import { DynamoDB } from 'aws-sdk';
-import getEnvConfig from 'src/config/get-env-config';
 import Creatable from 'src/domain/models/abstract/creatable';
 import _ from 'lodash';
 import dynamoDB from 'src/utils/dynamo-db';

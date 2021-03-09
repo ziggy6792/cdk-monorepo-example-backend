@@ -6,8 +6,18 @@ import User from 'src/domain/models/user';
 
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import TransactGetRequest from 'src/utils/dynamo-easy/transact-get-request';
+import TransactWriteRequest from 'src/utils/dynamo-easy/transact-write-request';
 import Competition, { CompetitionParams } from 'src/domain/models/competition';
-import { attribute, BatchGetRequest, update, UpdateExpressionDefinitionFunction } from '@shiftcoders/dynamo-easy';
+import {
+    attribute,
+    BatchGetRequest,
+    TransactConditionCheck,
+    TransactDelete,
+    TransactPut,
+    TransactUpdate,
+    update,
+    UpdateExpressionDefinitionFunction,
+} from '@shiftcoders/dynamo-easy';
 import { RegisterInput } from './register-input';
 
 @Resolver()
@@ -131,7 +141,7 @@ export default class RegisterResolver {
     }
 
     @Mutation(() => User, { nullable: true })
-    async transactGetExaple(@Ctx() ctx: IContext): Promise<User> {
+    async transactGetExample(@Ctx() ctx: IContext): Promise<User> {
         console.log('identity', ctx.identity);
 
         const batchGet = new TransactGetRequest()
@@ -139,15 +149,43 @@ export default class RegisterResolver {
             .forModel(User, { id: 'b1650bb0-dcfc-44d6-8ba7-e99ba1538ca3' })
             .forModel(Competition, { id: 'e57e33bf-5237-4bc6-9c41-f2664d7a8154' });
 
+        // batchGet.
+
         const items = await batchGet.exec();
 
         console.log('items', items);
 
-        // const userStore = new DynamoStore(User);
+        return null;
+    }
 
-        // const updateResponse = await userStore.updateItem(input).returnValues('ALL_NEW').exec();
+    @Mutation(() => User, { nullable: true })
+    async transactWriteExample(@Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
 
-        // console.log('Full name', updateResponse.getFullName());
+        const competition1 = new Competition();
+        competition1.eventId = 'eventId';
+        competition1.judgeUserId = 'userId';
+        competition1.params = new CompetitionParams();
+        competition1.params.name = 'param name';
+        await Competition.store.put(competition1).ifNotExists().exec();
+
+        const competition2 = new Competition();
+        competition2.eventId = 'eventId';
+        competition2.judgeUserId = 'userId';
+        competition2.params = new CompetitionParams();
+        competition2.params.name = 'param name';
+        await Competition.store.put(competition2).ifNotExists().exec();
+
+        const batchWrite = new TransactWriteRequest().transact(
+            new TransactConditionCheck(Competition, competition1.id).onlyIf(attribute('modifiedAt').equals(competition1.modifiedAt)),
+            new TransactUpdate(Competition, competition2.id).updateAttribute('eventId').set('testBatchWrite').returnValuesOnConditionCheckFailure('ALL_OLD')
+        );
+
+        // batchGet.
+
+        const items = await batchWrite.exec();
+
+        console.log('items', items);
 
         return null;
     }
