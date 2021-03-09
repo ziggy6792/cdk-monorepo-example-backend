@@ -16,6 +16,7 @@ import {
     attribute,
     Metadata,
     metadataForModel,
+    ScanRequest,
 } from '@shiftcoders/dynamo-easy';
 import Creatable from 'src/domain/models/abstract/creatable';
 import _ from 'lodash';
@@ -82,6 +83,11 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
         return queryRequest;
     }
 
+    scan(): MyScanRequest<T> {
+        const scanRequest = new MyScanRequest(this.myDynamoDBWrapper, this.myModelClazz);
+        return scanRequest;
+    }
+
     batchGet(keys: Array<Partial<T>>): MyBatchGetSingleTableRequest<T> {
         const request = new MyBatchGetSingleTableRequest(this.myDynamoDBWrapper, this.myModelClazz, keys);
         return request;
@@ -117,6 +123,21 @@ const mapCreatible = <T extends Creatable>(loadedValues: T, clazzType: any): T =
 };
 
 class MyQueryRequest<T extends Creatable> extends QueryRequest<T> {
+    private myModelClazz: ModelConstructor<T>;
+
+    constructor(wrapper: DynamoDbWrapper, modelClazz: ModelConstructor<T>) {
+        super(wrapper, modelClazz);
+        this.myModelClazz = modelClazz;
+    }
+
+    async execFetchAll(): Promise<T[]> {
+        const response = await super.execFetchAll();
+        const mappedResponse = response.map((loadedValues) => mapCreatible(loadedValues, this.myModelClazz));
+        return mappedResponse;
+    }
+}
+
+class MyScanRequest<T extends Creatable> extends ScanRequest<T> {
     private myModelClazz: ModelConstructor<T>;
 
     constructor(wrapper: DynamoDbWrapper, modelClazz: ModelConstructor<T>) {

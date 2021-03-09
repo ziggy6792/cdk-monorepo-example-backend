@@ -7,10 +7,6 @@ import * as utils from 'src/utils/utility';
 import { commonConfig } from '@alpaca-backend/common';
 import { Model } from '@shiftcoders/dynamo-easy';
 
-// interface Deleteable {
-//     deleteChildren: () => Promise<void>;
-// }
-
 @ObjectType()
 @Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.User.tableName) })
 class User extends Identifiable {

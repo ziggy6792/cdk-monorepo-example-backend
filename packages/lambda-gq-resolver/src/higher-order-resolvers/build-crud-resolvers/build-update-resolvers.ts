@@ -16,10 +16,10 @@ const buildUpdateResolvers = (buildResolversProps: IBuildResolverProps) => {
 
     const updateEntity = async (entity: any) => {
         try {
-            const createdEntity = await mapper.update(entity, { condition: createExistsCondition(idFields), onMissing: 'skip' });
-            return createdEntity;
+            const updatedEntity = returnType.store.updateItem(entity).ifExists().returnValues('ALL_NEW');
+            return updatedEntity;
         } catch (err) {
-            const keys = _.pickBy(entity, (value, key) => idFields.includes(key));
+            const keys = _.pick(entity, idFields);
             throw mapDbException(err, `${suffix} ${JSON.stringify(keys)} does not exist`);
         }
     };
@@ -33,9 +33,8 @@ const buildUpdateResolvers = (buildResolversProps: IBuildResolverProps) => {
                 @Mutation(() => returnType, { name: `update${suffix}` })
                 @UseMiddleware(...(middleware || []))
                 async update(@Arg('input', () => inputType) input: any) {
-                    const entity = Object.assign(new returnType(), input);
-                    const createdEntity = updateEntity(entity);
-                    return createdEntity;
+                    const updatedEntity = updateEntity(input);
+                    return updatedEntity;
                 }
             }
             return UpdateOneResolver;
@@ -46,8 +45,7 @@ const buildUpdateResolvers = (buildResolversProps: IBuildResolverProps) => {
                 @Mutation(() => [returnType], { name: `update${pluralize.plural(suffix)}` })
                 @UseMiddleware(...(middleware || []))
                 async create(@Arg('input', () => [inputType]) inputs: any[]) {
-                    const entities = inputs.map((input) => Object.assign(new returnType(), input));
-                    const updateFns = entities.map((entity) => async () => updateEntity(entity));
+                    const updateFns = inputs.map((input) => async () => updateEntity(input));
                     const updatedEntities = await Promise.all(updateFns.map((fn) => fn()));
                     return updatedEntities;
                 }

@@ -1,3 +1,4 @@
+import Creatable from 'src/domain/models/abstract/creatable';
 import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
 
 export enum ResolverType {
@@ -60,7 +61,7 @@ export type ICompleteCrudProps = IBaseCrudProps<IBuildCrudReolversProps, IBuildC
 
 export interface IBuildResolverProps {
     suffix: string;
-    returnType: any;
+    returnType: typeof Creatable;
     idFields: string[];
     inputType?: any;
     resolversToBuild: IResolverToBuild[];

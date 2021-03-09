@@ -5,6 +5,7 @@
 /* eslint-disable class-methods-use-this */
 
 import _ from 'lodash';
+import Creatable from 'src/domain/models/abstract/creatable';
 import { Multiplicity, IOneResProps, IManyResProps, IBuildResolverProps, ResolverType, CrudBuilders, ICompleteCrudProps, IBuildCrudProps } from './types';
 
 const defaultResolverProps = {
@@ -47,7 +48,7 @@ class CrudResolverBuilder {
         this.crudBuilders = crudBuilders;
     }
 
-    public buildCrudResolvers(suffix: string, returnType: any, createCrudOptions: IBuildCrudProps): any[] {
+    public buildCrudResolvers(suffix: string, returnType: typeof Creatable, createCrudOptions: IBuildCrudProps): any[] {
         const completeCrudProps = buildCrudPropsToCompleteCrudProps(createCrudOptions);
 
         const generateBuildResolversProps = (resolverType: ResolverType): IBuildResolverProps | null => {

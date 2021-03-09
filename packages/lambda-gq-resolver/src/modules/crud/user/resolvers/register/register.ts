@@ -189,4 +189,15 @@ export default class RegisterResolver {
 
         return null;
     }
+
+    @Mutation(() => User, { nullable: true })
+    async scanExample(@Ctx() ctx: IContext): Promise<User> {
+        const competitions = await Competition.store.scan().execFetchAll();
+
+        console.log('competitions', competitions);
+
+        competitions[0].myFunc();
+
+        return null;
+    }
 }

@@ -4,10 +4,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
 import { Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
-import { mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
 import _ from 'lodash';
-import { createNotExistsCondition, mapDbException } from 'src/utils/utility';
+import { mapDbException } from 'src/utils/utility';
 import { IBuildResolverProps, Multiplicity } from './types';
 
 const buildCreateResolvers = (buildResolversProps: IBuildResolverProps) => {
@@ -15,8 +14,8 @@ const buildCreateResolvers = (buildResolversProps: IBuildResolverProps) => {
 
     const createEntity = async (entity: any) => {
         try {
-            const createdEntity = await mapper.put(entity, { condition: createNotExistsCondition(idFields) });
-            return createdEntity;
+            await returnType.store.put(entity).ifNotExists().exec();
+            return entity;
         } catch (err) {
             const keys = _.pickBy(entity, (value, key) => idFields.includes(key));
             throw mapDbException(err, `${suffix} ${JSON.stringify(keys)} already exists`);
@@ -32,8 +31,7 @@ const buildCreateResolvers = (buildResolversProps: IBuildResolverProps) => {
                 @Mutation(() => returnType, { name: `create${suffix}` })
                 @UseMiddleware(...(middleware || []))
                 async create(@Arg('input', () => inputType) input: any) {
-                    const entity = Object.assign(new returnType(), input);
-                    const createdEntity = await createEntity(entity);
+                    const createdEntity = await createEntity(input);
                     return createdEntity;
                 }
             }
@@ -45,8 +43,7 @@ const buildCreateResolvers = (buildResolversProps: IBuildResolverProps) => {
                 @Mutation(() => [returnType], { name: `create${pluralize.plural(suffix)}` })
                 @UseMiddleware(...(middleware || []))
                 async create(@Arg('input', () => [inputType]) inputs: any[]) {
-                    const entities = inputs.map((input) => Object.assign(new returnType(), input));
-                    const createFns = entities.map((entity) => async () => createEntity(entity));
+                    const createFns = inputs.map((input) => async () => createEntity(input));
                     const createdEnties = await Promise.all(createFns.map((fn) => fn()));
                     return createdEnties;
                 }
