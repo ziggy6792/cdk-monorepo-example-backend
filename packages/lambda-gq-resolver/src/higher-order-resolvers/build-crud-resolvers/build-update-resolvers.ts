@@ -16,7 +16,8 @@ const buildUpdateResolvers = (buildResolversProps: IBuildResolverProps) => {
 
     const updateEntity = async (entity: any) => {
         try {
-            const updatedEntity = returnType.store.updateItem(entity).ifExists().returnValues('ALL_NEW');
+            const updatedEntity = await returnType.store.updateItem(entity).ifExists().returnValues('ALL_NEW').exec();
+            console.log('updatedEntity', updatedEntity);
             return updatedEntity;
         } catch (err) {
             const keys = _.pick(entity, idFields);

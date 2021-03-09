@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
 import Creatable from 'src/domain/models/abstract/creatable';
-import { ResolverType, IBuildCrudProps, IOneResProps, IManyResProps, ICompleteCrudProps, Multiplicity, CrudBuilders } from './types';
+import { ResolverType, IBuildCrudProps, IOneResProps, IManyResProps, ICompleteCrudProps, Multiplicity, CrudBuilders, CreatableClassType } from './types';
 
 import CrudResolverBuilder from './crud-resolver-builder';
 import buildCreateResolvers from './build-create-resolvers';
@@ -19,7 +19,7 @@ const crudBuilders: CrudBuilders = {
 };
 const crudResolverBuilder = new CrudResolverBuilder(crudBuilders);
 
-const buildCrudResolvers = (suffix: string, returnType: typeof Creatable, buildCrudProps: IBuildCrudProps): any[] => {
+const buildCrudResolvers = (suffix: string, returnType: CreatableClassType, buildCrudProps: IBuildCrudProps): any[] => {
     const generatedCrudResolvers = crudResolverBuilder.buildCrudResolvers(suffix, returnType, buildCrudProps);
 
     return generatedCrudResolvers;

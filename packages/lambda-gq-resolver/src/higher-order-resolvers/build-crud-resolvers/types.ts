@@ -1,4 +1,10 @@
-import Creatable from 'src/domain/models/abstract/creatable';
+import Competition from 'src/domain/models/competition';
+import Event from 'src/domain/models/event';
+import Heat from 'src/domain/models/heat';
+import RiderAllocation from 'src/domain/models/rider-allocation';
+import Round from 'src/domain/models/round';
+import SeedSlot from 'src/domain/models/seed-slot';
+import User from 'src/domain/models/user';
 import { Middleware } from 'type-graphql/dist/interfaces/Middleware';
 
 export enum ResolverType {
@@ -59,9 +65,11 @@ export type IBuildCrudProps = IBaseCrudProps<IInputCrudProps, ICrudProps | IInpu
 
 export type ICompleteCrudProps = IBaseCrudProps<IBuildCrudReolversProps, IBuildCrudReolversProps>;
 
+export type CreatableClassType = typeof Competition | typeof Event | typeof Heat | typeof RiderAllocation | typeof Round | typeof SeedSlot | typeof User;
+
 export interface IBuildResolverProps {
     suffix: string;
-    returnType: typeof Creatable;
+    returnType: CreatableClassType;
     idFields: string[];
     inputType?: any;
     resolversToBuild: IResolverToBuild[];
