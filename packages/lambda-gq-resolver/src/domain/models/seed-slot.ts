@@ -13,7 +13,7 @@ import RiderAllocation from './rider-allocation';
 import Heat from './heat';
 
 @ObjectType()
-@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.RiderAllocation.tableName) })
+@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.SeedSlot.tableName) })
 class SeedSlot extends Identifiable {
     static store: DynamoStore<SeedSlot>;
 

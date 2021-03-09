@@ -25,7 +25,7 @@ registerEnumType(RoundType, {
 });
 
 @ObjectType()
-@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.RiderAllocation.tableName) })
+@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.Round.tableName) })
 class Round extends Identifiable {
     static store: DynamoStore<Round>;
 
