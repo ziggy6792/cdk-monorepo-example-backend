@@ -21,10 +21,7 @@ import { DynamoDB } from 'aws-sdk';
 import getEnvConfig from 'src/config/get-env-config';
 import Creatable from 'src/domain/models/abstract/creatable';
 import _ from 'lodash';
-import { BaseRequest } from '@shiftcoders/dynamo-easy/dist/_types/dynamo/request/base.request';
-// import { BatchWriteSingleTableRequest } from '@shiftcoders/dynamo-easy/dist/_types/dynamo/request/batchwritesingletable/batch-write-single-table.request';
-
-const { awsConfig } = getEnvConfig();
+import dynamoDB from 'src/utils/dynamo-db';
 
 class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
     private myModelClazz: ModelConstructor<T>;
@@ -34,7 +31,7 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
     private readonly metaData: Metadata<T>;
 
     constructor(modelClazz: ModelConstructor<T>) {
-        super(modelClazz, new DynamoDB(awsConfig));
+        super(modelClazz, dynamoDB);
         this.myDynamoDBWrapper = new DynamoDbWrapper(this.dynamoDB);
         this.myModelClazz = modelClazz;
         this.metaData = metadataForModel(this.myModelClazz);

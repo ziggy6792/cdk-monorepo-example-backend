@@ -5,8 +5,7 @@ import { DynamoDB } from 'aws-sdk';
 import getEnvConfig from 'src/config/get-env-config';
 import Creatable from 'src/domain/models/abstract/creatable';
 import _ from 'lodash';
-
-const { awsConfig } = getEnvConfig();
+import dynamoDB from 'src/utils/dynamo-db';
 
 class DynamoService<T extends Creatable> {
     private myModelClazz: ModelConstructor<T>;
@@ -16,7 +15,6 @@ class DynamoService<T extends Creatable> {
     readonly store: DynamoStore<T>;
 
     constructor(modelClazz: ModelConstructor<T>) {
-        const dynamoDB = new DynamoDB(awsConfig);
         this.store = new DynamoStore<T>(modelClazz, dynamoDB);
 
         this.myDynamoDBWrapper = new DynamoDbWrapper(dynamoDB);

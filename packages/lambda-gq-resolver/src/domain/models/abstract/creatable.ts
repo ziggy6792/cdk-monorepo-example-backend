@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
@@ -6,23 +7,21 @@
 import _ from 'lodash';
 import { ClassType, ObjectType } from 'type-graphql';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
-import DynamoStore from 'src/utils/dynamo-store';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { GetRequest, GSISortKey } from '@shiftcoders/dynamo-easy';
-import DynamoService from 'src/utils/dynamo-service';
+import DynamoService from 'src/utils/dynamo-easy/dynamo-service';
 
 @ObjectType({ isAbstract: true })
-
-// <T extends Creatable> extends EasyDynamoStore<T> {
-//     constructor(modelClazz: ModelConstructor<T>) {
-//         super(modelClazz, new DynamoDB(awsConfig));
-//     }
 abstract class Creatable {
     createdAt: string;
 
     modifiedAt: string;
 
+    readonly __typeName: string;
+
     constructor() {
         this.setDefaults();
+        this.__typeName = this.constructor.name;
     }
 
     mapIn(loadedValues: any): void {

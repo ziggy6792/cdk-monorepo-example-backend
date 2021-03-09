@@ -4,7 +4,8 @@ import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
 import { IContext } from 'src/types';
 import User from 'src/domain/models/user';
 
-import DynamoStore from 'src/utils/dynamo-store';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import TransactGetRequest from 'src/utils/dynamo-easy/transact-get-request';
 import Competition, { CompetitionParams } from 'src/domain/models/competition';
 import { attribute, BatchGetRequest, update, UpdateExpressionDefinitionFunction } from '@shiftcoders/dynamo-easy';
 import { RegisterInput } from './register-input';
@@ -68,7 +69,7 @@ export default class RegisterResolver {
 
         const loadedComp = await Competition.store.get(competition.id).exec();
 
-        const findComps = await Competition.store.query().wherePartitionKey('c3cd8e65-3f95-491a-9bba-beeaa0841c41').execFetchAll();
+        const findComps = await Competition.store.query().wherePartitionKey('5-3f95-491a-9bba-beeaa0841c41').execFetchAll();
 
         const request = Competition.store.query().index('byEvent').wherePartitionKey('bla');
 
@@ -127,5 +128,27 @@ export default class RegisterResolver {
         console.log('Full name', updateResponse.getFullName());
 
         return updateResponse;
+    }
+
+    @Mutation(() => User, { nullable: true })
+    async transactGetExaple(@Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
+
+        const batchGet = new TransactGetRequest()
+            .returnConsumedCapacity('TOTAL')
+            .forModel(User, { id: 'b1650bb0-dcfc-44d6-8ba7-e99ba1538ca3' })
+            .forModel(Competition, { id: 'e57e33bf-5237-4bc6-9c41-f2664d7a8154' });
+
+        const items = await batchGet.exec();
+
+        console.log('items', items);
+
+        // const userStore = new DynamoStore(User);
+
+        // const updateResponse = await userStore.updateItem(input).returnValues('ALL_NEW').exec();
+
+        // console.log('Full name', updateResponse.getFullName());
+
+        return null;
     }
 }
