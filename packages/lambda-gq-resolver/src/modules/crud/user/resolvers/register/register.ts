@@ -178,7 +178,7 @@ export default class RegisterResolver {
 
         const batchWrite = new TransactWriteRequest().transact(
             new TransactConditionCheck(Competition, competition1.id).onlyIf(attribute('modifiedAt').equals(competition1.modifiedAt)),
-            new TransactUpdate(Competition, competition2.id).updateAttribute('eventId').set('testBatchWrite').returnValuesOnConditionCheckFailure('ALL_OLD')
+            new TransactUpdate(Competition, competition2.id).updateAttribute('eventId').set('testBatchWrite')
         );
 
         // batchGet.

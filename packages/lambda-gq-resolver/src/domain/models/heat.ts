@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
 import DataEntity from 'src/domain/models/abstract/data-entity';
@@ -13,6 +12,8 @@ import { DynamoDB } from 'aws-sdk';
 import getEnvConfig from 'src/config/get-env-config';
 import { commonConfig, commonUtils } from '@alpaca-backend/common';
 import * as utils from 'src/utils/utility';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import { GSIPartitionKey, GSISortKey, Model, Property } from '@shiftcoders/dynamo-easy';
 import Round from './round';
 import SeedSlot from './seed-slot';
 import RiderAllocation from './rider-allocation';
@@ -30,22 +31,20 @@ registerEnumType(HeatStatus, {
 });
 
 @ObjectType()
-@table(utils.getTableName(commonConfig.DB_SCHEMA.Heat.tableName))
+@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.Heat.tableName) })
 class Heat extends DataEntity {
+    static store: DynamoStore<Heat>;
+
     @Field()
-    @attribute()
     when: string;
 
     @Field(() => ID)
-    @attribute()
     roundId: string;
 
     @Field(() => HeatStatus)
-    @attribute()
     status: HeatStatus;
 
     @Field(() => Int)
-    @attribute()
     progressionsPerHeat: number;
 
     @Field(() => Round, { name: 'round' })
@@ -79,5 +78,6 @@ class Heat extends DataEntity {
         return this.getSeedSlots();
     }
 }
+Heat.store = new DynamoStore(Heat);
 
 export default Heat;

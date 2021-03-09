@@ -1,46 +1,44 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute, hashKey, rangeKey, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root, Float } from 'type-graphql';
 import Creatable from 'src/domain/models/abstract/creatable';
 import { mapper } from 'src/utils/mapper';
 import { commonConfig } from '@alpaca-backend/common';
 import * as utils from 'src/utils/utility';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import { GSIPartitionKey, GSISortKey, Model, PartitionKey, SortKey, Property } from '@shiftcoders/dynamo-easy';
 import User from './user';
 
 @ObjectType()
 export class Run {
     @Field(() => Float, { nullable: true })
-    @attribute()
     score: number;
 
     @Field({ nullable: true })
-    @attribute()
     isPublic: boolean;
 }
 
 @ObjectType()
-@table(utils.getTableName(commonConfig.DB_SCHEMA.RiderAllocation.tableName))
+@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.RiderAllocation.tableName) })
 class RiderAllocation extends Creatable {
+    static store: DynamoStore<RiderAllocation>;
+
     @Field(() => ID)
-    @hashKey()
+    @PartitionKey()
     allocatableId: string;
 
     @Field(() => ID)
-    @rangeKey()
+    @SortKey()
     userId: string;
 
     @Field(() => Int)
-    @attribute()
     startSeed: number;
 
     @Field(() => ID)
-    @attribute()
     parentSeedSlot: string;
 
     @Field(() => [Run])
-    @attribute()
     runs: [Run];
 
     @Field()
@@ -64,6 +62,8 @@ class RiderAllocation extends Creatable {
         return mapper.get(Object.assign(new User(), { id: this.userId }));
     }
 }
+
+RiderAllocation.store = new DynamoStore(RiderAllocation);
 
 export default RiderAllocation;
 

@@ -1,19 +1,17 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { commonConfig, commonUtils } from '@alpaca-backend/common';
+import { commonConfig } from '@alpaca-backend/common';
 
-// import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/models/abstract/data-entity';
 import { toArray } from 'src/utils/async-iterator';
-import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
+import { ConditionExpression } from '@aws/dynamodb-expressions';
 import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
 import * as utils from 'src/utils/utility';
-import { CollectionProperty, GSIPartitionKey, GSISortKey, Model, PartitionKey, Property, SortKey } from '@shiftcoders/dynamo-easy';
+import { GSIPartitionKey, GSISortKey, Model, Property } from '@shiftcoders/dynamo-easy';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
-import DynamoService from 'src/utils/dynamo-easy/dynamo-service';
 import User from './user';
 import Event from './event';
 import Round from './round';

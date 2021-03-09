@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root, Ctx } from 'type-graphql';
 import Identifiable from 'src/domain/models/abstract/identifiable';
@@ -8,22 +7,23 @@ import { mapper } from 'src/utils/mapper';
 import * as utils from 'src/utils/utility';
 import { commonConfig } from '@alpaca-backend/common';
 import { IContext } from 'src/types';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import { GSIPartitionKey, GSISortKey, Model, Property } from '@shiftcoders/dynamo-easy';
 import RiderAllocation from './rider-allocation';
 import Heat from './heat';
 
 @ObjectType()
-@table(utils.getTableName(commonConfig.DB_SCHEMA.SeedSlot.tableName))
+@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.RiderAllocation.tableName) })
 class SeedSlot extends Identifiable {
+    static store: DynamoStore<SeedSlot>;
+
     @Field(() => ID)
-    @attribute()
     heatId: string;
 
     @Field(() => ID, { nullable: true })
-    @attribute()
     userId: string;
 
     @Field(() => Int)
-    @attribute()
     seed: number;
 
     @Field(() => Int, { name: 'position', nullable: true })
@@ -33,7 +33,6 @@ class SeedSlot extends Identifiable {
     }
 
     @Field(() => ID, { nullable: true })
-    @attribute()
     parentSeedSlotId: string;
 
     @Field(() => SeedSlot, { nullable: true, name: 'parentSeedSlot' })
@@ -56,10 +55,8 @@ class SeedSlot extends Identifiable {
     async getHeat(): Promise<Heat> {
         return mapper.get(Object.assign(new Heat(), { id: this.heatId }));
     }
-
-    // private getPosition(): number {
-    //     return 1;
-    // }
 }
+
+SeedSlot.store = new DynamoStore(SeedSlot);
 
 export default SeedSlot;

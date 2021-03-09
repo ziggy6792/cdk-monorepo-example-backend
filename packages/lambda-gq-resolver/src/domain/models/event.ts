@@ -1,7 +1,6 @@
 import { commonUtils, commonConfig } from '@alpaca-backend/common';
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
@@ -10,6 +9,9 @@ import { toArray } from 'src/utils/async-iterator';
 import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { CompetitionList } from 'src/domain/common-objects/lists';
 import * as utils from 'src/utils/utility';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import { GSIPartitionKey, GSISortKey, Model, Property } from '@shiftcoders/dynamo-easy';
+
 import User from './user';
 import Competition from './competition';
 import Heat from './heat';
@@ -26,27 +28,24 @@ registerEnumType(EventStatus, {
     description: 'The Event Status', // this one is optional
 });
 
-@table(utils.getTableName(commonConfig.DB_SCHEMA.Event.tableName))
+@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.Event.tableName) })
 @ObjectType()
 class Event extends DataEntity {
+    static store: DynamoStore<Event>;
+
     @Field()
-    @attribute()
     description: string;
 
     @Field()
-    @attribute()
     when: string;
 
     @Field(() => EventStatus)
-    @attribute()
     status: EventStatus;
 
     @Field()
-    @attribute()
     adminUserId: string;
 
     @Field()
-    @attribute()
     selectedHeatId: string;
 
     @Field(() => User)
@@ -74,6 +73,8 @@ class Event extends DataEntity {
         return this.getCompetitions();
     }
 }
+
+Event.store = new DynamoStore(Event);
 
 export default Event;
 

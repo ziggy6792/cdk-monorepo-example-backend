@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import { Field, ObjectType, registerEnumType, Int, ID } from 'type-graphql';
 import Identifiable from 'src/domain/models/abstract/identifiable';
 import { HeatList } from 'src/domain/common-objects/lists';
@@ -9,6 +8,8 @@ import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { mapper } from 'src/utils/mapper';
 import * as utils from 'src/utils/utility';
 import { commonConfig } from '@alpaca-backend/common';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import { GSIPartitionKey, GSISortKey, Model, Property } from '@shiftcoders/dynamo-easy';
 import Heat from './heat';
 import Competition from './competition';
 import Creatable from './abstract/creatable';
@@ -24,22 +25,20 @@ registerEnumType(RoundType, {
 });
 
 @ObjectType()
-@table(utils.getTableName(commonConfig.DB_SCHEMA.Round.tableName))
+@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.RiderAllocation.tableName) })
 class Round extends Identifiable {
+    static store: DynamoStore<Round>;
+
     @Field(() => Int)
-    @attribute()
     roundNo: number;
 
     @Field(() => RoundType)
-    @attribute()
     type: RoundType;
 
     @Field(() => ID)
-    @attribute()
     competitionId: string;
 
     @Field()
-    @attribute()
     startTime: string;
 
     @Field(() => HeatList)
@@ -63,5 +62,7 @@ class Round extends Identifiable {
         return this.getHeats();
     }
 }
+
+Round.store = new DynamoStore(Round);
 
 export default Round;
