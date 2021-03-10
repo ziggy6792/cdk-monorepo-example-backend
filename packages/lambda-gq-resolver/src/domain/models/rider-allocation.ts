@@ -19,8 +19,10 @@ export class Run {
     isPublic: boolean;
 }
 
+const tableSchema = commonConfig.DB_SCHEMA.RiderAllocation;
+
 @ObjectType()
-@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.RiderAllocation.tableName) })
+@Model({ tableName: tableSchema.tableName })
 class RiderAllocation extends Creatable {
     static store: DynamoStore<RiderAllocation>;
 

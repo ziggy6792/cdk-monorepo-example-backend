@@ -30,8 +30,10 @@ registerEnumType(HeatStatus, {
     description: 'The Heat Status', // this one is optional
 });
 
+const tableSchema = commonConfig.DB_SCHEMA.Heat;
+
 @ObjectType()
-@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.Heat.tableName) })
+@Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Heat extends DataEntity {
     static store: DynamoStore<Heat>;
 

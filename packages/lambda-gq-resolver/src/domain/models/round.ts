@@ -24,8 +24,10 @@ registerEnumType(RoundType, {
     description: 'The Round Type', // this one is optional
 });
 
+const tableSchema = commonConfig.DB_SCHEMA.Round;
+
 @ObjectType()
-@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.Round.tableName) })
+@Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Round extends Identifiable {
     static store: DynamoStore<Round>;
 

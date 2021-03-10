@@ -8,8 +8,10 @@ import { commonConfig } from '@alpaca-backend/common';
 import { Model } from '@shiftcoders/dynamo-easy';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 
+const tableSchema = commonConfig.DB_SCHEMA.User;
+
 @ObjectType()
-@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.User.tableName) })
+@Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class User extends Identifiable {
     static store: DynamoStore<User>;
 

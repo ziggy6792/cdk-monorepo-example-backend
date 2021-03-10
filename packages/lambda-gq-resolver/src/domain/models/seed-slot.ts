@@ -12,8 +12,10 @@ import { GSIPartitionKey, GSISortKey, Model, Property } from '@shiftcoders/dynam
 import RiderAllocation from './rider-allocation';
 import Heat from './heat';
 
+const tableSchema = commonConfig.DB_SCHEMA.SeedSlot;
+
 @ObjectType()
-@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.SeedSlot.tableName) })
+@Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class SeedSlot extends Identifiable {
     static store: DynamoStore<SeedSlot>;
 

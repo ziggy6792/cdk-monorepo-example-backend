@@ -19,7 +19,8 @@ class DbTables extends cdk.Construct {
             [IAttributeType.BINARY]: dynamodb.AttributeType.BINARY,
         };
 
-        for (const [key, tableSchema] of Object.entries(commonConfig.DB_SCHEMA)) {
+        for (const [_, tableSchema] of Object.entries(commonConfig.DB_SCHEMA)) {
+            // tableSchema.
             const { tableName, partitionKey, sortKey, globalSecondaryIndexes } = tableSchema;
             const table = new dynamodb.Table(this, utils.getConstructId(`${tableName}`, stageName), {
                 tableName: commonUtils.getTableName(tableName, stageName),
@@ -27,13 +28,23 @@ class DbTables extends cdk.Construct {
                 sortKey: sortKey ? { name: sortKey.name, type: typeLookup[sortKey.type] } : undefined,
                 billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
             });
-            globalSecondaryIndexes?.forEach(({ indexName, partitionKey, sortKey }) => {
-                table.addGlobalSecondaryIndex({
-                    indexName,
-                    partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.type] },
-                    sortKey: { name: sortKey.name, type: typeLookup[sortKey.type] },
-                });
-            });
+            if (globalSecondaryIndexes) {
+                for (const [_, { indexName, partitionKey, sortKey }] of Object.entries(globalSecondaryIndexes)) {
+                    table.addGlobalSecondaryIndex({
+                        indexName,
+                        partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.type] },
+                        sortKey: { name: sortKey.name, type: typeLookup[sortKey.type] },
+                    });
+                }
+            }
+
+            // globalSecondaryIndexes?.forEach(({ indexName, partitionKey, sortKey }) => {
+            //     table.addGlobalSecondaryIndex({
+            //         indexName,
+            //         partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.type] },
+            //         sortKey: { name: sortKey.name, type: typeLookup[sortKey.type] },
+            //     });
+            // });
         }
     }
 }

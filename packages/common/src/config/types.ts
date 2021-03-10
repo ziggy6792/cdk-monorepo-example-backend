@@ -10,7 +10,7 @@ export interface IAttribute {
 }
 
 export interface IGlobalSecondaryIndex {
-    indexName: string;
+    indexName?: string;
     partitionKey: IAttribute;
     sortKey: IAttribute;
 }
@@ -19,14 +19,14 @@ export interface ITableSchemaConfig {
     tableName?: string;
     partitionKey?: IAttribute;
     sortKey?: IAttribute;
-    globalSecondaryIndexes?: IGlobalSecondaryIndex[];
+    globalSecondaryIndexes?: { [key in string]: IGlobalSecondaryIndex };
 }
 
 export interface ITableSchema {
     tableName: string;
     partitionKey: IAttribute;
     sortKey?: IAttribute;
-    globalSecondaryIndexes?: IGlobalSecondaryIndex[];
+    globalSecondaryIndexes?: { [key in string]: IGlobalSecondaryIndex };
 }
 
 export interface IDbSchemaConfig {

@@ -28,7 +28,9 @@ registerEnumType(EventStatus, {
     description: 'The Event Status', // this one is optional
 });
 
-@Model({ tableName: utils.getTableName(commonConfig.DB_SCHEMA.Event.tableName) })
+const tableSchema = commonConfig.DB_SCHEMA.Event;
+
+@Model({ tableName: utils.getTableName(tableSchema.tableName) })
 @ObjectType()
 class Event extends DataEntity {
     static store: DynamoStore<Event>;
