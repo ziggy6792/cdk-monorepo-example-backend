@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { ClassType, ObjectType } from 'type-graphql';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
-import { GetRequest, GSISortKey } from '@shiftcoders/dynamo-easy';
+import { GetRequest, GSISortKey, metadataForModel } from '@shiftcoders/dynamo-easy';
 import DynamoService from 'src/utils/dynamo-easy/dynamo-service';
 
 @ObjectType({ isAbstract: true })
@@ -40,6 +40,13 @@ abstract class Creatable {
 
     setModifiedAt(): void {
         this.modifiedAt = this.modifiedAt ? Creatable.getTimestamp() : this.createdAt;
+    }
+
+    getKeys(): any {
+        // const classType = this.constructor as typeof Creatable;
+        const metadata = metadataForModel(this.constructor as any);
+        const keys = [metadata.getPartitionKey(), metadata.getSortKey()].filter((v) => !!v);
+        return _.pick(this, keys);
     }
 
     async getChildren(): Promise<Creatable[]> {

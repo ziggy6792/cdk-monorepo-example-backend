@@ -18,6 +18,7 @@ import {
     update,
     UpdateExpressionDefinitionFunction,
 } from '@shiftcoders/dynamo-easy';
+import Event from 'src/domain/models/event';
 import { RegisterInput } from './register-input';
 
 @Resolver()
@@ -197,6 +198,23 @@ export default class RegisterResolver {
         console.log('competitions', competitions);
 
         competitions[0].myFunc();
+
+        return null;
+    }
+
+    @Mutation(() => User, { nullable: true })
+    async deleteExample(@Ctx() ctx: IContext): Promise<User> {
+        const event = new Event();
+        await Event.store.put(event).ifNotExists().exec();
+
+        const competition = new Competition();
+        competition.eventId = event.id;
+        competition.judgeUserId = 'userId';
+        competition.params = new CompetitionParams();
+        competition.params.name = 'param name';
+        await Competition.store.put(competition).ifNotExists().exec();
+
+        console.log(competition.getKeys());
 
         return null;
     }

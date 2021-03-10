@@ -21,6 +21,7 @@ const buildDeleteResolvers = (buildResolversProps: IBuildResolverProps) => {
                 @UseMiddleware(...(middleware || []))
                 async delete(@Arg('id', () => ID) id: string): Promise<any> {
                     const entity = await returnType.store.getAndDelete(id).exec();
+                    // returnType.store.batchWrite().delete entity.getDescendants()
 
                     return entity;
                 }
