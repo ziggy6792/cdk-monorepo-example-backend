@@ -4,12 +4,9 @@
 import { applyDefaults, createGSI, createTableSchema } from './db-schema-helper';
 import { IAttributeType } from './types';
 
-const idPartitionKey = { name: 'id', type: IAttributeType.STRING };
-
 const DB_SCHEMA_CONFIG = {
-    User: createTableSchema({ partitionKey: idPartitionKey }),
+    User: createTableSchema(),
     SeedSlot: createTableSchema({
-        partitionKey: idPartitionKey,
         globalSecondaryIndexes: {
             byHeat: createGSI({
                 partitionKey: { name: 'heatId', type: IAttributeType.STRING },
@@ -18,7 +15,6 @@ const DB_SCHEMA_CONFIG = {
         },
     }),
     Round: createTableSchema({
-        partitionKey: idPartitionKey,
         globalSecondaryIndexes: {
             byCompetition: createGSI({
                 partitionKey: { name: 'competitionId', type: IAttributeType.STRING },
@@ -37,7 +33,6 @@ const DB_SCHEMA_CONFIG = {
         },
     }),
     Heat: createTableSchema({
-        partitionKey: idPartitionKey,
         globalSecondaryIndexes: {
             byRound: createGSI({
                 partitionKey: { name: 'roundId', type: IAttributeType.STRING },
@@ -45,9 +40,8 @@ const DB_SCHEMA_CONFIG = {
             }),
         },
     }),
-    Event: createTableSchema({ partitionKey: idPartitionKey }),
+    Event: createTableSchema(),
     Competition: createTableSchema({
-        partitionKey: idPartitionKey,
         globalSecondaryIndexes: {
             byEvent: createGSI({
                 partitionKey: { name: 'eventId', type: IAttributeType.STRING },
@@ -55,18 +49,7 @@ const DB_SCHEMA_CONFIG = {
             }),
         },
     }),
-    ScheduleItem: createTableSchema({ partitionKey: idPartitionKey }),
+    ScheduleItem: createTableSchema(),
 };
 
-// DB_SCHEMA_CONFIG.SeedSlot.globalSecondaryIndexes.byHeat
-
 export const DB_SCHEMA = applyDefaults(DB_SCHEMA_CONFIG);
-
-console.log(DB_SCHEMA.Competition.globalSecondaryIndexes.byEvent);
-console.log(DB_SCHEMA.Competition.globalSecondaryIndexes.byEvent);
-
-// const tableSchema = DB_SCHEMA.RiderAllocation;
-
-// DB_SCHEMA.SeedSlot.tableName
-
-// DB_SCHEMA.Heat.tabl
