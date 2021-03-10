@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-restricted-syntax */
 
-import { IDbSchemaConfig, IAttributeType, ITableSchema, IGlobalSecondaryIndex } from './types';
+import { IAttributeType, ITableSchema, IGlobalSecondaryIndex } from './types';
 
 const idPartitionKey = { name: 'id', type: IAttributeType.STRING };
 
@@ -11,9 +11,16 @@ const createGSI = (indexProps: IGlobalSecondaryIndex) => ({
     sortKey: indexProps.sortKey,
 });
 
+const createTableSchema = (tableSchema: Partial<ITableSchema>): ITableSchema => ({
+    tableName: tableSchema.tableName,
+    partitionKey: tableSchema.partitionKey,
+    sortKey: tableSchema.sortKey,
+    globalSecondaryIndexes: tableSchema.globalSecondaryIndexes || {},
+});
+
 const DB_SCHEMA_CONFIG = {
-    User: { partitionKey: idPartitionKey },
-    SeedSlot: {
+    User: createTableSchema({ partitionKey: idPartitionKey }),
+    SeedSlot: createTableSchema({
         partitionKey: idPartitionKey,
         globalSecondaryIndexes: {
             byHeat: createGSI({
@@ -21,8 +28,8 @@ const DB_SCHEMA_CONFIG = {
                 sortKey: { name: 'seed', type: IAttributeType.NUMBER },
             }),
         },
-    },
-    Round: {
+    }),
+    Round: createTableSchema({
         partitionKey: idPartitionKey,
         globalSecondaryIndexes: {
             byCompetition: createGSI({
@@ -30,8 +37,8 @@ const DB_SCHEMA_CONFIG = {
                 sortKey: { name: 'createdAt', type: IAttributeType.STRING },
             }),
         },
-    },
-    RiderAllocation: {
+    }),
+    RiderAllocation: createTableSchema({
         partitionKey: { name: 'allocatableId', type: IAttributeType.STRING },
         sortKey: { name: 'userId', type: IAttributeType.STRING },
         globalSecondaryIndexes: {
@@ -40,8 +47,8 @@ const DB_SCHEMA_CONFIG = {
                 sortKey: { name: 'createdAt', type: IAttributeType.STRING },
             }),
         },
-    },
-    Heat: {
+    }),
+    Heat: createTableSchema({
         partitionKey: idPartitionKey,
         globalSecondaryIndexes: {
             byRound: createGSI({
@@ -49,9 +56,9 @@ const DB_SCHEMA_CONFIG = {
                 sortKey: { name: 'createdAt', type: IAttributeType.STRING },
             }),
         },
-    },
-    Event: { partitionKey: idPartitionKey },
-    Competition: {
+    }),
+    Event: createTableSchema({ partitionKey: idPartitionKey }),
+    Competition: createTableSchema({
         partitionKey: idPartitionKey,
         globalSecondaryIndexes: {
             byEvent: createGSI({
@@ -59,9 +66,13 @@ const DB_SCHEMA_CONFIG = {
                 sortKey: { name: 'createdAt', type: IAttributeType.STRING },
             }),
         },
-    },
-    ScheduleItem: { partitionKey: idPartitionKey },
+    }),
+    ScheduleItem: createTableSchema({ partitionKey: idPartitionKey }),
 };
+
+// type IDbSchema = {
+//     readonly [tableKey in keyof typeof DB_SCHEMA_CONFIG]: typeof DB_SCHEMA_CONFIG[tableKey] & ITableSchema;
+// };
 
 // type IDbSchema = {
 //     readonly [tableKey in keyof typeof DB_SCHEMA_CONFIG]: {
@@ -74,10 +85,6 @@ const DB_SCHEMA_CONFIG = {
 // };
 
 // type IDbSchema = { readonly [key in keyof typeof DB_SCHEMA_CONFIG]: ITableSchema };
-
-type IDbSchema = {
-    readonly [tableKey in keyof typeof DB_SCHEMA_CONFIG]: typeof DB_SCHEMA_CONFIG[tableKey] & ITableSchema;
-};
 
 // type IDbSchema = {
 //     readonly [tableKey in keyof typeof DB_SCHEMA_CONFIG]: typeof DB_SCHEMA_CONFIG[tableKey] & {
@@ -97,12 +104,10 @@ type IDbSchema = {
 //     readonly [tableKey in keyof typeof DB_SCHEMA_CONFIG]: ITableSchema & { [indexKey in keyof typeof DB_SCHEMA_CONFIG[tableKey]]: IGlobalSecondaryIndex };
 // };
 
-const applyDefaults = <T extends IDbSchemaConfig>(schema: T): IDbSchema => {
+const applyDefaults = (schema: typeof DB_SCHEMA_CONFIG): typeof DB_SCHEMA_CONFIG => {
     const ret: any = {};
 
-    for (const key of Object.keys(schema)) {
-        const tableSchema = schema[key];
-
+    for (const [key, tableSchema] of Object.entries(schema)) {
         if (tableSchema.globalSecondaryIndexes) {
             for (const key of Object.keys(tableSchema.globalSecondaryIndexes)) {
                 const gsi = tableSchema.globalSecondaryIndexes[key];
@@ -116,7 +121,7 @@ const applyDefaults = <T extends IDbSchemaConfig>(schema: T): IDbSchema => {
             partitionKey: tableSchema.partitionKey || idPartitionKey,
         };
     }
-    return ret as IDbSchema;
+    return ret as typeof DB_SCHEMA_CONFIG;
 };
 
 // DB_SCHEMA_CONFIG.SeedSlot.globalSecondaryIndexes.byHeat

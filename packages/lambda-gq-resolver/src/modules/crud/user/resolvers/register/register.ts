@@ -214,7 +214,7 @@ export default class RegisterResolver {
         competition.params.name = 'param name';
         await Competition.store.put(competition).ifNotExists().exec();
 
-        event.getDescendants();
+        // event.getDescendants();
 
         console.log(competition.getKeys());
 
