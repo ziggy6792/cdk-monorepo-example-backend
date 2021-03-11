@@ -1,17 +1,14 @@
 /* eslint-disable class-methods-use-this */
 
 import { Resolver, Mutation, Arg, ID, UseMiddleware } from 'type-graphql';
-import { mapper } from 'src/utils/mapper';
 import _ from 'lodash';
 import SeedSlot from 'src/domain/models/seed-slot';
 import Round from 'src/domain/models/round';
 import Heat from 'src/domain/models/heat';
 import { valueIsNull } from 'src/utils/utility';
-import { toArray } from 'src/utils/async-iterator';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import Competition from 'src/domain/models/competition';
 import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
-import isAuthRole from 'src/middleware/auth-check/is-auth-role';
 import { CompetitionParamsInput } from 'src/modules/build-competition/inputs';
 
 @Resolver()
@@ -21,7 +18,8 @@ export default class BuildCompetition {
     async buildCompetition(@Arg('id', () => ID) id: string, @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput): Promise<Competition> {
         const start = new Date().getTime();
 
-        const competition = await mapper.get(Object.assign(new Competition(), { id }));
+        // const competition = await mapper.get(Object.assign(new Competition(), { id }));
+        const competition = await Competition.store.get(id).exec();
 
         const prevCompDescendants = await competition.getDescendants();
 
@@ -71,11 +69,22 @@ export default class BuildCompetition {
             seedsHolder[seedSlot.seed] = seedSlot; // Now keep track of this one
         });
 
+        // ToDo delete old
+
+        // await Promise.all([
+        //     toArray(mapper.batchDelete(prevCompDescendants)),
+        //     toArray(mapper.batchPut(seedSlotsToCreate)),
+        //     toArray(mapper.batchPut(heatsToCreate)),
+        //     toArray(mapper.batchPut(roundsToCreate)),
+        // ]);
+
         await Promise.all([
-            toArray(mapper.batchDelete(prevCompDescendants)),
-            toArray(mapper.batchPut(seedSlotsToCreate)),
-            toArray(mapper.batchPut(heatsToCreate)),
-            toArray(mapper.batchPut(roundsToCreate)),
+            //     toArray(mapper.batchDelete(prevCompDescendants)),
+
+            // SeedSlot.store.myBatchWrite().put(seedSlotsToCreate).exec(),
+            SeedSlot.store.myBatchWrite().put(seedSlotsToCreate).exec(),
+            Heat.store.myBatchWrite().put(heatsToCreate).exec(),
+            Round.store.myBatchWrite().put(roundsToCreate).exec(),
         ]);
 
         const end = new Date().getTime();

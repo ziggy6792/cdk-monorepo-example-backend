@@ -5,7 +5,6 @@ import { CreateEventInput, UpdateEventInput } from 'src/modules/crud/event/input
 import errorMessage from 'src/config/error-message';
 import { MiddlewareFn } from 'type-graphql';
 import { IContext, IdentityType } from 'src/types';
-import { mapper } from 'src/utils/mapper';
 import { AuthCheck } from 'src/middleware/auth-check/types';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 
@@ -24,7 +23,8 @@ const isAllowedToEditEvent: AuthCheck = async ({ args, context: { identity } }) 
     }
     const input = args.input as UpdateEventInput;
 
-    const event = await mapper.get(Object.assign(new Event(), { id: input.id }));
+    // const event = await mapper.get(Object.assign(new Event(), { id: input.id }))
+    const event = await Event.store.get(input.id).exec();
 
     if (event.adminUserId === identity.user?.username) {
         return true;

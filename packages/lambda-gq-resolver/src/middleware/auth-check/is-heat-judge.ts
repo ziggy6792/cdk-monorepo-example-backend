@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
 
-import { mapper } from 'src/utils/mapper';
 import _ from 'lodash';
 import { IdentityType } from 'src/types';
 import errorMessage from 'src/config/error-message';
@@ -16,7 +15,8 @@ const isHeatJudge: AuthCheck = async ({ args, context: { identity } }) => {
 
     const { heatId } = input;
 
-    const heat = await mapper.get(Object.assign(new Heat(), { id: heatId }));
+    // const heat = await mapper.get(Object.assign(new Heat(), { id: heatId }));
+    const heat = await Heat.store.get(heatId).exec();
     const round = await heat.getRound();
     const competition = await round.getCompetition();
     if (await competition.isUserAllowedToJudge(identity.user?.username)) {

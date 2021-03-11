@@ -5,7 +5,6 @@ import RiderAllocation from 'src/domain/models/rider-allocation';
 import Round from 'src/domain/models/round';
 import SeedSlot from 'src/domain/models/seed-slot';
 import { toArray } from 'src/utils/async-iterator';
-import { mapper } from 'src/utils/mapper';
 import { IMockDb } from './types';
 
 const mockDbTables = {

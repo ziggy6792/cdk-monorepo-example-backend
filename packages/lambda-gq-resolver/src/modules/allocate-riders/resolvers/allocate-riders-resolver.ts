@@ -6,7 +6,6 @@ import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import Competition from 'src/domain/models/competition';
 import SeedSlot from 'src/domain/models/seed-slot';
 import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
-import { mapper } from 'src/utils/mapper';
 import errorMessage from 'src/config/error-message';
 import _ from 'lodash';
 import RiderAllocation from 'src/domain/models/rider-allocation';
@@ -20,7 +19,8 @@ export default class AllocateRiders {
     @Mutation(() => Competition, { nullable: true })
     @UseMiddleware([createAuthMiddleware([isCompetitionAdmin])])
     async allocateRiders(@Arg('id', () => ID) id: string): Promise<Competition> {
-        const competition = await mapper.get(Object.assign(new Competition(), { id }));
+        // const competition = await mapper.get(Object.assign(new Competition(), { id }));
+        const competition = await Competition.store.get(id).exec();
         const rounds = await competition.getRounds([attribute('roundNo').equals(1)]);
         if (rounds.length !== 1) {
             throw new Error(errorMessage.canNotFindRound1);
@@ -59,11 +59,12 @@ export default class AllocateRiders {
             }
         });
 
-        const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => async () => mapper.update(seedSlot, { onMissing: 'skip' }));
+        // const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => async () => mapper.update(seedSlot, { onMissing: 'skip' }));
+        const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => async () => SeedSlot.store.updateItem(seedSlot));
         // Update seed slots
         await Promise.all(updateSeedSlotFns.map((fn) => fn()));
         // Create rider allocations
-        await toArray(mapper.batchPut(createRiderAllocations));
+        await RiderAllocation.store.myBatchWrite().put(createRiderAllocations).exec();
 
         return competition;
     }

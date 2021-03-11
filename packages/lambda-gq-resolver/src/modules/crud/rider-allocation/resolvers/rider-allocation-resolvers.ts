@@ -1,5 +1,4 @@
 import deafultAuthMiddleware from 'src/middleware/default-auth-middleware';
-import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
 import { CreateRiderAllocationInput, UpdateRiderAllocationInput } from 'src/modules/crud/rider-allocation/inputs';
@@ -40,7 +39,8 @@ const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity 
     );
 
     // Get rider allocation competitions
-    const competitions = await toArray(mapper.batchGet(competitionIds));
+    // const competitions = await toArray(mapper.batchGet(competitionIds));
+    const competitions = await Competition.store.batchGet(competitionIds).exec();
 
     const eventIds = _.uniqWith(
         competitions.map((competition) => Object.assign(new Event(), { id: competition.eventId })),
@@ -48,7 +48,8 @@ const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity 
     );
 
     // Get competition events
-    const events = await toArray(mapper.batchGet(eventIds));
+    // const events = await toArray(mapper.batchGet(eventIds));
+    const events = await Event.store.batchGet(eventIds).exec();
 
     // Check that user is admin of those events
     events.forEach((event) => {

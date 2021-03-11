@@ -6,7 +6,6 @@ import GetMeResolver from 'src/modules/crud/user/resolvers/get-me';
 import { AuthCheck } from 'src/middleware/auth-check/types';
 import { IdentityType } from 'src/types';
 import errorMessage from 'src/config/error-message';
-import { mapper } from 'src/utils/mapper';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import isAuthRole from 'src/middleware/auth-check/is-auth-role';
 
@@ -16,7 +15,8 @@ const isAllowedToEditUser: AuthCheck = async ({ args, context: { identity } }) =
     }
     const input = args.input as UpdateUserInput;
 
-    const user = await mapper.get(Object.assign(new User(), { id: input.id }));
+    // const user = await mapper.get(Object.assign(new User(), { id: input.id }));
+    const user = await User.store.get(input.id).exec();
 
     if (user.id === identity.user?.username) {
         return true;

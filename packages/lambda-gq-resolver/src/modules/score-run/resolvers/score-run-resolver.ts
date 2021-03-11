@@ -4,18 +4,19 @@ import { Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
 import _ from 'lodash';
 import Heat from 'src/domain/models/heat';
 import { ScorRunInput } from 'src/modules/score-run/inputs/score-run-inputs';
-import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import errorMessage from 'src/config/error-message';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import isHeatJudge from 'src/middleware/auth-check/is-heat-judge';
+import SeedSlot from 'src/domain/models/seed-slot';
 
 @Resolver()
 export default class ScoreRun {
     @Mutation(() => Heat)
     @UseMiddleware([createAuthMiddleware([isHeatJudge])])
     async scoreRun(@Arg('input', () => ScorRunInput) input: ScorRunInput): Promise<Heat> {
-        const heat = await mapper.get(Object.assign(new Heat(), { id: input.heatId }));
+        // const heat = await mapper.get(Object.assign(new Heat(), { id: input.heatId }));
+        const heat = await Heat.store.get(input.heatId).exec();
 
         const seedSlots = await heat.getSeedSlots();
         const orderedSeedSlots = _.orderBy(seedSlots, (seedSlot) => seedSlot.seed, 'asc');
@@ -52,9 +53,11 @@ export default class ScoreRun {
 
         const selectedRiderAllocation = riderAllocationsLookup[selectedSeedSlot.id];
 
-        await mapper.update(selectedRiderAllocation, { onMissing: 'skip' });
+        // await mapper.update(selectedRiderAllocation, { onMissing: 'skip' });
+        await RiderAllocation.store.updateItem(selectedRiderAllocation).exec();
 
-        const updateSeedSlotFns = updatedSeedSlots.map((seedSlot) => async () => mapper.update(seedSlot, { onMissing: 'skip' }));
+        // const updateSeedSlotFns = updatedSeedSlots.map((seedSlot) => async () => mapper.update(seedSlot, { onMissing: 'skip' }));
+        const updateSeedSlotFns = updatedSeedSlots.map((seedSlot) => async () => SeedSlot.store.updateItem(seedSlot).exec());
         await Promise.all(updateSeedSlotFns.map((fn) => fn()));
 
         return heat;

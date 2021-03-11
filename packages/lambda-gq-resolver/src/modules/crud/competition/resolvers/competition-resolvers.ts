@@ -6,7 +6,6 @@ import isAuthRole from 'src/middleware/auth-check/is-auth-role';
 import { AuthCheck } from 'src/middleware/auth-check/types';
 import { IdentityType } from 'src/types';
 import errorMessage from 'src/config/error-message';
-import { mapper } from 'src/utils/mapper';
 import Event from 'src/domain/models/event';
 
 const isAllowedToCreateComp: AuthCheck = async ({ args, context: { identity } }) => {
@@ -15,7 +14,8 @@ const isAllowedToCreateComp: AuthCheck = async ({ args, context: { identity } })
     }
     const input = args.input as CreateCompetitionInput;
 
-    const event = await mapper.get(Object.assign(new Event(), { id: input.eventId }));
+    // const event = await mapper.get(Object.assign(new Event(), { id: input.eventId }));
+    const event = await Event.store.get(input.eventId).exec();
 
     if (event.adminUserId === identity.user?.username) {
         return true;
@@ -30,7 +30,8 @@ const isAllowedToEditComp: AuthCheck = async ({ args, context: { identity } }) =
     }
     const input = args.input as UpdateCompetitionInput;
 
-    const competition = await mapper.get(Object.assign(new Competition(), { id: input.id }));
+    const competition = await Competition.store.get(input.id).exec();
+
     const event = await competition.getEvent();
 
     if (event.adminUserId === identity.user?.username) {
