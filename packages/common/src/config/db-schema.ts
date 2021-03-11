@@ -5,7 +5,7 @@ import { applyDefaults, createGSI, createTableSchema } from './db-schema-helper'
 import { IAttributeType } from './types';
 
 const DB_SCHEMA_CONFIG = {
-    User: createTableSchema(),
+    User: createTableSchema({}),
     SeedSlot: createTableSchema({
         globalSecondaryIndexes: {
             byHeat: createGSI({
@@ -40,7 +40,7 @@ const DB_SCHEMA_CONFIG = {
             }),
         },
     }),
-    Event: createTableSchema(),
+    Event: createTableSchema({}),
     Competition: createTableSchema({
         globalSecondaryIndexes: {
             byEvent: createGSI({
@@ -49,7 +49,10 @@ const DB_SCHEMA_CONFIG = {
             }),
         },
     }),
-    ScheduleItem: createTableSchema(),
+    ScheduleItem: createTableSchema({}),
 };
 
 export const DB_SCHEMA = applyDefaults(DB_SCHEMA_CONFIG);
+
+console.log(DB_SCHEMA_CONFIG.RiderAllocation.tableName);
+console.log(DB_SCHEMA_CONFIG.Competition.globalSecondaryIndexes.byEvent);

@@ -5,12 +5,13 @@ import { IAttributeType, ITableSchema, IGlobalSecondaryIndex } from './types';
 
 const idPartitionKey = { name: 'id', type: IAttributeType.STRING };
 
-export const createTableSchema = (tableSchema: Partial<ITableSchema> = {}): ITableSchema => ({
-    tableName: tableSchema.tableName,
-    partitionKey: tableSchema.partitionKey || idPartitionKey,
-    sortKey: tableSchema.sortKey,
-    globalSecondaryIndexes: tableSchema.globalSecondaryIndexes || {},
-});
+export const createTableSchema = <T extends Partial<ITableSchema>>(tableSchema: T = {} as T): ITableSchema & T =>
+    ({
+        tableName: tableSchema.tableName,
+        partitionKey: tableSchema.partitionKey || idPartitionKey,
+        sortKey: tableSchema.sortKey,
+        globalSecondaryIndexes: tableSchema.globalSecondaryIndexes,
+    } as ITableSchema & T);
 
 export const createGSI = (indexProps: IGlobalSecondaryIndex): IGlobalSecondaryIndex => ({
     indexName: indexProps.indexName,

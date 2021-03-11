@@ -61,7 +61,11 @@ class Event extends DataEntity {
     }
 
     async getCompetitions(): Promise<Competition[]> {
-        return toArray(mapper.query(Competition, { eventId: this.id }, { indexName: 'byEvent' }));
+        return Competition.store
+            .query()
+            .index(commonConfig.DB_SCHEMA.Competition.globalSecondaryIndexes.byEvent.indexName)
+            .wherePartitionKey(this.id)
+            .execFetchAll();
     }
 
     @Field(() => CompetitionList)

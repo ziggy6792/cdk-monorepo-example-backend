@@ -87,10 +87,6 @@ class Competition extends DataEntity {
 
     static store: DynamoStore<Competition>;
 
-    // static Load(initalValues: Competition): Competition {
-    //     return _.merge(new Competition(), initalValues);
-    // }
-
     @Field()
     description: string;
 
@@ -141,7 +137,7 @@ class Competition extends DataEntity {
 
     @Field(() => Event, { name: 'event' })
     async getEvent(): Promise<Event> {
-        return mapper.get(Object.assign(new Event(), { id: this.eventId }));
+        return Event.store.get(this.eventId).exec();
     }
 
     async getRounds(filter: ConditionExpression = undefined): Promise<Round[]> {
