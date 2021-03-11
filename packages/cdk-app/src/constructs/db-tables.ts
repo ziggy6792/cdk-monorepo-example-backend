@@ -21,15 +21,15 @@ class DbTables extends cdk.Construct {
 
         for (const [_, tableSchema] of Object.entries(commonConfig.DB_SCHEMA)) {
             // tableSchema.
-            const { tableName, partitionKey, sortKey, globalSecondaryIndexes } = tableSchema;
+            const { tableName, partitionKey, sortKey, indexes } = tableSchema;
             const table = new dynamodb.Table(this, utils.getConstructId(`${tableName}`, stageName), {
                 tableName: commonUtils.getTableName(tableName, stageName),
                 partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.type] },
                 sortKey: sortKey ? { name: sortKey.name, type: typeLookup[sortKey.type] } : undefined,
                 billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
             });
-            if (globalSecondaryIndexes) {
-                for (const [_, { indexName, partitionKey, sortKey }] of Object.entries(globalSecondaryIndexes)) {
+            if (indexes) {
+                for (const [_, { indexName, partitionKey, sortKey }] of Object.entries(indexes)) {
                     table.addGlobalSecondaryIndex({
                         indexName,
                         partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.type] },
@@ -38,7 +38,7 @@ class DbTables extends cdk.Construct {
                 }
             }
 
-            // globalSecondaryIndexes?.forEach(({ indexName, partitionKey, sortKey }) => {
+            // indexes?.forEach(({ indexName, partitionKey, sortKey }) => {
             //     table.addGlobalSecondaryIndex({
             //         indexName,
             //         partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.type] },

@@ -1,17 +1,17 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-restricted-syntax */
 
-import { IAttributeType, ITableSchema, IGlobalSecondaryIndex } from './types';
+import { IAttributeType, ITableSchema, IGlobalSecondaryIndex, ITableSchemaBase } from './types';
 
 const idPartitionKey = { name: 'id', type: IAttributeType.STRING };
 
-export const createTableSchema = <T extends Partial<ITableSchema>>(tableSchema: T = {} as T): ITableSchema & T =>
+export const createTableSchema = <T extends Partial<ITableSchema>>(tableSchema: T = {} as T): ITableSchemaBase & T =>
     ({
         tableName: tableSchema.tableName,
         partitionKey: tableSchema.partitionKey || idPartitionKey,
         sortKey: tableSchema.sortKey,
-        globalSecondaryIndexes: tableSchema.globalSecondaryIndexes,
-    } as ITableSchema & T);
+        indexes: tableSchema.indexes,
+    } as ITableSchemaBase & T);
 
 export const createGSI = (indexProps: IGlobalSecondaryIndex): IGlobalSecondaryIndex => ({
     indexName: indexProps.indexName,
@@ -43,7 +43,7 @@ export const createGSI = (indexProps: IGlobalSecondaryIndex): IGlobalSecondaryIn
 
 // type IDbSchema = {
 //     readonly [tableKey in keyof typeof DB_SCHEMA_CONFIG]: {
-//         [indexKey in keyof typeof DB_SCHEMA_CONFIG[tableKey].globalSecondaryIndexes]: typeof DB_SCHEMA_CONFIG[tableKey].globalSecondaryIndexes]
+//         [indexKey in keyof typeof DB_SCHEMA_CONFIG[tableKey].indexes]: typeof DB_SCHEMA_CONFIG[tableKey].indexes]
 //     } & {
 //         tableName: string;
 //     };
@@ -59,9 +59,9 @@ export const applyDefaults = <T>(schema: T): T => {
     const ret: any = {};
 
     for (const [key, tableSchema] of Object.entries(recievedSchema)) {
-        if (tableSchema.globalSecondaryIndexes) {
-            for (const key of Object.keys(tableSchema.globalSecondaryIndexes)) {
-                const gsi = tableSchema.globalSecondaryIndexes[key];
+        if (tableSchema.indexes) {
+            for (const key of Object.keys(tableSchema.indexes)) {
+                const gsi = tableSchema.indexes[key];
                 gsi.indexName = gsi.indexName || key;
             }
         }

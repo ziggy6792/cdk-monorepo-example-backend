@@ -38,6 +38,7 @@ class Round extends Identifiable {
     type: RoundType;
 
     @Field(() => ID)
+    @GSIPartitionKey(tableSchema.indexes.byCompetition.indexName)
     competitionId: string;
 
     @Field()

@@ -19,14 +19,17 @@ export interface ITableSchemaConfig {
     tableName?: string;
     partitionKey?: IAttribute;
     sortKey?: IAttribute;
-    globalSecondaryIndexes?: { [key in string]: IGlobalSecondaryIndex };
+    indexes?: { [key in string]: IGlobalSecondaryIndex };
 }
 
-export interface ITableSchema {
+export interface ITableSchemaBase {
     tableName: string;
     partitionKey: IAttribute;
     sortKey?: IAttribute;
-    globalSecondaryIndexes?: { [key in string]: IGlobalSecondaryIndex };
+}
+
+export interface ITableSchema extends ITableSchemaBase {
+    indexes?: { [key in string]: IGlobalSecondaryIndex };
 }
 
 export interface IDbSchemaConfig {

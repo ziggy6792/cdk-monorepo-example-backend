@@ -1,16 +1,14 @@
-import { commonUtils, commonConfig } from '@alpaca-backend/common';
+import { commonConfig } from '@alpaca-backend/common';
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/models/abstract/data-entity';
-import { toArray } from 'src/utils/async-iterator';
-import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { CompetitionList } from 'src/domain/common-objects/lists';
 import * as utils from 'src/utils/utility';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
-import { GSIPartitionKey, GSISortKey, Model, Property } from '@shiftcoders/dynamo-easy';
+import { Model } from '@shiftcoders/dynamo-easy';
 
 import User from './user';
 import Competition from './competition';
@@ -61,11 +59,7 @@ class Event extends DataEntity {
     }
 
     async getCompetitions(): Promise<Competition[]> {
-        return Competition.store
-            .query()
-            .index(commonConfig.DB_SCHEMA.Competition.globalSecondaryIndexes.byEvent.indexName)
-            .wherePartitionKey(this.id)
-            .execFetchAll();
+        return Competition.store.query().index(commonConfig.DB_SCHEMA.Competition.indexes.byEvent.indexName).wherePartitionKey(this.id).execFetchAll();
     }
 
     @Field(() => CompetitionList)

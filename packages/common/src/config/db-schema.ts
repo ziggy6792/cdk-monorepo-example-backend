@@ -7,7 +7,7 @@ import { IAttributeType } from './types';
 const DB_SCHEMA_CONFIG = {
     User: createTableSchema({}),
     SeedSlot: createTableSchema({
-        globalSecondaryIndexes: {
+        indexes: {
             byHeat: createGSI({
                 partitionKey: { name: 'heatId', type: IAttributeType.STRING },
                 sortKey: { name: 'seed', type: IAttributeType.NUMBER },
@@ -15,7 +15,7 @@ const DB_SCHEMA_CONFIG = {
         },
     }),
     Round: createTableSchema({
-        globalSecondaryIndexes: {
+        indexes: {
             byCompetition: createGSI({
                 partitionKey: { name: 'competitionId', type: IAttributeType.STRING },
                 sortKey: { name: 'createdAt', type: IAttributeType.STRING },
@@ -25,7 +25,7 @@ const DB_SCHEMA_CONFIG = {
     RiderAllocation: createTableSchema({
         partitionKey: { name: 'allocatableId', type: IAttributeType.STRING },
         sortKey: { name: 'userId', type: IAttributeType.STRING },
-        globalSecondaryIndexes: {
+        indexes: {
             byAllocatable: createGSI({
                 partitionKey: { name: 'allocatableId', type: IAttributeType.STRING },
                 sortKey: { name: 'createdAt', type: IAttributeType.STRING },
@@ -33,7 +33,7 @@ const DB_SCHEMA_CONFIG = {
         },
     }),
     Heat: createTableSchema({
-        globalSecondaryIndexes: {
+        indexes: {
             byRound: createGSI({
                 partitionKey: { name: 'roundId', type: IAttributeType.STRING },
                 sortKey: { name: 'createdAt', type: IAttributeType.STRING },
@@ -42,7 +42,7 @@ const DB_SCHEMA_CONFIG = {
     }),
     Event: createTableSchema({}),
     Competition: createTableSchema({
-        globalSecondaryIndexes: {
+        indexes: {
             byEvent: createGSI({
                 partitionKey: { name: 'eventId', type: IAttributeType.STRING },
                 sortKey: { name: 'createdAt', type: IAttributeType.STRING },
@@ -55,4 +55,4 @@ const DB_SCHEMA_CONFIG = {
 export const DB_SCHEMA = applyDefaults(DB_SCHEMA_CONFIG);
 
 console.log(DB_SCHEMA_CONFIG.RiderAllocation.tableName);
-console.log(DB_SCHEMA_CONFIG.Competition.globalSecondaryIndexes.byEvent);
+// console.log(DB_SCHEMA_CONFIG.User.indexes.byEvent.indexName);

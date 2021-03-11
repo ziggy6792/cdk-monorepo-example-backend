@@ -20,6 +20,7 @@ class SeedSlot extends Identifiable {
     static store: DynamoStore<SeedSlot>;
 
     @Field(() => ID)
+    @GSIPartitionKey(tableSchema.indexes.byHeat.indexName)
     heatId: string;
 
     @Field(() => ID, { nullable: true })

@@ -75,7 +75,7 @@ export class CompetitionParams {
 
 const tableSchema = commonConfig.DB_SCHEMA.Competition;
 
-console.log('Table indexName!', tableSchema.globalSecondaryIndexes.byEvent.indexName);
+console.log('Table indexName!', tableSchema.indexes.byEvent.indexName);
 
 @ObjectType()
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
@@ -95,12 +95,12 @@ class Competition extends DataEntity {
 
     @Field(() => ID)
     @Property()
-    @GSIPartitionKey(tableSchema.globalSecondaryIndexes.byEvent.indexName)
+    @GSIPartitionKey(tableSchema.indexes.byEvent.indexName)
     eventId: string;
 
     @Field(() => ID)
     @Property()
-    @GSISortKey(tableSchema.globalSecondaryIndexes.byEvent.indexName)
+    // @GSISortKey(tableSchema.indexes.byEvent.indexName)
     createdAt: string;
 
     @Field(() => ID)
