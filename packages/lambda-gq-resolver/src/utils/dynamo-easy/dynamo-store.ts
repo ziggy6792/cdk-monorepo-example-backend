@@ -93,6 +93,11 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
         return request;
     }
 
+    batchGetMany(keys: Array<Partial<T>>): MyBatchGetSingleTableRequest<T> {
+        const request = new MyBatchGetSingleTableRequest(this.myDynamoDBWrapper, this.myModelClazz, keys);
+        return request;
+    }
+
     getAndDelete(partitionKey: any, sortKey?: any): MyGetAndDeleteRequest<T> {
         const getRequest = new MyGetAndDeleteRequest(this.myDynamoDBWrapper, this.myModelClazz, partitionKey, sortKey);
 
@@ -101,7 +106,9 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
 
     // Had to hack this as BatchWriteSingleTableRequest is not properly exported from dynamo-easy
     myBatchWrite() {
-        const request = super.batchWrite();
+        let request = super.batchWrite();
+
+        const batchWrite = () => super.batchWrite();
 
         class MyBatchWriteSingleTableRequest<T extends Creatable> {
             put(items: T[]): typeof request {
@@ -111,10 +118,50 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
 
                 return request.put(items as any[]);
             }
+
+            putChunks(batchChunks: T[][]): typeof request[] {
+                batchChunks.forEach((chunk) => {
+                    chunk.forEach((item) => {
+                        item.setModifiedAt();
+                    });
+                });
+
+                const fns = batchChunks.map((batchChunk) => {
+                    request = batchWrite();
+                    return request.put(batchChunk as any[]);
+                });
+
+                return fns;
+            }
         }
 
         return new MyBatchWriteSingleTableRequest();
     }
+
+    // myBatchWriteChunks() {
+    //     let request = super.batchWrite();
+
+    //     const batchWrite = () => super.batchWrite();
+
+    //     class MyBatchWriteSingleTableRequest<T extends Creatable> {
+    //         put(batchChunks: T[][]): typeof request[] {
+    //             batchChunks.forEach((chunk) => {
+    //                 chunk.forEach((item) => {
+    //                     item.setModifiedAt();
+    //                 });
+    //             });
+
+    //             const fns = batchChunks.map((batchChunk) => {
+    //                 request = batchWrite();
+    //                 return request.put(batchChunk as any[]);
+    //             });
+
+    //             return fns;
+    //         }
+    //     }
+
+    //     return new MyBatchWriteSingleTableRequest();
+    // }
 }
 const mapCreatible = <T extends Creatable>(loadedValues: T, clazzType: any): T => {
     const creatable: T = new clazzType();

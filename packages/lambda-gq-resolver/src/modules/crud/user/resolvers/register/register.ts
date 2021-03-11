@@ -3,11 +3,12 @@
 import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
 import { IContext } from 'src/types';
 import User from 'src/domain/models/user';
-
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import TransactGetRequest from 'src/utils/dynamo-easy/transact-get-request';
 import TransactWriteRequest from 'src/utils/dynamo-easy/transact-write-request';
 import Competition, { CompetitionParams } from 'src/domain/models/competition';
+import _ from 'lodash';
+
 import {
     attribute,
     BatchGetRequest,
@@ -19,6 +20,7 @@ import {
     UpdateExpressionDefinitionFunction,
 } from '@shiftcoders/dynamo-easy';
 import Event from 'src/domain/models/event';
+import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
 import { RegisterInput } from './register-input';
 
 @Resolver()
@@ -215,6 +217,42 @@ export default class RegisterResolver {
         // event.getDescendants();
 
         console.log(competition.getKeys());
+
+        return null;
+    }
+
+    @Mutation(() => User, { nullable: true })
+    async batchWriteExample(@Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
+
+        const competitions: Competition[] = [];
+
+        for (let i = 0; i < 50; i++) {
+            const competition = new Competition();
+            competition.eventId = 'eventId';
+            competition.judgeUserId = 'userId';
+            competition.params = new CompetitionParams();
+            competition.params.name = 'param name';
+            competitions.push(competition);
+        }
+
+        const batchReqest = new BatchWriteRequest();
+
+        const chunks = _.chunk(competitions, 25);
+
+        Promise.all(batchReqest.putChunks(_.chunk(competitions, 25)).map((req) => req.exec()));
+
+        // batchReqest.put(Competition, chunks[0]);
+        // batchReqest.put(Competition, chunks[1]);
+
+        // console.log(batchReqest.params);
+
+        // await Promise.all(
+        //     Competition.store
+        //         .myBatchWrite()
+        //         .putChunks(_.chunk(competitions, 25))
+        //         .map((req) => req.exec())
+        // );
 
         return null;
     }

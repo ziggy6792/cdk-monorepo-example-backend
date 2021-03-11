@@ -5,6 +5,8 @@ import RiderAllocation from 'src/domain/models/rider-allocation';
 import Round from 'src/domain/models/round';
 import SeedSlot from 'src/domain/models/seed-slot';
 import { toArray } from 'src/utils/async-iterator';
+import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
+import _ from 'lodash';
 import { IMockDb } from './types';
 
 const mockDbTables = {
@@ -20,7 +22,7 @@ const populateDb = async (mockDb: IMockDb): Promise<void> => {
     const putFns = Object.keys(mockDb).map((key: keyof IMockDb) => {
         const inputItems = mockDb[key];
         const dbItems = inputItems.map((inputItem) => Object.assign(new mockDbTables[key](), inputItem));
-        return async () => toArray(mapper.batchPut(dbItems));
+        return async () => Promise.all([...new BatchWriteRequest().putChunks(_.chunk(dbItems, 25)).map((req) => req.exec())]);
     });
     const updatedEntities = await Promise.all(putFns.map((fn) => fn()));
 };
@@ -28,7 +30,7 @@ const populateDb = async (mockDb: IMockDb): Promise<void> => {
 const dbToJson = async () => {
     const retJson: IMockDb = {};
     const scanFns = Object.keys(mockDbTables).map((key: keyof typeof mockDbTables) => async () => {
-        retJson[key] = await toArray(mapper.scan(mockDbTables[key] as any));
+        retJson[key] = await mockDbTables[key].store.scan().execFetchAll();
     });
     await Promise.all(scanFns.map((fn) => fn()));
     return retJson;

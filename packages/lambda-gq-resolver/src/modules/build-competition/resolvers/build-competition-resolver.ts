@@ -10,6 +10,7 @@ import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import Competition from 'src/domain/models/competition';
 import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
 import { CompetitionParamsInput } from 'src/modules/build-competition/inputs';
+import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
 
 @Resolver()
 export default class BuildCompetition {
@@ -79,12 +80,8 @@ export default class BuildCompetition {
         // ]);
 
         await Promise.all([
-            //     toArray(mapper.batchDelete(prevCompDescendants)),
-
-            // SeedSlot.store.myBatchWrite().put(seedSlotsToCreate).exec(),
-            SeedSlot.store.myBatchWrite().put(seedSlotsToCreate).exec(),
-            Heat.store.myBatchWrite().put(heatsToCreate).exec(),
-            Round.store.myBatchWrite().put(roundsToCreate).exec(),
+            ...new BatchWriteRequest().deleteChunks(_.chunk(prevCompDescendants, 25)).map((req) => req.exec()),
+            ...new BatchWriteRequest().putChunks(_.chunk([...seedSlotsToCreate, ...heatsToCreate, ...roundsToCreate], 25)).map((req) => req.exec()),
         ]);
 
         const end = new Date().getTime();
