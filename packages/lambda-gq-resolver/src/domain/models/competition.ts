@@ -137,12 +137,14 @@ class Competition extends DataEntity {
     }
 
     async getRounds(filter: ConditionExpressionDefinitionFunction[] = []): Promise<Round[]> {
-        return Round.store
-            .query()
-            .index(commonConfig.DB_SCHEMA.Round.indexes.byCompetition.indexName)
-            .wherePartitionKey(this.id)
-            .where(...filter)
-            .execFetchAll();
+        return (
+            Round.store
+                .query()
+                .index(commonConfig.DB_SCHEMA.Round.indexes.byCompetition.indexName)
+                .wherePartitionKey(this.id)
+                // .where(...filter)
+                .execFetchAll()
+        );
     }
 
     @Field(() => RoundList)
