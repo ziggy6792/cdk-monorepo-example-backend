@@ -3,7 +3,6 @@ import { commonConfig } from '@alpaca-backend/common';
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
-import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/models/abstract/data-entity';
 import { CompetitionList } from 'src/domain/common-objects/lists';
 import * as utils from 'src/utils/utility';
@@ -50,12 +49,12 @@ class Event extends DataEntity {
 
     @Field(() => User)
     async adminUser(): Promise<User> {
-        return mapper.get(Object.assign(new User(), { id: this.adminUserId }));
+        return User.store.get(this.adminUserId).exec();
     }
 
     @Field(() => Heat)
     async selectedHeat(): Promise<Heat> {
-        return mapper.get(Object.assign(new Heat(), { id: this.selectedHeatId }));
+        return Heat.store.get(this.selectedHeatId).exec();
     }
 
     async getCompetitions(): Promise<Competition[]> {

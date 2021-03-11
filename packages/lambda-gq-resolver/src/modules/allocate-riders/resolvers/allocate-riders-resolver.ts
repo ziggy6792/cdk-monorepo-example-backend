@@ -11,6 +11,7 @@ import errorMessage from 'src/config/error-message';
 import _ from 'lodash';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import { toArray } from 'src/utils/async-iterator';
+import { attribute } from '@shiftcoders/dynamo-easy';
 
 const defaultRiderAllocation = { runs: [{ score: null }, { score: null }] };
 
@@ -20,10 +21,7 @@ export default class AllocateRiders {
     @UseMiddleware([createAuthMiddleware([isCompetitionAdmin])])
     async allocateRiders(@Arg('id', () => ID) id: string): Promise<Competition> {
         const competition = await mapper.get(Object.assign(new Competition(), { id }));
-        const rounds = await competition.getRounds({
-            subject: 'roundNo',
-            ...equals(1),
-        });
+        const rounds = await competition.getRounds([attribute('roundNo').equals(1)]);
         if (rounds.length !== 1) {
             throw new Error(errorMessage.canNotFindRound1);
         }

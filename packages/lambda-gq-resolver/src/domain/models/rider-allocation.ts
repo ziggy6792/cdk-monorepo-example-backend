@@ -3,11 +3,9 @@
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root, Float } from 'type-graphql';
 import Creatable from 'src/domain/models/abstract/creatable';
-import { mapper } from 'src/utils/mapper';
 import { commonConfig } from '@alpaca-backend/common';
-import * as utils from 'src/utils/utility';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
-import { GSIPartitionKey, GSISortKey, Model, PartitionKey, SortKey, Property } from '@shiftcoders/dynamo-easy';
+import { GSIPartitionKey, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 import User from './user';
 
 @ObjectType()
@@ -28,6 +26,7 @@ class RiderAllocation extends Creatable {
 
     @Field(() => ID)
     @PartitionKey()
+    @GSIPartitionKey(tableSchema.indexes.byAllocatable.indexName)
     allocatableId: string;
 
     @Field(() => ID)
@@ -61,7 +60,7 @@ class RiderAllocation extends Creatable {
 
     @Field(() => User, { name: 'user' })
     async getUser(): Promise<User> {
-        return mapper.get(Object.assign(new User(), { id: this.userId }));
+        return User.store.get(this.userId).exec();
     }
 }
 

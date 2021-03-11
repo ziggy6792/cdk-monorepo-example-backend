@@ -4,13 +4,10 @@ import { commonConfig } from '@alpaca-backend/common';
 
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
-import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/models/abstract/data-entity';
-import { toArray } from 'src/utils/async-iterator';
-import { ConditionExpression } from '@aws/dynamodb-expressions';
 import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
 import * as utils from 'src/utils/utility';
-import { GSIPartitionKey, GSISortKey, Model, Property } from '@shiftcoders/dynamo-easy';
+import { ConditionExpressionDefinitionFunction, GSIPartitionKey, Model, Property } from '@shiftcoders/dynamo-easy';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import User from './user';
 import Event from './event';
@@ -100,7 +97,6 @@ class Competition extends DataEntity {
 
     @Field(() => ID)
     @Property()
-    // @GSISortKey(tableSchema.indexes.byEvent.indexName)
     createdAt: string;
 
     @Field(() => ID)
@@ -132,7 +128,7 @@ class Competition extends DataEntity {
 
     @Field(() => User, { name: 'judgeUser' })
     async getJudgeUser(): Promise<User> {
-        return mapper.get(Object.assign(new User(), { id: this.judgeUserId }));
+        return User.store.get(this.judgeUserId).exec();
     }
 
     @Field(() => Event, { name: 'event' })
@@ -140,8 +136,13 @@ class Competition extends DataEntity {
         return Event.store.get(this.eventId).exec();
     }
 
-    async getRounds(filter: ConditionExpression = undefined): Promise<Round[]> {
-        return toArray(mapper.query(Round, { competitionId: this.id }, { indexName: 'byCompetition', filter }));
+    async getRounds(filter: ConditionExpressionDefinitionFunction[] = []): Promise<Round[]> {
+        return Round.store
+            .query()
+            .index(commonConfig.DB_SCHEMA.Round.indexes.byCompetition.indexName)
+            .wherePartitionKey(this.id)
+            .where(...filter)
+            .execFetchAll();
     }
 
     @Field(() => RoundList)
@@ -152,7 +153,11 @@ class Competition extends DataEntity {
     }
 
     async getRiderAllocations(): Promise<RiderAllocation[]> {
-        return toArray(mapper.query(RiderAllocation, { allocatableId: this.id }, { indexName: 'byAllocatable' }));
+        return RiderAllocation.store
+            .query()
+            .index(commonConfig.DB_SCHEMA.RiderAllocation.indexes.byAllocatable.indexName)
+            .wherePartitionKey(this.id)
+            .execFetchAll();
     }
 
     @Field(() => RiderAllocationList)

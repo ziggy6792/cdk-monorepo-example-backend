@@ -119,8 +119,6 @@ export default class RegisterResolver {
 
         console.log('metadata', Competition.store);
 
-        // return toArray(mapper.query(Competition, { eventId: this.id }, { indexName: 'byEvent' }));
-
         // console.log('loadedComp params', loadedComp.params);
         // loadedComp.myFunc();
         // loadedComp.params.mySubFunc();
