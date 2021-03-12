@@ -14,7 +14,6 @@ const isAllowedToCreateComp: AuthCheck = async ({ args, context: { identity } })
     }
     const input = args.input as CreateCompetitionInput;
 
-    // const event = await mapper.get(Object.assign(new Event(), { id: input.eventId }));
     const event = await Event.store.get(input.eventId).exec();
 
     if (event.adminUserId === identity.user?.username) {

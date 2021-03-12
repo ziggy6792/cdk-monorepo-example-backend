@@ -34,9 +34,6 @@ const buildDeleteResolvers = (buildResolversProps: IBuildResolverProps) => {
                 @Mutation(() => [returnType], { name: `delete${pluralize.plural(suffix)}` })
                 @UseMiddleware(...(middleware || []))
                 async delete(@Arg('input', () => [inputType]) inputs: any[]) {
-                    // const entities = inputs.map((input) => Object.assign(new returnType(), input));
-
-                    // const deletedEntities = toArray(mapper.batchDelete(entities));
                     throw new Error('Not implementd');
                     return null;
                 }

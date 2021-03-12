@@ -9,7 +9,6 @@ import User from 'src/domain/models/user';
 export class IsIdAlreadyExistConstraint implements ValidatorConstraintInterface {
     async validate(id: string) {
         try {
-            // await mapper.get(Object.assign(new User(), { id }));
             await User.store.get(id).exec();
 
             return false;

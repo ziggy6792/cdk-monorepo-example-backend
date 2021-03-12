@@ -19,7 +19,6 @@ export default class BuildCompetition {
     async buildCompetition(@Arg('id', () => ID) id: string, @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput): Promise<Competition> {
         const start = new Date().getTime();
 
-        // const competition = await mapper.get(Object.assign(new Competition(), { id }));
         const competition = await Competition.store.get(id).exec();
 
         const prevCompDescendants = await competition.getDescendants();
@@ -69,15 +68,6 @@ export default class BuildCompetition {
             }
             seedsHolder[seedSlot.seed] = seedSlot; // Now keep track of this one
         });
-
-        // ToDo delete old
-
-        // await Promise.all([
-        //     toArray(mapper.batchDelete(prevCompDescendants)),
-        //     toArray(mapper.batchPut(seedSlotsToCreate)),
-        //     toArray(mapper.batchPut(heatsToCreate)),
-        //     toArray(mapper.batchPut(roundsToCreate)),
-        // ]);
 
         await Promise.all([
             ...new BatchWriteRequest().deleteChunks(_.chunk(prevCompDescendants, 25)).map((req) => req.exec()),

@@ -19,7 +19,6 @@ export default class AllocateRiders {
     @Mutation(() => Competition, { nullable: true })
     @UseMiddleware([createAuthMiddleware([isCompetitionAdmin])])
     async allocateRiders(@Arg('id', () => ID) id: string): Promise<Competition> {
-        // const competition = await mapper.get(Object.assign(new Competition(), { id }));
         const competition = await Competition.store.get(id).exec();
         const rounds = await competition.getRounds([attribute('roundNo').equals(1)]);
         if (rounds.length !== 1) {
@@ -59,7 +58,6 @@ export default class AllocateRiders {
             }
         });
 
-        // const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => async () => mapper.update(seedSlot, { onMissing: 'skip' }));
         const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => SeedSlot.store.updateItem(seedSlot));
         // Update seed slots
         await Promise.all(updateSeedSlotFns.map((req) => req.exec()));

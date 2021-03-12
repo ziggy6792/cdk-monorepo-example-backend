@@ -39,7 +39,7 @@ const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity 
     );
 
     // Get rider allocation competitions
-    // const competitions = await toArray(mapper.batchGet(competitionIds));
+
     const competitions = await Competition.store.batchGet(competitionIds).exec();
 
     const eventIds = _.uniqWith(
@@ -48,7 +48,6 @@ const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity 
     );
 
     // Get competition events
-    // const events = await toArray(mapper.batchGet(eventIds));
     const events = await Event.store.batchGet(eventIds).exec();
 
     // Check that user is admin of those events

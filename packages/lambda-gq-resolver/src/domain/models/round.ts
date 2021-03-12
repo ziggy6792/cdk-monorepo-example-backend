@@ -55,7 +55,6 @@ class Round extends Identifiable {
 
     @Field(() => Competition, { name: 'competition' })
     async getCompetition(): Promise<Competition> {
-        // return mapper.get(Object.assign(new Competition(), { id: this.competitionId }));
         return Competition.store.get(this.competitionId).exec();
     }
 

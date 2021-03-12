@@ -23,7 +23,6 @@ const isAllowedToEditEvent: AuthCheck = async ({ args, context: { identity } }) 
     }
     const input = args.input as UpdateEventInput;
 
-    // const event = await mapper.get(Object.assign(new Event(), { id: input.id }))
     const event = await Event.store.get(input.id).exec();
 
     if (event.adminUserId === identity.user?.username) {

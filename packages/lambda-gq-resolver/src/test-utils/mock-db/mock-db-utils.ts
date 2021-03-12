@@ -34,26 +34,6 @@ const dbToJson = async () => {
     });
     await Promise.all(scanFns.map((fn) => fn()));
     return retJson;
-
-    // const events = await toArray(mapper.scan(Event));
-
-    // const competitions = await toArray(mapper.scan(Competition));
-
-    // const rounds = await toArray(mapper.scan(Round));
-
-    // const heats = await toArray(mapper.scan(Heat));
-
-    // const seedSlots = await toArray(mapper.scan(SeedSlot));
-
-    // const mockDb = {
-    //     events,
-    //     competitions,
-    //     rounds,
-    //     heats,
-    //     seedSlots,
-    // };
-
-    // console.log(JSON.stringify(mockDb));
 };
 
 const mockDbUtils = {

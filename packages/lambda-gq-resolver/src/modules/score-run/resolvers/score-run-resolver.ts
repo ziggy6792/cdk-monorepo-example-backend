@@ -15,7 +15,6 @@ export default class ScoreRun {
     @Mutation(() => Heat)
     @UseMiddleware([createAuthMiddleware([isHeatJudge])])
     async scoreRun(@Arg('input', () => ScorRunInput) input: ScorRunInput): Promise<Heat> {
-        // const heat = await mapper.get(Object.assign(new Heat(), { id: input.heatId }));
         const heat = await Heat.store.get(input.heatId).exec();
 
         const seedSlots = await heat.getSeedSlots();
@@ -45,7 +44,6 @@ export default class ScoreRun {
         // console.log('newSeedSlotOrder', newSeedSlotOrder);
 
         const updatedSeedSlots = orderedSeedSlots.map((seedSlot, i) => {
-            // seedSlot = Object.assign(new SeedSlot(), { ...seedSlot, userId: newSeedSlotOrder[i].userId });
             seedSlot = _.cloneDeep(seedSlot);
             seedSlot.userId = newSeedSlotOrder[i].userId;
             return seedSlot;
@@ -53,10 +51,8 @@ export default class ScoreRun {
 
         const selectedRiderAllocation = riderAllocationsLookup[selectedSeedSlot.id];
 
-        // await mapper.update(selectedRiderAllocation, { onMissing: 'skip' });
         await RiderAllocation.store.updateItem(selectedRiderAllocation).exec();
 
-        // const updateSeedSlotFns = updatedSeedSlots.map((seedSlot) => async () => mapper.update(seedSlot, { onMissing: 'skip' }));
         const updateSeedSlotFns = updatedSeedSlots.map((seedSlot) => async () => SeedSlot.store.updateItem(seedSlot).exec());
         await Promise.all(updateSeedSlotFns.map((fn) => fn()));
 

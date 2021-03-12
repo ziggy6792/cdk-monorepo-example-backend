@@ -12,7 +12,6 @@ const isCompetitionAdmin: AuthCheck = async ({ args, context: { identity } }) =>
     }
     const competitionId = args.id as string;
 
-    // const competition = await mapper.get(Object.assign(new Competition(), { id: competitionId }));
     const competition = await Competition.store.get(competitionId).exec();
     const event = await competition.getEvent();
     if (event.adminUserId === identity.user?.username) {

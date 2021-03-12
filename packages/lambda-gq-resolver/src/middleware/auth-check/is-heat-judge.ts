@@ -15,7 +15,6 @@ const isHeatJudge: AuthCheck = async ({ args, context: { identity } }) => {
 
     const { heatId } = input;
 
-    // const heat = await mapper.get(Object.assign(new Heat(), { id: heatId }));
     const heat = await Heat.store.get(heatId).exec();
     const round = await heat.getRound();
     const competition = await round.getCompetition();

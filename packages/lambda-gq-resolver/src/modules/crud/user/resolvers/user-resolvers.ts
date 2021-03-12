@@ -15,7 +15,6 @@ const isAllowedToEditUser: AuthCheck = async ({ args, context: { identity } }) =
     }
     const input = args.input as UpdateUserInput;
 
-    // const user = await mapper.get(Object.assign(new User(), { id: input.id }));
     const user = await User.store.get(input.id).exec();
 
     if (user.id === identity.user?.username) {

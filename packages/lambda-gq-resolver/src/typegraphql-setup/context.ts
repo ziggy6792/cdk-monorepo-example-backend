@@ -33,7 +33,6 @@ const getIdentityType = (eventIdentity: any): IdentityType => {
 
 const seedSlotPostitionDataLoader = new DataLoader(
     async (keys: string[]) => {
-        // const allSeedSlots = await toArray(mapper.batchGet(keys.map((key) => Object.assign(new SeedSlot(), { id: key }))));
         const allSeedSlots = await SeedSlot.store.batchGet(keys.map((key) => ({ id: key }))).exec();
 
         // Get rider allocations
