@@ -6,6 +6,7 @@ import Creatable from 'src/domain/models/abstract/creatable';
 import { commonConfig } from '@alpaca-backend/common';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { GSIPartitionKey, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
+import * as utils from 'src/utils/utility';
 import User from './user';
 
 @ObjectType()
@@ -20,7 +21,7 @@ export class Run {
 const tableSchema = commonConfig.DB_SCHEMA.RiderAllocation;
 
 @ObjectType()
-@Model({ tableName: tableSchema.tableName })
+@Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class RiderAllocation extends Creatable {
     static store: DynamoStore<RiderAllocation>;
 

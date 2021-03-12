@@ -21,6 +21,7 @@ import {
 } from '@shiftcoders/dynamo-easy';
 import Event from 'src/domain/models/event';
 import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
+import RiderAllocation from 'src/domain/models/rider-allocation';
 import { RegisterInput } from './register-input';
 
 @Resolver()
@@ -241,6 +242,44 @@ export default class RegisterResolver {
         const chunks = _.chunk(competitions, 25);
 
         Promise.all(batchReqest.putChunks(_.chunk(competitions, 25)).map((req) => req.exec()));
+
+        // batchReqest.put(Competition, chunks[0]);
+        // batchReqest.put(Competition, chunks[1]);
+
+        // console.log(batchReqest.params);
+
+        // await Promise.all(
+        //     Competition.store
+        //         .myBatchWrite()
+        //         .putChunks(_.chunk(competitions, 25))
+        //         .map((req) => req.exec())
+        // );
+
+        return null;
+    }
+
+    @Mutation(() => User, { nullable: true })
+    async riderAloocationExample(@Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
+
+        const riderAlocations: RiderAllocation[] = [];
+
+        for (let i = 0; i < 50; i++) {
+            const riderAllocation = new RiderAllocation();
+            riderAllocation.allocatableId = 'allocatableId';
+            riderAllocation.userId = `userId${i}`;
+            riderAlocations.push(riderAllocation);
+        }
+
+        const batchReqest = new BatchWriteRequest();
+
+        const chunks = _.chunk(riderAlocations, 25);
+
+        console.log('params', RiderAllocation.store.put(riderAlocations[0]).params);
+
+        await RiderAllocation.store.put(riderAlocations[0]).exec();
+
+        // Promise.all(batchReqest.putChunks(_.chunk(riderAlocations, 25)).map((req) => req.exec()));
 
         // batchReqest.put(Competition, chunks[0]);
         // batchReqest.put(Competition, chunks[1]);

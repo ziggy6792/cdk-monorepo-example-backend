@@ -60,9 +60,9 @@ export default class AllocateRiders {
         });
 
         // const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => async () => mapper.update(seedSlot, { onMissing: 'skip' }));
-        const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => async () => SeedSlot.store.updateItem(seedSlot));
+        const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => SeedSlot.store.updateItem(seedSlot));
         // Update seed slots
-        await Promise.all(updateSeedSlotFns.map((fn) => fn()));
+        await Promise.all(updateSeedSlotFns.map((req) => req.exec()));
         // Create rider allocations
         await RiderAllocation.store.myBatchWrite().put(createRiderAllocations).exec();
 
