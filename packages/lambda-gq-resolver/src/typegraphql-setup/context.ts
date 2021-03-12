@@ -13,8 +13,6 @@ import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } fro
 import DataLoader from 'dataloader';
 import SeedSlot from 'src/domain/models/seed-slot';
 import _ from 'lodash';
-
-import { toArray } from 'src/utils/async-iterator';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -7,7 +7,6 @@ import { IContext, IdentityType } from 'src/types';
 import errorMessage from 'src/config/error-message';
 import Competition from 'src/domain/models/competition';
 import Event from 'src/domain/models/event';
-import { toArray } from 'src/utils/async-iterator';
 import _ from 'lodash';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import { AuthCheck } from 'src/middleware/auth-check/types';

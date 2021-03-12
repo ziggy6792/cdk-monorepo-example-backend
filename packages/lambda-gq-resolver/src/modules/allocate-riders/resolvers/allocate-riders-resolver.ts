@@ -1,4 +1,3 @@
-import { equals } from '@aws/dynamodb-expressions';
 /* eslint-disable class-methods-use-this */
 
 import { Resolver, Mutation, Arg, ID, UseMiddleware } from 'type-graphql';
@@ -9,7 +8,6 @@ import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
 import errorMessage from 'src/config/error-message';
 import _ from 'lodash';
 import RiderAllocation from 'src/domain/models/rider-allocation';
-import { toArray } from 'src/utils/async-iterator';
 import { attribute } from '@shiftcoders/dynamo-easy';
 
 const defaultRiderAllocation = { runs: [{ score: null }, { score: null }] };
