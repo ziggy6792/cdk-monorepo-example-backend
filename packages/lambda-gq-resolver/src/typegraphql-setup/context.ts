@@ -13,7 +13,6 @@ import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } fro
 import DataLoader from 'dataloader';
 import SeedSlot from 'src/domain/models/seed-slot';
 import _ from 'lodash';
-import { mapper } from 'src/utils/mapper';
 
 import { toArray } from 'src/utils/async-iterator';
 import RiderAllocation from 'src/domain/models/rider-allocation';
