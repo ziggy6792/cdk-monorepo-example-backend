@@ -88,14 +88,14 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
         return scanRequest;
     }
 
-    batchGet(keys: Array<Partial<T>>): MyBatchGetSingleTableRequest<T> {
+    batchGet(keys: Partial<T>[]): MyBatchGetSingleTableRequest<T> {
         const request = new MyBatchGetSingleTableRequest(this.myDynamoDBWrapper, this.myModelClazz, keys);
         return request;
     }
 
-    batchGetMany(keys: Array<Partial<T>>): MyBatchGetSingleTableRequest<T> {
-        const request = new MyBatchGetSingleTableRequest(this.myDynamoDBWrapper, this.myModelClazz, keys);
-        return request;
+    batchGetChunks(batchChunks: Partial<T>[][]): MyBatchGetSingleTableRequest<T>[] {
+        const fns = batchChunks.map((batchChunk) => this.batchGet(batchChunk));
+        return fns;
     }
 
     getAndDelete(partitionKey: any, sortKey?: any): MyGetAndDeleteRequest<T> {

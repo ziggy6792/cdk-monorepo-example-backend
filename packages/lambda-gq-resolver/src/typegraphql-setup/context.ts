@@ -14,6 +14,7 @@ import DataLoader from 'dataloader';
 import SeedSlot from 'src/domain/models/seed-slot';
 import _ from 'lodash';
 import RiderAllocation from 'src/domain/models/rider-allocation';
+import { BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getIdentityType = (eventIdentity: any): IdentityType => {
@@ -31,7 +32,18 @@ const getIdentityType = (eventIdentity: any): IdentityType => {
 
 const seedSlotPostitionDataLoader = new DataLoader(
     async (keys: string[]) => {
-        const allSeedSlots = await SeedSlot.store.batchGet(keys.map((key) => ({ id: key }))).exec();
+        const allSeedSlots = _.flatten(
+            await Promise.all(
+                SeedSlot.store
+                    .batchGetChunks(
+                        _.chunk(
+                            keys.map((key) => ({ id: key })),
+                            BATCH_WRITE_MAX_REQUEST_ITEM_COUNT
+                        )
+                    )
+                    .map((req) => req.exec())
+            )
+        );
 
         // Get rider allocations
         const riderAllocationsLookup: { [key in string]: RiderAllocation } = {};

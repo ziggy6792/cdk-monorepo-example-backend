@@ -12,6 +12,7 @@ import _ from 'lodash';
 import {
     attribute,
     BatchGetRequest,
+    BATCH_WRITE_MAX_REQUEST_ITEM_COUNT,
     TransactConditionCheck,
     TransactDelete,
     TransactPut,
@@ -239,21 +240,9 @@ export default class RegisterResolver {
 
         const batchReqest = new BatchWriteRequest();
 
-        const chunks = _.chunk(competitions, 25);
+        const chunks = _.chunk(competitions, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT);
 
-        Promise.all(batchReqest.putChunks(_.chunk(competitions, 25)).map((req) => req.exec()));
-
-        // batchReqest.put(Competition, chunks[0]);
-        // batchReqest.put(Competition, chunks[1]);
-
-        // console.log(batchReqest.params);
-
-        // await Promise.all(
-        //     Competition.store
-        //         .myBatchWrite()
-        //         .putChunks(_.chunk(competitions, 25))
-        //         .map((req) => req.exec())
-        // );
+        Promise.all(batchReqest.putChunks(_.chunk(competitions, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()));
 
         return null;
     }
@@ -273,25 +262,11 @@ export default class RegisterResolver {
 
         const batchReqest = new BatchWriteRequest();
 
-        const chunks = _.chunk(riderAlocations, 25);
+        const chunks = _.chunk(riderAlocations, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT);
 
         console.log('params', RiderAllocation.store.put(riderAlocations[0]).params);
 
         await RiderAllocation.store.put(riderAlocations[0]).exec();
-
-        // Promise.all(batchReqest.putChunks(_.chunk(riderAlocations, 25)).map((req) => req.exec()));
-
-        // batchReqest.put(Competition, chunks[0]);
-        // batchReqest.put(Competition, chunks[1]);
-
-        // console.log(batchReqest.params);
-
-        // await Promise.all(
-        //     Competition.store
-        //         .myBatchWrite()
-        //         .putChunks(_.chunk(competitions, 25))
-        //         .map((req) => req.exec())
-        // );
 
         return null;
     }

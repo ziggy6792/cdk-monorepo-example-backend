@@ -8,7 +8,7 @@ import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
 import errorMessage from 'src/config/error-message';
 import _ from 'lodash';
 import RiderAllocation from 'src/domain/models/rider-allocation';
-import { attribute } from '@shiftcoders/dynamo-easy';
+import { attribute, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
 
 const defaultRiderAllocation = { runs: [{ score: null }, { score: null }] };
 
@@ -60,7 +60,12 @@ export default class AllocateRiders {
         // Update seed slots
         await Promise.all(updateSeedSlotFns.map((req) => req.exec()));
         // Create rider allocations
-        await RiderAllocation.store.myBatchWrite().put(createRiderAllocations).exec();
+        await Promise.all(
+            RiderAllocation.store
+                .myBatchWrite()
+                .putChunks(_.chunk(createRiderAllocations, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT))
+                .map((req) => req.exec())
+        );
 
         return competition;
     }

@@ -11,6 +11,7 @@ import Competition from 'src/domain/models/competition';
 import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
 import { CompetitionParamsInput } from 'src/modules/build-competition/inputs';
 import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
+import { BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
 
 @Resolver()
 export default class BuildCompetition {
@@ -70,8 +71,10 @@ export default class BuildCompetition {
         });
 
         await Promise.all([
-            ...new BatchWriteRequest().deleteChunks(_.chunk(prevCompDescendants, 25)).map((req) => req.exec()),
-            ...new BatchWriteRequest().putChunks(_.chunk([...seedSlotsToCreate, ...heatsToCreate, ...roundsToCreate], 25)).map((req) => req.exec()),
+            ...new BatchWriteRequest().deleteChunks(_.chunk(prevCompDescendants, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()),
+            ...new BatchWriteRequest()
+                .putChunks(_.chunk([...seedSlotsToCreate, ...heatsToCreate, ...roundsToCreate], BATCH_WRITE_MAX_REQUEST_ITEM_COUNT))
+                .map((req) => req.exec()),
         ]);
 
         const end = new Date().getTime();
