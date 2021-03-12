@@ -3,6 +3,7 @@ import * as cdk from '@aws-cdk/core';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
 import * as utils from 'src/utils';
 import { commonConfig, IAttributeType, commonUtils } from '@alpaca-backend/common';
+import { ITableSchemaConfig } from '@alpaca-backend/common/dist/config/types';
 
 interface DbTablesProps {
     stageName: string;
@@ -21,7 +22,7 @@ class DbTables extends cdk.Construct {
 
         for (const [_, tableSchema] of Object.entries(commonConfig.DB_SCHEMA)) {
             // tableSchema.
-            const { tableName, partitionKey, sortKey, indexes } = tableSchema;
+            const { tableName, partitionKey, sortKey, indexes } = tableSchema as ITableSchemaConfig;
             const table = new dynamodb.Table(this, utils.getConstructId(`${tableName}`, stageName), {
                 tableName: commonUtils.getTableName(tableName, stageName),
                 partitionKey: { name: partitionKey.name, type: typeLookup[partitionKey.type] },
