@@ -19,66 +19,67 @@ export default class BuildCompetition {
     async buildCompetition(@Arg('id', () => ID) id: string, @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput): Promise<Competition> {
         const start = new Date().getTime();
 
-        // const competition = await Competition.store.get(id).exec();
+        const competition = await Competition.store.get(id).exec();
 
-        // const prevCompDescendants = await competition.getDescendants();
+        const prevCompDescendants = await competition.getDescendants();
 
-        // params.rounds = _.orderBy(params.rounds, ['roundNo', 'type'], ['asc', 'asc']);
+        params.rounds = _.orderBy(params.rounds, ['roundNo', 'type'], ['asc', 'asc']);
 
-        // const roundsToCreate: Round[] = [];
-        // const heatsToCreate: Heat[] = [];
-        // const allSeedSlots: SeedSlot[] = [];
+        const roundsToCreate: Round[] = [];
+        const heatsToCreate: Heat[] = [];
+        const allSeedSlots: SeedSlot[] = [];
 
-        // params.rounds.forEach((roundParam) => {
-        //     const { heats: heatParams, ...roundInput } = roundParam;
-        //     const round = Object.assign(new Round(), roundInput);
-        //     round.setDefaults();
-        //     console.log('round', round);
-        //     roundsToCreate.push(round);
-        //     heatParams.forEach((heatParam) => {
-        //         const { seedSlots: seedSlotParams, ...heatInput } = heatParam;
-        //         const heat = Object.assign(new Heat(), heatInput);
-        //         heat.setDefaults();
-        //         heatsToCreate.push(heat);
-        //         seedSlotParams.forEach((seedSlotParam) => {
-        //             const seedSlot = new SeedSlot();
-        //             seedSlot.seed = seedSlotParam.seed;
-        //             heat.seedSlots.push(seedSlot);
-        //             allSeedSlots.push(seedSlot);
-        //         });
-        //         heat.roundId = round.id;
-        //     });
-        //     round.competitionId = competition.id;
+        // Maps created seedslots back to their parent heats
+        const heatMap: Map<SeedSlot, Heat> = new Map();
 
-        //     // competition.addScheduleItem(new ScheduleItem({ schedulableId: round.id }));
-        // });
+        params.rounds.forEach((roundParam) => {
+            const { heats: heatParams, ...roundInput } = roundParam;
+            const round = Object.assign(new Round(), roundInput);
+            round.setDefaults();
+            console.log('round', round);
+            roundsToCreate.push(round);
+            heatParams.forEach((heatParam) => {
+                const { seedSlots: seedSlotParams, ...heatInput } = heatParam;
+                const heat = Object.assign(new Heat(), heatInput);
+                heat.setDefaults();
+                heatsToCreate.push(heat);
+                seedSlotParams.forEach((seedSlotParam) => {
+                    const seedSlot = new SeedSlot();
+                    seedSlot.seed = seedSlotParam.seed;
+                    heat.seedSlots.push(seedSlot);
+                    heatMap.set(seedSlot, heat);
+                    allSeedSlots.push(seedSlot);
+                });
+                heat.roundId = round.id;
+            });
+            round.competitionId = competition.id;
+        });
 
-        // const seedsHolder = {};
+        const seedsHolder: { [key in string]: SeedSlot } = {};
 
-        // allSeedSlots.reverse().forEach((seedSlot) => {
-        //     // If I have seen this seed already
-        //     if (seedsHolder[seedSlot.seed]) {
-        //         if (valueIsNull(seedSlot.parentHeatId)) {
-        //             seedSlot.parentHeatId = seedsHolder[seedSlot.seed].id; // Set that one as my parent
-        //         } else {
-        //             seedSlot.parentHeatId = undefined;
-        //         }
-        //     } else {
-        //         seedSlot.parentHeatId = undefined;
-        //     }
-        //     seedsHolder[seedSlot.seed] = seedSlot; // Now keep track of this one
-        // });
+        allSeedSlots.reverse().forEach((seedSlot) => {
+            // If I have seen this seed already
+            if (seedsHolder[seedSlot.seed]) {
+                if (valueIsNull(seedSlot.nextHeatId)) {
+                    seedSlot.nextHeatId = heatMap.get(seedsHolder[seedSlot.seed]).id; // Set that one as my parent
+                } else {
+                    seedSlot.nextHeatId = undefined;
+                }
+            } else {
+                seedSlot.nextHeatId = undefined;
+            }
+            seedsHolder[seedSlot.seed] = seedSlot; // Now keep track of this one
+        });
 
-        // await Promise.all([
-        //     ...new BatchWriteRequest().deleteChunks(_.chunk(prevCompDescendants, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()),
-        //     ...new BatchWriteRequest().putChunks(_.chunk([...heatsToCreate, ...roundsToCreate],
-        //  BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()),
-        // ]);
+        await Promise.all([
+            ...new BatchWriteRequest().deleteChunks(_.chunk(prevCompDescendants, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()),
+            ...new BatchWriteRequest().putChunks(_.chunk([...heatsToCreate, ...roundsToCreate], BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()),
+        ]);
 
-        // const end = new Date().getTime();
+        const end = new Date().getTime();
 
-        // console.log(`took ${end - start}`);
+        console.log(`took ${end - start}`);
 
-        return null;
+        return competition;
     }
 }

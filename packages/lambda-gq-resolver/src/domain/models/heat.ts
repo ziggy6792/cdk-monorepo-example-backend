@@ -31,14 +31,14 @@ export class SeedSlot {
     seed: number;
 
     @Field(() => ID, { nullable: true })
-    parentHeatId: string;
+    nextHeatId: string;
 
-    @Field(() => Heat, { nullable: true, name: 'parentHeat' })
-    async getParentHeat(): Promise<Heat> {
-        if (!this.parentHeatId) {
+    @Field(() => Heat, { nullable: true, name: 'nextHeat' })
+    async getNextHeat(): Promise<Heat> {
+        if (!this.nextHeatId) {
             return null;
         }
-        return Heat.store.get(this.parentHeatId).exec();
+        return Heat.store.get(this.nextHeatId).exec();
     }
 }
 
