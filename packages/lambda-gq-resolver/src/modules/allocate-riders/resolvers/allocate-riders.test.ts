@@ -43,23 +43,23 @@ const expectedFirstRoundResult = {
                             startSeed: 1,
                         },
                         {
-                            userId: 'riderD',
+                            userId: 'riderE',
                             startSeed: 5,
                         },
                         {
-                            userId: 'riderH',
+                            userId: 'riderI',
                             startSeed: 9,
                         },
                         {
-                            userId: 'riderL',
+                            userId: 'riderM',
                             startSeed: 13,
                         },
                         {
-                            userId: 'riderQ',
+                            userId: 'riderR',
                             startSeed: 17,
                         },
                         {
-                            userId: 'riderU',
+                            userId: 'riderV',
                             startSeed: 21,
                         },
                     ],
@@ -74,23 +74,23 @@ const expectedFirstRoundResult = {
                             startSeed: 3,
                         },
                         {
-                            userId: 'riderF',
+                            userId: 'riderG',
                             startSeed: 7,
                         },
                         {
-                            userId: 'riderJ',
+                            userId: 'riderK',
                             startSeed: 11,
                         },
                         {
-                            userId: 'riderO',
+                            userId: 'riderP',
                             startSeed: 15,
                         },
                         {
-                            userId: 'riderS',
+                            userId: 'riderT',
                             startSeed: 19,
                         },
                         {
-                            userId: 'riderW',
+                            userId: 'riderX',
                             startSeed: 23,
                         },
                     ],
@@ -105,23 +105,23 @@ const expectedFirstRoundResult = {
                             startSeed: 2,
                         },
                         {
-                            userId: 'riderE',
+                            userId: 'riderF',
                             startSeed: 6,
                         },
                         {
-                            userId: 'riderI',
+                            userId: 'riderJ',
                             startSeed: 10,
                         },
                         {
-                            userId: 'riderM',
+                            userId: 'riderO',
                             startSeed: 14,
                         },
                         {
-                            userId: 'riderR',
+                            userId: 'riderS',
                             startSeed: 18,
                         },
                         {
-                            userId: 'riderV',
+                            userId: 'riderW',
                             startSeed: 22,
                         },
                     ],
@@ -132,27 +132,27 @@ const expectedFirstRoundResult = {
                 riderAllocations: {
                     items: [
                         {
-                            userId: 'ef55c9ce-de96-4564-81e0-15dc6cf08568',
+                            userId: 'riderD',
                             startSeed: 4,
                         },
                         {
-                            userId: 'riderG',
+                            userId: 'riderH',
                             startSeed: 8,
                         },
                         {
-                            userId: 'riderK',
+                            userId: 'riderL',
                             startSeed: 12,
                         },
                         {
-                            userId: 'riderP',
+                            userId: 'riderQ',
                             startSeed: 16,
                         },
                         {
-                            userId: 'riderT',
+                            userId: 'riderU',
                             startSeed: 20,
                         },
                         {
-                            userId: 'riderX',
+                            userId: 'riderY',
                             startSeed: 24,
                         },
                     ],
