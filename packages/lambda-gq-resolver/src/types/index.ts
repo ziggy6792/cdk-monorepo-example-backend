@@ -61,6 +61,6 @@ export interface IContext {
     req: any | null;
     identity: IIdentity;
     dataLoaders: {
-        seedSlotPosition: DataLoader<unknown, number, unknown>;
+        seedSlotPosition: DataLoader<unknown, number | null, unknown>;
     };
 }

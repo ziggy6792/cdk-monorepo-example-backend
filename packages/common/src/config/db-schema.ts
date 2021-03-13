@@ -1,80 +1,58 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-restricted-syntax */
 
-import { ITableSchema, IDbSchemaConfig, IAttributeType } from './types';
-
-const idPartitionKey = { name: 'id', tpye: IAttributeType.STRING };
+import { applyDefaults, createGSI, createTableSchema } from './db-schema-helper';
+import { IAttributeType } from './types';
 
 const DB_SCHEMA_CONFIG = {
-    User: { partitionKey: idPartitionKey },
-    SeedSlot: {
-        partitionKey: idPartitionKey,
-        globalSecondaryIndexes: [
-            {
-                indexName: 'byHeat',
-                partitionKey: { name: 'heatId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'seed', tpye: IAttributeType.NUMBER },
-            },
-        ],
-    },
-    Round: {
-        partitionKey: idPartitionKey,
-        globalSecondaryIndexes: [
-            {
-                indexName: 'byCompetition',
-                partitionKey: { name: 'competitionId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'createdAt', tpye: IAttributeType.STRING },
-            },
-        ],
-    },
-    RiderAllocation: {
-        partitionKey: { name: 'allocatableId', tpye: IAttributeType.STRING },
-        sortKey: { name: 'userId', tpye: IAttributeType.STRING },
-        globalSecondaryIndexes: [
-            {
-                indexName: 'byAllocatable',
-                partitionKey: { name: 'allocatableId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'createdAt', tpye: IAttributeType.STRING },
-            },
-        ],
-    },
-    Heat: {
-        partitionKey: idPartitionKey,
-        globalSecondaryIndexes: [
-            {
-                indexName: 'byRound',
-                partitionKey: { name: 'roundId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'createdAt', tpye: IAttributeType.STRING },
-            },
-        ],
-    },
-    Event: { partitionKey: idPartitionKey },
-    Competition: {
-        partitionKey: idPartitionKey,
-        globalSecondaryIndexes: [
-            {
-                indexName: 'byEvent',
-                partitionKey: { name: 'eventId', tpye: IAttributeType.STRING },
-                sortKey: { name: 'createdAt', tpye: IAttributeType.STRING },
-            },
-        ],
-    },
-    ScheduleItem: { partitionKey: idPartitionKey },
-};
-
-type IDbSchema = { readonly [key in keyof typeof DB_SCHEMA_CONFIG]: ITableSchema };
-
-const applyDefaults = <T extends IDbSchemaConfig>(schema: T): IDbSchema => {
-    const ret: any = {};
-
-    for (const [key, tableSchema] of Object.entries(schema)) {
-        ret[key] = {
-            tableName: tableSchema.tableName || key,
-            partitionKey: tableSchema.partitionKey || idPartitionKey,
-            ...tableSchema,
-        };
-    }
-    return ret as IDbSchema;
+    User: createTableSchema({}),
+    SeedSlot: createTableSchema({
+        indexes: {
+            byHeat: createGSI({
+                partitionKey: { name: 'heatId', type: IAttributeType.STRING },
+                sortKey: { name: 'seed', type: IAttributeType.NUMBER },
+            }),
+        },
+    }),
+    Round: createTableSchema({
+        indexes: {
+            byCompetition: createGSI({
+                partitionKey: { name: 'competitionId', type: IAttributeType.STRING },
+                sortKey: { name: 'createdAt', type: IAttributeType.STRING },
+            }),
+        },
+    }),
+    RiderAllocation: createTableSchema({
+        partitionKey: { name: 'allocatableId', type: IAttributeType.STRING },
+        sortKey: { name: 'userId', type: IAttributeType.STRING },
+        indexes: {
+            byAllocatable: createGSI({
+                partitionKey: { name: 'allocatableId', type: IAttributeType.STRING },
+                sortKey: { name: 'createdAt', type: IAttributeType.STRING },
+            }),
+        },
+    }),
+    Heat: createTableSchema({
+        indexes: {
+            byRound: createGSI({
+                partitionKey: { name: 'roundId', type: IAttributeType.STRING },
+                sortKey: { name: 'createdAt', type: IAttributeType.STRING },
+            }),
+        },
+    }),
+    Event: createTableSchema({}),
+    Competition: createTableSchema({
+        indexes: {
+            byEvent: createGSI({
+                partitionKey: { name: 'eventId', type: IAttributeType.STRING },
+                sortKey: { name: 'createdAt', type: IAttributeType.STRING },
+            }),
+        },
+    }),
+    ScheduleItem: createTableSchema({}),
 };
 
 export const DB_SCHEMA = applyDefaults(DB_SCHEMA_CONFIG);
+
+console.log(DB_SCHEMA_CONFIG.RiderAllocation.tableName);
+// console.log(DB_SCHEMA_CONFIG.User.indexes.byEvent.indexName);

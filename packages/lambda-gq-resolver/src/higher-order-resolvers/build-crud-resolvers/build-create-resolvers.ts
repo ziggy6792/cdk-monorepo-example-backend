@@ -4,10 +4,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
 import { Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
-import { mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
 import _ from 'lodash';
-import { createNotExistsCondition, mapDbException } from 'src/utils/utility';
+import { mapDbException } from 'src/utils/utility';
 import { IBuildResolverProps, Multiplicity } from './types';
 
 const buildCreateResolvers = (buildResolversProps: IBuildResolverProps) => {
@@ -15,8 +14,8 @@ const buildCreateResolvers = (buildResolversProps: IBuildResolverProps) => {
 
     const createEntity = async (entity: any) => {
         try {
-            const createdEntity = await mapper.put(entity, { condition: createNotExistsCondition(idFields) });
-            return createdEntity;
+            await returnType.store.put(entity).ifNotExists().exec();
+            return entity;
         } catch (err) {
             const keys = _.pickBy(entity, (value, key) => idFields.includes(key));
             throw mapDbException(err, `${suffix} ${JSON.stringify(keys)} already exists`);

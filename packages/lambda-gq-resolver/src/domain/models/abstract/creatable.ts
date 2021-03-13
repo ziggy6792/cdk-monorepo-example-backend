@@ -1,27 +1,53 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
-import { Field, ID, ObjectType } from 'type-graphql';
-import moment from 'src/utils/moment';
+import { ClassType, Field, ObjectType } from 'type-graphql';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
-import { mapper } from 'src/utils/mapper';
-import { toArray } from 'src/utils/async-iterator';
-import Heat from 'src/domain/models/heat';
-import Round from 'src/domain/models/round';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import { GetRequest, GSISortKey, metadataForModel } from '@shiftcoders/dynamo-easy';
+import DynamoService from 'src/utils/dynamo-easy/dynamo-service';
 
-const getCreatedAt = (): string => getUniqueTimestamp().toString();
 @ObjectType({ isAbstract: true })
 abstract class Creatable {
-    @Field(() => ID, { nullable: true })
-    @attribute({ defaultProvider: () => getCreatedAt() })
+    @Field()
     createdAt: string;
 
+    modifiedAt: string;
+
+    readonly __typeName: string;
+
+    constructor() {
+        this.setDefaults();
+        this.__typeName = this.constructor.name;
+    }
+
+    mapIn(loadedValues: any): void {
+        _.merge(this, loadedValues);
+    }
+
+    static getTimestamp(): string {
+        return getUniqueTimestamp().toString();
+    }
+
+    static store: DynamoStore<any>;
+
     setDefaults(): void {
-        this.createdAt = getCreatedAt();
+        this.createdAt = Creatable.getTimestamp();
+    }
+
+    setModifiedAt(): void {
+        this.modifiedAt = this.modifiedAt ? Creatable.getTimestamp() : this.createdAt;
+    }
+
+    getKeys(): any {
+        // const classType = this.constructor as typeof Creatable;
+        const metadata = metadataForModel(this.constructor as any);
+        const keys = [metadata.getPartitionKey(), metadata.getSortKey()].filter((v) => !!v);
+        return _.pick(this, keys);
     }
 
     async getChildren(): Promise<Creatable[]> {

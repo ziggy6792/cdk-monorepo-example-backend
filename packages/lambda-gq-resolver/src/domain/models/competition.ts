@@ -1,16 +1,14 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { commonConfig, commonUtils } from '@alpaca-backend/common';
+import { commonConfig } from '@alpaca-backend/common';
 
-import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
-import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/models/abstract/data-entity';
-import { toArray } from 'src/utils/async-iterator';
-import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
 import * as utils from 'src/utils/utility';
+import { ConditionExpressionDefinitionFunction, GSIPartitionKey, Model, Property } from '@shiftcoders/dynamo-easy';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import User from './user';
 import Event from './event';
 import Round from './round';
@@ -63,74 +61,84 @@ registerEnumType(Level, {
 });
 
 @ObjectType()
-class CompetitionParams {
+export class CompetitionParams {
     @Field()
-    @attribute()
     name: string;
+
+    mySubFunc(): void {
+        console.log('running my sub func');
+    }
 }
+
+const tableSchema = commonConfig.DB_SCHEMA.Competition;
+
+console.log('Table indexName!', tableSchema.indexes.byEvent.indexName);
+
 @ObjectType()
-@table(utils.getTableName(commonConfig.DB_SCHEMA.Competition.tableName))
+@Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Competition extends DataEntity {
+    constructor() {
+        super();
+        this.params = new CompetitionParams();
+    }
+
+    static store: DynamoStore<Competition>;
+
     @Field()
-    @attribute()
     description: string;
 
     @Field()
-    @attribute()
     category: string;
 
     @Field(() => ID)
-    @attribute()
+    @Property()
+    @GSIPartitionKey(tableSchema.indexes.byEvent.indexName)
     eventId: string;
 
     @Field(() => ID)
-    @attribute()
+    @Property()
+    createdAt: string;
+
+    @Field(() => ID)
     judgeUserId: string;
 
     @Field()
-    @attribute()
     when: string;
 
     @Field(() => CompetitionStatus)
-    @attribute()
     status: CompetitionStatus;
 
     @Field(() => CompetitionParams)
-    @attribute()
     params: CompetitionParams;
 
     @Field()
-    @attribute()
     selectedHeatId: string;
 
     @Field(() => Int)
-    @attribute()
     maxRiders: string;
 
     @Field(() => Gender)
-    @attribute()
     gender: Gender;
 
     @Field(() => Sport)
-    @attribute()
     sport: Sport;
 
     @Field(() => Level)
-    @attribute()
     level: Level;
 
     @Field(() => User, { name: 'judgeUser' })
     async getJudgeUser(): Promise<User> {
-        return mapper.get(Object.assign(new User(), { id: this.judgeUserId }));
+        return User.store.get(this.judgeUserId).exec();
     }
 
     @Field(() => Event, { name: 'event' })
     async getEvent(): Promise<Event> {
-        return mapper.get(Object.assign(new Event(), { id: this.eventId }));
+        return Event.store.get(this.eventId).exec();
     }
 
-    async getRounds(filter: ConditionExpression = undefined): Promise<Round[]> {
-        return toArray(mapper.query(Round, { competitionId: this.id }, { indexName: 'byCompetition', filter }));
+    async getRounds(filter: ConditionExpressionDefinitionFunction[] = undefined): Promise<Round[]> {
+        const request = Round.store.query().index(commonConfig.DB_SCHEMA.Round.indexes.byCompetition.indexName).wherePartitionKey(this.id);
+        return filter ? request.where(...filter).execFetchAll() : request.execFetchAll();
     }
 
     @Field(() => RoundList)
@@ -141,7 +149,11 @@ class Competition extends DataEntity {
     }
 
     async getRiderAllocations(): Promise<RiderAllocation[]> {
-        return toArray(mapper.query(RiderAllocation, { allocatableId: this.id }, { indexName: 'byAllocatable' }));
+        return RiderAllocation.store
+            .query()
+            .index(commonConfig.DB_SCHEMA.RiderAllocation.indexes.byAllocatable.indexName)
+            .wherePartitionKey(this.id)
+            .execFetchAll();
     }
 
     @Field(() => RiderAllocationList)
@@ -154,8 +166,28 @@ class Competition extends DataEntity {
     async getChildren(): Promise<Creatable[]> {
         return this.getRounds();
     }
+
+    async isUserAllowedToJudge(userId: string): Promise<boolean> {
+        if (!userId) {
+            return false;
+        }
+        if (userId === this.judgeUserId) {
+            return true;
+        }
+
+        const event = await this.getEvent();
+        return event.adminUserId === userId;
+    }
+
+    async myFunc(): Promise<void> {
+        console.log('running my func 2');
+        const comp = await Competition.store.get('ee971d12-36c8-4422-b8c3-0aa3d3ea5254').exec();
+        console.log('my func', comp);
+    }
 }
 
 // scheduleItems: [ScheduleItem] @connection(keyName: "bySchedule", fields: ["id"])
+
+Competition.store = new DynamoStore(Competition);
 
 export default Competition;

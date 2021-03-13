@@ -1,5 +1,4 @@
 /* eslint-disable no-return-await */
-import { mapper } from 'src/utils/mapper';
 import User from 'src/domain/models/user';
 import { gCall } from 'src/test-utils/g-call';
 import testConn from 'src/test-utils/test-conn';
@@ -38,6 +37,6 @@ describe('Register', () => {
             },
         });
 
-        await expect(mapper.get(Object.assign(new User(), { id: response.data.register.id }))).resolves.toBeTruthy();
+        await expect(User.store.get(response.data.createUser.id).exec()).resolves.toBeTruthy();
     });
 });

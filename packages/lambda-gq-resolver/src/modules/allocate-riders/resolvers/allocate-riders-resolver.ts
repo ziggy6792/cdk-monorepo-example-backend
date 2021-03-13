@@ -1,4 +1,3 @@
-import { equals } from '@aws/dynamodb-expressions';
 /* eslint-disable class-methods-use-this */
 
 import { Resolver, Mutation, Arg, ID, UseMiddleware } from 'type-graphql';
@@ -6,11 +5,10 @@ import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import Competition from 'src/domain/models/competition';
 import SeedSlot from 'src/domain/models/seed-slot';
 import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
-import { mapper } from 'src/utils/mapper';
 import errorMessage from 'src/config/error-message';
 import _ from 'lodash';
 import RiderAllocation from 'src/domain/models/rider-allocation';
-import { toArray } from 'src/utils/async-iterator';
+import { attribute, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
 
 const defaultRiderAllocation = { runs: [{ score: null }, { score: null }] };
 
@@ -19,11 +17,8 @@ export default class AllocateRiders {
     @Mutation(() => Competition, { nullable: true })
     @UseMiddleware([createAuthMiddleware([isCompetitionAdmin])])
     async allocateRiders(@Arg('id', () => ID) id: string): Promise<Competition> {
-        const competition = await mapper.get(Object.assign(new Competition(), { id }));
-        const rounds = await competition.getRounds({
-            subject: 'roundNo',
-            ...equals(1),
-        });
+        const competition = await Competition.store.get(id).exec();
+        const rounds = await competition.getRounds([attribute('roundNo').equals(1)]);
         if (rounds.length !== 1) {
             throw new Error(errorMessage.canNotFindRound1);
         }
@@ -61,11 +56,16 @@ export default class AllocateRiders {
             }
         });
 
-        const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => async () => mapper.update(seedSlot, { onMissing: 'skip' }));
+        const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => SeedSlot.store.updateItem(seedSlot));
         // Update seed slots
-        await Promise.all(updateSeedSlotFns.map((fn) => fn()));
+        await Promise.all(updateSeedSlotFns.map((req) => req.exec()));
         // Create rider allocations
-        await toArray(mapper.batchPut(createRiderAllocations));
+        await Promise.all(
+            RiderAllocation.store
+                .myBatchWrite()
+                .putChunks(_.chunk(createRiderAllocations, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT))
+                .map((req) => req.exec())
+        );
 
         return competition;
     }

@@ -1,5 +1,4 @@
 import deafultAuthMiddleware from 'src/middleware/default-auth-middleware';
-import { mapper } from 'src/utils/mapper';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
 import { CreateRiderAllocationInput, UpdateRiderAllocationInput } from 'src/modules/crud/rider-allocation/inputs';
@@ -8,10 +7,10 @@ import { IContext, IdentityType } from 'src/types';
 import errorMessage from 'src/config/error-message';
 import Competition from 'src/domain/models/competition';
 import Event from 'src/domain/models/event';
-import { toArray } from 'src/utils/async-iterator';
 import _ from 'lodash';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import { AuthCheck } from 'src/middleware/auth-check/types';
+import { BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
 
 const isUserAllowedToCreateOne: AuthCheck = async ({ args, context: { identity } }) => {
     if (identity.type !== IdentityType.USER) {
@@ -35,20 +34,23 @@ const isUserAllowedToUpdateMany: AuthCheck = async ({ args, context: { identity 
     const riderAllocations = args.input as UpdateRiderAllocationInput[];
 
     const competitionIds = _.uniqWith(
-        riderAllocations.map((input) => Object.assign(new Competition(), { id: input.allocatableId })),
+        riderAllocations.map((input) => ({ id: input.allocatableId })),
         _.isEqual
     );
 
     // Get rider allocation competitions
-    const competitions = await toArray(mapper.batchGet(competitionIds));
+
+    const competitions = _.flatten(
+        await Promise.all(Competition.store.batchGetChunks(_.chunk(competitionIds, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()))
+    );
 
     const eventIds = _.uniqWith(
-        competitions.map((competition) => Object.assign(new Event(), { id: competition.eventId })),
+        competitions.map((competition) => ({ id: competition.eventId })),
         _.isEqual
     );
 
     // Get competition events
-    const events = await toArray(mapper.batchGet(eventIds));
+    const events = _.flatten(await Promise.all(Event.store.batchGetChunks(_.chunk(eventIds, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec())));
 
     // Check that user is admin of those events
     events.forEach((event) => {

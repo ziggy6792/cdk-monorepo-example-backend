@@ -2,7 +2,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable class-methods-use-this */
-import { ResolverType, IBuildCrudProps, IOneResProps, IManyResProps, ICompleteCrudProps, Multiplicity, CrudBuilders } from './types';
+import { ResolverType, IBuildCrudProps, CrudBuilders, CreatableClassType } from './types';
 
 import CrudResolverBuilder from './crud-resolver-builder';
 import buildCreateResolvers from './build-create-resolvers';
@@ -18,7 +18,7 @@ const crudBuilders: CrudBuilders = {
 };
 const crudResolverBuilder = new CrudResolverBuilder(crudBuilders);
 
-const buildCrudResolvers = (suffix: string, returnType: any, buildCrudProps: IBuildCrudProps): any[] => {
+const buildCrudResolvers = (suffix: string, returnType: CreatableClassType, buildCrudProps: IBuildCrudProps): any[] => {
     const generatedCrudResolvers = crudResolverBuilder.buildCrudResolvers(suffix, returnType, buildCrudProps);
 
     return generatedCrudResolvers;

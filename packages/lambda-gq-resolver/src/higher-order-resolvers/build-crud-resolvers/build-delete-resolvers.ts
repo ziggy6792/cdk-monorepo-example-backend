@@ -5,9 +5,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { Arg, UseMiddleware, ID, Mutation, Resolver } from 'type-graphql';
-import { mapper } from 'src/utils/mapper';
 import pluralize from 'pluralize';
-import { toArray } from 'src/utils/async-iterator';
 import { IBuildResolverProps, Multiplicity } from './types';
 
 const buildDeleteResolvers = (buildResolversProps: IBuildResolverProps) => {
@@ -21,10 +19,11 @@ const buildDeleteResolvers = (buildResolversProps: IBuildResolverProps) => {
             class DeleteOneResolver {
                 @Mutation(() => returnType, { name: `delete${suffix}` })
                 @UseMiddleware(...(middleware || []))
-                async delete(@Arg('id', () => ID) id: string): Promise<any[]> {
-                    const entity = Object.assign(new returnType(), { id });
-                    const ret = await mapper.delete(entity);
-                    return ret;
+                async delete(@Arg('id', () => ID) id: string): Promise<any> {
+                    const entity = await returnType.store.getAndDelete(id).exec();
+                    // returnType.store.batchWrite().delete entity.getDescendants()
+
+                    return entity;
                 }
             }
             return DeleteOneResolver;
@@ -34,11 +33,9 @@ const buildDeleteResolvers = (buildResolversProps: IBuildResolverProps) => {
             class DeleteManyResolver {
                 @Mutation(() => [returnType], { name: `delete${pluralize.plural(suffix)}` })
                 @UseMiddleware(...(middleware || []))
-                async create(@Arg('input', () => [inputType]) inputs: any[]) {
-                    const entities = inputs.map((input) => Object.assign(new returnType(), input));
-
-                    const deletedEntities = toArray(mapper.batchDelete(entities));
-                    return deletedEntities;
+                async delete(@Arg('input', () => [inputType]) inputs: any[]) {
+                    throw new Error('Not implementd');
+                    return null;
                 }
             }
             return DeleteManyResolver;

@@ -8,7 +8,7 @@ node_modules
 cdk.out
 
 # Yarn
-**/yarn.lock
+# **/yarn.lock
 
 # Parcel default cache directory
 .parcel-cache

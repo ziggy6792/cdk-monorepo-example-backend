@@ -2,7 +2,6 @@
 /* eslint-disable class-methods-use-this */
 
 import { Resolver, Query, Arg, ID } from 'type-graphql';
-import { mapper } from 'src/utils/mapper';
 import Event from 'src/domain/models/event';
 import DataEntity from 'src/domain/models/abstract/data-entity';
 import Competition from 'src/domain/models/competition';
@@ -13,8 +12,7 @@ class GetDataEntityResolver {
     @Query(() => DataEntity, { nullable: true })
     async getDataEntity(@Arg('id', () => ID) id: string): Promise<DataEntity> {
         const getFromDb = async (returnType: any) => {
-            const entity = Object.assign(new returnType(), { id });
-            const ret = await mapper.get(entity);
+            const ret = await returnType.store.get(id).exec();
             return ret;
         };
 

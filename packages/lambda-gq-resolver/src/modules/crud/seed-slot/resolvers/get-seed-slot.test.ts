@@ -1,4 +1,3 @@
-import { mapper } from 'src/utils/mapper';
 import { gCall } from 'src/test-utils/g-call';
 import testConn from 'src/test-utils/test-conn';
 import SeedSlot from 'src/domain/models/seed-slot';
@@ -22,7 +21,7 @@ describe('getSeedSlot', () => {
             }
           }`;
 
-        let seedslot = new SeedSlot();
+        const seedslot = new SeedSlot();
 
         const mockUserId = 'userId';
         const mockHeatId = 'headId';
@@ -31,14 +30,14 @@ describe('getSeedSlot', () => {
         seedslot.userId = mockUserId;
         seedslot.heatId = mockHeatId;
 
-        seedslot = await mapper.put(seedslot);
+        await SeedSlot.store.put(seedslot).exec();
 
-        let riderAllocation = new RiderAllocation();
+        const riderAllocation = new RiderAllocation();
 
         riderAllocation.userId = mockUserId;
         riderAllocation.allocatableId = mockHeatId;
 
-        riderAllocation = await mapper.put(riderAllocation);
+        await RiderAllocation.store.put(riderAllocation).exec();
 
         const response = await gCall({
             source: query,
@@ -61,15 +60,15 @@ describe('getSeedSlot', () => {
             }
           }`;
 
-        let parentSeedSlot = new SeedSlot();
+        const parentSeedSlot = new SeedSlot();
         parentSeedSlot.id = 'parentSeedSlotId';
         parentSeedSlot.userId = 'userId';
-        parentSeedSlot = await mapper.put(parentSeedSlot);
+        await SeedSlot.store.put(parentSeedSlot).exec();
 
-        let seedslot = new SeedSlot();
+        const seedslot = new SeedSlot();
         seedslot.id = 'childSeedSlotId';
         seedslot.parentSeedSlotId = parentSeedSlot.id;
-        seedslot = await mapper.put(seedslot);
+        await SeedSlot.store.put(seedslot).exec();
 
         const response = await gCall({
             source: query,

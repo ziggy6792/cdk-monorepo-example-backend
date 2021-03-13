@@ -1,18 +1,17 @@
 /* eslint-disable class-methods-use-this */
 
 import { Resolver, Mutation, Arg, ID, UseMiddleware } from 'type-graphql';
-import { mapper } from 'src/utils/mapper';
 import _ from 'lodash';
 import SeedSlot from 'src/domain/models/seed-slot';
 import Round from 'src/domain/models/round';
 import Heat from 'src/domain/models/heat';
 import { valueIsNull } from 'src/utils/utility';
-import { toArray } from 'src/utils/async-iterator';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import Competition from 'src/domain/models/competition';
 import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
-import isAuthRole from 'src/middleware/auth-check/is-auth-role';
 import { CompetitionParamsInput } from 'src/modules/build-competition/inputs';
+import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
+import { BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
 
 @Resolver()
 export default class BuildCompetition {
@@ -21,7 +20,7 @@ export default class BuildCompetition {
     async buildCompetition(@Arg('id', () => ID) id: string, @Arg('params', () => CompetitionParamsInput) params: CompetitionParamsInput): Promise<Competition> {
         const start = new Date().getTime();
 
-        const competition = await mapper.get(Object.assign(new Competition(), { id }));
+        const competition = await Competition.store.get(id).exec();
 
         const prevCompDescendants = await competition.getDescendants();
 
@@ -35,6 +34,7 @@ export default class BuildCompetition {
             const { heats: heatParams, ...roundInput } = roundParam;
             const round = Object.assign(new Round(), roundInput);
             round.setDefaults();
+            console.log('round', round);
             roundsToCreate.push(round);
             heatParams.forEach((heatParam) => {
                 const { seedSlots: seedSlotParams, ...heatInput } = heatParam;
@@ -71,10 +71,10 @@ export default class BuildCompetition {
         });
 
         await Promise.all([
-            toArray(mapper.batchDelete(prevCompDescendants)),
-            toArray(mapper.batchPut(seedSlotsToCreate)),
-            toArray(mapper.batchPut(heatsToCreate)),
-            toArray(mapper.batchPut(roundsToCreate)),
+            ...new BatchWriteRequest().deleteChunks(_.chunk(prevCompDescendants, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()),
+            ...new BatchWriteRequest()
+                .putChunks(_.chunk([...seedSlotsToCreate, ...heatsToCreate, ...roundsToCreate], BATCH_WRITE_MAX_REQUEST_ITEM_COUNT))
+                .map((req) => req.exec()),
         ]);
 
         const end = new Date().getTime();

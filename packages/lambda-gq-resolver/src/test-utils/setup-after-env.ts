@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import * as envConfig from 'src/config/get-env-config';
 import localAwsConfig from './config';
 

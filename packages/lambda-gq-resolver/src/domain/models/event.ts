@@ -1,15 +1,14 @@
-import { commonUtils, commonConfig } from '@alpaca-backend/common';
+import { commonConfig } from '@alpaca-backend/common';
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
-import { mapper } from 'src/utils/mapper';
 import DataEntity from 'src/domain/models/abstract/data-entity';
-import { toArray } from 'src/utils/async-iterator';
-import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
 import { CompetitionList } from 'src/domain/common-objects/lists';
 import * as utils from 'src/utils/utility';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import { Model } from '@shiftcoders/dynamo-easy';
+
 import User from './user';
 import Competition from './competition';
 import Heat from './heat';
@@ -26,41 +25,40 @@ registerEnumType(EventStatus, {
     description: 'The Event Status', // this one is optional
 });
 
-@table(utils.getTableName(commonConfig.DB_SCHEMA.Event.tableName))
+const tableSchema = commonConfig.DB_SCHEMA.Event;
+
+@Model({ tableName: utils.getTableName(tableSchema.tableName) })
 @ObjectType()
 class Event extends DataEntity {
+    static store: DynamoStore<Event>;
+
     @Field()
-    @attribute()
     description: string;
 
     @Field()
-    @attribute()
     when: string;
 
     @Field(() => EventStatus)
-    @attribute()
     status: EventStatus;
 
     @Field()
-    @attribute()
     adminUserId: string;
 
     @Field()
-    @attribute()
     selectedHeatId: string;
 
     @Field(() => User)
     async adminUser(): Promise<User> {
-        return mapper.get(Object.assign(new User(), { id: this.adminUserId }));
+        return User.store.get(this.adminUserId).exec();
     }
 
     @Field(() => Heat)
     async selectedHeat(): Promise<Heat> {
-        return mapper.get(Object.assign(new Heat(), { id: this.selectedHeatId }));
+        return Heat.store.get(this.selectedHeatId).exec();
     }
 
     async getCompetitions(): Promise<Competition[]> {
-        return toArray(mapper.query(Competition, { eventId: this.id }, { indexName: 'byEvent' }));
+        return Competition.store.query().index(commonConfig.DB_SCHEMA.Competition.indexes.byEvent.indexName).wherePartitionKey(this.id).execFetchAll();
     }
 
     @Field(() => CompetitionList)
@@ -74,6 +72,8 @@ class Event extends DataEntity {
         return this.getCompetitions();
     }
 }
+
+Event.store = new DynamoStore(Event);
 
 export default Event;
 

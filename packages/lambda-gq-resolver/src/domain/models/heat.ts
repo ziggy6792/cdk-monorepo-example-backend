@@ -1,18 +1,13 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
-import { attribute, table } from '@aws/dynamodb-data-mapper-annotations';
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
 import DataEntity from 'src/domain/models/abstract/data-entity';
-import { mapper } from 'src/utils/mapper';
-import { ConditionExpression, equals } from '@aws/dynamodb-expressions';
-import { toArray } from 'src/utils/async-iterator';
 import { RiderAllocationList, SeedSlotList } from 'src/domain/common-objects/lists';
-import { DynamoDB } from 'aws-sdk';
-
-import getEnvConfig from 'src/config/get-env-config';
-import { commonConfig, commonUtils } from '@alpaca-backend/common';
+import { commonConfig } from '@alpaca-backend/common';
 import * as utils from 'src/utils/utility';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import { GSIPartitionKey, Model } from '@shiftcoders/dynamo-easy';
 import Round from './round';
 import SeedSlot from './seed-slot';
 import RiderAllocation from './rider-allocation';
@@ -29,32 +24,33 @@ registerEnumType(HeatStatus, {
     description: 'The Heat Status', // this one is optional
 });
 
+const tableSchema = commonConfig.DB_SCHEMA.Heat;
+
 @ObjectType()
-@table(utils.getTableName(commonConfig.DB_SCHEMA.Heat.tableName))
+@Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Heat extends DataEntity {
+    static store: DynamoStore<Heat>;
+
     @Field()
-    @attribute()
     when: string;
 
     @Field(() => ID)
-    @attribute()
+    @GSIPartitionKey(tableSchema.indexes.byRound.indexName)
     roundId: string;
 
     @Field(() => HeatStatus)
-    @attribute()
     status: HeatStatus;
 
     @Field(() => Int)
-    @attribute()
     progressionsPerHeat: number;
 
-    @Field(() => Round, { name: 'selectedHeat' })
-    async getSelectedHeat(): Promise<Round> {
-        return mapper.get(Object.assign(new Round(), { id: this.roundId }));
+    @Field(() => Round, { name: 'round' })
+    async getRound(): Promise<Round> {
+        return Round.store.get(this.roundId).exec();
     }
 
     async getSeedSlots(): Promise<SeedSlot[]> {
-        return toArray(mapper.query(SeedSlot, { heatId: this.id }, { indexName: 'byHeat' }));
+        return SeedSlot.store.query().index(commonConfig.DB_SCHEMA.SeedSlot.indexes.byHeat.indexName).wherePartitionKey(this.id).execFetchAll();
     }
 
     @Field(() => SeedSlotList)
@@ -65,7 +61,11 @@ class Heat extends DataEntity {
     }
 
     async getRiderAllocations(): Promise<RiderAllocation[]> {
-        return toArray(mapper.query(RiderAllocation, { allocatableId: this.id }, { indexName: 'byAllocatable' }));
+        return RiderAllocation.store
+            .query()
+            .index(commonConfig.DB_SCHEMA.RiderAllocation.indexes.byAllocatable.indexName)
+            .wherePartitionKey(this.id)
+            .execFetchAll();
     }
 
     @Field(() => RiderAllocationList)
@@ -79,5 +79,6 @@ class Heat extends DataEntity {
         return this.getSeedSlots();
     }
 }
+Heat.store = new DynamoStore(Heat);
 
 export default Heat;

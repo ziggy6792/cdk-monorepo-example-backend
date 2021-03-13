@@ -12,6 +12,7 @@ import GetDataEntityResolver from 'src/modules/get-data-entity/resolvers';
 import RegisterResolver from 'src/modules/crud/user/resolvers/register';
 import BuildCompetition from 'src/modules/build-competition/resolvers';
 import AllocateRiders from 'src/modules/allocate-riders/resolvers';
+import ScoreRun from 'src/modules/score-run/resolvers';
 
 console.log('buildSchemaSync');
 const schema = buildSchemaSync({
@@ -27,6 +28,8 @@ const schema = buildSchemaSync({
         RegisterResolver,
         BuildCompetition,
         AllocateRiders,
+        ScoreRun,
+        RegisterResolver,
     ] as any,
 });
 

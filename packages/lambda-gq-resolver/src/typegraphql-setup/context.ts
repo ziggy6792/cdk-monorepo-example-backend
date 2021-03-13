@@ -13,9 +13,8 @@ import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } fro
 import DataLoader from 'dataloader';
 import SeedSlot from 'src/domain/models/seed-slot';
 import _ from 'lodash';
-import { mapper } from 'src/utils/mapper';
-
-import { toArray } from 'src/utils/async-iterator';
+import RiderAllocation from 'src/domain/models/rider-allocation';
+import { BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getIdentityType = (eventIdentity: any): IdentityType => {
@@ -31,23 +30,49 @@ const getIdentityType = (eventIdentity: any): IdentityType => {
     return IdentityType.NONE;
 };
 
-const seedSlotPostitionDataLoader = new DataLoader(async (keys) => {
-    const allSeedSlots = await toArray(mapper.batchGet(keys.map((key) => Object.assign(new SeedSlot(), { id: key }))));
+const seedSlotPostitionDataLoader = new DataLoader(
+    async (keys: string[]) => {
+        const allSeedSlots = _.flatten(
+            await Promise.all(
+                SeedSlot.store
+                    .batchGetChunks(
+                        _.chunk(
+                            keys.map((key) => ({ id: key })),
+                            BATCH_WRITE_MAX_REQUEST_ITEM_COUNT
+                        )
+                    )
+                    .map((req) => req.exec())
+            )
+        );
 
-    const groupedSeedSlots = _.groupBy(allSeedSlots, (seedSlot) => seedSlot.heatId);
+        // Get rider allocations
+        const riderAllocationsLookup: { [key in string]: RiderAllocation } = {};
 
-    const positionMap: { [key: string]: number } = {};
-
-    Object.keys(groupedSeedSlots).forEach((headId) => {
-        const seedSlots = groupedSeedSlots[headId] as SeedSlot[];
-        const orderedSeeds = _.sortBy(seedSlots, (seed) => +seed.seed, 'asc');
-        orderedSeeds.forEach((seedSlot, i) => {
-            positionMap[seedSlot.id] = i + 1;
+        const getFns = allSeedSlots.map((seedSlot) => async () => {
+            riderAllocationsLookup[seedSlot.id] = await seedSlot.getRiderAllocation();
         });
-    });
+        // const start = new Date().getTime();
+        await Promise.all(getFns.map((fn) => fn()));
+        // const end = new Date().getTime();
+        // console.log(`getting rider allocations ${allSeedSlots[0].heatId} took `, end - start);
 
-    return keys.map((key: string) => positionMap[key]);
-});
+        const groupedSeedSlots = _.groupBy(allSeedSlots, (seedSlot) => seedSlot.heatId);
+
+        const positionMap: { [key: string]: number } = {};
+
+        Object.keys(groupedSeedSlots).forEach((headId) => {
+            const seedSlots = groupedSeedSlots[headId] as SeedSlot[];
+            const orderedSeeds = _.sortBy(seedSlots, (seed) => +seed.seed, 'asc');
+            orderedSeeds.forEach((seedSlot, i) => {
+                positionMap[seedSlot.id] = riderAllocationsLookup[seedSlot.id] && riderAllocationsLookup[seedSlot.id].getBestScore() > -1 ? i + 1 : null;
+            });
+        });
+
+        return keys.map((key: string) => positionMap[key]);
+    },
+    { cache: false }
+    // Cache made the rider allocations not update correctly
+);
 
 export const contextInitialState: IContext = { req: null, identity: null, dataLoaders: { seedSlotPosition: seedSlotPostitionDataLoader } };
 
