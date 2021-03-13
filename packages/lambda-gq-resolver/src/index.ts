@@ -19,7 +19,6 @@ import cors from 'cors';
 import createSchema from './typegraphql-setup/create-schema';
 import context from './typegraphql-setup/context';
 
-import { initMapper } from './utils/mapper';
 import { IContext } from './types';
 
 import getEnvConfig from './config/get-env-config';
@@ -53,7 +52,6 @@ apolloServer.applyMiddleware({ app, path: '*' });
 
 const server = serverless.createServer(app);
 commonFunctionExample();
-initMapper();
 
 export const handler = (event, context) => {
     const logText = `
