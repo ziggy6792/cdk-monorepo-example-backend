@@ -56,10 +56,15 @@ export interface IEvent {
     identity: ICognitoIdentity;
 }
 
+export interface RiderAllocationKey {
+    allocatableId: string;
+    userId: string;
+}
+
 export interface IContext {
     req: any | null;
     identity: IIdentity;
     dataLoaders: {
-        seedSlotPosition: DataLoader<unknown, number | null, unknown>;
+        riderAlocationPosition: DataLoader<RiderAllocationKey, number | null>;
     };
 }

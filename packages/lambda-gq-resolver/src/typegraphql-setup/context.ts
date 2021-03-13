@@ -9,7 +9,7 @@
 
 import 'reflect-metadata';
 
-import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } from 'src/types';
+import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity, RiderAllocationKey } from 'src/types';
 import DataLoader from 'dataloader';
 import _ from 'lodash';
 import RiderAllocation from 'src/domain/models/rider-allocation';
@@ -29,51 +29,44 @@ const getIdentityType = (eventIdentity: any): IdentityType => {
     return IdentityType.NONE;
 };
 
-const seedSlotPostitionDataLoader = new DataLoader(
-    async (keys: string[]) =>
-        // const allSeedSlots = _.flatten(
-        //     await Promise.all(
-        //         SeedSlot.store
-        //             .batchGetChunks(
-        //                 _.chunk(
-        //                     keys.map((key) => ({ id: key })),
-        //                     BATCH_WRITE_MAX_REQUEST_ITEM_COUNT
-        //                 )
-        //             )
-        //             .map((req) => req.exec())
-        //     )
-        // );
+const cacheKeyFn = ({ allocatableId, userId }) => `${allocatableId}-${userId}`;
 
-        // // Get rider allocations
-        // const riderAllocationsLookup: { [key in string]: RiderAllocation } = {};
+const riderAllocationPostitionDataLoader = new DataLoader(
+    async (keys: RiderAllocationKey[]) => {
+        const allRiderAllocations = _.flatten(
+            await Promise.all(RiderAllocation.store.batchGetChunks(_.chunk(keys, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()))
+        );
 
-        // const getFns = allSeedSlots.map((seedSlot) => async () => {
-        //     riderAllocationsLookup[seedSlot.id] = await seedSlot.getRiderAllocation();
-        // });
-        // // const start = new Date().getTime();
-        // await Promise.all(getFns.map((fn) => fn()));
-        // // const end = new Date().getTime();
-        // // console.log(`getting rider allocations ${allSeedSlots[0].heatId} took `, end - start);
+        console.log('allRiderAllocations', allRiderAllocations);
 
-        // const groupedSeedSlots = _.groupBy(allSeedSlots, (seedSlot) => seedSlot.heatId);
+        const groupedRiderAlocations = _.groupBy(allRiderAllocations, (ra) => ra.allocatableId);
 
-        // const positionMap: { [key: string]: number } = {};
+        // const positionMap: Map<RiderAllocationKey, number> = new Map();
 
-        // Object.keys(groupedSeedSlots).forEach((headId) => {
-        //     const seedSlots = groupedSeedSlots[headId] as SeedSlot[];
-        //     const orderedSeeds = _.sortBy(seedSlots, (seed) => +seed.seed, 'asc');
-        //     orderedSeeds.forEach((seedSlot, i) => {
-        //         positionMap[seedSlot.id] = riderAllocationsLookup[seedSlot.id] && riderAllocationsLookup[seedSlot.id].getBestScore() > -1 ? i + 1 : null;
-        //     });
-        // });
+        const positionMap: { [key: string]: number } = {};
 
-        // return keys.map((key: string) => positionMap[key]);
-        keys.map((key: string) => 1),
-    { cache: false }
+        Object.keys(groupedRiderAlocations).forEach((headId) => {
+            const heatRAs = groupedRiderAlocations[headId] as RiderAllocation[];
+            const orderedRAs = _.orderBy(heatRAs, (ra) => +ra.getBestScore(), 'desc');
+            // console.log('orderedRAs', orderedRAs);
+            orderedRAs.forEach((ra, i) => {
+                positionMap[cacheKeyFn(ra.getKeys())] = (ra.getKeys(), ra.getBestScore() > -1 ? i + 1 : null);
+            });
+        });
+
+        return keys.map((key) => {
+            console.log('lookup key', key);
+            console.log('lookup positionMap', positionMap);
+            console.log('lookup return', positionMap[cacheKeyFn(key)]);
+
+            return positionMap[cacheKeyFn(key)];
+        });
+    },
+    { cache: false, cacheKeyFn }
     // Cache made the rider allocations not update correctly
 );
 
-export const contextInitialState: IContext = { req: null, identity: null, dataLoaders: { seedSlotPosition: seedSlotPostitionDataLoader } };
+export const contextInitialState: IContext = { req: null, identity: null, dataLoaders: { riderAlocationPosition: riderAllocationPostitionDataLoader } };
 
 const context = async (recieved: any): Promise<IContext> => {
     const { req } = recieved;

@@ -41,6 +41,12 @@ class RiderAllocation extends Creatable {
     @Field(() => [Run])
     runs: [Run];
 
+    @Field(() => Int, { name: 'position', nullable: true })
+    async getPosition(@Root() parent: RiderAllocation, @Ctx() context: IContext): Promise<number | null> {
+        const result = await context.dataLoaders.riderAlocationPosition.load({ allocatableId: parent.allocatableId, userId: parent.userId });
+        return result;
+    }
+
     getBestScore(): number {
         const bestRun = _.maxBy(this.runs, 'score');
         const ret = bestRun ? bestRun.score : -1;
