@@ -59,11 +59,11 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
         );
 
         if (!item[partitionKey]) {
-            throw new Error(`Partition key not included in ${JSON.stringify(item)}`);
+            throw new Error(`Partition key "${partitionKey}" not included in ${JSON.stringify(item)}`);
         }
 
         if (sortKey && !item[sortKey]) {
-            throw new Error(`Sort key not included in ${JSON.stringify(item)}`);
+            throw new Error(`Sort key "${sortKey}" not included in ${JSON.stringify(item)}`);
         }
 
         return this.update(item[partitionKey], item[sortKey])
