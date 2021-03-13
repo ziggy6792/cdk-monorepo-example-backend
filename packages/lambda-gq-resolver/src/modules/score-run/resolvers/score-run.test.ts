@@ -59,7 +59,7 @@ describe('AllocateRider', () => {
             { userId: 'riderD', runs: [{ score: 3 }, { score: 14 }] },
             { userId: 'riderH', runs: [{ score: 16 }, { score: 50 }] },
             { userId: 'riderL', runs: [{ score: 40 }, { score: null }] },
-            // { userId: 'riderT', runs: [{ score: 20 }, { score: 30 }] },
+            // { userId: 'riderU', runs: [{ score: 20 }, { score: 30 }] },
         ];
 
         const callFns = scores.map((score) => async () =>
@@ -92,7 +92,7 @@ describe('AllocateRider', () => {
         //     variableValues: {
         //         input: {
         //             heatId: 'heat1',
-        //             userId: 'riderT',
+        //             userId: 'riderU',
         //             runs: [
         //                 {
         //                     score: 3,

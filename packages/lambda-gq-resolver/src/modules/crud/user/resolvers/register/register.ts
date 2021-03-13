@@ -23,6 +23,7 @@ import {
 import Event from 'src/domain/models/event';
 import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
 import RiderAllocation from 'src/domain/models/rider-allocation';
+import Heat from 'src/domain/models/heat';
 import { RegisterInput } from './register-input';
 
 @Resolver()
@@ -267,6 +268,17 @@ export default class RegisterResolver {
         console.log('params', RiderAllocation.store.put(riderAlocations[0]).params);
 
         await RiderAllocation.store.put(riderAlocations[0]).exec();
+
+        return null;
+    }
+
+    @Mutation(() => User, { nullable: true })
+    async getHeatExample(@Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
+
+        const heat = await Heat.store.get('bec48b82-c528-4059-b9bc-41f47ee80171').exec();
+
+        console.log('function', heat.seedSlots[0].getNextHeat);
 
         return null;
     }

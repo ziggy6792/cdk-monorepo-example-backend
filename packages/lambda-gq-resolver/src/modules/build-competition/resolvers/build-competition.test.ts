@@ -654,6 +654,7 @@ describe('BuildCompetition', () => {
                 params: testCompParams,
             },
         });
+
         expect(response).toMatchObject({
             data: expectedResponse,
         });

@@ -52,6 +52,13 @@ class Heat extends DataEntity {
         this.seedSlots = [];
     }
 
+    mapIn(loadedValues: any): void {
+        super.mapIn(loadedValues);
+        console.log('RUNNING Heat mapIn');
+        console.log(this.seedSlots);
+        this.seedSlots = this.seedSlots.map((seedSlot) => _.merge(new SeedSlot(), seedSlot));
+    }
+
     @Field()
     when: string;
 
