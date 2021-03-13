@@ -9,7 +9,7 @@
 
 import 'reflect-metadata';
 
-import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity, RiderAllocationKey } from 'src/types';
+import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity, RiderAllocationKey, RiderAllocationPosition } from 'src/types';
 import DataLoader from 'dataloader';
 import _ from 'lodash';
 import RiderAllocation from 'src/domain/models/rider-allocation';
@@ -43,14 +43,20 @@ const riderAllocationPostitionDataLoader = new DataLoader(
 
         // const positionMap: Map<RiderAllocationKey, number> = new Map();
 
-        const positionMap: { [key: string]: number } = {};
+        const positionMap: { [key: string]: RiderAllocationPosition } = {};
 
         Object.keys(groupedRiderAlocations).forEach((headId) => {
             const heatRAs = groupedRiderAlocations[headId] as RiderAllocation[];
-            const orderedRAs = _.orderBy(heatRAs, (ra) => +ra.getBestScore(), 'desc');
+
+            const orderedRAs = _.orderBy(heatRAs, [(ra) => ra.getBestScore(), (ra) => ra.startSeed], ['desc', 'asc']);
             // console.log('orderedRAs', orderedRAs);
             orderedRAs.forEach((ra, i) => {
-                positionMap[cacheKeyFn(ra.getKeys())] = (ra.getKeys(), ra.getBestScore() > -1 ? i + 1 : null);
+                const raPosition = {
+                    position: ra.getBestScore() > -1 ? i + 1 : null,
+                    order: i,
+                };
+
+                positionMap[cacheKeyFn(ra.getKeys())] = raPosition;
             });
         });
 

@@ -42,9 +42,14 @@ class RiderAllocation extends Creatable {
     runs: [Run];
 
     @Field(() => Int, { name: 'position', nullable: true })
-    async getPosition(@Root() parent: RiderAllocation, @Ctx() context: IContext): Promise<number | null> {
-        const result = await context.dataLoaders.riderAlocationPosition.load({ allocatableId: parent.allocatableId, userId: parent.userId });
-        return result;
+    async getPosition(@Ctx() context: IContext): Promise<number | null> {
+        const result = await context.dataLoaders.riderAlocationPosition.load({ allocatableId: this.allocatableId, userId: this.userId });
+        return result.position;
+    }
+
+    async getOrder(@Ctx() context: IContext): Promise<number | null> {
+        const result = await context.dataLoaders.riderAlocationPosition.load({ allocatableId: this.allocatableId, userId: this.userId });
+        return result.order;
     }
 
     getBestScore(): number {

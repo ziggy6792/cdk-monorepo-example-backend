@@ -61,10 +61,15 @@ export interface RiderAllocationKey {
     userId: string;
 }
 
+export interface RiderAllocationPosition {
+    position: number | null;
+    order: number;
+}
+
 export interface IContext {
     req: any | null;
     identity: IIdentity;
     dataLoaders: {
-        riderAlocationPosition: DataLoader<RiderAllocationKey, number | null>;
+        riderAlocationPosition: DataLoader<RiderAllocationKey, RiderAllocationPosition>;
     };
 }
