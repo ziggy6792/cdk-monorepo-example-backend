@@ -3,13 +3,12 @@
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
 import DataEntity from 'src/domain/models/abstract/data-entity';
-import { RiderAllocationList, SeedSlotList } from 'src/domain/common-objects/lists';
+import { RiderAllocationList } from 'src/domain/common-objects/lists';
 import { commonConfig } from '@alpaca-backend/common';
 import * as utils from 'src/utils/utility';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { GSIPartitionKey, Model } from '@shiftcoders/dynamo-easy';
 import Round from './round';
-import SeedSlot from './seed-slot';
 import RiderAllocation from './rider-allocation';
 import Creatable from './abstract/creatable';
 
@@ -27,9 +26,31 @@ registerEnumType(HeatStatus, {
 const tableSchema = commonConfig.DB_SCHEMA.Heat;
 
 @ObjectType()
+export class SeedSlot {
+    @Field(() => Int)
+    seed: number;
+
+    @Field(() => ID, { nullable: true })
+    parentHeatId: string;
+
+    @Field(() => Heat, { nullable: true, name: 'parentHeat' })
+    async getParentHeat(): Promise<Heat> {
+        if (!this.parentHeatId) {
+            return null;
+        }
+        return Heat.store.get(this.parentHeatId).exec();
+    }
+}
+
+@ObjectType()
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Heat extends DataEntity {
     static store: DynamoStore<Heat>;
+
+    constructor() {
+        super();
+        this.seedSlots = [];
+    }
 
     @Field()
     when: string;
@@ -49,16 +70,19 @@ class Heat extends DataEntity {
         return Round.store.get(this.roundId).exec();
     }
 
-    async getSeedSlots(): Promise<SeedSlot[]> {
-        return SeedSlot.store.query().index(commonConfig.DB_SCHEMA.SeedSlot.indexes.byHeat.indexName).wherePartitionKey(this.id).execFetchAll();
-    }
+    @Field(() => [SeedSlot])
+    seedSlots: SeedSlot[];
 
-    @Field(() => SeedSlotList)
-    protected async seedSlots(): Promise<SeedSlotList> {
-        const list = new SeedSlotList();
-        list.items = await this.getSeedSlots();
-        return list;
-    }
+    // async getSeedSlots(): Promise<SeedSlot[]> {
+    //     return SeedSlot.store.query().index(commonConfig.DB_SCHEMA.SeedSlot.indexes.byHeat.indexName).wherePartitionKey(this.id).execFetchAll();
+    // }
+
+    // @Field(() => SeedSlotList)
+    // protected async seedSlots(): Promise<SeedSlotList> {
+    //     const list = new SeedSlotList();
+    //     list.items = await this.getSeedSlots();
+    //     return list;
+    // }
 
     async getRiderAllocations(): Promise<RiderAllocation[]> {
         return RiderAllocation.store
@@ -76,7 +100,9 @@ class Heat extends DataEntity {
     }
 
     async getChildren(): Promise<Creatable[]> {
-        return this.getSeedSlots();
+        // return this.getSeedSlots();
+        // Todo: add rider alocations?
+        return [];
     }
 }
 Heat.store = new DynamoStore(Heat);

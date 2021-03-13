@@ -37,9 +37,6 @@ class RiderAllocation extends Creatable {
     @Field(() => Int)
     startSeed: number;
 
-    @Field(() => ID)
-    parentSeedSlot: string;
-
     @Field(() => [Run])
     runs: [Run];
 

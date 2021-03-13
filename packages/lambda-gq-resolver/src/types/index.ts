@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 
 import DataLoader from 'dataloader';
-import SeedSlot from 'src/domain/models/seed-slot';
 
 export enum IdentityType {
     ROLE = 'role',

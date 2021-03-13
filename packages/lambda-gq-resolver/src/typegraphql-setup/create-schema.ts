@@ -6,7 +6,6 @@ import EventResolvers from 'src/modules/crud/event/resolvers';
 import CompetitionResolvers from 'src/modules/crud/competition/resolvers';
 import HeatResolvers from 'src/modules/crud/heat/resolvers';
 import RoundResolvers from 'src/modules/crud/round/resolvers';
-import SeedSlotResolvers from 'src/modules/crud/seed-slot/resolvers';
 import RiderAllocationResolvers from 'src/modules/crud/rider-allocation/resolvers';
 import GetDataEntityResolver from 'src/modules/get-data-entity/resolvers';
 import RegisterResolver from 'src/modules/crud/user/resolvers/register';
@@ -22,7 +21,6 @@ const schema = buildSchemaSync({
         ...CompetitionResolvers,
         ...HeatResolvers,
         ...RoundResolvers,
-        ...SeedSlotResolvers,
         ...RiderAllocationResolvers,
         GetDataEntityResolver,
         RegisterResolver,

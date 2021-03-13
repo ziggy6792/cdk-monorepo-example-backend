@@ -3,7 +3,6 @@
 import { Resolver, Mutation, Arg, ID, UseMiddleware } from 'type-graphql';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import Competition from 'src/domain/models/competition';
-import SeedSlot from 'src/domain/models/seed-slot';
 import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
 import errorMessage from 'src/config/error-message';
 import _ from 'lodash';
@@ -24,48 +23,48 @@ export default class AllocateRiders {
         }
         const round1 = rounds[0];
         const round1Heats = await round1.getHeats();
-        const getSeedSlotFns = round1Heats.map((heat) => async () => heat.getSeedSlots());
-        const round1SeedSlots = _.flatten(await Promise.all(getSeedSlotFns.map((fn) => fn())));
+        // const getSeedSlotFns = round1Heats.map((heat) => async () => heat.getSeedSlots());
+        // const round1SeedSlots = _.flatten(await Promise.all(getSeedSlotFns.map((fn) => fn())));
 
-        const seedSlotsLookup: { [key in number]: SeedSlot } = {};
-        round1SeedSlots.forEach((seedSlot) => {
-            seedSlotsLookup[seedSlot.seed] = seedSlot;
-        });
+        // const seedSlotsLookup: { [key in number]: SeedSlot } = {};
+        // round1SeedSlots.forEach((seedSlot) => {
+        //     seedSlotsLookup[seedSlot.seed] = seedSlot;
+        // });
 
-        const riderAllocations = await competition.getRiderAllocations();
+        // const riderAllocations = await competition.getRiderAllocations();
 
-        const riderAllocationsLookup: { [key in number]: string } = {};
-        riderAllocations.forEach(({ startSeed, userId }) => {
-            riderAllocationsLookup[startSeed] = userId;
-        });
+        // const riderAllocationsLookup: { [key in number]: string } = {};
+        // riderAllocations.forEach(({ startSeed, userId }) => {
+        //     riderAllocationsLookup[startSeed] = userId;
+        // });
 
-        const updateSeedSlots: SeedSlot[] = [];
-        const createRiderAllocations: RiderAllocation[] = [];
+        // const updateSeedSlots: SeedSlot[] = [];
+        // const createRiderAllocations: RiderAllocation[] = [];
 
-        ((Object.keys(seedSlotsLookup) as unknown) as number[]).forEach((seed) => {
-            if (riderAllocationsLookup[seed] && seedSlotsLookup[seed]) {
-                updateSeedSlots.push(Object.assign(new SeedSlot(), { id: seedSlotsLookup[seed].id, userId: riderAllocationsLookup[seed] }));
-                createRiderAllocations.push(
-                    Object.assign(new RiderAllocation(), {
-                        ...defaultRiderAllocation,
-                        allocatableId: seedSlotsLookup[seed].heatId,
-                        userId: riderAllocationsLookup[seed],
-                        startSeed: seed,
-                    })
-                );
-            }
-        });
+        // ((Object.keys(seedSlotsLookup) as unknown) as number[]).forEach((seed) => {
+        //     if (riderAllocationsLookup[seed] && seedSlotsLookup[seed]) {
+        //         updateSeedSlots.push(Object.assign(new SeedSlot(), { id: seedSlotsLookup[seed].id, userId: riderAllocationsLookup[seed] }));
+        //         createRiderAllocations.push(
+        //             Object.assign(new RiderAllocation(), {
+        //                 ...defaultRiderAllocation,
+        //                 allocatableId: seedSlotsLookup[seed].heatId,
+        //                 userId: riderAllocationsLookup[seed],
+        //                 startSeed: seed,
+        //             })
+        //         );
+        //     }
+        // });
 
-        const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => SeedSlot.store.updateItem(seedSlot));
-        // Update seed slots
-        await Promise.all(updateSeedSlotFns.map((req) => req.exec()));
-        // Create rider allocations
-        await Promise.all(
-            RiderAllocation.store
-                .myBatchWrite()
-                .putChunks(_.chunk(createRiderAllocations, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT))
-                .map((req) => req.exec())
-        );
+        // const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => SeedSlot.store.updateItem(seedSlot));
+        // // Update seed slots
+        // await Promise.all(updateSeedSlotFns.map((req) => req.exec()));
+        // // Create rider allocations
+        // await Promise.all(
+        //     RiderAllocation.store
+        //         .myBatchWrite()
+        //         .putChunks(_.chunk(createRiderAllocations, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT))
+        //         .map((req) => req.exec())
+        // );
 
         return competition;
     }

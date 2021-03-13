@@ -11,7 +11,6 @@ import 'reflect-metadata';
 
 import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } from 'src/types';
 import DataLoader from 'dataloader';
-import SeedSlot from 'src/domain/models/seed-slot';
 import _ from 'lodash';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import { BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
@@ -31,45 +30,45 @@ const getIdentityType = (eventIdentity: any): IdentityType => {
 };
 
 const seedSlotPostitionDataLoader = new DataLoader(
-    async (keys: string[]) => {
-        const allSeedSlots = _.flatten(
-            await Promise.all(
-                SeedSlot.store
-                    .batchGetChunks(
-                        _.chunk(
-                            keys.map((key) => ({ id: key })),
-                            BATCH_WRITE_MAX_REQUEST_ITEM_COUNT
-                        )
-                    )
-                    .map((req) => req.exec())
-            )
-        );
+    async (keys: string[]) =>
+        // const allSeedSlots = _.flatten(
+        //     await Promise.all(
+        //         SeedSlot.store
+        //             .batchGetChunks(
+        //                 _.chunk(
+        //                     keys.map((key) => ({ id: key })),
+        //                     BATCH_WRITE_MAX_REQUEST_ITEM_COUNT
+        //                 )
+        //             )
+        //             .map((req) => req.exec())
+        //     )
+        // );
 
-        // Get rider allocations
-        const riderAllocationsLookup: { [key in string]: RiderAllocation } = {};
+        // // Get rider allocations
+        // const riderAllocationsLookup: { [key in string]: RiderAllocation } = {};
 
-        const getFns = allSeedSlots.map((seedSlot) => async () => {
-            riderAllocationsLookup[seedSlot.id] = await seedSlot.getRiderAllocation();
-        });
-        // const start = new Date().getTime();
-        await Promise.all(getFns.map((fn) => fn()));
-        // const end = new Date().getTime();
-        // console.log(`getting rider allocations ${allSeedSlots[0].heatId} took `, end - start);
+        // const getFns = allSeedSlots.map((seedSlot) => async () => {
+        //     riderAllocationsLookup[seedSlot.id] = await seedSlot.getRiderAllocation();
+        // });
+        // // const start = new Date().getTime();
+        // await Promise.all(getFns.map((fn) => fn()));
+        // // const end = new Date().getTime();
+        // // console.log(`getting rider allocations ${allSeedSlots[0].heatId} took `, end - start);
 
-        const groupedSeedSlots = _.groupBy(allSeedSlots, (seedSlot) => seedSlot.heatId);
+        // const groupedSeedSlots = _.groupBy(allSeedSlots, (seedSlot) => seedSlot.heatId);
 
-        const positionMap: { [key: string]: number } = {};
+        // const positionMap: { [key: string]: number } = {};
 
-        Object.keys(groupedSeedSlots).forEach((headId) => {
-            const seedSlots = groupedSeedSlots[headId] as SeedSlot[];
-            const orderedSeeds = _.sortBy(seedSlots, (seed) => +seed.seed, 'asc');
-            orderedSeeds.forEach((seedSlot, i) => {
-                positionMap[seedSlot.id] = riderAllocationsLookup[seedSlot.id] && riderAllocationsLookup[seedSlot.id].getBestScore() > -1 ? i + 1 : null;
-            });
-        });
+        // Object.keys(groupedSeedSlots).forEach((headId) => {
+        //     const seedSlots = groupedSeedSlots[headId] as SeedSlot[];
+        //     const orderedSeeds = _.sortBy(seedSlots, (seed) => +seed.seed, 'asc');
+        //     orderedSeeds.forEach((seedSlot, i) => {
+        //         positionMap[seedSlot.id] = riderAllocationsLookup[seedSlot.id] && riderAllocationsLookup[seedSlot.id].getBestScore() > -1 ? i + 1 : null;
+        //     });
+        // });
 
-        return keys.map((key: string) => positionMap[key]);
-    },
+        // return keys.map((key: string) => positionMap[key]);
+        keys.map((key: string) => 1),
     { cache: false }
     // Cache made the rider allocations not update correctly
 );
