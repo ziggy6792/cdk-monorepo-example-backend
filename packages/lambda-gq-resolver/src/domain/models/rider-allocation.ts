@@ -1,12 +1,13 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
-import { Field, ObjectType, ID, Int, Root, Float } from 'type-graphql';
+import { Field, ObjectType, ID, Int, Root, Float, Ctx } from 'type-graphql';
 import Creatable from 'src/domain/models/abstract/creatable';
 import { commonConfig } from '@alpaca-backend/common';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { GSIPartitionKey, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
 import * as utils from 'src/utils/utility';
+import { IContext } from 'src/types';
 import User from './user';
 
 @ObjectType()
@@ -39,15 +40,6 @@ class RiderAllocation extends Creatable {
 
     @Field(() => [Run])
     runs: [Run];
-
-    @Field()
-    position(@Root() parent: RiderAllocation): number {
-        return parent.getPosition();
-    }
-
-    getPosition(): number {
-        return 1;
-    }
 
     getBestScore(): number {
         const bestRun = _.maxBy(this.runs, 'score');

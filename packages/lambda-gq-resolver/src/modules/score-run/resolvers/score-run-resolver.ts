@@ -8,6 +8,7 @@ import RiderAllocation from 'src/domain/models/rider-allocation';
 import errorMessage from 'src/config/error-message';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import isHeatJudge from 'src/middleware/auth-check/is-heat-judge';
+import { mapDbException } from 'src/utils/utility';
 
 @Resolver()
 export default class ScoreRun {
@@ -20,7 +21,15 @@ export default class ScoreRun {
             allocatableId: heatId,
             ...rest,
         };
-        const [heat, _] = await Promise.all([Heat.store.get(input.heatId).exec(), RiderAllocation.store.updateItem(riderAllocationUpdateParams).exec()]);
+        const updateFunction = async (): Promise<void> => {
+            try {
+                await RiderAllocation.store.updateItem(riderAllocationUpdateParams).exec();
+            } catch (err) {
+                throw mapDbException(err, errorMessage.canNotFindRider);
+            }
+        };
+
+        const [heat, _] = await Promise.all([Heat.store.get(input.heatId).exec(), updateFunction()]);
 
         return heat;
     }
