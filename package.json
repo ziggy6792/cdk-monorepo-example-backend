@@ -21,6 +21,7 @@
         "local:db:start:test:db": "lerna run start:test:db --scope @alpaca-backend/local-test-server --stream",
         "local:db:force:stop": "lerna run force:stop --scope @alpaca-backend/local-test-server --stream",
         "lint": "eslint './{utils,packages}/**/src/**/*.ts'",
+        "typecheck": "yarn lerna run typecheck --parallel",
         "start": "lerna run start --stream --parallel",
         "force:stop": "lerna run force:stop --stream --parallel",
         "nodemon": "nodemon",

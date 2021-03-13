@@ -45,7 +45,7 @@ class PipelineStack extends cdk.Stack {
                 // Use this if you need a build step (if you're not using ts-node
                 // or if you have TypeScript Lambdas that need to be compiled).
                 // installCommand: 'yarn install',
-                buildCommand: 'yarn build',
+                buildCommand: 'yarn lint && yarn build',
                 synthCommand: 'yarn cdk:synth',
                 // subdirectory: 'packages/cdk-app',
             }),
