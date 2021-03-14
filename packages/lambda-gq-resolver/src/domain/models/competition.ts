@@ -105,9 +105,6 @@ class Competition extends DataEntity {
     @Field(() => CompetitionParams)
     params: CompetitionParams;
 
-    @Field()
-    selectedHeatId: string;
-
     @Field(() => Int)
     maxRiders: string;
 

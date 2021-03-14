@@ -47,13 +47,13 @@ class Event extends DataEntity {
     @Field()
     selectedHeatId: string;
 
-    @Field(() => User)
-    async adminUser(): Promise<User> {
+    @Field(() => User, { name: 'adminUser' })
+    async getAdminUser(): Promise<User> {
         return User.store.get(this.adminUserId).exec();
     }
 
-    @Field(() => Heat)
-    async selectedHeat(): Promise<Heat> {
+    @Field(() => Heat, { name: 'selectedHeat' })
+    async getSelectedHeat(): Promise<Heat> {
         return Heat.store.get(this.selectedHeatId).exec();
     }
 
