@@ -37,11 +37,7 @@ const riderAllocationPostitionDataLoader = new DataLoader(
             await Promise.all(RiderAllocation.store.batchGetChunks(_.chunk(keys, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()))
         );
 
-        console.log('allRiderAllocations', allRiderAllocations);
-
         const groupedRiderAlocations = _.groupBy(allRiderAllocations, (ra) => ra.allocatableId);
-
-        // const positionMap: Map<RiderAllocationKey, number> = new Map();
 
         const positionMap: { [key: string]: RiderAllocationPosition } = {};
 
@@ -49,7 +45,6 @@ const riderAllocationPostitionDataLoader = new DataLoader(
             const heatRAs = groupedRiderAlocations[headId] as RiderAllocation[];
 
             const orderedRAs = _.orderBy(heatRAs, [(ra) => ra.getBestScore(), (ra) => ra.startSeed], ['desc', 'asc']);
-            // console.log('orderedRAs', orderedRAs);
             orderedRAs.forEach((ra, i) => {
                 const raPosition = {
                     position: ra.getBestScore() > -1 ? i + 1 : null,
@@ -60,16 +55,9 @@ const riderAllocationPostitionDataLoader = new DataLoader(
             });
         });
 
-        return keys.map((key) => {
-            console.log('lookup key', key);
-            console.log('lookup positionMap', positionMap);
-            console.log('lookup return', positionMap[cacheKeyFn(key)]);
-
-            return positionMap[cacheKeyFn(key)];
-        });
+        return keys.map((key) => positionMap[cacheKeyFn(key)]);
     },
     { cache: false, cacheKeyFn }
-    // Cache made the rider allocations not update correctly
 );
 
 export const contextInitialState: IContext = { req: null, identity: null, dataLoaders: { riderAlocationPosition: riderAllocationPostitionDataLoader } };

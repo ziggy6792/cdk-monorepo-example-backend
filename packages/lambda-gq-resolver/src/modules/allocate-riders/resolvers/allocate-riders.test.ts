@@ -43,14 +43,6 @@ const expectedFirstRoundResult = {
                             startSeed: 1,
                         },
                         {
-                            userId: 'riderE',
-                            startSeed: 5,
-                        },
-                        {
-                            userId: 'riderI',
-                            startSeed: 9,
-                        },
-                        {
                             userId: 'riderM',
                             startSeed: 13,
                         },
@@ -62,6 +54,14 @@ const expectedFirstRoundResult = {
                             userId: 'riderV',
                             startSeed: 21,
                         },
+                        {
+                            userId: 'riderE',
+                            startSeed: 5,
+                        },
+                        {
+                            userId: 'riderI',
+                            startSeed: 9,
+                        },
                     ],
                 },
             },
@@ -69,14 +69,6 @@ const expectedFirstRoundResult = {
                 name: 'Heat 2',
                 riderAllocations: {
                     items: [
-                        {
-                            userId: 'riderC',
-                            startSeed: 3,
-                        },
-                        {
-                            userId: 'riderG',
-                            startSeed: 7,
-                        },
                         {
                             userId: 'riderK',
                             startSeed: 11,
@@ -93,6 +85,14 @@ const expectedFirstRoundResult = {
                             userId: 'riderX',
                             startSeed: 23,
                         },
+                        {
+                            userId: 'riderC',
+                            startSeed: 3,
+                        },
+                        {
+                            userId: 'riderG',
+                            startSeed: 7,
+                        },
                     ],
                 },
             },
@@ -100,14 +100,6 @@ const expectedFirstRoundResult = {
                 name: 'Heat 3',
                 riderAllocations: {
                     items: [
-                        {
-                            userId: 'riderB',
-                            startSeed: 2,
-                        },
-                        {
-                            userId: 'riderF',
-                            startSeed: 6,
-                        },
                         {
                             userId: 'riderJ',
                             startSeed: 10,
@@ -121,8 +113,16 @@ const expectedFirstRoundResult = {
                             startSeed: 18,
                         },
                         {
+                            userId: 'riderB',
+                            startSeed: 2,
+                        },
+                        {
                             userId: 'riderW',
                             startSeed: 22,
+                        },
+                        {
+                            userId: 'riderF',
+                            startSeed: 6,
                         },
                     ],
                 },
@@ -131,14 +131,6 @@ const expectedFirstRoundResult = {
                 name: 'Heat 4',
                 riderAllocations: {
                     items: [
-                        {
-                            userId: 'riderD',
-                            startSeed: 4,
-                        },
-                        {
-                            userId: 'riderH',
-                            startSeed: 8,
-                        },
                         {
                             userId: 'riderL',
                             startSeed: 12,
@@ -154,6 +146,14 @@ const expectedFirstRoundResult = {
                         {
                             userId: 'riderY',
                             startSeed: 24,
+                        },
+                        {
+                            userId: 'riderD',
+                            startSeed: 4,
+                        },
+                        {
+                            userId: 'riderH',
+                            startSeed: 8,
                         },
                     ],
                 },
@@ -172,10 +172,10 @@ describe('AllocateRider', () => {
                 id: 'testCompetition',
             },
         });
+
+        // console.log('Response', JSON.stringify(response));
         const firstRoundResponse = response.data.allocateRiders.rounds.items[0];
         expect(firstRoundResponse).toMatchObject(expectedFirstRoundResult);
-
         // const dbAsJson = await mockDbUtils.dbToJson();
-        // console.log(JSON.stringify(dbAsJson));
     });
 });

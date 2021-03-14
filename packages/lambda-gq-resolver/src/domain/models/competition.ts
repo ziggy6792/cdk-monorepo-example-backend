@@ -72,8 +72,6 @@ export class CompetitionParams {
 
 const tableSchema = commonConfig.DB_SCHEMA.Competition;
 
-console.log('Table indexName!', tableSchema.indexes.byEvent.indexName);
-
 @ObjectType()
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Competition extends DataEntity {

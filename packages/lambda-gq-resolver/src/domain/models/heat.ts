@@ -56,8 +56,6 @@ class Heat extends DataEntity {
 
     mapIn(loadedValues: any): void {
         super.mapIn(loadedValues);
-        console.log('RUNNING Heat mapIn');
-        console.log(this.seedSlots);
         this.seedSlots = this.seedSlots.map((seedSlot) => _.merge(new SeedSlot(), seedSlot));
     }
 
@@ -81,17 +79,6 @@ class Heat extends DataEntity {
 
     @Field(() => [SeedSlot])
     seedSlots: SeedSlot[];
-
-    // async getSeedSlots(): Promise<SeedSlot[]> {
-    //     return SeedSlot.store.query().index(commonConfig.DB_SCHEMA.SeedSlot.indexes.byHeat.indexName).wherePartitionKey(this.id).execFetchAll();
-    // }
-
-    // @Field(() => SeedSlotList)
-    // protected async seedSlots(): Promise<SeedSlotList> {
-    //     const list = new SeedSlotList();
-    //     list.items = await this.getSeedSlots();
-    //     return list;
-    // }
 
     async getRiderAllocations(): Promise<RiderAllocation[]> {
         return RiderAllocation.store
@@ -124,7 +111,7 @@ class Heat extends DataEntity {
     async getChildren(): Promise<Creatable[]> {
         // return this.getSeedSlots();
         // Todo: add rider alocations?
-        return [];
+        return this.getRiderAllocations();
     }
 }
 Heat.store = new DynamoStore(Heat);
