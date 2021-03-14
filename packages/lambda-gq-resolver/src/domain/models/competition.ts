@@ -64,10 +64,6 @@ registerEnumType(Level, {
 export class CompetitionParams {
     @Field()
     name: string;
-
-    mySubFunc(): void {
-        console.log('running my sub func');
-    }
 }
 
 const tableSchema = commonConfig.DB_SCHEMA.Competition;
@@ -175,12 +171,6 @@ class Competition extends DataEntity {
 
         const event = await this.getEvent();
         return event.adminUserId === userId;
-    }
-
-    async myFunc(): Promise<void> {
-        console.log('running my func 2');
-        const comp = await Competition.store.get('ee971d12-36c8-4422-b8c3-0aa3d3ea5254').exec();
-        console.log('my func', comp);
     }
 }
 

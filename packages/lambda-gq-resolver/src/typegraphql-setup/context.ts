@@ -9,11 +9,8 @@
 
 import 'reflect-metadata';
 
-import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity, RiderAllocationKey, RiderAllocationPosition } from 'src/types';
-import DataLoader from 'dataloader';
-import _ from 'lodash';
-import RiderAllocation from 'src/domain/models/rider-allocation';
-import { BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
+import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } from 'src/types';
+import getRiderAlocationPostitionLoader from 'src/data-loaders/rider-alocation-position-loader';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getIdentityType = (eventIdentity: any): IdentityType => {
@@ -29,38 +26,11 @@ const getIdentityType = (eventIdentity: any): IdentityType => {
     return IdentityType.NONE;
 };
 
-const cacheKeyFn = ({ allocatableId, userId }) => `${allocatableId}-${userId}`;
-
-const riderAllocationPostitionDataLoader = new DataLoader(
-    async (keys: RiderAllocationKey[]) => {
-        const allRiderAllocations = _.flatten(
-            await Promise.all(RiderAllocation.store.batchGetChunks(_.chunk(keys, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()))
-        );
-
-        const groupedRiderAlocations = _.groupBy(allRiderAllocations, (ra) => ra.allocatableId);
-
-        const positionMap: { [key: string]: RiderAllocationPosition } = {};
-
-        Object.keys(groupedRiderAlocations).forEach((headId) => {
-            const heatRAs = groupedRiderAlocations[headId] as RiderAllocation[];
-
-            const orderedRAs = _.orderBy(heatRAs, [(ra) => ra.getBestScore(), (ra) => ra.startSeed], ['desc', 'asc']);
-            orderedRAs.forEach((ra, i) => {
-                const raPosition = {
-                    position: ra.getBestScore() > -1 ? i + 1 : null,
-                    order: i,
-                };
-
-                positionMap[cacheKeyFn(ra.getKeys())] = raPosition;
-            });
-        });
-
-        return keys.map((key) => positionMap[cacheKeyFn(key)]);
-    },
-    { cache: false, cacheKeyFn }
-);
-
-export const contextInitialState: IContext = { req: null, identity: null, dataLoaders: { riderAlocationPosition: riderAllocationPostitionDataLoader } };
+export const getContextInitialState = (): IContext => ({
+    req: null,
+    identity: null,
+    dataLoaders: { riderAlocationPosition: getRiderAlocationPostitionLoader() },
+});
 
 const context = async (recieved: any): Promise<IContext> => {
     const { req } = recieved;
@@ -88,7 +58,7 @@ const context = async (recieved: any): Promise<IContext> => {
             break;
     }
 
-    return { ...contextInitialState, req, identity };
+    return { ...getContextInitialState(), req, identity };
 };
 
 export default context;

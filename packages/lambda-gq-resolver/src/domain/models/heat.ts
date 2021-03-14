@@ -10,9 +10,8 @@ import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { GSIPartitionKey, Model } from '@shiftcoders/dynamo-easy';
 import { IContext } from 'src/types';
 import Round from './round';
-import RiderAllocation from './rider-allocation';
 import Creatable from './abstract/creatable';
-import riderAllocation from './rider-allocation';
+import RiderAllocation from './rider-allocation';
 
 export enum HeatStatus {
     OPEN = 'OPEN',
@@ -109,8 +108,6 @@ class Heat extends DataEntity {
     }
 
     async getChildren(): Promise<Creatable[]> {
-        // return this.getSeedSlots();
-        // Todo: add rider alocations?
         return this.getRiderAllocations();
     }
 }

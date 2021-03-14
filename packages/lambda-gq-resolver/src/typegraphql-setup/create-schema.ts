@@ -8,12 +8,10 @@ import HeatResolvers from 'src/modules/crud/heat/resolvers';
 import RoundResolvers from 'src/modules/crud/round/resolvers';
 import RiderAllocationResolvers from 'src/modules/crud/rider-allocation/resolvers';
 import GetDataEntityResolver from 'src/modules/get-data-entity/resolvers';
-import RegisterResolver from 'src/modules/crud/user/resolvers/register';
 import BuildCompetition from 'src/modules/build-competition/resolvers';
 import AllocateRiders from 'src/modules/allocate-riders/resolvers';
 import ScoreRun from 'src/modules/score-run/resolvers';
 
-console.log('buildSchemaSync');
 const schema = buildSchemaSync({
     resolvers: [
         ...UserResolvers,
@@ -23,17 +21,12 @@ const schema = buildSchemaSync({
         ...RoundResolvers,
         ...RiderAllocationResolvers,
         GetDataEntityResolver,
-        RegisterResolver,
         BuildCompetition,
         AllocateRiders,
         ScoreRun,
-        RegisterResolver,
     ] as any,
 });
 
-const createSchema = (): GraphQLSchema => {
-    console.log('return schema');
-    return schema;
-};
+const createSchema = (): GraphQLSchema => schema;
 
 export default createSchema;

@@ -173,10 +173,7 @@ describe('AllocateRider', () => {
             },
         });
 
-        // console.log('Response', JSON.stringify(response));
         const firstRoundResponse = response.data.allocateRiders.rounds.items[0];
         expect(firstRoundResponse).toMatchObject(expectedFirstRoundResult);
-        const dbAsJson = await mockDbUtils.dbToJson();
-        console.log(JSON.stringify(dbAsJson.riderAllocations));
     });
 });

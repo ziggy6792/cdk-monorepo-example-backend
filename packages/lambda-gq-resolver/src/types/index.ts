@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 
 import DataLoader from 'dataloader';
+import { RiderAllocationKey, RiderAllocationPosition } from 'src/data-loaders/rider-alocation-position-loader';
 
 export enum IdentityType {
     ROLE = 'role',
@@ -54,16 +55,6 @@ export interface IHeader {
 
 export interface IEvent {
     identity: ICognitoIdentity;
-}
-
-export interface RiderAllocationKey {
-    allocatableId: string;
-    userId: string;
-}
-
-export interface RiderAllocationPosition {
-    position: number | null;
-    order: number;
 }
 
 export interface IContext {

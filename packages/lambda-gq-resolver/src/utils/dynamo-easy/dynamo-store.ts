@@ -37,7 +37,6 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
     }
 
     put(item: T): PutRequest<T> {
-        console.log('RUNNING PUT');
         item.setModifiedAt();
         return super.put(item);
     }
@@ -217,7 +216,6 @@ class MyGetRequest<T extends Creatable> extends GetRequest<T> {
         const loadedValues = await super.exec();
 
         if (!loadedValues) throw new Error(`Item not found ${JSON.stringify(this.params)}`);
-        // console.log('myModelClazz', new (this.myModelClazz as any)());
         return mapCreatible(loadedValues, this.myModelClazz);
     }
 }

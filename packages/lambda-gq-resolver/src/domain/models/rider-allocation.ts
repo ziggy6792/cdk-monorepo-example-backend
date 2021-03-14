@@ -38,7 +38,7 @@ class RiderAllocation extends Creatable {
     @Field(() => Int)
     startSeed: number;
 
-    @Field(() => [Run])
+    @Field(() => [Run], { nullable: true })
     runs: [Run];
 
     @Field(() => Int, { name: 'position', nullable: true })
