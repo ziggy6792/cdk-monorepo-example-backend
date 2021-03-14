@@ -1,16 +1,18 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
-import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
+import { Field, ObjectType, registerEnumType, ID, Int, Ctx } from 'type-graphql';
 import DataEntity from 'src/domain/models/abstract/data-entity';
 import { RiderAllocationList } from 'src/domain/common-objects/lists';
 import { commonConfig } from '@alpaca-backend/common';
 import * as utils from 'src/utils/utility';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { GSIPartitionKey, Model } from '@shiftcoders/dynamo-easy';
+import { IContext } from 'src/types';
 import Round from './round';
 import RiderAllocation from './rider-allocation';
 import Creatable from './abstract/creatable';
+import riderAllocation from './rider-allocation';
 
 export enum HeatStatus {
     OPEN = 'OPEN',
@@ -100,9 +102,22 @@ class Heat extends DataEntity {
     }
 
     @Field(() => RiderAllocationList)
-    protected async riderAllocations(): Promise<RiderAllocationList> {
+    protected async riderAllocations(@Ctx() context: IContext): Promise<RiderAllocationList> {
+        let riderAllocations = await this.getRiderAllocations();
+
+        const orderMap: Map<RiderAllocation, number> = new Map();
+
+        const getOrder = async (riderAllocation: RiderAllocation): Promise<void> => {
+            orderMap.set(riderAllocation, await riderAllocation.getOrder(context));
+        };
+
+        await Promise.all(riderAllocations.map((riderAllocation) => getOrder(riderAllocation)));
+
+        riderAllocations = _.orderBy(riderAllocations, (riderAllocation) => orderMap.get(riderAllocation));
+
         const list = new RiderAllocationList();
-        list.items = await this.getRiderAllocations();
+        list.items = riderAllocations;
+
         return list;
     }
 
