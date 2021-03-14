@@ -8,7 +8,6 @@ import errorMessage from 'src/config/error-message';
 import _ from 'lodash';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import { attribute, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
-import { SeedSlot } from 'src/domain/models/heat';
 
 const defaultRiderAllocation = { runs: [{ score: null }, { score: null }] };
 
@@ -43,9 +42,6 @@ export default class AllocateRiders {
 
         const createRiderAllocations: RiderAllocation[] = [];
 
-        console.log('seedHeatLookup', seedHeatLookup);
-        console.log('riderAllocations', riderAllocations);
-
         ((Object.keys(seedHeatLookup) as unknown) as number[]).forEach((seed) => {
             if (riderAllocationsLookup[seed] && seedHeatLookup[seed]) {
                 createRiderAllocations.push(
@@ -59,12 +55,6 @@ export default class AllocateRiders {
             }
         });
 
-        console.log('createRiderAllocations', createRiderAllocations);
-
-        // const updateSeedSlotFns = updateSeedSlots.map((seedSlot) => SeedSlot.store.updateItem(seedSlot));
-        // Update seed slots
-        // await Promise.all(updateSeedSlotFns.map((req) => req.exec()));
-        // Create rider allocations
         await Promise.all(
             RiderAllocation.store
                 .myBatchWrite()

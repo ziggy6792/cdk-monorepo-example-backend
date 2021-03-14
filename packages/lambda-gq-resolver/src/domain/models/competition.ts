@@ -184,8 +184,6 @@ class Competition extends DataEntity {
     }
 }
 
-// scheduleItems: [ScheduleItem] @connection(keyName: "bySchedule", fields: ["id"])
-
 Competition.store = new DynamoStore(Competition);
 
 export default Competition;

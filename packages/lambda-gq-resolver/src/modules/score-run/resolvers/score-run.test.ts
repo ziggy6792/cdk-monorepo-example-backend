@@ -9,58 +9,136 @@ beforeAll(async () => {
 });
 
 const scoreRunMutation = `mutation scoreRun($input: ScorRunInput!) {
-    scoreRun(input: $input) {
-      seedSlots {
-        items {
-          id
-          userId
-          seed
-          position
-  
-          riderAllocation {
-            startSeed
-            runs {
-              score
-            }
-          }
-        }
-      }  
-    }
-  }
-  `;
-
-const getHeatQuery = `query getHeat($heatId: ID!) {
-    getHeat(id: $heatId) {
-      seedSlots {
-        items {
-          id
-          userId
-          seed
-          position
-  
-          riderAllocation {
-            startSeed
-            runs {
-              score
-            }
-          }
+  scoreRun(input: $input) {
+    name
+    riderAllocations {
+      items {
+        userId
+        position
+        startSeed        
+        runs {
+          score
         }
       }
     }
   }
-  `;
+}`;
 
-describe('AllocateRider', () => {
-    it('allocateRiders', async () => {
+const getHeatQuery = `query getHeat($heatId: ID!) {
+  getHeat(id: $heatId) {
+    name
+    riderAllocations {
+      items {
+        userId
+        position
+        startSeed        
+        runs {
+          score
+        }
+      }
+    }
+  }
+}
+`;
+
+const expectedResult = {
+    name: 'Heat 1',
+    riderAllocations: {
+        items: [
+            {
+                userId: 'riderR',
+                position: 1,
+                startSeed: 17,
+                runs: [
+                    {
+                        score: 16,
+                    },
+                    {
+                        score: 50,
+                    },
+                ],
+            },
+            {
+                userId: 'riderE',
+                position: 2,
+                startSeed: 5,
+                runs: [
+                    {
+                        score: 30,
+                    },
+                    {
+                        score: 45,
+                    },
+                ],
+            },
+            {
+                userId: 'riderV',
+                position: 3,
+                startSeed: 21,
+                runs: [
+                    {
+                        score: 40,
+                    },
+                    {
+                        score: null,
+                    },
+                ],
+            },
+            {
+                userId: 'riderM',
+                position: 4,
+                startSeed: 13,
+                runs: [
+                    {
+                        score: 3,
+                    },
+                    {
+                        score: 14,
+                    },
+                ],
+            },
+            {
+                userId: 'riderA',
+                position: 5,
+                startSeed: 1,
+                runs: [
+                    {
+                        score: 10,
+                    },
+                    {
+                        score: null,
+                    },
+                ],
+            },
+            {
+                userId: 'riderI',
+                position: null,
+                startSeed: 9,
+                runs: [
+                    {
+                        score: null,
+                    },
+                    {
+                        score: null,
+                    },
+                ],
+            },
+        ],
+    },
+};
+
+const scores = [
+    { userId: 'riderA', runs: [{ score: 10 }, { score: null }] },
+    { userId: 'riderM', runs: [{ score: 3 }, { score: 14 }] },
+    { userId: 'riderR', runs: [{ score: 16 }, { score: 50 }] },
+    { userId: 'riderV', runs: [{ score: 40 }, { score: null }] },
+    { userId: 'riderE', runs: [{ score: 30 }, { score: 45 }] },
+    // { userId: 'riderU', runs: [{ score: 20 }, { score: 30 }] },
+];
+
+describe('Score Run', () => {
+    it('scorRun in sync', async () => {
         await mockDbUtils.populateDb(mockDb.competitionPreScoreRuns);
-
-        const scores = [
-            { userId: 'riderA', runs: [{ score: 10 }, { score: null }] },
-            { userId: 'riderD', runs: [{ score: 3 }, { score: 14 }] },
-            { userId: 'riderH', runs: [{ score: 16 }, { score: 50 }] },
-            { userId: 'riderL', runs: [{ score: 40 }, { score: null }] },
-            // { userId: 'riderU', runs: [{ score: 20 }, { score: 30 }] },
-        ];
 
         const callFns = scores.map((score) => async () =>
             await gCall({
@@ -73,7 +151,6 @@ describe('AllocateRider', () => {
                 },
             })
         );
-        // const results = await Promise.all(callFns.map((fn) => fn()));
 
         for (let i = 0; i < callFns.length; i++) {
             // eslint-disable-next-line no-await-in-loop
@@ -87,25 +164,31 @@ describe('AllocateRider', () => {
             },
         });
 
-        // const response = await gCall({
-        //     source: allocateMutation,
-        //     variableValues: {
-        //         input: {
-        //             heatId: 'heat1',
-        //             userId: 'riderU',
-        //             runs: [
-        //                 {
-        //                     score: 3,
-        //                 },
-        //                 {
-        //                     score: 30,
-        //                 },
-        //             ],
-        //         },
-        //     },
-        // });
-        // const firstRoundResponse = response.data.allocateRiders.rounds.items[0];
-        // expect(firstRoundResponse).toMatchObject(expectedFirstRoundResult);
-        console.log('response', JSON.stringify(response));
+        expect(response.data.getHeat).toMatchObject(expectedResult);
+    });
+    it('scorRun in parallel', async () => {
+        await mockDbUtils.populateDb(mockDb.competitionPreScoreRuns);
+
+        const callFns = scores.map((score) => async () =>
+            await gCall({
+                source: scoreRunMutation,
+                variableValues: {
+                    input: {
+                        heatId: 'heat1',
+                        ...score,
+                    },
+                },
+            })
+        );
+        const results = await Promise.all(callFns.map((fn) => fn()));
+
+        const response = await gCall({
+            source: getHeatQuery,
+            variableValues: {
+                heatId: 'heat1',
+            },
+        });
+
+        expect(response.data.getHeat).toMatchObject(expectedResult);
     });
 });

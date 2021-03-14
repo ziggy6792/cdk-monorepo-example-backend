@@ -13,7 +13,7 @@ const mockDbTables = {
     competitions: Competition,
     rounds: Round,
     heats: Heat,
-    riderAllocatios: RiderAllocation,
+    riderAllocations: RiderAllocation,
 };
 
 const populateDb = async (mockDb: IMockDb): Promise<void> => {
