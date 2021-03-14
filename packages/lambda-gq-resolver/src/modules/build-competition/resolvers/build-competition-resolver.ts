@@ -2,16 +2,15 @@
 
 import { Resolver, Mutation, Arg, ID, UseMiddleware } from 'type-graphql';
 import _ from 'lodash';
-import SeedSlot from 'src/domain/models/seed-slot';
 import Round from 'src/domain/models/round';
-import Heat from 'src/domain/models/heat';
-import { valueIsNull } from 'src/utils/utility';
+import Heat, { SeedSlot } from 'src/domain/models/heat';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import Competition from 'src/domain/models/competition';
 import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
 import { CompetitionParamsInput } from 'src/modules/build-competition/inputs';
 import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
 import { BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
+import { valueIsNull } from 'src/utils/utility';
 
 @Resolver()
 export default class BuildCompetition {
@@ -28,13 +27,15 @@ export default class BuildCompetition {
 
         const roundsToCreate: Round[] = [];
         const heatsToCreate: Heat[] = [];
-        const seedSlotsToCreate: SeedSlot[] = [];
+        const allSeedSlots: SeedSlot[] = [];
+
+        // Maps created seedslots back to their parent heats
+        const heatMap: Map<SeedSlot, Heat> = new Map();
 
         params.rounds.forEach((roundParam) => {
             const { heats: heatParams, ...roundInput } = roundParam;
             const round = Object.assign(new Round(), roundInput);
             round.setDefaults();
-            console.log('round', round);
             roundsToCreate.push(round);
             heatParams.forEach((heatParam) => {
                 const { seedSlots: seedSlotParams, ...heatInput } = heatParam;
@@ -42,39 +43,36 @@ export default class BuildCompetition {
                 heat.setDefaults();
                 heatsToCreate.push(heat);
                 seedSlotParams.forEach((seedSlotParam) => {
-                    const seedSlot = Object.assign(new SeedSlot(), seedSlotParam);
-                    seedSlot.setDefaults();
-                    seedSlotsToCreate.push(seedSlot);
-                    seedSlot.heatId = heat.id;
+                    const seedSlot = new SeedSlot();
+                    seedSlot.seed = seedSlotParam.seed;
+                    heat.seedSlots.push(seedSlot);
+                    heatMap.set(seedSlot, heat);
+                    allSeedSlots.push(seedSlot);
                 });
                 heat.roundId = round.id;
             });
             round.competitionId = competition.id;
-
-            // competition.addScheduleItem(new ScheduleItem({ schedulableId: round.id }));
         });
 
-        const seedsHolder = {};
+        const seedsHolder: { [key in string]: SeedSlot } = {};
 
-        seedSlotsToCreate.reverse().forEach((seedSlot) => {
+        allSeedSlots.reverse().forEach((seedSlot) => {
             // If I have seen this seed already
             if (seedsHolder[seedSlot.seed]) {
-                if (valueIsNull(seedSlot.parentSeedSlotId)) {
-                    seedSlot.parentSeedSlotId = seedsHolder[seedSlot.seed].id; // Set that one as my parent
+                if (valueIsNull(seedSlot.nextHeatId)) {
+                    seedSlot.nextHeatId = heatMap.get(seedsHolder[seedSlot.seed]).id; // Set that one as my parent
                 } else {
-                    seedSlot.parentSeedSlotId = undefined;
+                    seedSlot.nextHeatId = undefined;
                 }
             } else {
-                seedSlot.parentSeedSlotId = undefined;
+                seedSlot.nextHeatId = undefined;
             }
             seedsHolder[seedSlot.seed] = seedSlot; // Now keep track of this one
         });
 
         await Promise.all([
             ...new BatchWriteRequest().deleteChunks(_.chunk(prevCompDescendants, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()),
-            ...new BatchWriteRequest()
-                .putChunks(_.chunk([...seedSlotsToCreate, ...heatsToCreate, ...roundsToCreate], BATCH_WRITE_MAX_REQUEST_ITEM_COUNT))
-                .map((req) => req.exec()),
+            ...new BatchWriteRequest().putChunks(_.chunk([...heatsToCreate, ...roundsToCreate], BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()),
         ]);
 
         const end = new Date().getTime();

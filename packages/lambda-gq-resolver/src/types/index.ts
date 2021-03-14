@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 
 import DataLoader from 'dataloader';
-import SeedSlot from 'src/domain/models/seed-slot';
+import { RiderAllocationKey, RiderAllocationPosition } from 'src/data-loaders/rider-alocation-position-loader';
 
 export enum IdentityType {
     ROLE = 'role',
@@ -61,6 +61,6 @@ export interface IContext {
     req: any | null;
     identity: IIdentity;
     dataLoaders: {
-        seedSlotPosition: DataLoader<unknown, number | null, unknown>;
+        riderAlocationPosition: DataLoader<RiderAllocationKey, RiderAllocationPosition>;
     };
 }

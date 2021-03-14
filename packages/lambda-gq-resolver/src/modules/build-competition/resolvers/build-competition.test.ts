@@ -15,14 +15,12 @@ const buildMutation = `mutation buildCompetition($params: CompetitionParamsInput
         items {
           type
           heats {
-            items {          
+            items {
               name
               seedSlots {
-                items {
-                  seed                  
-                  parentSeedSlot {
-                    seed
-                  }
+                seed
+                nextHeat{
+                  name
                 }
               }
             }
@@ -30,8 +28,7 @@ const buildMutation = `mutation buildCompetition($params: CompetitionParamsInput
         }
       }
     }
-  } 
-  `;
+  }`;
 
 const testCompParams = {
     rounds: [
@@ -286,55 +283,167 @@ const expectedResponse = {
                         items: [
                             {
                                 name: 'Heat 1',
-                                seedSlots: {
-                                    items: [
-                                        { seed: 1, parentSeedSlot: { seed: 1 } },
-                                        { seed: 5, parentSeedSlot: { seed: 5 } },
-                                        { seed: 9, parentSeedSlot: { seed: 9 } },
-                                        { seed: 13, parentSeedSlot: { seed: 13 } },
-                                        { seed: 17, parentSeedSlot: { seed: 17 } },
-                                        { seed: 21, parentSeedSlot: { seed: 21 } },
-                                    ],
-                                },
+                                seedSlots: [
+                                    {
+                                        seed: 1,
+                                        nextHeat: {
+                                            name: 'SF1',
+                                        },
+                                    },
+                                    {
+                                        seed: 5,
+                                        nextHeat: {
+                                            name: 'SF1',
+                                        },
+                                    },
+                                    {
+                                        seed: 9,
+                                        nextHeat: {
+                                            name: 'LCQ 1',
+                                        },
+                                    },
+                                    {
+                                        seed: 13,
+                                        nextHeat: {
+                                            name: 'LCQ 1',
+                                        },
+                                    },
+                                    {
+                                        seed: 17,
+                                        nextHeat: {
+                                            name: 'LCQ 1',
+                                        },
+                                    },
+                                    {
+                                        seed: 21,
+                                        nextHeat: {
+                                            name: 'LCQ 1',
+                                        },
+                                    },
+                                ],
                             },
                             {
                                 name: 'Heat 2',
-                                seedSlots: {
-                                    items: [
-                                        { seed: 3, parentSeedSlot: { seed: 3 } },
-                                        { seed: 7, parentSeedSlot: { seed: 7 } },
-                                        { seed: 11, parentSeedSlot: { seed: 11 } },
-                                        { seed: 15, parentSeedSlot: { seed: 15 } },
-                                        { seed: 19, parentSeedSlot: { seed: 19 } },
-                                        { seed: 23, parentSeedSlot: { seed: 23 } },
-                                    ],
-                                },
+                                seedSlots: [
+                                    {
+                                        seed: 3,
+                                        nextHeat: {
+                                            name: 'SF1',
+                                        },
+                                    },
+                                    {
+                                        seed: 7,
+                                        nextHeat: {
+                                            name: 'SF1',
+                                        },
+                                    },
+                                    {
+                                        seed: 11,
+                                        nextHeat: {
+                                            name: 'LCQ 1',
+                                        },
+                                    },
+                                    {
+                                        seed: 15,
+                                        nextHeat: {
+                                            name: 'LCQ 1',
+                                        },
+                                    },
+                                    {
+                                        seed: 19,
+                                        nextHeat: {
+                                            name: 'LCQ 1',
+                                        },
+                                    },
+                                    {
+                                        seed: 23,
+                                        nextHeat: {
+                                            name: 'LCQ 1',
+                                        },
+                                    },
+                                ],
                             },
                             {
                                 name: 'Heat 3',
-                                seedSlots: {
-                                    items: [
-                                        { seed: 2, parentSeedSlot: { seed: 2 } },
-                                        { seed: 6, parentSeedSlot: { seed: 6 } },
-                                        { seed: 10, parentSeedSlot: { seed: 10 } },
-                                        { seed: 14, parentSeedSlot: { seed: 14 } },
-                                        { seed: 18, parentSeedSlot: { seed: 18 } },
-                                        { seed: 22, parentSeedSlot: { seed: 22 } },
-                                    ],
-                                },
+                                seedSlots: [
+                                    {
+                                        seed: 2,
+                                        nextHeat: {
+                                            name: 'SF2',
+                                        },
+                                    },
+                                    {
+                                        seed: 6,
+                                        nextHeat: {
+                                            name: 'SF2',
+                                        },
+                                    },
+                                    {
+                                        seed: 10,
+                                        nextHeat: {
+                                            name: 'LCQ 2',
+                                        },
+                                    },
+                                    {
+                                        seed: 14,
+                                        nextHeat: {
+                                            name: 'LCQ 2',
+                                        },
+                                    },
+                                    {
+                                        seed: 18,
+                                        nextHeat: {
+                                            name: 'LCQ 2',
+                                        },
+                                    },
+                                    {
+                                        seed: 22,
+                                        nextHeat: {
+                                            name: 'LCQ 2',
+                                        },
+                                    },
+                                ],
                             },
                             {
                                 name: 'Heat 4',
-                                seedSlots: {
-                                    items: [
-                                        { seed: 4, parentSeedSlot: { seed: 4 } },
-                                        { seed: 8, parentSeedSlot: { seed: 8 } },
-                                        { seed: 12, parentSeedSlot: { seed: 12 } },
-                                        { seed: 16, parentSeedSlot: { seed: 16 } },
-                                        { seed: 20, parentSeedSlot: { seed: 20 } },
-                                        { seed: 24, parentSeedSlot: { seed: 24 } },
-                                    ],
-                                },
+                                seedSlots: [
+                                    {
+                                        seed: 4,
+                                        nextHeat: {
+                                            name: 'SF2',
+                                        },
+                                    },
+                                    {
+                                        seed: 8,
+                                        nextHeat: {
+                                            name: 'SF2',
+                                        },
+                                    },
+                                    {
+                                        seed: 12,
+                                        nextHeat: {
+                                            name: 'LCQ 2',
+                                        },
+                                    },
+                                    {
+                                        seed: 16,
+                                        nextHeat: {
+                                            name: 'LCQ 2',
+                                        },
+                                    },
+                                    {
+                                        seed: 20,
+                                        nextHeat: {
+                                            name: 'LCQ 2',
+                                        },
+                                    },
+                                    {
+                                        seed: 24,
+                                        nextHeat: {
+                                            name: 'LCQ 2',
+                                        },
+                                    },
+                                ],
                             },
                         ],
                     },
@@ -345,33 +454,81 @@ const expectedResponse = {
                         items: [
                             {
                                 name: 'LCQ 1',
-                                seedSlots: {
-                                    items: [
-                                        { seed: 9, parentSeedSlot: { seed: 9 } },
-                                        { seed: 11, parentSeedSlot: null },
-                                        { seed: 13, parentSeedSlot: null },
-                                        { seed: 15, parentSeedSlot: null },
-                                        { seed: 17, parentSeedSlot: null },
-                                        { seed: 19, parentSeedSlot: null },
-                                        { seed: 21, parentSeedSlot: null },
-                                        { seed: 23, parentSeedSlot: null },
-                                    ],
-                                },
+                                seedSlots: [
+                                    {
+                                        seed: 9,
+                                        nextHeat: {
+                                            name: 'SF1',
+                                        },
+                                    },
+                                    {
+                                        seed: 13,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 17,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 21,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 11,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 15,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 19,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 23,
+                                        nextHeat: null,
+                                    },
+                                ],
                             },
                             {
                                 name: 'LCQ 2',
-                                seedSlots: {
-                                    items: [
-                                        { seed: 10, parentSeedSlot: { seed: 10 } },
-                                        { seed: 12, parentSeedSlot: null },
-                                        { seed: 14, parentSeedSlot: null },
-                                        { seed: 16, parentSeedSlot: null },
-                                        { seed: 18, parentSeedSlot: null },
-                                        { seed: 20, parentSeedSlot: null },
-                                        { seed: 22, parentSeedSlot: null },
-                                        { seed: 24, parentSeedSlot: null },
-                                    ],
-                                },
+                                seedSlots: [
+                                    {
+                                        seed: 10,
+                                        nextHeat: {
+                                            name: 'SF2',
+                                        },
+                                    },
+                                    {
+                                        seed: 14,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 18,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 22,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 12,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 16,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 20,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 24,
+                                        nextHeat: null,
+                                    },
+                                ],
                             },
                         ],
                     },
@@ -382,27 +539,65 @@ const expectedResponse = {
                         items: [
                             {
                                 name: 'SF1',
-                                seedSlots: {
-                                    items: [
-                                        { seed: 1, parentSeedSlot: { seed: 1 } },
-                                        { seed: 3, parentSeedSlot: { seed: 3 } },
-                                        { seed: 5, parentSeedSlot: { seed: 5 } },
-                                        { seed: 7, parentSeedSlot: null },
-                                        { seed: 9, parentSeedSlot: null },
-                                    ],
-                                },
+                                seedSlots: [
+                                    {
+                                        seed: 1,
+                                        nextHeat: {
+                                            name: 'Final',
+                                        },
+                                    },
+                                    {
+                                        seed: 3,
+                                        nextHeat: {
+                                            name: 'Final',
+                                        },
+                                    },
+                                    {
+                                        seed: 5,
+                                        nextHeat: {
+                                            name: 'Final',
+                                        },
+                                    },
+                                    {
+                                        seed: 7,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 9,
+                                        nextHeat: null,
+                                    },
+                                ],
                             },
                             {
                                 name: 'SF2',
-                                seedSlots: {
-                                    items: [
-                                        { seed: 2, parentSeedSlot: { seed: 2 } },
-                                        { seed: 4, parentSeedSlot: { seed: 4 } },
-                                        { seed: 6, parentSeedSlot: { seed: 6 } },
-                                        { seed: 8, parentSeedSlot: null },
-                                        { seed: 10, parentSeedSlot: null },
-                                    ],
-                                },
+                                seedSlots: [
+                                    {
+                                        seed: 2,
+                                        nextHeat: {
+                                            name: 'Final',
+                                        },
+                                    },
+                                    {
+                                        seed: 4,
+                                        nextHeat: {
+                                            name: 'Final',
+                                        },
+                                    },
+                                    {
+                                        seed: 6,
+                                        nextHeat: {
+                                            name: 'Final',
+                                        },
+                                    },
+                                    {
+                                        seed: 8,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 10,
+                                        nextHeat: null,
+                                    },
+                                ],
                             },
                         ],
                     },
@@ -413,16 +608,32 @@ const expectedResponse = {
                         items: [
                             {
                                 name: 'Final',
-                                seedSlots: {
-                                    items: [
-                                        { seed: 1, parentSeedSlot: null },
-                                        { seed: 2, parentSeedSlot: null },
-                                        { seed: 3, parentSeedSlot: null },
-                                        { seed: 4, parentSeedSlot: null },
-                                        { seed: 5, parentSeedSlot: null },
-                                        { seed: 6, parentSeedSlot: null },
-                                    ],
-                                },
+                                seedSlots: [
+                                    {
+                                        seed: 1,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 2,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 3,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 4,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 5,
+                                        nextHeat: null,
+                                    },
+                                    {
+                                        seed: 6,
+                                        nextHeat: null,
+                                    },
+                                ],
                             },
                         ],
                     },
@@ -443,6 +654,7 @@ describe('BuildCompetition', () => {
                 params: testCompParams,
             },
         });
+
         expect(response).toMatchObject({
             data: expectedResponse,
         });

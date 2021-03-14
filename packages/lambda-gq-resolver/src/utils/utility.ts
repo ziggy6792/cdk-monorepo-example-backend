@@ -14,7 +14,7 @@ export const getTableName = (tableName: string): string => {
     return ret;
 };
 
-export const mapDbException = (err: any, message: string): any => {
+export const mapDbException = (err: any, message: string): Error => {
     if (err?.code === 'ConditionalCheckFailedException') {
         return new Error(message);
     }

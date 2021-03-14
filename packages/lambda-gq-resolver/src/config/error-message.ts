@@ -10,7 +10,7 @@ const errorMessage = {
     },
     //
     canNotFindRound1: 'Can not find round 1',
-    canNotFindSeedSlot: 'The rider you are trying to score is not in this heat',
+    canNotFindRider: 'The rider you are trying to score is not in this heat',
 };
 
 export default errorMessage;

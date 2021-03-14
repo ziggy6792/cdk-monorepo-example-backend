@@ -1,7 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import createListObject from 'src/domain/common-objects/higher-order-objects/create-list-object';
 import { Field, ObjectType } from 'type-graphql';
-import SeedSlot from 'src/domain/models/seed-slot';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import Competition from 'src/domain/models/competition';
 import Round from 'src/domain/models/round';
@@ -13,11 +12,11 @@ export class CompetitionList {
     items: Competition[];
 }
 
-@ObjectType()
-export class SeedSlotList {
-    @Field((type) => [SeedSlot])
-    items: SeedSlot[];
-}
+// @ObjectType()
+// export class SeedSlotList {
+//     @Field((type) => [SeedSlot])
+//     items: SeedSlot[];
+// }
 
 @ObjectType()
 export class RiderAllocationList {

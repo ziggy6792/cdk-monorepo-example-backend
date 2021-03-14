@@ -3,7 +3,6 @@ import Event from 'src/domain/models/event';
 import Heat from 'src/domain/models/heat';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import Round from 'src/domain/models/round';
-import SeedSlot from 'src/domain/models/seed-slot';
 import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
 import _ from 'lodash';
 import { BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
@@ -14,8 +13,7 @@ const mockDbTables = {
     competitions: Competition,
     rounds: Round,
     heats: Heat,
-    seedSlots: SeedSlot,
-    riderAllocatios: RiderAllocation,
+    riderAllocations: RiderAllocation,
 };
 
 const populateDb = async (mockDb: IMockDb): Promise<void> => {

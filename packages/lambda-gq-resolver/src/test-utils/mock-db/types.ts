@@ -4,5 +4,5 @@ export interface IMockDb {
     rounds?: any[];
     heats?: any[];
     seedSlots?: any[];
-    riderAllocatios?: any[];
+    riderAllocations?: any[];
 }

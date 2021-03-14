@@ -25,7 +25,6 @@ describe('Register', () => {
             source: registerMutation,
             variableValues: { input: user },
         });
-        console.log('response', response);
 
         expect(response).toMatchObject({
             data: {

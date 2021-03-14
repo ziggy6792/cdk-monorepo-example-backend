@@ -6,14 +6,14 @@ import { IAttributeType } from './types';
 
 const DB_SCHEMA_CONFIG = {
     User: createTableSchema({}),
-    SeedSlot: createTableSchema({
-        indexes: {
-            byHeat: createGSI({
-                partitionKey: { name: 'heatId', type: IAttributeType.STRING },
-                sortKey: { name: 'seed', type: IAttributeType.NUMBER },
-            }),
-        },
-    }),
+    // SeedSlot: createTableSchema({
+    //     indexes: {
+    //         byHeat: createGSI({
+    //             partitionKey: { name: 'heatId', type: IAttributeType.STRING },
+    //             sortKey: { name: 'seed', type: IAttributeType.NUMBER },
+    //         }),
+    //     },
+    // }),
     Round: createTableSchema({
         indexes: {
             byCompetition: createGSI({

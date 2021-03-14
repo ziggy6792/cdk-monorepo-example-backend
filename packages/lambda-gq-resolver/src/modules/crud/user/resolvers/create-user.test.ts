@@ -29,7 +29,6 @@ describe('User', () => {
             source: createUserMutation,
             variableValues: { input: user },
         });
-        console.log('response', response);
 
         expect(response).toMatchObject({
             data: {
