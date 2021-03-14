@@ -5,11 +5,10 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
-import { ClassType, Field, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
-import { GetRequest, GSISortKey, metadataForModel } from '@shiftcoders/dynamo-easy';
-import DynamoService from 'src/utils/dynamo-easy/dynamo-service';
+import { metadataForModel } from '@shiftcoders/dynamo-easy';
 
 @ObjectType({ isAbstract: true })
 abstract class Creatable {

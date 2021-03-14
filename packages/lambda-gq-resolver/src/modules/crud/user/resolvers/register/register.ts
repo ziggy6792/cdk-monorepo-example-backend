@@ -1,287 +1,273 @@
-export default {};
+/* eslint-disable class-methods-use-this */
 
-// /* eslint-disable class-methods-use-this */
+import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
+import { IContext } from 'src/types';
+import User from 'src/domain/models/user';
+import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import TransactGetRequest from 'src/utils/dynamo-easy/transact-get-request';
+import TransactWriteRequest from 'src/utils/dynamo-easy/transact-write-request';
+import Competition, { CompetitionParams } from 'src/domain/models/competition';
+import _ from 'lodash';
 
-// import { Resolver, Query, Mutation, Arg, Ctx } from 'type-graphql';
-// import { IContext } from 'src/types';
-// import User from 'src/domain/models/user';
-// import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
-// import TransactGetRequest from 'src/utils/dynamo-easy/transact-get-request';
-// import TransactWriteRequest from 'src/utils/dynamo-easy/transact-write-request';
-// import Competition, { CompetitionParams } from 'src/domain/models/competition';
-// import _ from 'lodash';
+import { attribute, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT, TransactConditionCheck, TransactUpdate } from '@shiftcoders/dynamo-easy';
+import Event from 'src/domain/models/event';
+import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
+import RiderAllocation from 'src/domain/models/rider-allocation';
+import Heat from 'src/domain/models/heat';
+import { RegisterInput } from './register-input';
 
-// import {
-//     attribute,
-//     BatchGetRequest,
-//     BATCH_WRITE_MAX_REQUEST_ITEM_COUNT,
-//     TransactConditionCheck,
-//     TransactDelete,
-//     TransactPut,
-//     TransactUpdate,
-//     update,
-//     UpdateExpressionDefinitionFunction,
-// } from '@shiftcoders/dynamo-easy';
-// import Event from 'src/domain/models/event';
-// import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
-// import RiderAllocation from 'src/domain/models/rider-allocation';
-// import Heat from 'src/domain/models/heat';
-// import { RegisterInput } from './register-input';
+@Resolver()
+export default class RegisterResolver {
+    @Query(() => String)
+    async hello(@Ctx() ctx: IContext): Promise<string> {
+        console.log('identity', ctx.identity);
 
-// @Resolver()
-// export default class RegisterResolver {
-//     @Query(() => String)
-//     async hello(@Ctx() ctx: IContext): Promise<string> {
-//         console.log('identity', ctx.identity);
+        console.log('Running hello resolver');
+        return 'Hello from my API';
+    }
 
-//         console.log('Running hello resolver');
-//         return 'Hello from my API';
-//     }
+    @Mutation(() => User)
+    async register(@Arg('input') input: RegisterInput, @Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
 
-//     @Mutation(() => User)
-//     async register(@Arg('input') input: RegisterInput, @Ctx() ctx: IContext): Promise<User> {
-//         console.log('identity', ctx.identity);
+        const userStore = new DynamoStore(User);
 
-//         const userStore = new DynamoStore(User);
+        const { firstName, lastName, email } = input;
 
-//         const { firstName, lastName, email } = input;
+        // PUT
+        const user = new User();
 
-//         // PUT
-//         const user = new User();
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.email = email;
 
-//         user.firstName = firstName;
-//         user.lastName = lastName;
-//         user.email = email;
+        await userStore.put(user).exec();
 
-//         await userStore.put(user).exec();
+        console.log('Put user', user);
 
-//         console.log('Put user', user);
+        // UPDATE
+        const userUpdate = new User();
 
-//         // UPDATE
-//         const userUpdate = new User();
+        userUpdate.id = user.id;
 
-//         userUpdate.id = user.id;
+        userUpdate.email = 'new email';
 
-//         userUpdate.email = 'new email';
+        console.log('userUpdate', userUpdate);
 
-//         console.log('userUpdate', userUpdate);
+        const updateResponse = await userStore.update(userUpdate.id).updateAttribute('email').set('newValue').returnValues('ALL_NEW').exec();
 
-//         const updateResponse = await userStore.update(userUpdate.id).updateAttribute('email').set('newValue').returnValues('ALL_NEW').exec();
+        console.log('updateResponse', updateResponse);
 
-//         console.log('updateResponse', updateResponse);
+        // QUERY
 
-//         // QUERY
+        const competition = new Competition();
 
-//         const competition = new Competition();
+        competition.eventId = 'eventId';
+        competition.judgeUserId = 'userId';
 
-//         competition.eventId = 'eventId';
-//         competition.judgeUserId = 'userId';
+        competition.params = new CompetitionParams();
 
-//         competition.params = new CompetitionParams();
+        competition.params.name = 'param name';
 
-//         competition.params.name = 'param name';
+        // const competitionStore = new DynamoStore(Competition);
 
-//         // const competitionStore = new DynamoStore(Competition);
+        await Competition.store.put(competition).ifNotExists().exec();
 
-//         await Competition.store.put(competition).ifNotExists().exec();
+        const loadedComp = await Competition.store.get(competition.id).exec();
 
-//         const loadedComp = await Competition.store.get(competition.id).exec();
+        const findComps = await Competition.store.query().wherePartitionKey('5-3f95-491a-9bba-beeaa0841c41').execFetchAll();
 
-//         const findComps = await Competition.store.query().wherePartitionKey('5-3f95-491a-9bba-beeaa0841c41').execFetchAll();
+        const request = Competition.store.query().index('byEvent').wherePartitionKey('bla');
 
-//         const request = Competition.store.query().index('byEvent').wherePartitionKey('bla');
+        const findCompsByEvent = await Competition.store.query().index('byEvent').wherePartitionKey('eventId').execFetchAll();
 
-//         const findCompsByEvent = await Competition.store.query().index('byEvent').wherePartitionKey('eventId').execFetchAll();
+        // console.log('findComps', findComps);
+        // console.log('findCompsByEvent', findCompsByEvent);
 
-//         // console.log('findComps', findComps);
-//         // console.log('findCompsByEvent', findCompsByEvent);
+        // findCompsByEvent.forEach((competition) => {
+        //     competition.myFunc();
+        // });
+        const keysToFetch: Array<Partial<Competition>> = [{ id: 'd187bf62-1da8-4981-91dc-20adbf2f2df6' }, { id: '8683b7a8-f38d-4a82-bbf4-1939322a574b' }];
 
-//         // findCompsByEvent.forEach((competition) => {
-//         //     competition.myFunc();
-//         // });
-//         const keysToFetch: Array<Partial<Competition>> = [{ id: 'd187bf62-1da8-4981-91dc-20adbf2f2df6' }, { id: '8683b7a8-f38d-4a82-bbf4-1939322a574b' }];
+        const batchGetComps = await Competition.store.batchGet(keysToFetch).exec();
 
-//         const batchGetComps = await Competition.store.batchGet(keysToFetch).exec();
+        console.log('batchGetComps', batchGetComps);
 
-//         console.log('batchGetComps', batchGetComps);
+        // await batchGetComps[0].myFunc();
 
-//         // await batchGetComps[0].myFunc();
+        const competition2 = new Competition();
 
-//         const competition2 = new Competition();
+        competition2.eventId = 'eventId';
+        competition2.judgeUserId = 'userId';
 
-//         competition2.eventId = 'eventId';
-//         competition2.judgeUserId = 'userId';
+        competition2.params = new CompetitionParams();
 
-//         competition2.params = new CompetitionParams();
+        competition2.params.name = 'param name';
 
-//         competition2.params.name = 'param name';
+        const batchPutCompetitions = [competition2];
 
-//         const batchPutCompetitions = [competition2];
+        await Competition.store.myBatchWrite().put(batchPutCompetitions).exec();
 
-//         await Competition.store.myBatchWrite().put(batchPutCompetitions).exec();
+        // Competition.store.
 
-//         // Competition.store.
+        console.log('batchPut', batchPutCompetitions);
 
-//         console.log('batchPut', batchPutCompetitions);
+        console.log('metadata', Competition.store);
 
-//         console.log('metadata', Competition.store);
+        // console.log('loadedComp params', loadedComp.params);
+        // loadedComp.myFunc();
+        // loadedComp.params.mySubFunc();
 
-//         // console.log('loadedComp params', loadedComp.params);
-//         // loadedComp.myFunc();
-//         // loadedComp.params.mySubFunc();
+        return user;
+    }
 
-//         return user;
-//     }
+    @Mutation(() => User)
+    async updateRegister(@Arg('input') input: RegisterInput, @Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
 
-//     @Mutation(() => User)
-//     async updateRegister(@Arg('input') input: RegisterInput, @Ctx() ctx: IContext): Promise<User> {
-//         console.log('identity', ctx.identity);
+        const userStore = new DynamoStore(User);
 
-//         const userStore = new DynamoStore(User);
+        const updateResponse = await userStore.updateItem(input).returnValues('ALL_NEW').exec();
 
-//         const updateResponse = await userStore.updateItem(input).returnValues('ALL_NEW').exec();
+        console.log('Full name', updateResponse.getFullName());
 
-//         console.log('Full name', updateResponse.getFullName());
+        return updateResponse;
+    }
 
-//         return updateResponse;
-//     }
+    @Mutation(() => User, { nullable: true })
+    async transactGetExample(@Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
 
-//     @Mutation(() => User, { nullable: true })
-//     async transactGetExample(@Ctx() ctx: IContext): Promise<User> {
-//         console.log('identity', ctx.identity);
+        const batchGet = new TransactGetRequest()
+            .returnConsumedCapacity('TOTAL')
+            .forModel(User, { id: 'b1650bb0-dcfc-44d6-8ba7-e99ba1538ca3' })
+            .forModel(Competition, { id: 'e57e33bf-5237-4bc6-9c41-f2664d7a8154' });
 
-//         const batchGet = new TransactGetRequest()
-//             .returnConsumedCapacity('TOTAL')
-//             .forModel(User, { id: 'b1650bb0-dcfc-44d6-8ba7-e99ba1538ca3' })
-//             .forModel(Competition, { id: 'e57e33bf-5237-4bc6-9c41-f2664d7a8154' });
+        // batchGet.
 
-//         // batchGet.
+        const items = await batchGet.exec();
 
-//         const items = await batchGet.exec();
+        console.log('items', items);
 
-//         console.log('items', items);
+        return null;
+    }
 
-//         return null;
-//     }
+    @Mutation(() => User, { nullable: true })
+    async transactWriteExample(@Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
 
-//     @Mutation(() => User, { nullable: true })
-//     async transactWriteExample(@Ctx() ctx: IContext): Promise<User> {
-//         console.log('identity', ctx.identity);
+        const competition1 = new Competition();
+        competition1.eventId = 'eventId';
+        competition1.judgeUserId = 'userId';
+        competition1.params = new CompetitionParams();
+        competition1.params.name = 'param name';
+        await Competition.store.put(competition1).ifNotExists().exec();
 
-//         const competition1 = new Competition();
-//         competition1.eventId = 'eventId';
-//         competition1.judgeUserId = 'userId';
-//         competition1.params = new CompetitionParams();
-//         competition1.params.name = 'param name';
-//         await Competition.store.put(competition1).ifNotExists().exec();
+        const competition2 = new Competition();
+        competition2.eventId = 'eventId';
+        competition2.judgeUserId = 'userId';
+        competition2.params = new CompetitionParams();
+        competition2.params.name = 'param name';
+        await Competition.store.put(competition2).ifNotExists().exec();
 
-//         const competition2 = new Competition();
-//         competition2.eventId = 'eventId';
-//         competition2.judgeUserId = 'userId';
-//         competition2.params = new CompetitionParams();
-//         competition2.params.name = 'param name';
-//         await Competition.store.put(competition2).ifNotExists().exec();
+        const batchWrite = new TransactWriteRequest().transact(
+            new TransactConditionCheck(Competition, competition1.id).onlyIf(attribute('modifiedAt').equals(competition1.modifiedAt)),
+            new TransactUpdate(Competition, competition2.id).updateAttribute('eventId').set('testBatchWrite')
+        );
 
-//         const batchWrite = new TransactWriteRequest().transact(
-//             new TransactConditionCheck(Competition, competition1.id).onlyIf(attribute('modifiedAt').equals(competition1.modifiedAt)),
-//             new TransactUpdate(Competition, competition2.id).updateAttribute('eventId').set('testBatchWrite')
-//         );
+        // batchGet.
 
-//         // batchGet.
+        const items = await batchWrite.exec();
 
-//         const items = await batchWrite.exec();
+        console.log('items', items);
 
-//         console.log('items', items);
+        return null;
+    }
 
-//         return null;
-//     }
+    @Mutation(() => User, { nullable: true })
+    async scanExample(@Ctx() ctx: IContext): Promise<User> {
+        const competitions = await Competition.store.scan().execFetchAll();
 
-//     @Mutation(() => User, { nullable: true })
-//     async scanExample(@Ctx() ctx: IContext): Promise<User> {
-//         const competitions = await Competition.store.scan().execFetchAll();
+        console.log('competitions', competitions);
 
-//         console.log('competitions', competitions);
+        return null;
+    }
 
-//         competitions[0].myFunc();
+    @Mutation(() => User, { nullable: true })
+    async deleteExample(@Ctx() ctx: IContext): Promise<User> {
+        const event = new Event();
+        await Event.store.put(event).ifNotExists().exec();
 
-//         return null;
-//     }
+        const competition = new Competition();
+        competition.eventId = event.id;
+        competition.judgeUserId = 'userId';
+        competition.params = new CompetitionParams();
+        competition.params.name = 'param name';
+        await Competition.store.put(competition).ifNotExists().exec();
 
-//     @Mutation(() => User, { nullable: true })
-//     async deleteExample(@Ctx() ctx: IContext): Promise<User> {
-//         const event = new Event();
-//         await Event.store.put(event).ifNotExists().exec();
+        // event.getDescendants();
 
-//         const competition = new Competition();
-//         competition.eventId = event.id;
-//         competition.judgeUserId = 'userId';
-//         competition.params = new CompetitionParams();
-//         competition.params.name = 'param name';
-//         await Competition.store.put(competition).ifNotExists().exec();
+        console.log(competition.getKeys());
 
-//         // event.getDescendants();
+        return null;
+    }
 
-//         console.log(competition.getKeys());
+    @Mutation(() => User, { nullable: true })
+    async batchWriteExample(@Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
 
-//         return null;
-//     }
+        const competitions: Competition[] = [];
 
-//     @Mutation(() => User, { nullable: true })
-//     async batchWriteExample(@Ctx() ctx: IContext): Promise<User> {
-//         console.log('identity', ctx.identity);
+        for (let i = 0; i < 50; i++) {
+            const competition = new Competition();
+            competition.eventId = 'eventId';
+            competition.judgeUserId = 'userId';
+            competition.params = new CompetitionParams();
+            competition.params.name = 'param name';
+            competitions.push(competition);
+        }
 
-//         const competitions: Competition[] = [];
+        const batchReqest = new BatchWriteRequest();
 
-//         for (let i = 0; i < 50; i++) {
-//             const competition = new Competition();
-//             competition.eventId = 'eventId';
-//             competition.judgeUserId = 'userId';
-//             competition.params = new CompetitionParams();
-//             competition.params.name = 'param name';
-//             competitions.push(competition);
-//         }
+        const chunks = _.chunk(competitions, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT);
 
-//         const batchReqest = new BatchWriteRequest();
+        Promise.all(batchReqest.putChunks(_.chunk(competitions, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()));
 
-//         const chunks = _.chunk(competitions, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT);
+        return null;
+    }
 
-//         Promise.all(batchReqest.putChunks(_.chunk(competitions, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT)).map((req) => req.exec()));
+    @Mutation(() => User, { nullable: true })
+    async riderAloocationExample(@Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
 
-//         return null;
-//     }
+        const riderAlocations: RiderAllocation[] = [];
 
-//     @Mutation(() => User, { nullable: true })
-//     async riderAloocationExample(@Ctx() ctx: IContext): Promise<User> {
-//         console.log('identity', ctx.identity);
+        for (let i = 0; i < 50; i++) {
+            const riderAllocation = new RiderAllocation();
+            riderAllocation.allocatableId = 'allocatableId';
+            riderAllocation.userId = `userId${i}`;
+            riderAlocations.push(riderAllocation);
+        }
 
-//         const riderAlocations: RiderAllocation[] = [];
+        const batchReqest = new BatchWriteRequest();
 
-//         for (let i = 0; i < 50; i++) {
-//             const riderAllocation = new RiderAllocation();
-//             riderAllocation.allocatableId = 'allocatableId';
-//             riderAllocation.userId = `userId${i}`;
-//             riderAlocations.push(riderAllocation);
-//         }
+        const chunks = _.chunk(riderAlocations, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT);
 
-//         const batchReqest = new BatchWriteRequest();
+        console.log('params', RiderAllocation.store.put(riderAlocations[0]).params);
 
-//         const chunks = _.chunk(riderAlocations, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT);
+        await RiderAllocation.store.put(riderAlocations[0]).exec();
 
-//         console.log('params', RiderAllocation.store.put(riderAlocations[0]).params);
+        return null;
+    }
 
-//         await RiderAllocation.store.put(riderAlocations[0]).exec();
+    @Mutation(() => User, { nullable: true })
+    async getHeatExample(@Ctx() ctx: IContext): Promise<User> {
+        console.log('identity', ctx.identity);
 
-//         return null;
-//     }
+        const heat = await Heat.store.get('bec48b82-c528-4059-b9bc-41f47ee80171').exec();
 
-//     @Mutation(() => User, { nullable: true })
-//     async getHeatExample(@Ctx() ctx: IContext): Promise<User> {
-//         console.log('identity', ctx.identity);
+        console.log('function', heat.seedSlots[0].getNextHeat);
 
-//         const heat = await Heat.store.get('bec48b82-c528-4059-b9bc-41f47ee80171').exec();
-
-//         console.log('function', heat.seedSlots[0].getNextHeat);
-
-//         return null;
-//     }
-// }
+        return null;
+    }
+}
