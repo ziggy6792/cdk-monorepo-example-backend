@@ -488,6 +488,7 @@ export const competitionPreRiderAllocation = {
 
 export const competitionPreScoreRuns = {
     ...competitionPreRiderAllocation,
+    heats: [...competitionPreRiderAllocation.heats.map((heat) => ({ ...heat, status: 'OPEN' }))],
     riderAllocations: [
         {
             createdAt: '2021-03-14T05:32:58.489Z',

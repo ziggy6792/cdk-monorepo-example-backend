@@ -27,6 +27,7 @@ registerEnumType(HeatStatus, {
 const tableSchema = commonConfig.DB_SCHEMA.Heat;
 
 @ObjectType()
+@Model()
 export class SeedSlot {
     @Field(() => Int)
     seed: number;

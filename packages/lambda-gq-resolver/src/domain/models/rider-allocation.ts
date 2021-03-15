@@ -11,6 +11,7 @@ import { IContext } from 'src/types';
 import User from './user';
 
 @ObjectType()
+@Model()
 export class Run {
     @Field(() => Float, { nullable: true })
     score: number;
@@ -45,6 +46,11 @@ class RiderAllocation extends Creatable {
     async getPosition(@Ctx() context: IContext): Promise<number | null> {
         const result = await context.dataLoaders.riderAlocationPosition.load({ allocatableId: this.allocatableId, userId: this.userId });
         return result.position;
+    }
+
+    mapIn(loadedValues: any): void {
+        super.mapIn(loadedValues);
+        this.startSeed = +this.startSeed;
     }
 
     initRuns(): void {

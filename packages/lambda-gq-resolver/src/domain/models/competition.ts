@@ -61,6 +61,7 @@ registerEnumType(Level, {
 });
 
 @ObjectType()
+@Model()
 export class CompetitionParams {
     @Field()
     name: string;

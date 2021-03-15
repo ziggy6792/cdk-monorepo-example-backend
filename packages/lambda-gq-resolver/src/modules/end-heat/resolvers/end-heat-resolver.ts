@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
 import { Resolver, ID, Mutation, Arg, UseMiddleware, Ctx } from 'type-graphql';
-import Event from 'src/domain/models/event';
 import Heat, { HeatStatus } from 'src/domain/models/heat';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import { isHeatIdJudge } from 'src/middleware/auth-check/is-heat-judge';
@@ -42,7 +41,5 @@ export default class EndHeatResolver {
         await Heat.store.updateItem({ id: heatId, status: HeatStatus.CLOSED }).exec();
 
         return competition;
-
-        // return retHeat;
     }
 }

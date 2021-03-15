@@ -2,7 +2,7 @@
 
 import { Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
 import _ from 'lodash';
-import Heat from 'src/domain/models/heat';
+import Heat, { HeatStatus } from 'src/domain/models/heat';
 import { ScorRunInput } from 'src/modules/score-run/inputs/score-run-inputs';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import errorMessage from 'src/config/error-message';
@@ -21,15 +21,18 @@ export default class ScoreRun {
             allocatableId: heatId,
             ...rest,
         };
-        const updateFunction = async (): Promise<void> => {
-            try {
-                await RiderAllocation.store.updateItem(riderAllocationUpdateParams).exec();
-            } catch (err) {
-                throw mapDbException(err, errorMessage.canNotFindRider);
-            }
-        };
 
-        const [heat, _] = await Promise.all([Heat.store.get(input.heatId).exec(), updateFunction()]);
+        const heat = await Heat.store.get(input.heatId).exec();
+
+        if (heat.status !== HeatStatus.OPEN) {
+            throw new Error(errorMessage.heatNotOpen);
+        }
+
+        try {
+            await RiderAllocation.store.updateItem(riderAllocationUpdateParams).exec();
+        } catch (err) {
+            throw mapDbException(err, errorMessage.canNotFindRider);
+        }
 
         return heat;
     }

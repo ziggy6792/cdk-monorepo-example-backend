@@ -11,6 +11,7 @@ const errorMessage = {
     //
     canNotFindRound1: 'Can not find round 1',
     canNotFindRider: 'The rider you are trying to score is not in this heat',
+    heatNotOpen: 'The heat you are scoring is not open',
 };
 
 export default errorMessage;
