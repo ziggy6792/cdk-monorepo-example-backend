@@ -4,6 +4,7 @@ const testEvent = {
     name: 'Test Event',
     when: 'now',
     adminUserId: 'Facebook_10224795420532374',
+    status: 'REGISTRATION_CLOSED',
     __typeName: 'Event',
 };
 const testCompetition = {

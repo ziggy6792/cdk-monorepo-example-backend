@@ -32,6 +32,11 @@ const tableSchema = commonConfig.DB_SCHEMA.Event;
 class Event extends DataEntity {
     static store: DynamoStore<Event>;
 
+    constructor() {
+        super();
+        this.status = EventStatus.REGISTRATION_CLOSED;
+    }
+
     @Field()
     description: string;
 

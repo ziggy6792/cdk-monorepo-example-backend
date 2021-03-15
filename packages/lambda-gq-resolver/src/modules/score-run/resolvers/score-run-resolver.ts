@@ -7,13 +7,13 @@ import { ScorRunInput } from 'src/modules/score-run/inputs/score-run-inputs';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import errorMessage from 'src/config/error-message';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
-import isHeatJudge from 'src/middleware/auth-check/is-heat-judge';
+import { isHeatInputJudge } from 'src/middleware/auth-check/is-heat-judge';
 import { mapDbException } from 'src/utils/utility';
 
 @Resolver()
 export default class ScoreRun {
     @Mutation(() => Heat)
-    @UseMiddleware([createAuthMiddleware([isHeatJudge])])
+    @UseMiddleware([createAuthMiddleware([isHeatInputJudge])])
     async scoreRun(@Arg('input', () => ScorRunInput) input: ScorRunInput): Promise<Heat> {
         const { heatId, ...rest } = input;
 
