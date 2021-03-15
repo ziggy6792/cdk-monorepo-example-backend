@@ -25,8 +25,8 @@ const scoreRunMutation = `mutation scoreRun($input: ScorRunInput!) {
   }
 }`;
 
-const getCompetitionQuery = `query getCompetition {
-    getCompetition(id: "testCompetition") {
+const getCompetitionQuery = `query getCompetition($id: ID!) {
+    getCompetition(id: $id) {
       rounds {
         items {
           heats {
@@ -47,8 +47,7 @@ const getCompetitionQuery = `query getCompetition {
         }
       }
     }
-  }
-  `;
+  }`;
 
 const scores = {
     heat1: [
@@ -174,7 +173,7 @@ describe('Score Run', () => {
         const response = await gCall({
             source: getCompetitionQuery,
             variableValues: {
-                heatId: 'testCompetition',
+                id: 'testCompetition',
             },
         });
 
@@ -188,12 +187,16 @@ describe('Score Run', () => {
         const response = await gCall({
             source: getCompetitionQuery,
             variableValues: {
-                heatId: 'testCompetition',
+                id: 'testCompetition',
             },
         });
 
         // console.log(JSON.stringify(response.data.getCompetition.rounds.items[0]));
 
         expect(response.data.getCompetition.rounds.items[0]).toMatchObject(expectedRound1Results);
+
+        const db = await mockDbUtils.dbToJson();
+
+        console.log(JSON.stringify(db.riderAllocations));
     });
 });
