@@ -43,7 +43,8 @@ class DynamoStore<T extends Creatable> extends EasyDynamoStore<T> {
 
     update(partitionKey: any, sortKey?: any): MyUpdateRequest<T> {
         const updateRequest = new MyUpdateRequest(this.myDynamoDBWrapper, this.myModelClazz, partitionKey, sortKey);
-        updateRequest.updateAttribute('modifiedAt').set(Creatable.getTimestamp());
+        // modifiedAt is private so i need to cast to any
+        updateRequest.updateAttribute('modifiedAt' as any).set(Creatable.getTimestamp());
 
         return updateRequest;
     }

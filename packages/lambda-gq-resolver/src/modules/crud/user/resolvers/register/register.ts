@@ -171,7 +171,7 @@ export default class RegisterResolver {
         await Competition.store.put(competition2).ifNotExists().exec();
 
         const batchWrite = new TransactWriteRequest().transact(
-            new TransactConditionCheck(Competition, competition1.id).onlyIf(attribute('modifiedAt').equals(competition1.modifiedAt)),
+            new TransactConditionCheck(Competition, competition1.id).onlyIf(attribute('modifiedAt').equals(competition1.getModifiedAt())),
             new TransactUpdate(Competition, competition2.id).updateAttribute('eventId').set('testBatchWrite')
         );
 

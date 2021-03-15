@@ -18,7 +18,7 @@ abstract class Creatable {
     readonly createdAt: string;
 
     @Field()
-    readonly modifiedAt: string;
+    private modifiedAt: string;
 
     constructor() {
         this.__typeName = this.constructor.name;
@@ -38,7 +38,12 @@ abstract class Creatable {
 
     setModifiedAt(): void {
         // ToDo: Clean this up
-        Object.assign(this, { modifiedAt: this.modifiedAt ? Creatable.getTimestamp() : this.createdAt });
+        // Object.assign(this, { modifiedAt: this.modifiedAt ? Creatable.getTimestamp() : this.createdAt });
+        this.modifiedAt = this.modifiedAt ? Creatable.getTimestamp() : this.createdAt;
+    }
+
+    getModifiedAt(): string {
+        return this.modifiedAt;
     }
 
     getKeys(): any {
