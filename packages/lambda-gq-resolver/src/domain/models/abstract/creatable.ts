@@ -10,36 +10,6 @@ import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { metadataForModel } from '@shiftcoders/dynamo-easy';
 
-// const target = { name: 'Me', age: 25 };
-
-const merge = (...args) => {
-    // Variables
-    const target = {};
-
-    // Merge the object into the target object
-    const merger = (obj) => {
-        for (const prop in obj) {
-            // eslint-disable-next-line no-prototype-builtins
-            if (obj.hasOwnProperty(prop)) {
-                if (Object.prototype.toString.call(obj[prop]) === '[object Object]') {
-                    // If we're doing a deep merge and the property is an object
-                    target[prop] = merge(target[prop], obj[prop]);
-                } else {
-                    // Otherwise, do a regular merge
-                    target[prop] = obj[prop];
-                }
-            }
-        }
-    };
-
-    // Loop through each object and conduct a merge
-    for (let i = 0; i < args.length; i++) {
-        merger(args[i]);
-    }
-
-    return target;
-};
-
 @ObjectType({ isAbstract: true })
 abstract class Creatable {
     @Field()
@@ -47,7 +17,7 @@ abstract class Creatable {
 
     readonly __typeName: string;
 
-    modifiedAt: string;
+    readonly modifiedAt: string;
 
     constructor() {
         this.__typeName = this.constructor.name;
@@ -66,7 +36,8 @@ abstract class Creatable {
     static store: DynamoStore<any>;
 
     setModifiedAt(): void {
-        this.modifiedAt = this.modifiedAt ? Creatable.getTimestamp() : this.createdAt;
+        // ToDo: Clean this up
+        Object.assign(this, { modifiedAt: this.modifiedAt ? Creatable.getTimestamp() : this.createdAt });
     }
 
     getKeys(): any {

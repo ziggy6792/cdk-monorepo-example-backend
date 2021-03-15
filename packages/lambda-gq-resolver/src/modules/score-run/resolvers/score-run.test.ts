@@ -144,10 +144,9 @@ const expectedRound1Results = {
     },
 };
 
-const callFns = _.flatten(
+const scoreRunFns = _.flatten(
     Object.keys(scores).map((heatId) => {
         const heatScores = scores[heatId];
-
         const fns = heatScores.map((score) => async () =>
             await gCall({
                 source: scoreRunMutation,
@@ -159,18 +158,17 @@ const callFns = _.flatten(
                 },
             })
         );
-
         return fns;
     })
 );
 
 describe('Score Run', () => {
-    it.skip('scorRun in sync', async () => {
+    it.skip('score runs in sync', async () => {
         await mockDbUtils.populateDb(mockDb.competitionPreScoreRuns);
 
-        for (let i = 0; i < callFns.length; i++) {
+        for (let i = 0; i < scoreRunFns.length; i++) {
             // eslint-disable-next-line no-await-in-loop
-            await callFns[i]();
+            await scoreRunFns[i]();
         }
 
         const response = await gCall({
@@ -182,10 +180,10 @@ describe('Score Run', () => {
 
         expect(response.data.getCompetition.rounds.items[0]).toMatchObject(expectedRound1Results);
     });
-    it('scorRun in parallel', async () => {
+    it('score runs in parallel', async () => {
         await mockDbUtils.populateDb(mockDb.competitionPreScoreRuns);
 
-        const results = await Promise.all(callFns.map((fn) => fn()));
+        const results = await Promise.all(scoreRunFns.map((fn) => fn()));
 
         const response = await gCall({
             source: getCompetitionQuery,

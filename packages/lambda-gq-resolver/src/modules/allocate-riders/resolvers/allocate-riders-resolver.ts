@@ -25,8 +25,6 @@ export default class AllocateRiders {
         const round1Heats = await round1.getHeats();
 
         // Map from each seed number to the round 1 heat it belongs to
-        // const seedHeatLookup: { [key in number]: string } = {};
-
         const seedHeatLookup: Map<number, string> = new Map();
 
         round1Heats.forEach((heat) => {
