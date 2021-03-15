@@ -61,6 +61,7 @@ registerEnumType(Level, {
 });
 
 @ObjectType()
+@Model()
 export class CompetitionParams {
     @Field()
     name: string;
@@ -104,9 +105,6 @@ class Competition extends DataEntity {
 
     @Field(() => CompetitionParams)
     params: CompetitionParams;
-
-    @Field()
-    selectedHeatId: string;
 
     @Field(() => Int)
     maxRiders: string;

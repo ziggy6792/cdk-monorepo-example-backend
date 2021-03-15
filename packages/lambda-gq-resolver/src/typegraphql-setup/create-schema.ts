@@ -9,8 +9,11 @@ import RoundResolvers from 'src/modules/crud/round/resolvers';
 import RiderAllocationResolvers from 'src/modules/crud/rider-allocation/resolvers';
 import GetDataEntityResolver from 'src/modules/get-data-entity/resolvers';
 import BuildCompetition from 'src/modules/build-competition/resolvers';
+import SelectHeat from 'src/modules/select-heat/resolvers';
 import AllocateRiders from 'src/modules/allocate-riders/resolvers';
 import ScoreRun from 'src/modules/score-run/resolvers';
+import HelloResolver from 'src/modules/hello-world/resolvers';
+import EndHeatResolver from 'src/modules/end-heat/resolvers';
 
 const schema = buildSchemaSync({
     resolvers: [
@@ -24,6 +27,9 @@ const schema = buildSchemaSync({
         BuildCompetition,
         AllocateRiders,
         ScoreRun,
+        SelectHeat,
+        EndHeatResolver,
+        HelloResolver,
     ] as any,
 });
 

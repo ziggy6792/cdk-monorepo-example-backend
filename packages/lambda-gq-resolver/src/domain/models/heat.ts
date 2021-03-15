@@ -27,6 +27,7 @@ registerEnumType(HeatStatus, {
 const tableSchema = commonConfig.DB_SCHEMA.Heat;
 
 @ObjectType()
+@Model()
 export class SeedSlot {
     @Field(() => Int)
     seed: number;
@@ -51,6 +52,7 @@ class Heat extends DataEntity {
     constructor() {
         super();
         this.seedSlots = [];
+        this.status = HeatStatus.CLOSED;
     }
 
     mapIn(loadedValues: any): void {
@@ -88,7 +90,7 @@ class Heat extends DataEntity {
     }
 
     @Field(() => RiderAllocationList)
-    protected async riderAllocations(@Ctx() context: IContext): Promise<RiderAllocationList> {
+    async getSortedRiderAllocations(@Ctx() context: IContext): Promise<RiderAllocation[]> {
         let riderAllocations = await this.getRiderAllocations();
 
         const orderMap: Map<RiderAllocation, number> = new Map();
@@ -101,9 +103,13 @@ class Heat extends DataEntity {
 
         riderAllocations = _.orderBy(riderAllocations, (riderAllocation) => orderMap.get(riderAllocation));
 
-        const list = new RiderAllocationList();
-        list.items = riderAllocations;
+        return riderAllocations;
+    }
 
+    @Field(() => RiderAllocationList)
+    protected async riderAllocations(@Ctx() context: IContext): Promise<RiderAllocationList> {
+        const list = new RiderAllocationList();
+        list.items = await this.getSortedRiderAllocations(context);
         return list;
     }
 

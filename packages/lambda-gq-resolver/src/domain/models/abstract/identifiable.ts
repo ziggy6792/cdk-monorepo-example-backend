@@ -16,11 +16,6 @@ abstract class Identifiable extends Creatable {
         super();
         this.id = uuidv4();
     }
-
-    setDefaults(): void {
-        super.setDefaults();
-        this.id = uuidv4();
-    }
 }
 
 export default Identifiable;

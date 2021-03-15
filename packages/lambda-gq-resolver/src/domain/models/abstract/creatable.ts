@@ -5,27 +5,28 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
-import { ClassType, Field, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
-import { GetRequest, GSISortKey, metadataForModel } from '@shiftcoders/dynamo-easy';
-import DynamoService from 'src/utils/dynamo-easy/dynamo-service';
+import { metadataForModel } from '@shiftcoders/dynamo-easy';
 
 @ObjectType({ isAbstract: true })
 abstract class Creatable {
-    @Field()
-    createdAt: string;
-
-    modifiedAt: string;
-
     readonly __typeName: string;
 
+    @Field()
+    readonly createdAt: string;
+
+    @Field()
+    private modifiedAt: string;
+
     constructor() {
-        this.setDefaults();
         this.__typeName = this.constructor.name;
+        this.createdAt = Creatable.getTimestamp();
     }
 
     mapIn(loadedValues: any): void {
+        // Object.assign(this, { ...merge(this, loadedValues) });
         _.merge(this, loadedValues);
     }
 
@@ -35,12 +36,14 @@ abstract class Creatable {
 
     static store: DynamoStore<any>;
 
-    setDefaults(): void {
-        this.createdAt = Creatable.getTimestamp();
+    setModifiedAt(): void {
+        // ToDo: Clean this up
+        // Object.assign(this, { modifiedAt: this.modifiedAt ? Creatable.getTimestamp() : this.createdAt });
+        this.modifiedAt = this.modifiedAt ? Creatable.getTimestamp() : this.createdAt;
     }
 
-    setModifiedAt(): void {
-        this.modifiedAt = this.modifiedAt ? Creatable.getTimestamp() : this.createdAt;
+    getModifiedAt(): string {
+        return this.modifiedAt;
     }
 
     getKeys(): any {
