@@ -12,11 +12,12 @@ import { metadataForModel } from '@shiftcoders/dynamo-easy';
 
 @ObjectType({ isAbstract: true })
 abstract class Creatable {
+    readonly __typeName: string;
+
     @Field()
     readonly createdAt: string;
 
-    readonly __typeName: string;
-
+    @Field()
     readonly modifiedAt: string;
 
     constructor() {
