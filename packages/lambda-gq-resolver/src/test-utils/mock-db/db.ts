@@ -4,7 +4,6 @@ const testEvent = {
     name: 'Test Event',
     when: 'now',
     adminUserId: 'Facebook_10224795420532374',
-    status: 'REGISTRATION_CLOSED',
     __typeName: 'Event',
 };
 const testCompetition = {
@@ -12,6 +11,7 @@ const testCompetition = {
     id: 'testCompetition',
     name: 'Test Compettion',
     judgeUserId: 'babbbafe-f229-4a30-9dd4-b1bc55b4ed9a',
+    status: 'REGISTRATION_CLOSED',
     eventId: 'testEvent',
     __typeName: 'Competition',
 };
@@ -64,6 +64,7 @@ export const competitionPreRiderAllocation = {
             createdAt: '2021-03-13T08:19:03.777Z',
             id: 'heat2',
             __typeName: 'Heat',
+            status: 'CLOSED',
             seedSlots: [
                 {
                     seed: 3,
@@ -98,6 +99,7 @@ export const competitionPreRiderAllocation = {
             createdAt: '2021-03-13T08:19:03.781Z',
             id: 'heat4',
             __typeName: 'Heat',
+            status: 'CLOSED',
             seedSlots: [
                 {
                     seed: 4,
@@ -132,6 +134,7 @@ export const competitionPreRiderAllocation = {
             createdAt: '2021-03-13T08:19:03.797Z',
             id: 'final',
             __typeName: 'Heat',
+            status: 'CLOSED',
             seedSlots: [
                 {
                     seed: 1,
@@ -160,6 +163,7 @@ export const competitionPreRiderAllocation = {
             createdAt: '2021-03-13T08:19:03.787Z',
             id: 'lcq2',
             __typeName: 'Heat',
+            status: 'CLOSED',
             seedSlots: [
                 {
                     seed: 10,
@@ -195,6 +199,7 @@ export const competitionPreRiderAllocation = {
             createdAt: '2021-03-13T08:19:03.785Z',
             id: 'lcq1',
             __typeName: 'Heat',
+            status: 'CLOSED',
             seedSlots: [
                 {
                     seed: 9,
@@ -230,6 +235,7 @@ export const competitionPreRiderAllocation = {
             createdAt: '2021-03-13T08:19:03.779Z',
             id: 'heat3',
             __typeName: 'Heat',
+            status: 'CLOSED',
             seedSlots: [
                 {
                     seed: 2,
@@ -264,6 +270,7 @@ export const competitionPreRiderAllocation = {
             createdAt: '2021-03-13T08:19:03.793Z',
             id: 'sf2',
             __typeName: 'Heat',
+            status: 'CLOSED',
             seedSlots: [
                 {
                     seed: 2,
@@ -292,6 +299,7 @@ export const competitionPreRiderAllocation = {
             createdAt: '2021-03-13T08:19:03.791Z',
             id: 'sf1',
             __typeName: 'Heat',
+            status: 'CLOSED',
             seedSlots: [
                 {
                     seed: 1,
@@ -320,6 +328,7 @@ export const competitionPreRiderAllocation = {
             createdAt: '2021-03-13T08:19:03.775Z',
             id: 'heat1',
             __typeName: 'Heat',
+            status: 'CLOSED',
             seedSlots: [
                 {
                     seed: 1,

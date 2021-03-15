@@ -16,7 +16,7 @@ export class Run {
     score: number;
 
     @Field({ nullable: true })
-    isPublic: boolean;
+    isPublic?: boolean;
 }
 
 const tableSchema = commonConfig.DB_SCHEMA.RiderAllocation;
@@ -39,12 +39,16 @@ class RiderAllocation extends Creatable {
     startSeed: number;
 
     @Field(() => [Run], { nullable: true })
-    runs: [Run];
+    runs: Run[];
 
     @Field(() => Int, { name: 'position', nullable: true })
     async getPosition(@Ctx() context: IContext): Promise<number | null> {
         const result = await context.dataLoaders.riderAlocationPosition.load({ allocatableId: this.allocatableId, userId: this.userId });
         return result.position;
+    }
+
+    initRuns(): void {
+        this.runs = [{ score: null }, { score: null }];
     }
 
     async getOrder(@Ctx() context: IContext): Promise<number | null> {

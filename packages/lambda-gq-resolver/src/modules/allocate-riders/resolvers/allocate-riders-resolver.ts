@@ -9,8 +9,6 @@ import _ from 'lodash';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import { attribute, BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
 
-const defaultRiderAllocation = { runs: [{ score: null }, { score: null }] };
-
 @Resolver()
 export default class AllocateRiders {
     @Mutation(() => Competition, { nullable: true })
@@ -44,14 +42,12 @@ export default class AllocateRiders {
 
         ((Object.keys(seedHeatLookup) as unknown) as number[]).forEach((seed) => {
             if (riderAllocationsLookup[seed] && seedHeatLookup[seed]) {
-                createRiderAllocations.push(
-                    Object.assign(new RiderAllocation(), {
-                        ...defaultRiderAllocation,
-                        allocatableId: seedHeatLookup[seed],
-                        userId: riderAllocationsLookup[seed],
-                        startSeed: seed,
-                    })
-                );
+                const riderAllocation = new RiderAllocation();
+                riderAllocation.allocatableId = seedHeatLookup[seed];
+                riderAllocation.userId = riderAllocationsLookup[seed];
+                riderAllocation.startSeed = seed;
+                riderAllocation.initRuns();
+                createRiderAllocations.push(riderAllocation);
             }
         });
 

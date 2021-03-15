@@ -112,14 +112,14 @@ const expectedResult = {
             },
             {
                 userId: 'riderI',
-                position: null,
+                position: 6,
                 startSeed: 9,
                 runs: [
                     {
-                        score: null,
+                        score: 5,
                     },
                     {
-                        score: null,
+                        score: 10,
                     },
                 ],
             },
@@ -133,7 +133,7 @@ const scores = [
     { userId: 'riderR', runs: [{ score: 16 }, { score: 50 }] },
     { userId: 'riderV', runs: [{ score: 40 }, { score: null }] },
     { userId: 'riderE', runs: [{ score: 30 }, { score: 45 }] },
-    // { userId: 'riderU', runs: [{ score: 20 }, { score: 30 }] },
+    { userId: 'riderI', runs: [{ score: 5 }, { score: 10 }] },
 ];
 
 describe('Score Run', () => {
