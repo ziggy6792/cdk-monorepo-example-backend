@@ -73,7 +73,7 @@ const scores = {
         { userId: 'riderS', runs: [{ score: 65 }, { score: 49 }] },
         { userId: 'riderB', runs: [{ score: 68 }, { score: 82 }] },
         { userId: 'riderW', runs: [{ score: 59 }, { score: 51 }] },
-        { userId: 'riderF', runs: [{ score: 58 }, { score: 65 }] },
+        { userId: 'riderF', runs: [{ score: 58 }, { score: 66 }] },
     ],
     heat4: [
         { userId: 'riderL', runs: [{ score: null }, { score: null }] },
@@ -120,7 +120,7 @@ const expectedRound1Results = {
                     items: [
                         { userId: 'riderB', position: 1, startSeed: 2, runs: [{ score: 68 }, { score: 82 }] },
                         { userId: 'riderJ', position: 2, startSeed: 10, runs: [{ score: 46 }, { score: 80 }] },
-                        { userId: 'riderF', position: 3, startSeed: 6, runs: [{ score: 58 }, { score: 65 }] },
+                        { userId: 'riderF', position: 3, startSeed: 6, runs: [{ score: 58 }, { score: 66 }] },
                         { userId: 'riderS', position: 4, startSeed: 18, runs: [{ score: 65 }, { score: 49 }] },
                         { userId: 'riderW', position: 5, startSeed: 22, runs: [{ score: 59 }, { score: 51 }] },
                         { userId: 'riderO', position: 6, startSeed: 14, runs: [{ score: 53 }, { score: 6 }] },
@@ -194,7 +194,7 @@ describe('Score Run', () => {
             },
         });
 
-        console.log(JSON.stringify(response.data.getCompetition.rounds.items[0]));
+        // console.log(JSON.stringify(response.data.getCompetition.rounds.items[0]));
 
         expect(response.data.getCompetition.rounds.items[0]).toMatchObject(expectedRound1Results);
     });

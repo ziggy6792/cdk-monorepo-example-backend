@@ -48,11 +48,6 @@ class RiderAllocation extends Creatable {
         return result.position;
     }
 
-    mapIn(loadedValues: any): void {
-        super.mapIn(loadedValues);
-        this.startSeed = +this.startSeed;
-    }
-
     initRuns(): void {
         this.runs = [{ score: null }, { score: null }];
     }

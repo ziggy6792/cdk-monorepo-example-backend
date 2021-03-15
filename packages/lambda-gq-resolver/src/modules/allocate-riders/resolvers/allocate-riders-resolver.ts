@@ -31,7 +31,6 @@ export default class AllocateRiders {
 
         round1Heats.forEach((heat) => {
             heat.seedSlots.forEach((seedSlot) => {
-                console.log('seedSlot', seedSlot);
                 seedHeatLookup.set(seedSlot.seed, heat.id);
             });
         });

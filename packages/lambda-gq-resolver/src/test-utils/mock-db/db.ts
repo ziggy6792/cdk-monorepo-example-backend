@@ -493,7 +493,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.489Z',
             __typeName: 'RiderAllocation',
-            startSeed: '1',
+            startSeed: 1,
             modifiedAt: '2021-03-14T05:32:58.489Z',
             allocatableId: 'heat1',
             runs: [{}, {}],
@@ -502,7 +502,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.493Z',
             __typeName: 'RiderAllocation',
-            startSeed: '5',
+            startSeed: 5,
             modifiedAt: '2021-03-14T05:32:58.493Z',
             allocatableId: 'heat1',
             runs: [{}, {}],
@@ -511,7 +511,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.497Z',
             __typeName: 'RiderAllocation',
-            startSeed: '9',
+            startSeed: 9,
             modifiedAt: '2021-03-14T05:32:58.497Z',
             allocatableId: 'heat1',
             runs: [{}, {}],
@@ -520,7 +520,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.501Z',
             __typeName: 'RiderAllocation',
-            startSeed: '13',
+            startSeed: 13,
             modifiedAt: '2021-03-14T05:32:58.501Z',
             allocatableId: 'heat1',
             runs: [{}, {}],
@@ -529,7 +529,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.505Z',
             __typeName: 'RiderAllocation',
-            startSeed: '17',
+            startSeed: 17,
             modifiedAt: '2021-03-14T05:32:58.505Z',
             allocatableId: 'heat1',
             runs: [{}, {}],
@@ -538,7 +538,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.509Z',
             __typeName: 'RiderAllocation',
-            startSeed: '21',
+            startSeed: 21,
             modifiedAt: '2021-03-14T05:32:58.509Z',
             allocatableId: 'heat1',
             runs: [{}, {}],
@@ -739,7 +739,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.491Z',
             __typeName: 'RiderAllocation',
-            startSeed: '3',
+            startSeed: 3,
             modifiedAt: '2021-03-14T05:32:58.491Z',
             allocatableId: 'heat2',
             runs: [{}, {}],
@@ -748,7 +748,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.495Z',
             __typeName: 'RiderAllocation',
-            startSeed: '7',
+            startSeed: 7,
             modifiedAt: '2021-03-14T05:32:58.495Z',
             allocatableId: 'heat2',
             runs: [{}, {}],
@@ -757,7 +757,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.499Z',
             __typeName: 'RiderAllocation',
-            startSeed: '11',
+            startSeed: 11,
             modifiedAt: '2021-03-14T05:32:58.499Z',
             allocatableId: 'heat2',
             runs: [{}, {}],
@@ -766,7 +766,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.503Z',
             __typeName: 'RiderAllocation',
-            startSeed: '15',
+            startSeed: 15,
             modifiedAt: '2021-03-14T05:32:58.503Z',
             allocatableId: 'heat2',
             runs: [{}, {}],
@@ -775,7 +775,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.507Z',
             __typeName: 'RiderAllocation',
-            startSeed: '19',
+            startSeed: 19,
             modifiedAt: '2021-03-14T05:32:58.507Z',
             allocatableId: 'heat2',
             runs: [{}, {}],
@@ -784,7 +784,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.511Z',
             __typeName: 'RiderAllocation',
-            startSeed: '23',
+            startSeed: 23,
             modifiedAt: '2021-03-14T05:32:58.511Z',
             allocatableId: 'heat2',
             runs: [{}, {}],
@@ -793,7 +793,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.490Z',
             __typeName: 'RiderAllocation',
-            startSeed: '2',
+            startSeed: 2,
             modifiedAt: '2021-03-14T05:32:58.490Z',
             allocatableId: 'heat3',
             runs: [{}, {}],
@@ -802,7 +802,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.494Z',
             __typeName: 'RiderAllocation',
-            startSeed: '6',
+            startSeed: 6,
             modifiedAt: '2021-03-14T05:32:58.494Z',
             allocatableId: 'heat3',
             runs: [{}, {}],
@@ -811,7 +811,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.498Z',
             __typeName: 'RiderAllocation',
-            startSeed: '10',
+            startSeed: 10,
             modifiedAt: '2021-03-14T05:32:58.498Z',
             allocatableId: 'heat3',
             runs: [{}, {}],
@@ -820,7 +820,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.502Z',
             __typeName: 'RiderAllocation',
-            startSeed: '14',
+            startSeed: 14,
             modifiedAt: '2021-03-14T05:32:58.502Z',
             allocatableId: 'heat3',
             runs: [{}, {}],
@@ -829,7 +829,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.506Z',
             __typeName: 'RiderAllocation',
-            startSeed: '18',
+            startSeed: 18,
             modifiedAt: '2021-03-14T05:32:58.506Z',
             allocatableId: 'heat3',
             runs: [{}, {}],
@@ -838,7 +838,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.510Z',
             __typeName: 'RiderAllocation',
-            startSeed: '22',
+            startSeed: 22,
             modifiedAt: '2021-03-14T05:32:58.510Z',
             allocatableId: 'heat3',
             runs: [{}, {}],
@@ -847,7 +847,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.492Z',
             __typeName: 'RiderAllocation',
-            startSeed: '4',
+            startSeed: 4,
             modifiedAt: '2021-03-14T05:32:58.492Z',
             allocatableId: 'heat4',
             runs: [{}, {}],
@@ -856,7 +856,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.496Z',
             __typeName: 'RiderAllocation',
-            startSeed: '8',
+            startSeed: 8,
             modifiedAt: '2021-03-14T05:32:58.496Z',
             allocatableId: 'heat4',
             runs: [{}, {}],
@@ -865,7 +865,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.500Z',
             __typeName: 'RiderAllocation',
-            startSeed: '12',
+            startSeed: 12,
             modifiedAt: '2021-03-14T05:32:58.500Z',
             allocatableId: 'heat4',
             runs: [{}, {}],
@@ -874,7 +874,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.504Z',
             __typeName: 'RiderAllocation',
-            startSeed: '16',
+            startSeed: 16,
             modifiedAt: '2021-03-14T05:32:58.504Z',
             allocatableId: 'heat4',
             runs: [{}, {}],
@@ -883,7 +883,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.508Z',
             __typeName: 'RiderAllocation',
-            startSeed: '20',
+            startSeed: 20,
             modifiedAt: '2021-03-14T05:32:58.508Z',
             allocatableId: 'heat4',
             runs: [{}, {}],
@@ -892,7 +892,7 @@ export const competitionPreScoreRuns = {
         {
             createdAt: '2021-03-14T05:32:58.512Z',
             __typeName: 'RiderAllocation',
-            startSeed: '24',
+            startSeed: 24,
             modifiedAt: '2021-03-14T05:32:58.512Z',
             allocatableId: 'heat4',
             runs: [{}, {}],
