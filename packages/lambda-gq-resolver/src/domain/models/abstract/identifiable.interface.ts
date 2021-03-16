@@ -7,8 +7,6 @@ import { PartitionKey } from '@shiftcoders/dynamo-easy';
 import ICreatable from './creatable.interface';
 
 @InterfaceType({
-    // workaround for bug: https://github.com/MichalLytek/type-graphql/issues/373
-    resolveType: (value) => value.constructor.name,
     implements: ICreatable,
 })
 abstract class IIdentifiable extends ICreatable {
