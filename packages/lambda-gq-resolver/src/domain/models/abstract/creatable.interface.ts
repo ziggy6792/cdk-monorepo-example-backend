@@ -32,7 +32,7 @@ import { metadataForModel } from '@shiftcoders/dynamo-easy';
     // workaround for bug: https://github.com/MichalLytek/type-graphql/issues/373
     resolveType: (value) => value.constructor.name,
 })
-abstract class IPerson {
+abstract class ICreatable {
     readonly __typename: string;
 
     @Field()
@@ -43,7 +43,7 @@ abstract class IPerson {
 
     constructor() {
         this.__typename = this.constructor.name;
-        this.createdAt = IPerson.getTimestamp();
+        this.createdAt = ICreatable.getTimestamp();
     }
 
     mapIn(loadedValues: any): void {
@@ -60,7 +60,7 @@ abstract class IPerson {
     setModifiedAt(): void {
         // ToDo: Clean this up
         // Object.assign(this, { modifiedAt: this.modifiedAt ? Creatable.getTimestamp() : this.createdAt });
-        this.modifiedAt = this.modifiedAt ? IPerson.getTimestamp() : this.createdAt;
+        this.modifiedAt = this.modifiedAt ? ICreatable.getTimestamp() : this.createdAt;
     }
 
     getModifiedAt(): string {
@@ -74,12 +74,12 @@ abstract class IPerson {
         return _.pick(this, keys);
     }
 
-    async getChildren(): Promise<IPerson[]> {
+    async getChildren(): Promise<ICreatable[]> {
         return [];
     }
 
-    async getDescendants(): Promise<IPerson[]> {
-        const traverse = async (node: IPerson, childrenList: IPerson[] = []): Promise<IPerson[]> => {
+    async getDescendants(): Promise<ICreatable[]> {
+        const traverse = async (node: ICreatable, childrenList: ICreatable[] = []): Promise<ICreatable[]> => {
             const children = await node.getChildren();
             for (const child of children) {
                 childrenList.push(child);
@@ -92,4 +92,4 @@ abstract class IPerson {
     }
 }
 
-export default IPerson;
+export default ICreatable;

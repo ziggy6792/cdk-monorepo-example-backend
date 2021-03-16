@@ -3,13 +3,13 @@
 
 import { Resolver, Query, Arg, ID } from 'type-graphql';
 import Student from 'src/domain/models/student';
-import IPerson from 'src/domain/models/abstract/person.interface';
+import ICreatable from 'src/domain/models/abstract/creatable.interface';
 import Employee from 'src/domain/models/employee';
 
 @Resolver()
 class GetPersonResolver {
-    @Query(() => IPerson, { nullable: true })
-    async getPerson(@Arg('id', () => ID) id: string): Promise<IPerson> {
+    @Query(() => ICreatable, { nullable: true })
+    async getPerson(@Arg('id', () => ID) id: string): Promise<ICreatable> {
         if (id.includes('s')) {
             const student = new Student();
 

@@ -2,10 +2,10 @@
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
 import { Field, ObjectType } from 'type-graphql';
-import IPerson from './abstract/person.interface';
+import ICreatable from './abstract/creatable.interface';
 
-@ObjectType({ implements: IPerson })
-class Employee extends IPerson {
+@ObjectType({ implements: ICreatable })
+class Employee extends ICreatable {
     @Field()
     work: string;
 }
