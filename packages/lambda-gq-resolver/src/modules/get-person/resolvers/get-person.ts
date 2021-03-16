@@ -4,16 +4,18 @@
 import { Resolver, Query, Arg, ID } from 'type-graphql';
 import Student from 'src/domain/models/student';
 import Employee from 'src/domain/models/employee';
-import IIdentifiable from 'src/domain/models/abstract/identifiable.interface';
+import IDataEntity from 'src/domain/models/abstract/data-entity.interface';
 
 @Resolver()
 class GetPersonResolver {
-    @Query(() => IIdentifiable, { nullable: true })
-    async getPerson(@Arg('id', () => ID) id: string): Promise<IIdentifiable> {
+    @Query(() => IDataEntity, { nullable: true })
+    async getPerson(@Arg('id', () => ID) id: string): Promise<IDataEntity> {
         if (id.includes('s')) {
             const student = new Student();
 
             student.school = 'school';
+
+            student.name = 'Student name';
 
             return student;
         }
@@ -21,6 +23,8 @@ class GetPersonResolver {
         const employee = new Employee();
 
         employee.work = 'work';
+
+        employee.name = 'Employee name';
 
         return employee;
     }
