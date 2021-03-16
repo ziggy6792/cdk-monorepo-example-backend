@@ -2,11 +2,13 @@
 /* eslint-disable max-classes-per-file */
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, InterfaceType } from 'type-graphql';
 import { PartitionKey } from '@shiftcoders/dynamo-easy';
 import Creatable from './creatable';
 
-@ObjectType({ isAbstract: true })
+@InterfaceType({
+    implements: Creatable,
+})
 abstract class Identifiable extends Creatable {
     @Field(() => ID, { nullable: true })
     @PartitionKey()

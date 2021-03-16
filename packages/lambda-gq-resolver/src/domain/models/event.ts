@@ -13,6 +13,7 @@ import User from './user';
 import Competition from './competition';
 import Heat from './heat';
 import Creatable from './abstract/creatable';
+import Identifiable from './abstract/identifiable';
 
 export enum EventStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -27,8 +28,8 @@ registerEnumType(EventStatus, {
 
 const tableSchema = commonConfig.DB_SCHEMA.Event;
 
+@ObjectType({ implements: [DataEntity, Identifiable, Creatable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
-@ObjectType()
 class Event extends DataEntity {
     static store: DynamoStore<Event>;
 

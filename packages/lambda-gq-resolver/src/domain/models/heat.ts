@@ -12,6 +12,7 @@ import { IContext } from 'src/types';
 import Round from './round';
 import Creatable from './abstract/creatable';
 import RiderAllocation from './rider-allocation';
+import Identifiable from './abstract/identifiable';
 
 export enum HeatStatus {
     OPEN = 'OPEN',
@@ -44,7 +45,7 @@ export class SeedSlot {
     }
 }
 
-@ObjectType()
+@ObjectType({ implements: [DataEntity, Identifiable, Creatable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Heat extends DataEntity {
     static store: DynamoStore<Heat>;

@@ -7,10 +7,11 @@ import * as utils from 'src/utils/utility';
 import { commonConfig } from '@alpaca-backend/common';
 import { Model } from '@shiftcoders/dynamo-easy';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import Creatable from './abstract/creatable';
 
 const tableSchema = commonConfig.DB_SCHEMA.User;
 
-@ObjectType()
+@ObjectType({ implements: [Identifiable, Creatable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class User extends Identifiable {
     static store: DynamoStore<User>;

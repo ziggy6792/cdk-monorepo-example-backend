@@ -22,7 +22,7 @@ export class Run {
 
 const tableSchema = commonConfig.DB_SCHEMA.RiderAllocation;
 
-@ObjectType()
+@ObjectType({ implements: [Creatable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class RiderAllocation extends Creatable {
     static store: DynamoStore<RiderAllocation>;

@@ -28,10 +28,7 @@ import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { metadataForModel } from '@shiftcoders/dynamo-easy';
 
-@InterfaceType({
-    // workaround for bug: https://github.com/MichalLytek/type-graphql/issues/373
-    resolveType: (value) => value.constructor.name,
-})
+@InterfaceType()
 abstract class ICreatable {
     readonly __typename: string;
 

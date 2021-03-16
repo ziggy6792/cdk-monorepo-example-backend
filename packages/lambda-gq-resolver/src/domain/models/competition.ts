@@ -14,6 +14,7 @@ import Event from './event';
 import Round from './round';
 import RiderAllocation from './rider-allocation';
 import Creatable from './abstract/creatable';
+import Identifiable from './abstract/identifiable';
 
 export enum CompetitionStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -69,7 +70,7 @@ export class CompetitionParams {
 
 const tableSchema = commonConfig.DB_SCHEMA.Competition;
 
-@ObjectType()
+@ObjectType({ implements: [DataEntity, Identifiable, Creatable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Competition extends DataEntity {
     constructor() {
