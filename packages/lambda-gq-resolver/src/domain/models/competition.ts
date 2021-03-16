@@ -14,6 +14,7 @@ import Event from './event';
 import Round from './round';
 import RiderAllocation from './rider-allocation';
 import Creatable from './abstract/creatable';
+import { IPerson } from './abstract/person.interface';
 
 export enum CompetitionStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',

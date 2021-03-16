@@ -14,6 +14,7 @@ import AllocateRiders from 'src/modules/allocate-riders/resolvers';
 import ScoreRun from 'src/modules/score-run/resolvers';
 import HelloResolver from 'src/modules/hello-world/resolvers';
 import EndHeatResolver from 'src/modules/end-heat/resolvers';
+import GetPersonResolver from 'src/modules/get-person/resolvers/get-person';
 
 const schema = buildSchemaSync({
     resolvers: [
@@ -30,6 +31,7 @@ const schema = buildSchemaSync({
         SelectHeat,
         EndHeatResolver,
         HelloResolver,
+        GetPersonResolver,
     ] as any,
 });
 
