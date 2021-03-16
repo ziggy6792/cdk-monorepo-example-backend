@@ -11,12 +11,7 @@ import Heat from 'src/domain/models/heat';
 class GetDataEntityResolver {
     @Query(() => DataEntity, { nullable: true })
     async getDataEntity(@Arg('id', () => ID) id: string): Promise<DataEntity> {
-        const getFromDb = async (returnType: any) => {
-            const ret = await returnType.store.get(id).exec();
-            return ret;
-        };
-
-        const results = await Promise.allSettled([getFromDb(Event), getFromDb(Competition), getFromDb(Heat)]);
+        const results = await Promise.allSettled([Event, Competition, Heat].map((entity) => entity.store.get(id).exec()));
 
         const fullfilledResults = results.filter((res) => res.status === 'fulfilled');
 
