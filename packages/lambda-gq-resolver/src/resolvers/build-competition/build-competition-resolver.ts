@@ -7,7 +7,7 @@ import Heat, { SeedSlot } from 'src/domain/models/heat';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
 import Competition from 'src/domain/models/competition';
 import isCompetitionAdmin from 'src/middleware/auth-check/is-comp-admin';
-import { CompetitionParamsInput } from 'src/modules/build-competition/inputs';
+import { CompetitionParamsInput } from 'src/resolvers/build-competition/inputs';
 import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
 import { BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
 import { valueIsNull } from 'src/utils/utility';

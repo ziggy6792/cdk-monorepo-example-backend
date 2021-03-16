@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import errorMessage from 'src/config/error-message';
 import Heat from 'src/domain/models/heat';
-import { ScorRunInput } from 'src/modules/score-run/inputs';
+import { ScorRunInput } from 'src/resolvers/score-run/inputs';
 import { AuthCheck } from './types';
 
 const isHeatJudge = async (heatId: string, identity: IIdentity) => {
