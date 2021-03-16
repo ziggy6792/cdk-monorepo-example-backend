@@ -12,7 +12,7 @@ import { metadataForModel } from '@shiftcoders/dynamo-easy';
 
 @ObjectType({ isAbstract: true })
 abstract class Creatable {
-    readonly __typeName: string;
+    readonly __typename: string;
 
     @Field()
     readonly createdAt: string;
@@ -21,7 +21,7 @@ abstract class Creatable {
     private modifiedAt: string;
 
     constructor() {
-        this.__typeName = this.constructor.name;
+        this.__typename = this.constructor.name;
         this.createdAt = Creatable.getTimestamp();
     }
 
