@@ -3,9 +3,10 @@
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int } from 'type-graphql';
 import ICreatable from './abstract/creatable.interface';
+import IIdentifiable from './abstract/identifiable.interface';
 
-@ObjectType({ implements: ICreatable })
-class Student extends ICreatable {
+@ObjectType({ implements: [IIdentifiable, ICreatable] })
+class Student extends IIdentifiable {
     @Field()
     school: string;
 }

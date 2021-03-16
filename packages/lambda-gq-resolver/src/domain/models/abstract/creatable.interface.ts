@@ -39,7 +39,7 @@ abstract class ICreatable {
     readonly createdAt: string;
 
     @Field()
-    private modifiedAt: string;
+    protected modifiedAt: string;
 
     constructor() {
         this.__typename = this.constructor.name;
