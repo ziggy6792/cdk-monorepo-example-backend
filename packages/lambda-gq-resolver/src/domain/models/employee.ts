@@ -2,7 +2,7 @@
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
 import { Field, ObjectType } from 'type-graphql';
-import { IPerson } from './abstract/person.interface';
+import IPerson from './abstract/person.interface';
 
 @ObjectType({ implements: IPerson })
 class Employee extends IPerson {

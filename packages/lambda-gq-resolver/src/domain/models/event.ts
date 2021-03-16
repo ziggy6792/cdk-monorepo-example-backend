@@ -13,7 +13,6 @@ import User from './user';
 import Competition from './competition';
 import Heat from './heat';
 import Creatable from './abstract/creatable';
-import { IPerson } from './abstract/person.interface';
 
 export enum EventStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
