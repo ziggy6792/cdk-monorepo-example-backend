@@ -3,8 +3,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable max-classes-per-file */
 import { DynamoDbWrapper, BatchWriteRequest as EasyBatchWriteRequest } from '@shiftcoders/dynamo-easy';
-import Creatable from 'src/domain/models/abstract/creatable';
-import Competition from 'src/domain/models/competition';
+import Creatable from 'src/domain/interfaces/creatable';
 import dynamoDB from 'src/utils/dynamo-db';
 
 class BatchWriteRequest extends EasyBatchWriteRequest {

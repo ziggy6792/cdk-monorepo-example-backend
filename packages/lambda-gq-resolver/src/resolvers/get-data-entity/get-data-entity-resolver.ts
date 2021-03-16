@@ -3,7 +3,7 @@
 
 import { Resolver, Query, Arg, ID } from 'type-graphql';
 import Event from 'src/domain/models/event';
-import DataEntity from 'src/domain/models/abstract/data-entity';
+import DataEntity from 'src/domain/interfaces/data-entity';
 import Competition from 'src/domain/models/competition';
 import Heat from 'src/domain/models/heat';
 

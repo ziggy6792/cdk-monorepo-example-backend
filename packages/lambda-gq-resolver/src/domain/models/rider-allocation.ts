@@ -2,7 +2,7 @@
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
 import { Field, ObjectType, ID, Int, Root, Float, Ctx } from 'type-graphql';
-import Creatable from 'src/domain/models/abstract/creatable';
+import Creatable from 'src/domain/interfaces/creatable';
 import { commonConfig } from '@alpaca-backend/common';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { GSIPartitionKey, Model, PartitionKey, SortKey } from '@shiftcoders/dynamo-easy';
