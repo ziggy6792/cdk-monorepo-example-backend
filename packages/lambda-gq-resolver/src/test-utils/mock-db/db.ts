@@ -4,7 +4,7 @@ const testEvent = {
     name: 'Test Event',
     when: 'now',
     adminUserId: 'Facebook_10224795420532374',
-    __typeName: 'Event',
+    __typename: 'Event',
 };
 const testCompetition = {
     createdAt: '2021-03-01T05:51:01.844Z',
@@ -13,7 +13,7 @@ const testCompetition = {
     judgeUserId: 'babbbafe-f229-4a30-9dd4-b1bc55b4ed9a',
     status: 'REGISTRATION_CLOSED',
     eventId: 'testEvent',
-    __typeName: 'Competition',
+    __typename: 'Competition',
 };
 
 export const competitionEmpty = { events: [testEvent], competitions: [testCompetition] };
@@ -24,7 +24,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.770Z',
             id: 'round1Upper',
-            __typeName: 'Round',
+            __typename: 'Round',
             competitionId: 'testCompetition',
             modifiedAt: '2021-03-13T08:19:03.770Z',
             roundNo: 1,
@@ -33,7 +33,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.789Z',
             id: 'round2Upper',
-            __typeName: 'Round',
+            __typename: 'Round',
             competitionId: 'testCompetition',
             modifiedAt: '2021-03-13T08:19:03.789Z',
             roundNo: 2,
@@ -42,7 +42,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.795Z',
             id: 'round3Upper',
-            __typeName: 'Round',
+            __typename: 'Round',
             competitionId: 'testCompetition',
             modifiedAt: '2021-03-13T08:19:03.795Z',
             roundNo: 3,
@@ -51,7 +51,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.783Z',
             id: 'round2Lower',
-            __typeName: 'Round',
+            __typename: 'Round',
             competitionId: 'testCompetition',
             modifiedAt: '2021-03-13T08:19:03.783Z',
             roundNo: 2,
@@ -63,7 +63,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.777Z',
             id: 'heat2',
-            __typeName: 'Heat',
+            __typename: 'Heat',
             status: 'CLOSED',
             seedSlots: [
                 {
@@ -98,7 +98,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.781Z',
             id: 'heat4',
-            __typeName: 'Heat',
+            __typename: 'Heat',
             status: 'CLOSED',
             seedSlots: [
                 {
@@ -133,7 +133,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.797Z',
             id: 'final',
-            __typeName: 'Heat',
+            __typename: 'Heat',
             status: 'CLOSED',
             seedSlots: [
                 {
@@ -162,7 +162,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.787Z',
             id: 'lcq2',
-            __typeName: 'Heat',
+            __typename: 'Heat',
             status: 'CLOSED',
             seedSlots: [
                 {
@@ -198,7 +198,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.785Z',
             id: 'lcq1',
-            __typeName: 'Heat',
+            __typename: 'Heat',
             status: 'CLOSED',
             seedSlots: [
                 {
@@ -234,7 +234,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.779Z',
             id: 'heat3',
-            __typeName: 'Heat',
+            __typename: 'Heat',
             status: 'CLOSED',
             seedSlots: [
                 {
@@ -269,7 +269,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.793Z',
             id: 'sf2',
-            __typeName: 'Heat',
+            __typename: 'Heat',
             status: 'CLOSED',
             seedSlots: [
                 {
@@ -298,7 +298,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.791Z',
             id: 'sf1',
-            __typeName: 'Heat',
+            __typename: 'Heat',
             status: 'CLOSED',
             seedSlots: [
                 {
@@ -327,7 +327,7 @@ export const competitionPreRiderAllocation = {
         {
             createdAt: '2021-03-13T08:19:03.775Z',
             id: 'heat1',
-            __typeName: 'Heat',
+            __typename: 'Heat',
             status: 'CLOSED',
             seedSlots: [
                 {
@@ -499,7 +499,7 @@ export const competitionPreScoreRuns = {
     riderAllocations: [
         {
             createdAt: '2021-03-14T05:32:58.489Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 1,
             modifiedAt: '2021-03-14T05:32:58.489Z',
             allocatableId: 'heat1',
@@ -508,7 +508,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.493Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 5,
             modifiedAt: '2021-03-14T05:32:58.493Z',
             allocatableId: 'heat1',
@@ -517,7 +517,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.497Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 9,
             modifiedAt: '2021-03-14T05:32:58.497Z',
             allocatableId: 'heat1',
@@ -526,7 +526,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.501Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 13,
             modifiedAt: '2021-03-14T05:32:58.501Z',
             allocatableId: 'heat1',
@@ -535,7 +535,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.505Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 17,
             modifiedAt: '2021-03-14T05:32:58.505Z',
             allocatableId: 'heat1',
@@ -544,7 +544,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.509Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 21,
             modifiedAt: '2021-03-14T05:32:58.509Z',
             allocatableId: 'heat1',
@@ -553,7 +553,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.594Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderA',
             startSeed: 1,
@@ -561,7 +561,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.595Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderB',
             startSeed: 2,
@@ -569,7 +569,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.596Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderC',
             startSeed: 3,
@@ -577,7 +577,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.597Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderD',
             startSeed: 4,
@@ -585,7 +585,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.598Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderE',
             startSeed: 5,
@@ -593,7 +593,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.599Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderF',
             startSeed: 6,
@@ -601,7 +601,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.600Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderG',
             startSeed: 7,
@@ -609,7 +609,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.601Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderH',
             startSeed: 8,
@@ -617,7 +617,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.602Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderI',
             startSeed: 9,
@@ -625,7 +625,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.603Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderJ',
             startSeed: 10,
@@ -633,7 +633,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.604Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderK',
             startSeed: 11,
@@ -641,7 +641,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.605Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderL',
             startSeed: 12,
@@ -649,7 +649,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.606Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderM',
             startSeed: 13,
@@ -657,7 +657,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.607Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderO',
             startSeed: 14,
@@ -665,7 +665,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.608Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderP',
             startSeed: 15,
@@ -673,7 +673,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.609Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderQ',
             startSeed: 16,
@@ -681,7 +681,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.610Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderR',
             startSeed: 17,
@@ -689,7 +689,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.611Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderS',
             startSeed: 18,
@@ -697,7 +697,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.612Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderT',
             startSeed: 19,
@@ -705,7 +705,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.613Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderU',
             startSeed: 20,
@@ -713,7 +713,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.614Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderV',
             startSeed: 21,
@@ -721,7 +721,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.615Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderW',
             startSeed: 22,
@@ -729,7 +729,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.616Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderX',
             startSeed: 23,
@@ -737,7 +737,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:57.617Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             allocatableId: 'testCompetition',
             userId: 'riderY',
             startSeed: 24,
@@ -745,7 +745,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.491Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 3,
             modifiedAt: '2021-03-14T05:32:58.491Z',
             allocatableId: 'heat2',
@@ -754,7 +754,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.495Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 7,
             modifiedAt: '2021-03-14T05:32:58.495Z',
             allocatableId: 'heat2',
@@ -763,7 +763,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.499Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 11,
             modifiedAt: '2021-03-14T05:32:58.499Z',
             allocatableId: 'heat2',
@@ -772,7 +772,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.503Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 15,
             modifiedAt: '2021-03-14T05:32:58.503Z',
             allocatableId: 'heat2',
@@ -781,7 +781,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.507Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 19,
             modifiedAt: '2021-03-14T05:32:58.507Z',
             allocatableId: 'heat2',
@@ -790,7 +790,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.511Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 23,
             modifiedAt: '2021-03-14T05:32:58.511Z',
             allocatableId: 'heat2',
@@ -799,7 +799,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.490Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 2,
             modifiedAt: '2021-03-14T05:32:58.490Z',
             allocatableId: 'heat3',
@@ -808,7 +808,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.494Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 6,
             modifiedAt: '2021-03-14T05:32:58.494Z',
             allocatableId: 'heat3',
@@ -817,7 +817,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.498Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 10,
             modifiedAt: '2021-03-14T05:32:58.498Z',
             allocatableId: 'heat3',
@@ -826,7 +826,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.502Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 14,
             modifiedAt: '2021-03-14T05:32:58.502Z',
             allocatableId: 'heat3',
@@ -835,7 +835,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.506Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 18,
             modifiedAt: '2021-03-14T05:32:58.506Z',
             allocatableId: 'heat3',
@@ -844,7 +844,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.510Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 22,
             modifiedAt: '2021-03-14T05:32:58.510Z',
             allocatableId: 'heat3',
@@ -853,7 +853,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.492Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 4,
             modifiedAt: '2021-03-14T05:32:58.492Z',
             allocatableId: 'heat4',
@@ -862,7 +862,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.496Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 8,
             modifiedAt: '2021-03-14T05:32:58.496Z',
             allocatableId: 'heat4',
@@ -871,7 +871,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.500Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 12,
             modifiedAt: '2021-03-14T05:32:58.500Z',
             allocatableId: 'heat4',
@@ -880,7 +880,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.504Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 16,
             modifiedAt: '2021-03-14T05:32:58.504Z',
             allocatableId: 'heat4',
@@ -889,7 +889,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.508Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 20,
             modifiedAt: '2021-03-14T05:32:58.508Z',
             allocatableId: 'heat4',
@@ -898,7 +898,7 @@ export const competitionPreScoreRuns = {
         },
         {
             createdAt: '2021-03-14T05:32:58.512Z',
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             startSeed: 24,
             modifiedAt: '2021-03-14T05:32:58.512Z',
             allocatableId: 'heat4',
@@ -912,7 +912,7 @@ export const competitionPreEndHeat = {
     ...competitionPreScoreRuns,
     riderAllocations: [
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.489Z',
             modifiedAt: '2021-03-15T16:58:36.581Z',
             startSeed: 1,
@@ -921,7 +921,7 @@ export const competitionPreEndHeat = {
             userId: 'riderA',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.493Z',
             modifiedAt: '2021-03-15T16:58:36.616Z',
             startSeed: 5,
@@ -930,7 +930,7 @@ export const competitionPreEndHeat = {
             userId: 'riderE',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.497Z',
             modifiedAt: '2021-03-15T16:58:36.620Z',
             startSeed: 9,
@@ -939,7 +939,7 @@ export const competitionPreEndHeat = {
             userId: 'riderI',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.501Z',
             modifiedAt: '2021-03-15T16:58:36.505Z',
             startSeed: 13,
@@ -948,7 +948,7 @@ export const competitionPreEndHeat = {
             userId: 'riderM',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.505Z',
             modifiedAt: '2021-03-15T16:58:36.571Z',
             startSeed: 17,
@@ -957,7 +957,7 @@ export const competitionPreEndHeat = {
             userId: 'riderR',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.509Z',
             modifiedAt: '2021-03-15T16:58:36.555Z',
             startSeed: 21,
@@ -966,7 +966,7 @@ export const competitionPreEndHeat = {
             userId: 'riderV',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.594Z',
             allocatableId: 'testCompetition',
             userId: 'riderA',
@@ -974,7 +974,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.189Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.595Z',
             allocatableId: 'testCompetition',
             userId: 'riderB',
@@ -982,7 +982,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.190Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.596Z',
             allocatableId: 'testCompetition',
             userId: 'riderC',
@@ -990,7 +990,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.191Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.597Z',
             allocatableId: 'testCompetition',
             userId: 'riderD',
@@ -998,7 +998,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.192Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.598Z',
             allocatableId: 'testCompetition',
             userId: 'riderE',
@@ -1006,7 +1006,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.193Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.599Z',
             allocatableId: 'testCompetition',
             userId: 'riderF',
@@ -1014,7 +1014,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.194Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.600Z',
             allocatableId: 'testCompetition',
             userId: 'riderG',
@@ -1022,7 +1022,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.195Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.601Z',
             allocatableId: 'testCompetition',
             userId: 'riderH',
@@ -1030,7 +1030,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.196Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.602Z',
             allocatableId: 'testCompetition',
             userId: 'riderI',
@@ -1038,7 +1038,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.197Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.603Z',
             allocatableId: 'testCompetition',
             userId: 'riderJ',
@@ -1046,7 +1046,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.198Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.604Z',
             allocatableId: 'testCompetition',
             userId: 'riderK',
@@ -1054,7 +1054,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.199Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.605Z',
             allocatableId: 'testCompetition',
             userId: 'riderL',
@@ -1062,7 +1062,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.200Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.606Z',
             allocatableId: 'testCompetition',
             userId: 'riderM',
@@ -1070,7 +1070,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.201Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.607Z',
             allocatableId: 'testCompetition',
             userId: 'riderO',
@@ -1078,7 +1078,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.202Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.608Z',
             allocatableId: 'testCompetition',
             userId: 'riderP',
@@ -1086,7 +1086,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.203Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.609Z',
             allocatableId: 'testCompetition',
             userId: 'riderQ',
@@ -1094,7 +1094,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.204Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.610Z',
             allocatableId: 'testCompetition',
             userId: 'riderR',
@@ -1102,7 +1102,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.205Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.611Z',
             allocatableId: 'testCompetition',
             userId: 'riderS',
@@ -1110,7 +1110,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.206Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.612Z',
             allocatableId: 'testCompetition',
             userId: 'riderT',
@@ -1118,7 +1118,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.207Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.613Z',
             allocatableId: 'testCompetition',
             userId: 'riderU',
@@ -1126,7 +1126,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.208Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.614Z',
             allocatableId: 'testCompetition',
             userId: 'riderV',
@@ -1134,7 +1134,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.209Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.615Z',
             allocatableId: 'testCompetition',
             userId: 'riderW',
@@ -1142,7 +1142,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.210Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.616Z',
             allocatableId: 'testCompetition',
             userId: 'riderX',
@@ -1150,7 +1150,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.211Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:57.617Z',
             allocatableId: 'testCompetition',
             userId: 'riderY',
@@ -1158,7 +1158,7 @@ export const competitionPreEndHeat = {
             modifiedAt: '2021-03-15T16:58:33.212Z',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.491Z',
             modifiedAt: '2021-03-15T16:58:36.595Z',
             startSeed: 3,
@@ -1167,7 +1167,7 @@ export const competitionPreEndHeat = {
             userId: 'riderC',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.495Z',
             modifiedAt: '2021-03-15T16:58:36.630Z',
             startSeed: 7,
@@ -1176,7 +1176,7 @@ export const competitionPreEndHeat = {
             userId: 'riderG',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.499Z',
             modifiedAt: '2021-03-15T16:58:36.586Z',
             startSeed: 11,
@@ -1185,7 +1185,7 @@ export const competitionPreEndHeat = {
             userId: 'riderK',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.503Z',
             modifiedAt: '2021-03-15T16:58:36.606Z',
             startSeed: 15,
@@ -1194,7 +1194,7 @@ export const competitionPreEndHeat = {
             userId: 'riderP',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.507Z',
             modifiedAt: '2021-03-15T16:58:36.609Z',
             startSeed: 19,
@@ -1203,7 +1203,7 @@ export const competitionPreEndHeat = {
             userId: 'riderT',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.511Z',
             modifiedAt: '2021-03-15T16:58:36.613Z',
             startSeed: 23,
@@ -1212,7 +1212,7 @@ export const competitionPreEndHeat = {
             userId: 'riderX',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.490Z',
             modifiedAt: '2021-03-15T16:58:36.669Z',
             startSeed: 2,
@@ -1221,7 +1221,7 @@ export const competitionPreEndHeat = {
             userId: 'riderB',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.494Z',
             modifiedAt: '2021-03-15T16:58:36.623Z',
             startSeed: 6,
@@ -1230,7 +1230,7 @@ export const competitionPreEndHeat = {
             userId: 'riderF',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.498Z',
             modifiedAt: '2021-03-15T16:58:36.653Z',
             startSeed: 10,
@@ -1239,7 +1239,7 @@ export const competitionPreEndHeat = {
             userId: 'riderJ',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.502Z',
             modifiedAt: '2021-03-15T16:58:36.644Z',
             startSeed: 14,
@@ -1248,7 +1248,7 @@ export const competitionPreEndHeat = {
             userId: 'riderO',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.506Z',
             modifiedAt: '2021-03-15T16:58:36.641Z',
             startSeed: 18,
@@ -1257,7 +1257,7 @@ export const competitionPreEndHeat = {
             userId: 'riderS',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.510Z',
             modifiedAt: '2021-03-15T16:58:36.633Z',
             startSeed: 22,
@@ -1266,7 +1266,7 @@ export const competitionPreEndHeat = {
             userId: 'riderW',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.492Z',
             modifiedAt: '2021-03-15T16:58:36.661Z',
             startSeed: 4,
@@ -1275,7 +1275,7 @@ export const competitionPreEndHeat = {
             userId: 'riderD',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.496Z',
             modifiedAt: '2021-03-15T16:58:36.639Z',
             startSeed: 8,
@@ -1284,7 +1284,7 @@ export const competitionPreEndHeat = {
             userId: 'riderH',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.500Z',
             modifiedAt: '2021-03-15T16:58:36.665Z',
             startSeed: 12,
@@ -1293,7 +1293,7 @@ export const competitionPreEndHeat = {
             userId: 'riderL',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.504Z',
             modifiedAt: '2021-03-15T16:58:36.626Z',
             startSeed: 16,
@@ -1302,7 +1302,7 @@ export const competitionPreEndHeat = {
             userId: 'riderQ',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.508Z',
             modifiedAt: '2021-03-15T16:58:36.636Z',
             startSeed: 20,
@@ -1311,7 +1311,7 @@ export const competitionPreEndHeat = {
             userId: 'riderU',
         },
         {
-            __typeName: 'RiderAllocation',
+            __typename: 'RiderAllocation',
             createdAt: '2021-03-14T05:32:58.512Z',
             modifiedAt: '2021-03-15T16:58:36.648Z',
             startSeed: 24,

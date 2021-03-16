@@ -2,15 +2,16 @@
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
 import { Field, ObjectType, Root } from 'type-graphql';
-import Identifiable from 'src/domain/models/abstract/identifiable';
+import Identifiable from 'src/domain/interfaces/identifiable';
 import * as utils from 'src/utils/utility';
 import { commonConfig } from '@alpaca-backend/common';
 import { Model } from '@shiftcoders/dynamo-easy';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import Creatable from 'src/domain/interfaces/creatable';
 
 const tableSchema = commonConfig.DB_SCHEMA.User;
 
-@ObjectType()
+@ObjectType({ implements: [Identifiable, Creatable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class User extends Identifiable {
     static store: DynamoStore<User>;

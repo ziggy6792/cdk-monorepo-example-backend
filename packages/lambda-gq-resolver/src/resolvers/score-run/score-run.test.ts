@@ -191,12 +191,6 @@ describe('Score Run', () => {
             },
         });
 
-        // console.log(JSON.stringify(response.data.getCompetition.rounds.items[0]));
-
         expect(response.data.getCompetition.rounds.items[0]).toMatchObject(expectedRound1Results);
-
-        const db = await mockDbUtils.dbToJson();
-
-        console.log(JSON.stringify(db.riderAllocations));
     });
 });

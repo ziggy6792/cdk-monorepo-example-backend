@@ -3,7 +3,7 @@
 import { Resolver, Mutation, Arg, UseMiddleware } from 'type-graphql';
 import _ from 'lodash';
 import Heat, { HeatStatus } from 'src/domain/models/heat';
-import { ScorRunInput } from 'src/modules/score-run/inputs/score-run-inputs';
+import { ScorRunInput } from 'src/resolvers/score-run/inputs/score-run-inputs';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import errorMessage from 'src/config/error-message';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';

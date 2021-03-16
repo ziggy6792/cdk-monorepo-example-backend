@@ -1,6 +1,6 @@
 import Event from 'src/domain/models/event';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
-import { CreateEventInput, UpdateEventInput } from 'src/modules/crud/event/inputs';
+import { CreateEventInput, UpdateEventInput } from 'src/resolvers/crud/event/inputs';
 
 import errorMessage from 'src/config/error-message';
 import { MiddlewareFn } from 'type-graphql';

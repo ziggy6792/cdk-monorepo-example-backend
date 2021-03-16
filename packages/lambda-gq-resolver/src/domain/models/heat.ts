@@ -2,15 +2,16 @@
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int, Ctx } from 'type-graphql';
-import DataEntity from 'src/domain/models/abstract/data-entity';
-import { RiderAllocationList } from 'src/domain/common-objects/lists';
+import DataEntity from 'src/domain/interfaces/data-entity';
+import { RiderAllocationList } from 'src/domain/objects/lists';
 import { commonConfig } from '@alpaca-backend/common';
 import * as utils from 'src/utils/utility';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { GSIPartitionKey, Model } from '@shiftcoders/dynamo-easy';
 import { IContext } from 'src/types';
+import Identifiable from 'src/domain/interfaces/identifiable';
+import Creatable from 'src/domain/interfaces/creatable';
 import Round from './round';
-import Creatable from './abstract/creatable';
 import RiderAllocation from './rider-allocation';
 
 export enum HeatStatus {
@@ -44,7 +45,7 @@ export class SeedSlot {
     }
 }
 
-@ObjectType()
+@ObjectType({ implements: [DataEntity, Identifiable, Creatable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Heat extends DataEntity {
     static store: DynamoStore<Heat>;

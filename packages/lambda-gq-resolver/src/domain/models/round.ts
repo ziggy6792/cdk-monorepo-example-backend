@@ -1,15 +1,15 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import { Field, ObjectType, registerEnumType, Int, ID } from 'type-graphql';
-import Identifiable from 'src/domain/models/abstract/identifiable';
-import { HeatList } from 'src/domain/common-objects/lists';
+import Identifiable from 'src/domain/interfaces/identifiable';
+import { HeatList } from 'src/domain/objects/lists';
 import * as utils from 'src/utils/utility';
 import { commonConfig } from '@alpaca-backend/common';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { GSIPartitionKey, Model } from '@shiftcoders/dynamo-easy';
+import Creatable from 'src/domain/interfaces/creatable';
 import Heat from './heat';
 import Competition from './competition';
-import Creatable from './abstract/creatable';
 
 export enum RoundType {
     UPPER = 'UPPER',
@@ -23,7 +23,7 @@ registerEnumType(RoundType, {
 
 const tableSchema = commonConfig.DB_SCHEMA.Round;
 
-@ObjectType()
+@ObjectType({ implements: [Identifiable, Creatable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Round extends Identifiable {
     static store: DynamoStore<Round>;

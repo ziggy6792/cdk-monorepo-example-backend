@@ -4,16 +4,17 @@ import { commonConfig } from '@alpaca-backend/common';
 
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType, ID, Int } from 'type-graphql';
-import DataEntity from 'src/domain/models/abstract/data-entity';
-import { RiderAllocationList, RoundList } from 'src/domain/common-objects/lists';
+import DataEntity from 'src/domain/interfaces/data-entity';
+import { RiderAllocationList, RoundList } from 'src/domain/objects/lists';
 import * as utils from 'src/utils/utility';
 import { ConditionExpressionDefinitionFunction, GSIPartitionKey, Model, Property } from '@shiftcoders/dynamo-easy';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
+import Creatable from 'src/domain/interfaces/creatable';
+import Identifiable from 'src/domain/interfaces/identifiable';
 import User from './user';
 import Event from './event';
 import Round from './round';
 import RiderAllocation from './rider-allocation';
-import Creatable from './abstract/creatable';
 
 export enum CompetitionStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -69,7 +70,7 @@ export class CompetitionParams {
 
 const tableSchema = commonConfig.DB_SCHEMA.Competition;
 
-@ObjectType()
+@ObjectType({ implements: [DataEntity, Identifiable, Creatable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Competition extends DataEntity {
     constructor() {
@@ -90,7 +91,7 @@ class Competition extends DataEntity {
     @GSIPartitionKey(tableSchema.indexes.byEvent.indexName)
     eventId: string;
 
-    @Field(() => ID)
+    @Field()
     @Property()
     createdAt: string;
 

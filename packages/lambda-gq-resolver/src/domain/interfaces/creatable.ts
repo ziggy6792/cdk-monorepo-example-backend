@@ -5,14 +5,14 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, InterfaceType } from 'type-graphql';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { metadataForModel } from '@shiftcoders/dynamo-easy';
 
-@ObjectType({ isAbstract: true })
+@InterfaceType()
 abstract class Creatable {
-    readonly __typeName: string;
+    readonly __typename: string;
 
     @Field()
     readonly createdAt: string;
@@ -21,7 +21,7 @@ abstract class Creatable {
     private modifiedAt: string;
 
     constructor() {
-        this.__typeName = this.constructor.name;
+        this.__typename = this.constructor.name;
         this.createdAt = Creatable.getTimestamp();
     }
 

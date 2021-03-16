@@ -18,7 +18,7 @@ import {
     metadataForModel,
     ScanRequest,
 } from '@shiftcoders/dynamo-easy';
-import Creatable from 'src/domain/models/abstract/creatable';
+import Creatable from 'src/domain/interfaces/creatable';
 import _ from 'lodash';
 import dynamoDB from 'src/utils/dynamo-db';
 

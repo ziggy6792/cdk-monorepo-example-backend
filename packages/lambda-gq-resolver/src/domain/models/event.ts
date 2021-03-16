@@ -3,16 +3,17 @@ import { commonConfig } from '@alpaca-backend/common';
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
-import DataEntity from 'src/domain/models/abstract/data-entity';
-import { CompetitionList } from 'src/domain/common-objects/lists';
+import DataEntity from 'src/domain/interfaces/data-entity';
+import { CompetitionList } from 'src/domain/objects/lists';
 import * as utils from 'src/utils/utility';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { Model } from '@shiftcoders/dynamo-easy';
 
+import Identifiable from 'src/domain/interfaces/identifiable';
+import Creatable from 'src/domain/interfaces/creatable';
 import User from './user';
 import Competition from './competition';
 import Heat from './heat';
-import Creatable from './abstract/creatable';
 
 export enum EventStatus {
     REGISTRATION_OPEN = 'REGISTRATION_OPEN',
@@ -27,8 +28,8 @@ registerEnumType(EventStatus, {
 
 const tableSchema = commonConfig.DB_SCHEMA.Event;
 
+@ObjectType({ implements: [DataEntity, Identifiable, Creatable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
-@ObjectType()
 class Event extends DataEntity {
     static store: DynamoStore<Event>;
 
