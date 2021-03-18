@@ -6,10 +6,12 @@ import Round from 'src/domain/models/round';
 import BatchWriteRequest from 'src/utils/dynamo-easy/batch-write-request';
 import _ from 'lodash';
 import { BATCH_WRITE_MAX_REQUEST_ITEM_COUNT } from '@shiftcoders/dynamo-easy';
+import User from 'src/domain/models/user';
 import { IMockDb } from './types';
 
 const mockDbTables = {
     events: Event,
+    users: User,
     competitions: Competition,
     rounds: Round,
     heats: Heat,

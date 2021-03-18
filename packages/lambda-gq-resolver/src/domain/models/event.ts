@@ -42,7 +42,7 @@ class Event extends DataEntity {
     description: string;
 
     @Field()
-    when: string;
+    startTime: string;
 
     @Field(() => EventStatus)
     status: EventStatus;

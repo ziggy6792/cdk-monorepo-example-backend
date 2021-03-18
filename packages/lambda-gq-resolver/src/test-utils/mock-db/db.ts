@@ -1,20 +1,59 @@
+/* eslint-disable camelcase */
+
+// Users
+const adminUser = {
+    __typename: 'User',
+    createdAt: '2021-02-25T19:36:58.003Z',
+    email: 'ziggy067@googlemail.com',
+    firstName: 'Simon',
+    id: 'Facebook_10224795420532374',
+    lastName: 'Verhoeven',
+    modifiedAt: '2021-03-15T02:04:42.868Z',
+};
+
+const judgeUser = {
+    __typeName: 'User',
+    createdAt: '2021-02-27T08:06:46.074Z',
+    email: 'ziggy067+1@gmail.com',
+    firstName: 'Simon',
+    id: 'babbbafe-f229-4a30-9dd4-b1bc55b4ed9a',
+    lastName: 'Verhoeven',
+    modifiedAt: '2021-03-15T02:04:42.868Z',
+};
+
+const plebUser = {
+    __typeName: 'User',
+    createdAt: '2021-03-15T02:04:42.868Z',
+    email: 'ziggy067+2@gmail.com',
+    firstName: 'Simon',
+    id: 'ed467afb-161b-4cdc-9e71-dad3d0be9bda',
+    lastName: 'Verhoeven',
+    modifiedAt: '2021-03-15T02:04:42.868Z',
+};
+
+export const testUsers = { facebookUser: adminUser, ziggy067_1: judgeUser, ziggy067_2: plebUser };
+
+// Events
+
 const testEvent = {
     createdAt: '2021-03-01T05:51:01.844Z',
     id: 'testEvent',
     name: 'Test Event',
-    when: 'now',
-    adminUserId: 'Facebook_10224795420532374',
+    startTime: 'now',
+    adminUserId: adminUser.id,
     __typename: 'Event',
 };
 const testCompetition = {
     createdAt: '2021-03-01T05:51:01.844Z',
     id: 'testCompetition',
     name: 'Test Compettion',
-    judgeUserId: 'babbbafe-f229-4a30-9dd4-b1bc55b4ed9a',
+    judgeUserId: judgeUser.id,
     status: 'REGISTRATION_CLOSED',
     eventId: 'testEvent',
     __typename: 'Competition',
 };
+
+export const defaultDb = { users: Object.values(testUsers) };
 
 export const competitionEmpty = { events: [testEvent], competitions: [testCompetition] };
 

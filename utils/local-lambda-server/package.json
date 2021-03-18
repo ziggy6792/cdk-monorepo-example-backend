@@ -6,7 +6,8 @@
     "license": "Apache-2.0",
     "scripts": {
         "start": "nodemon",
-        "run:local": "ts-node -r tsconfig-paths/register src/index.ts"
+        "run:local": "ts-node -r tsconfig-paths/register src/index.ts",
+        "force:stop": "kill $(lsof -i:3100 | grep node | cut -d' ' -f2- )"
     },
     "dependencies": {
         "@alpaca-backend/common-lambda-lib": "^1.0.0",

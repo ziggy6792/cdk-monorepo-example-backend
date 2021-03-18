@@ -99,7 +99,7 @@ class Competition extends DataEntity {
     judgeUserId: string;
 
     @Field()
-    when: string;
+    startTime: string;
 
     @Field(() => CompetitionStatus)
     status: CompetitionStatus;

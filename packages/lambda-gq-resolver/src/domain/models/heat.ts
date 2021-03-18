@@ -62,7 +62,7 @@ class Heat extends DataEntity {
     }
 
     @Field()
-    when: string;
+    startTime: string;
 
     @Field(() => ID)
     @GSIPartitionKey(tableSchema.indexes.byRound.indexName)

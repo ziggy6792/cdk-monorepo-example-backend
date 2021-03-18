@@ -23,7 +23,7 @@ class CompetitionInput {
     judgeUserId: string;
 
     @Field({ nullable: true })
-    when: string;
+    startTime: string;
 
     @Field(() => CompetitionStatus, { nullable: true })
     status: CompetitionStatus;

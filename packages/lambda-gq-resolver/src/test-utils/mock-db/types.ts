@@ -1,4 +1,5 @@
 export interface IMockDb {
+    users?: any[];
     events?: any[];
     competitions?: any[];
     rounds?: any[];
