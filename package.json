@@ -16,7 +16,7 @@
         "clean:light": "rm -rf ./tsconfig.build.tsbuildinfo && rm -rf ./dist",
         "clean:full": "yarn run clean:light && rm -rf ./node_modules",
         "test:watch": "jest --watch --runInBand --colors",
-        "test": "jest --coverage --runInBand --colors",
+        "test": "jest --coverage --runInBand --colors --bail --detectOpenHandles",
         "test:with:env": "yarn local:db:start:test:db && yarn test && yarn local:db:force:stop",
         "local:db:start:test:db": "lerna run start:test:db --scope @alpaca-backend/local-test-server --stream",
         "local:db:force:stop": "lerna run force:stop --scope @alpaca-backend/local-test-server --stream",

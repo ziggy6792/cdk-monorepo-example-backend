@@ -31,6 +31,7 @@ const schema = buildSchemaSync({
         EndHeatResolver,
         HelloResolver,
     ] as any,
+    dateScalarMode: 'isoDate',
 });
 
 const createSchema = (): GraphQLSchema => schema;

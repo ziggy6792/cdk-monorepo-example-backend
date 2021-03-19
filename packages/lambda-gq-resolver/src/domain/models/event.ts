@@ -2,15 +2,17 @@ import { commonConfig } from '@alpaca-backend/common';
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 import _ from 'lodash';
-import { Field, ObjectType, registerEnumType } from 'type-graphql';
+import { Field, ObjectType, registerEnumType, GraphQLISODateTime } from 'type-graphql';
 import DataEntity from 'src/domain/interfaces/data-entity';
 import { CompetitionList } from 'src/domain/objects/lists';
 import * as utils from 'src/utils/utility';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
-import { Model } from '@shiftcoders/dynamo-easy';
+import { MapperForType, Model, Property, StringAttribute } from '@shiftcoders/dynamo-easy';
 
 import Identifiable from 'src/domain/interfaces/identifiable';
 import Creatable from 'src/domain/interfaces/creatable';
+import { parseISO } from 'date-fns';
+import dateMapper from 'src/utils/dynamo-easy/mappers/date-mapper';
 import User from './user';
 import Competition from './competition';
 import Heat from './heat';
@@ -42,7 +44,13 @@ class Event extends DataEntity {
     description: string;
 
     @Field()
-    startTime: string;
+    @Property({ mapper: dateMapper })
+    startTime: Date;
+
+    @Field({ nullable: true })
+    startTime2(): Date {
+        return new Date();
+    }
 
     @Field(() => EventStatus)
     status: EventStatus;

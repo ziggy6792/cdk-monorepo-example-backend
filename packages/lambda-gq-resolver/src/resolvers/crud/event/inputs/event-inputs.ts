@@ -27,7 +27,7 @@ export class CreateEventInput extends EventInput {
     id: string;
 
     @Field()
-    startTime: string;
+    startTime: Date;
 }
 
 @InputType()
@@ -36,5 +36,5 @@ export class UpdateEventInput extends EventInput {
     id: string;
 
     @Field({ nullable: true })
-    startTime: string;
+    startTime: Date;
 }
