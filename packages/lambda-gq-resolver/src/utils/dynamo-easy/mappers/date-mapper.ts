@@ -5,16 +5,13 @@ import { parseISO } from 'date-fns';
 
 const valueToIsoString = (value: Date | string): string => {
     if (typeof value === 'string') {
-        try {
-            parseISO(value);
-            return value;
-        } catch (err) {
-            return null;
-        }
-    } else if ((value as Date).toISOString) {
+        parseISO(value);
+        return value;
+    }
+    if ((value as Date).toISOString) {
         return (value as Date).toISOString();
     }
-    return null;
+    throw new Error(`Could not map ${JSON.stringify(value)} to date`);
 };
 
 const dateMapper: MapperForType<Date | string, StringAttribute> = {
