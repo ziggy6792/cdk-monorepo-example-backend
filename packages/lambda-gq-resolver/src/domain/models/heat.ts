@@ -7,10 +7,11 @@ import { RiderAllocationList } from 'src/domain/objects/lists';
 import { commonConfig } from '@alpaca-backend/common';
 import * as utils from 'src/utils/utility';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
-import { GSIPartitionKey, Model } from '@shiftcoders/dynamo-easy';
+import { GSIPartitionKey, Model, Property } from '@shiftcoders/dynamo-easy';
 import { IContext } from 'src/types';
 import Identifiable from 'src/domain/interfaces/identifiable';
 import Creatable from 'src/domain/interfaces/creatable';
+import dateMapper from 'src/utils/dynamo-easy/mappers/date-mapper';
 import Round from './round';
 import RiderAllocation from './rider-allocation';
 
@@ -62,7 +63,8 @@ class Heat extends DataEntity {
     }
 
     @Field()
-    startTime: string;
+    @Property({ mapper: dateMapper })
+    startTime: Date;
 
     @Field(() => ID)
     @GSIPartitionKey(tableSchema.indexes.byRound.indexName)

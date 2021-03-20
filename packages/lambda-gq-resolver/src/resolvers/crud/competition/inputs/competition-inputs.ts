@@ -1,6 +1,8 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable import/prefer-default-export */
+import { Property } from '@shiftcoders/dynamo-easy';
 import { CompetitionStatus, Gender, Level, Sport } from 'src/domain/models/competition';
+import dateMapper from 'src/utils/dynamo-easy/mappers/date-mapper';
 import { Field, InputType, ID, Int } from 'type-graphql';
 
 // @InputType()
@@ -23,7 +25,8 @@ class CompetitionInput {
     judgeUserId: string;
 
     @Field({ nullable: true })
-    startTime: string;
+    @Property({ mapper: dateMapper })
+    startTime: Date;
 
     @Field(() => CompetitionStatus, { nullable: true })
     status: CompetitionStatus;

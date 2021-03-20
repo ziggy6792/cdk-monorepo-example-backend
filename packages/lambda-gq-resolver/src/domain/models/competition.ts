@@ -11,6 +11,7 @@ import { ConditionExpressionDefinitionFunction, GSIPartitionKey, Model, Property
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import Creatable from 'src/domain/interfaces/creatable';
 import Identifiable from 'src/domain/interfaces/identifiable';
+import dateMapper from 'src/utils/dynamo-easy/mappers/date-mapper';
 import User from './user';
 import Event from './event';
 import Round from './round';
@@ -95,7 +96,8 @@ class Competition extends DataEntity {
     judgeUserId: string;
 
     @Field()
-    startTime: string;
+    @Property({ mapper: dateMapper })
+    startTime: Date;
 
     @Field(() => CompetitionStatus)
     status: CompetitionStatus;

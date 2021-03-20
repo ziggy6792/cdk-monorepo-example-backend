@@ -6,8 +6,9 @@ import { HeatList } from 'src/domain/objects/lists';
 import * as utils from 'src/utils/utility';
 import { commonConfig } from '@alpaca-backend/common';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
-import { GSIPartitionKey, Model } from '@shiftcoders/dynamo-easy';
+import { GSIPartitionKey, Model, Property } from '@shiftcoders/dynamo-easy';
 import Creatable from 'src/domain/interfaces/creatable';
+import dateMapper from 'src/utils/dynamo-easy/mappers/date-mapper';
 import Heat from './heat';
 import Competition from './competition';
 
@@ -39,7 +40,8 @@ class Round extends Identifiable {
     competitionId: string;
 
     @Field()
-    startTime: string;
+    @Property({ mapper: dateMapper })
+    startTime: Date;
 
     @Field(() => HeatList)
     async getHeats(): Promise<Heat[]> {
