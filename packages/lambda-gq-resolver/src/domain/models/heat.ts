@@ -12,6 +12,7 @@ import { IContext } from 'src/types';
 import Identifiable from 'src/domain/interfaces/identifiable';
 import Creatable from 'src/domain/interfaces/creatable';
 import dateMapper from 'src/utils/dynamo-easy/mappers/date-mapper';
+import Schedulable from 'src/domain/interfaces/schedulable';
 import Round from './round';
 import RiderAllocation from './rider-allocation';
 
@@ -46,7 +47,7 @@ export class SeedSlot {
     }
 }
 
-@ObjectType({ implements: [DataEntity, Identifiable, Creatable] })
+@ObjectType({ implements: [DataEntity, Identifiable, Creatable, Schedulable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Heat extends DataEntity {
     static store: DynamoStore<Heat>;

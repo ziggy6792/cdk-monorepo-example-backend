@@ -9,6 +9,7 @@ import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
 import { GSIPartitionKey, Model, Property } from '@shiftcoders/dynamo-easy';
 import Creatable from 'src/domain/interfaces/creatable';
 import dateMapper from 'src/utils/dynamo-easy/mappers/date-mapper';
+import Schedulable from 'src/domain/interfaces/schedulable';
 import Heat from './heat';
 import Competition from './competition';
 
@@ -24,7 +25,7 @@ registerEnumType(RoundType, {
 
 const tableSchema = commonConfig.DB_SCHEMA.Round;
 
-@ObjectType({ implements: [Identifiable, Creatable] })
+@ObjectType({ implements: [Identifiable, Creatable, Schedulable] })
 @Model({ tableName: utils.getTableName(tableSchema.tableName) })
 class Round extends Identifiable {
     static store: DynamoStore<Round>;
