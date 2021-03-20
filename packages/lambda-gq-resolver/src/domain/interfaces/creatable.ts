@@ -8,17 +8,20 @@ import _ from 'lodash';
 import { Field, InterfaceType } from 'type-graphql';
 import getUniqueTimestamp from 'src/utils/get-unique-timestamp';
 import DynamoStore from 'src/utils/dynamo-easy/dynamo-store';
-import { metadataForModel } from '@shiftcoders/dynamo-easy';
+import { metadataForModel, Property } from '@shiftcoders/dynamo-easy';
+import dateMapper from 'src/utils/dynamo-easy/mappers/date-mapper';
 
 @InterfaceType()
 abstract class Creatable {
     readonly __typename: string;
 
     @Field()
-    readonly createdAt: string;
+    @Property({ mapper: dateMapper })
+    readonly createdAt: Date;
 
     @Field()
-    private modifiedAt: string;
+    @Property({ mapper: dateMapper })
+    private modifiedAt: Date;
 
     constructor() {
         this.__typename = this.constructor.name;
@@ -30,8 +33,8 @@ abstract class Creatable {
         _.merge(this, loadedValues);
     }
 
-    static getTimestamp(): string {
-        return getUniqueTimestamp().toString();
+    static getTimestamp(): Date {
+        return getUniqueTimestamp();
     }
 
     static store: DynamoStore<any>;
@@ -42,7 +45,7 @@ abstract class Creatable {
         this.modifiedAt = this.modifiedAt ? Creatable.getTimestamp() : this.createdAt;
     }
 
-    getModifiedAt(): string {
+    getModifiedAt(): Date {
         return this.modifiedAt;
     }
 

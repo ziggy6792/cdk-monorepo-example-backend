@@ -91,10 +91,6 @@ class Competition extends DataEntity {
     @GSIPartitionKey(tableSchema.indexes.byEvent.indexName)
     eventId: string;
 
-    @Field()
-    @Property()
-    createdAt: string;
-
     @Field(() => ID)
     judgeUserId: string;
 

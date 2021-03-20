@@ -1,6 +1,6 @@
 import moment from 'src/utils/moment';
 
-export default function getUniqueTimestamp(): string {
+export default function getUniqueTimestamp(): Date {
     let date = Date.now();
 
     // If created at same millisecond as previous
@@ -10,7 +10,7 @@ export default function getUniqueTimestamp(): string {
         getUniqueTimestamp.previous = date;
     }
 
-    return moment(date).toISOString();
+    return moment(date).toDate();
 }
 
 getUniqueTimestamp.previous = 0;
