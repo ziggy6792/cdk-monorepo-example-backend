@@ -13,16 +13,21 @@ import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } fro
 import getRiderAlocationPostitionLoader from 'src/data-loaders/rider-alocation-position-loader';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getIdentityType = (requestContext: any): IdentityType => {
+const getIdentity = (requestContext: any): any => {
     const { identity, authorizer } = requestContext;
 
     const authIdentity = authorizer?.claims?.identity || identity;
 
+    return authIdentity;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getIdentityType = (authIdentity: any): IdentityType => {
     if (authIdentity?.username) {
         return IdentityType.USER;
     }
     if (authIdentity?.userArn) {
-        if (identity.cognitoAuthenticationType === 'unauthenticated') {
+        if (authIdentity.cognitoAuthenticationType === 'unauthenticated') {
             return IdentityType.ROLE_UNAUTH;
         }
         return IdentityType.ROLE;
@@ -43,19 +48,21 @@ const context = async (recieved: any): Promise<IContext> => {
 
     const event = eventHeader ? JSON.parse(decodeURIComponent(eventHeader)) : null;
 
-    const identityType = getIdentityType(event?.requestContext);
+    const authIdentity = getIdentity(event?.requestContext);
+
+    const identityType = getIdentityType(authIdentity);
 
     let identity: IIdentity;
 
     switch (identityType) {
         case IdentityType.USER:
-            identity = { type: identityType, user: event.requestContext.authorizer.claims.identity as ICognitoIdentity };
+            identity = { type: identityType, user: authIdentity as ICognitoIdentity };
             break;
         case IdentityType.ROLE:
-            identity = { type: identityType, role: event.requestContext.identity as IIamIdentity };
+            identity = { type: identityType, role: authIdentity as IIamIdentity };
             break;
         case IdentityType.ROLE_UNAUTH:
-            identity = { type: identityType, role: event.requestContext.identity as IIamIdentity };
+            identity = { type: identityType, role: authIdentity as IIamIdentity };
             break;
         default:
             identity = { type: identityType };
