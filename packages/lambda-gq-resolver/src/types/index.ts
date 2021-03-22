@@ -14,17 +14,19 @@ export interface IIdentity {
     user?: ICognitoIdentity;
     role?: IIamIdentity;
 }
+
 export interface ICognitoIdentity {
-    sub?: string;
-    event_id?: string;
-    token_use?: string;
-    scope?: string;
-    auth_time: number;
-    iss?: string;
-    exp: number;
-    iat: number;
-    jti?: string;
-    client_id?: string;
+    sub: string;
+    'cognito:groups': string;
+    token_use: string;
+    scope: string;
+    auth_time: string;
+    iss: string;
+    exp: string;
+    iat: string;
+    version: string;
+    jti: string;
+    client_id: string;
     username: string;
 }
 

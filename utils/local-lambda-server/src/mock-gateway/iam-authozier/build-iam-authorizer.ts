@@ -1,4 +1,4 @@
-import buildIamAuthorizedEvent from 'src/mock-gateway/build-authd-event';
+import { buildIamAuthorizedEvent } from 'src/mock-gateway/build-authd-event';
 import { IIamIdentity, ExpressMiddleware } from 'src/mock-gateway/types';
 import { lambdaRoleIdentity, unauthenticatedUserPoolIdentity } from 'src/mock-gateway/iam-authozier/iam-identities';
 

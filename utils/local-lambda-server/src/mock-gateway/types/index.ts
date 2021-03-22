@@ -20,13 +20,14 @@ export interface IIamIdentity {
 
 export interface ICognitoIdentity {
     sub: string;
-    event_id: string;
+    'cognito:groups': string;
     token_use: string;
     scope: string;
-    auth_time: number;
+    auth_time: string;
     iss: string;
-    exp: number;
-    iat: number;
+    exp: string;
+    iat: string;
+    version: string;
     jti: string;
     client_id: string;
     username: string;

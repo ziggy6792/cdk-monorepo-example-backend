@@ -16,7 +16,7 @@ import getRiderAlocationPostitionLoader from 'src/data-loaders/rider-alocation-p
 const getIdentity = (requestContext: any): any => {
     const { identity, authorizer } = requestContext;
 
-    const authIdentity = authorizer?.claims?.identity || identity;
+    const authIdentity = authorizer?.claims || identity;
 
     return authIdentity;
 };

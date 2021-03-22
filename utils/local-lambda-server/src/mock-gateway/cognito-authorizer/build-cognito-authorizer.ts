@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/prefer-default-export */
-import buildIamAuthorizedEvent from 'src/mock-gateway/build-authd-event';
+import { buildCognitoAuthorizedEvent } from 'src/mock-gateway/build-authd-event';
 import { ICognitoIdentity, ExpressMiddleware } from 'src/mock-gateway/types';
 import getJwk from './services/get-jwk';
 import jwtUtil from './jwt-util';
@@ -32,7 +32,7 @@ export const buildCognitoAutorizer = async (userPoolId: string | null, region = 
             }
         }
 
-        const event = buildIamAuthorizedEvent(identity);
+        const event = buildCognitoAuthorizedEvent(identity);
 
         req.headers['x-apigateway-event'] = encodeURIComponent(JSON.stringify(event));
 
