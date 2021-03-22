@@ -63,6 +63,7 @@ const mockEvent = {
         domainPrefix: 'mnakrqgp7b',
         requestTimeEpoch: 1608015287977,
         requestId: 'dd66b750-c03f-479e-bb63-2581f9b486db',
+        authorizer: null,
         identity: {
             cognitoIdentityPoolId: null,
             accountId: '694710432912',

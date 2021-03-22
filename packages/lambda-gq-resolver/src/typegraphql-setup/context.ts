@@ -13,12 +13,16 @@ import { IContext, ICognitoIdentity, IdentityType, IIamIdentity, IIdentity } fro
 import getRiderAlocationPostitionLoader from 'src/data-loaders/rider-alocation-position-loader';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getIdentityType = (eventIdentity: any): IdentityType => {
-    if (eventIdentity?.username) {
+const getIdentityType = (requestContext: any): IdentityType => {
+    const { identity, authorizer } = requestContext;
+
+    const authIdentity = authorizer?.claims?.identity || identity;
+
+    if (authIdentity?.username) {
         return IdentityType.USER;
     }
-    if (eventIdentity?.userArn) {
-        if (eventIdentity.cognitoAuthenticationType === 'unauthenticated') {
+    if (authIdentity?.userArn) {
+        if (identity.cognitoAuthenticationType === 'unauthenticated') {
             return IdentityType.ROLE_UNAUTH;
         }
         return IdentityType.ROLE;
@@ -37,23 +41,15 @@ const context = async (recieved: any): Promise<IContext> => {
 
     const eventHeader = req.headers['x-apigateway-event'];
 
-    // console.log('headers', req.headers);
-
-    // console.log('eventHeader', eventHeader);
-
     const event = eventHeader ? JSON.parse(decodeURIComponent(eventHeader)) : null;
 
-    console.log('recived event', JSON.stringify(event));
-
-    const identityType = getIdentityType(event?.requestContext?.identity);
-
-    // console.log('identityType', identityType);
+    const identityType = getIdentityType(event?.requestContext);
 
     let identity: IIdentity;
 
     switch (identityType) {
         case IdentityType.USER:
-            identity = { type: identityType, user: event.requestContext.identity as ICognitoIdentity };
+            identity = { type: identityType, user: event.requestContext.authorizer.claims.identity as ICognitoIdentity };
             break;
         case IdentityType.ROLE:
             identity = { type: identityType, role: event.requestContext.identity as IIamIdentity };
