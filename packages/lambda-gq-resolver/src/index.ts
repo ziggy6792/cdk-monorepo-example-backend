@@ -63,5 +63,6 @@ export const handler = (event, context) => {
     '${process.env.AWS_SESSION_TOKEN}' `;
 
     console.log(logText);
+    console.log('recieved event', JSON.stringify(event));
     return serverless.proxy(server, event, context);
 };
