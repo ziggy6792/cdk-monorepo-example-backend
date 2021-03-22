@@ -25,7 +25,7 @@ describe('Create Event', () => {
         const event = {
             id: 'obstacleJam',
             name: 'Obstacle Jam Test',
-            startTime: '2021-03-01T05:51:01.844Z',
+            startTime: '2021-03-01T05:00:00.000Z',
             adminUserId: testUsers.facebookUser.id,
         };
 
@@ -44,10 +44,10 @@ describe('Create Event', () => {
     });
 
     it('create events', async () => {
-        const testEvents = _.range(1, 11).map((index) => ({
+        const testEvents = _.range(1, 4).map((index) => ({
             id: `testEvent${index}`,
             name: `Test Event ${index}`,
-            startTime: `2021-03-${pad(index, 2)}T05:51:01.844Z`,
+            startTime: `2021-03-${pad(index, 2)}T05:00:00.000Z`,
             adminUserId: testUsers.facebookUser.id,
         }));
 

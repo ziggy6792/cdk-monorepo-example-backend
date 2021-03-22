@@ -10,7 +10,7 @@ import Creatable from './creatable';
     implements: Creatable,
 })
 abstract class Identifiable extends Creatable {
-    @Field(() => ID, { nullable: true })
+    @Field(() => ID)
     @PartitionKey()
     id: string;
 
