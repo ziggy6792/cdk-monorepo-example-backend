@@ -35,11 +35,19 @@ export const getContextInitialState = (): IContext => ({
 const context = async (recieved: any): Promise<IContext> => {
     const { req } = recieved;
 
-    const exentHeader = req.headers['x-apigateway-event'];
+    const eventHeader = req.headers['x-apigateway-event'];
 
-    const event = exentHeader ? JSON.parse(decodeURIComponent(exentHeader)) : null;
+    console.log('headers', req.headers);
+
+    console.log('eventHeader', eventHeader);
+
+    const event = eventHeader ? JSON.parse(decodeURIComponent(eventHeader)) : null;
+
+    console.log('event', event);
 
     const identityType = getIdentityType(event?.requestContext?.identity);
+
+    console.log('identityType', identityType);
 
     let identity: IIdentity;
 
@@ -57,6 +65,8 @@ const context = async (recieved: any): Promise<IContext> => {
             identity = { type: identityType };
             break;
     }
+
+    console.log('identity', identity);
 
     return { ...getContextInitialState(), req, identity };
 };
