@@ -1,4 +1,3 @@
-import deafultAuthMiddleware from 'src/middleware/default-auth-middleware';
 import RiderAllocation from 'src/domain/models/rider-allocation';
 import buildCrudResolvers from 'src/higher-order-resolvers/build-crud-resolvers';
 import { CreateRiderAllocationInput, UpdateRiderAllocationInput } from 'src/resolvers/crud/rider-allocation/inputs';
@@ -77,7 +76,7 @@ const crudResolvers = buildCrudResolvers('RiderAllocation', RiderAllocation, {
             inputType: CreateRiderAllocationInput,
             resolverProps: {
                 one: { middleware: [addDefaultUserId, createAuthMiddleware([isUserAllowedToCreateOne])] },
-                many: { middleware: [deafultAuthMiddleware] },
+                many: { middleware: [createAuthMiddleware()] },
             },
         },
         update: {

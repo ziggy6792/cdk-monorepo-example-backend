@@ -28,7 +28,7 @@ const checkAuth = async (authChecks: AuthCheck[], action: ResolverData<IContext>
 };
 
 // Does an or on all auth checks returns false if no auth checks pass
-const createAuthMiddleware = (authChecks: AuthCheck[], addDefaultAuthChecks = true): MiddlewareFn<IContext> => {
+const createAuthMiddleware = (authChecks: AuthCheck[] = [], addDefaultAuthChecks = true): MiddlewareFn<IContext> => {
     const additionalChecks = addDefaultAuthChecks ? defaultAuthChecks : [];
     const mergedAuthChecks = [...additionalChecks, ...authChecks];
     const retMiddleware: MiddlewareFn<IContext> = async (action, next) => {
