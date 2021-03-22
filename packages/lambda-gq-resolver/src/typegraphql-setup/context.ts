@@ -48,9 +48,15 @@ const context = async (recieved: any): Promise<IContext> => {
 
     const event = eventHeader ? JSON.parse(decodeURIComponent(eventHeader)) : null;
 
+    console.log('event', JSON.stringify(event));
+
     const authIdentity = getIdentity(event?.requestContext);
 
+    console.log('authIdentity', JSON.stringify(authIdentity));
+
     const identityType = getIdentityType(authIdentity);
+
+    console.log('identityType', identityType);
 
     let identity: IIdentity;
 

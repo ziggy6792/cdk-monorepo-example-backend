@@ -7,6 +7,7 @@ import { MiddlewareFn } from 'type-graphql';
 import { IContext, IdentityType } from 'src/types';
 import { AuthCheck } from 'src/middleware/auth-check/types';
 import createAuthMiddleware from 'src/middleware/create-auth-middleware';
+import isAuthUser from 'src/middleware/auth-check/is-auth-user';
 
 const addDefaultUserId: MiddlewareFn<IContext> = async ({ args, context: { identity } }, next) => {
     const input = args.input as CreateEventInput;
@@ -34,7 +35,7 @@ const isAllowedToEditEvent: AuthCheck = async ({ args, context: { identity } }) 
 
 const CrudResolvers = buildCrudResolvers('Event', Event, {
     crudProps: {
-        create: { inputType: CreateEventInput, resolverProps: { one: { middleware: [addDefaultUserId, createAuthMiddleware()] } } },
+        create: { inputType: CreateEventInput, resolverProps: { one: { middleware: [addDefaultUserId, createAuthMiddleware([isAuthUser])] } } },
         update: { inputType: UpdateEventInput, resolverProps: { one: { middleware: [createAuthMiddleware([isAllowedToEditEvent])] } } },
         get: { resolverProps: { one: true, many: true } },
         delete: { resolverProps: { one: { middleware: [createAuthMiddleware([isAllowedToEditEvent])] } } },
