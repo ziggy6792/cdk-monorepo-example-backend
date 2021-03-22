@@ -37,17 +37,17 @@ const context = async (recieved: any): Promise<IContext> => {
 
     const eventHeader = req.headers['x-apigateway-event'];
 
-    console.log('headers', req.headers);
+    // console.log('headers', req.headers);
 
-    console.log('eventHeader', eventHeader);
+    // console.log('eventHeader', eventHeader);
 
     const event = eventHeader ? JSON.parse(decodeURIComponent(eventHeader)) : null;
 
-    console.log('event', event);
+    console.log('recived event', JSON.stringify(event));
 
     const identityType = getIdentityType(event?.requestContext?.identity);
 
-    console.log('identityType', identityType);
+    // console.log('identityType', identityType);
 
     let identity: IIdentity;
 
